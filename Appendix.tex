@@ -1,0 +1,2443 @@
+\appendix
+
+
+\thesischapter{Proof Systems}
+
+\section{Gentzen's Sequent Calculus}
+These rules and propositions were taken from St{\aa}lmarck \cite{GS00}.
+\label{def:sequent}
+\begin{mydef}[Sequent]
+Every line in sequent calculus proof is called a sequent and takes the
+following form. 
+
+$$ A_1, \ldots , A_k \vdash B_1, \ldots ,B_l$$
+
+In this text we are using the symbol $\vdash$ to represent the sequent arrow.
+\footnote{The sequent arrow is sometimes represented using the symbol $\to$}
+The following formula captures the meaning of the above sequent.
+
+$$ \bigwedge_{i = 1}^{k} A_i \supset  \bigvee_{j-1}^l B_j$$
+
+\end{mydef}
+ 
+\medskip
+
+Intuitively you can read a sequent as: If the conjunction of all of the $A_i$s
+is true then one of the $B_j$s in the disjunction must be true.
+
+\medskip
+
+\begin{mydef}[Gentzen's Sequent Calculus PK] \hspace*{\fill} \\
+
+Axiom
+\bigskip
+\begin{center}
+$A \vdash A$
+\end{center}
+
+\bigskip
+
+Structural Rules
+
+\bigskip
+\begin{center}
+
+
+\AxiomC{$\Gamma \vdash \Delta $}
+\LeftLabel{($Thinning$)}
+\UnaryInfC{$\Gamma, \Theta \vdash \Delta, \Lambda $}
+\DisplayProof \
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\AxiomC{$\Gamma \vdash \Delta, A$}
+\LeftLabel{($Cut$)}
+\BinaryInfC{$\Gamma \vdash \Delta$}
+\DisplayProof
+
+\end{center}
+
+\bigskip
+
+Operational Rules
+
+\bigskip
+\begin{center}
+\AxiomC{$\Gamma, A \vdash \Delta$}
+\AxiomC{$\Gamma, B \vdash \Delta$}
+\LeftLabel{($Or_L$)}
+\BinaryInfC{$\Gamma, A \vee B \vdash \Delta$}
+\DisplayProof \
+\AxiomC{$\Gamma \vdash \Delta, A,B$}
+\LeftLabel{($Or_R$)}
+\UnaryInfC{$\Gamma \vdash \Delta , A \vee B$}
+\DisplayProof
+
+\end{center}
+
+\smallskip
+
+\begin{center}
+
+\AxiomC{$\Gamma, A, B \vdash \Delta$}
+\LeftLabel{($And_L$)}
+\UnaryInfC{$\Gamma, A \wedge B \vdash \Delta$}
+\DisplayProof \
+\AxiomC{$\Gamma \vdash \Delta, A$}
+\AxiomC{$\Gamma \vdash \Delta, B$}
+\LeftLabel{($And_R$)}
+\BinaryInfC{$\Gamma, \vdash  \Delta, A \wedge B$}
+\DisplayProof
+
+\end{center}
+
+\smallskip
+
+\begin{center}
+
+\AxiomC{$\Gamma \vdash \Delta, A$}
+\AxiomC{$\Gamma , B \vdash \Delta$}
+\LeftLabel{($Imp_L$)}
+\BinaryInfC{$\Gamma, A \to B \vdash \Delta$}
+\DisplayProof \
+\AxiomC{$\Gamma ,A \vdash \Delta , B$}
+\LeftLabel{$(Imp_R)$}
+\UnaryInfC{$\Gamma \vdash \Delta, A \to B$}
+\DisplayProof
+
+
+\end{center}
+
+\smallskip
+
+\begin{center} 
+
+\AxiomC{$\Gamma \vdash \Delta , A$}
+\LeftLabel{$(Neg_L)$}
+\UnaryInfC{$\Gamma, \neg A \vdash \Delta$}
+\DisplayProof \
+\AxiomC{$\Gamma , A \vdash \Delta$}
+\LeftLabel{$(Neg_R)$}
+\UnaryInfC{$\Gamma \vdash \Delta, \neg A$}
+\DisplayProof
+
+
+\end{center}
+
+\smallskip
+
+\end{mydef}
+
+\medskip
+
+\begin{proposition}[Sub-formula Principle]
+If a PK-proof P does not contain any application of the cut rule, then
+All of the formulas occurring in  P must be a sub-formula of some
+formula in the end sequent of P.
+\end{proposition}
+
+\medskip
+
+Having the \textit{sub-formula principle} allowed St{\aa}lmarck to place bounds on the
+size of proofs created by his algorithm.
+
+\medskip
+
+\begin{proposition}[Removing Thinning]
+If we allow axioms of the form $\Gamma, A \vdash A, \Delta$ then it is
+possible to remove the thinning rule as it is redundant and is no longer of
+any use.
+
+\end{proposition}
+
+\medskip
+
+Removing the thinning rule gives us a proof system that is essentially the
+same as that by Kleene \cite{SK67}. This proof system has the advantage that it
+is invertible i.e., if a sequent below the line of an inference is valid then
+the sequents above the line are also valid.
+
+\section{Smullyan's Semantic Tableaux}
+The Analytic tableaux form a refutation proof system. You begin a proof by
+assuming your propositional formula is false. Then a tree is constructed using
+the rules. The formula is de-constructed into its constituent sub-formulae
+using the rules \textit{And}, \textit{Not-Or} and \textit{Not-Impl}. Case
+distinction on the formula is performed by the rules \textit{Or},
+\textit{Not-And} and \textit{Impl}. The application of a case distinction rule
+causes a branch to occur in the proof tree. If each branch of the tree contains a contradiction then the
+formula is refuted.
+
+
+\label{def:tableaux}
+\begin{mydef}[Semantic Tableaux] \hspace*{\fill} \\
+\begin{center}
+
+\AxiomC{$A \wedge B$}
+\LeftLabel{$(And)$}
+\UnaryInfC{$A$}
+\alwaysNoLine
+\UnaryInfC{$B$}
+\DisplayProof \
+\AxiomC{$\neg(A \vee B)$}
+\LeftLabel{$(Not\hyp{}Or)$}
+\UnaryInfC{$\neg A$}
+\alwaysNoLine
+\UnaryInfC{$\neg B$}
+\DisplayProof
+
+
+\end{center}
+
+\begin{center}
+
+\AxiomC{$A \vee B$}
+\LeftLabel{$(Or)$}
+\UnaryInfC{$A | B$}
+\DisplayProof \
+\AxiomC{$\neg(A \wedge B)$}
+\LeftLabel{$(Not \hyp{} And)$}
+\UnaryInfC{$\neg A | \neg B$}
+\DisplayProof
+
+
+\end{center}
+
+\begin{center}
+
+\AxiomC{$A \to B$}
+\LeftLabel{$(Impl)$}
+\UnaryInfC{$\neg A | B$}
+\DisplayProof \
+\AxiomC{$\neg(A \to B)$}
+\LeftLabel{$(Not \hyp{} Impl)$}
+\UnaryInfC{$A$}
+\alwaysNoLine
+\UnaryInfC{$\neg B$}
+\DisplayProof
+
+
+
+\end{center}
+
+\begin{center}
+
+\AxiomC{$\neg \neg A$}
+\LeftLabel{$(Not \hyp{} Not)$}
+\UnaryInfC{$A$}
+\DisplayProof \
+
+\end{center}
+
+
+\end{mydef}
+
+\medskip
+
+\section{Propagation Rules for St{\aa}lmarck's Tautology Checker}
+
+In the following the proper rules used in St{\aa}lmarck's tautology checking
+algorithm are presented from \cite{JN01}.
+
+\label{sec:stalmarck}
+
+\medskip
+
+\begin{mydef}[Formula Equivalence Rules] \hspace*{\fill} \\
+\begin{equation}
+\AxiomC{}
+\UnaryInfC{$P \equiv P$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q$}
+\UnaryInfC{$Q \equiv P$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q$}
+\AxiomC{$ Q \equiv R  $}
+\BinaryInfC{$P \equiv R$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv \bot$}
+\UnaryInfC{$P' \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q$}
+\AxiomC{$ Q \equiv \top  $}
+\BinaryInfC{$P \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q$}
+\AxiomC{$ Q \equiv \bot  $}
+\BinaryInfC{$P \equiv \bot $}
+\DisplayProof \
+\end{equation}
+
+
+\begin{equation}
+\AxiomC{$P \equiv Q$}
+\UnaryInfC{$P' \equiv Q'$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv \top$}
+\UnaryInfC{$P' \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+
+\begin{equation}
+\AxiomC{$P \equiv \top$}
+\AxiomC{$Q \equiv \top$}
+\BinaryInfC{$P \equiv Q$}
+\DisplayProof \
+\end{equation}
+
+
+\begin{equation}
+\AxiomC{$P \equiv \bot$}
+\AxiomC{$Q \equiv \bot$}
+\BinaryInfC{$P \equiv Q$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv P'$}
+\UnaryInfC{$\bot$}
+\DisplayProof \
+\end{equation}
+
+
+\end{mydef}
+
+
+
+\begin{mydef}[Propagation Rules]
+
+Rules for conjunction
+
+\begin{equation}
+\AxiomC{$P \wedge Q \equiv \top$}
+\UnaryInfC{$P \equiv \top$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \wedge Q \equiv \top$}
+\UnaryInfC{$Q \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+
+\begin{equation}
+\AxiomC{$P \wedge Q \equiv P'$}
+\UnaryInfC{$P \equiv \top$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \wedge Q \equiv Q'$}
+\UnaryInfC{$Q \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+
+
+\begin{equation}
+\AxiomC{$P \wedge Q \equiv P'$}
+\UnaryInfC{$Q \equiv \bot$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \wedge Q \equiv Q'$}
+\UnaryInfC{$P \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+
+\begin{equation}
+\AxiomC{$P \equiv \top$}
+\UnaryInfC{$P \wedge Q \equiv Q$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$Q \equiv \top$}
+\UnaryInfC{$P  \wedge Q \equiv P$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv \bot$}
+\UnaryInfC{$P \wedge Q \equiv \bot$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$Q \equiv \bot$}
+\UnaryInfC{$P  \wedge Q \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q$}
+\UnaryInfC{$P \wedge Q \equiv P$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \equiv Q$}
+\UnaryInfC{$P  \wedge Q \equiv Q$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q'$}
+\UnaryInfC{$P  \wedge Q \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+
+Rules for disjunction
+
+
+\begin{equation}
+\AxiomC{$P \vee Q \equiv \bot$}
+\UnaryInfC{$P \equiv \bot$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \vee Q \equiv \bot$}
+\UnaryInfC{$ Q \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \vee Q \equiv P'$}
+\UnaryInfC{$P \equiv \bot$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \vee Q \equiv Q'$}
+\UnaryInfC{$ Q \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \vee Q \equiv P'$}
+\UnaryInfC{$Q \equiv \top$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \vee Q \equiv Q'$}
+\UnaryInfC{$ P \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv \top$}
+\UnaryInfC{$P \vee Q \equiv \top$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$Q \equiv \top$}
+\UnaryInfC{$P \vee Q \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q$}
+\UnaryInfC{$P \vee Q \equiv P$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \equiv Q$}
+\UnaryInfC{$P \vee Q \equiv Q$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q'$}
+\UnaryInfC{$P \vee Q \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+Rules for implication
+
+\begin{equation}
+\AxiomC{$P \to Q \equiv \bot$}
+\UnaryInfC{$P  \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \to Q \equiv \bot$}
+\UnaryInfC{$Q \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \to Q \equiv P$}
+\UnaryInfC{$P \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \to Q \equiv P$}
+\UnaryInfC{$Q \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \to Q \equiv Q'$}
+\UnaryInfC{$P \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \to Q \equiv Q'$}
+\UnaryInfC{$Q \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv \top$}
+\UnaryInfC{$P \to Q \equiv Q$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$Q \equiv \top$}
+\UnaryInfC{$P \to Q \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv \bot$}
+\UnaryInfC{$P \to Q \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$Q \equiv \bot$}
+\UnaryInfC{$P \to Q \equiv P'$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \equiv Q'$}
+\UnaryInfC{$P \to Q \equiv P'$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \equiv Q'$}
+\UnaryInfC{$P \to Q \equiv Q$}
+\DisplayProof \
+\end{equation}
+
+Rules for bi-implication
+
+\begin{equation}
+\AxiomC{$P \leftrightarrow Q \equiv \top$}
+\UnaryInfC{$P \equiv Q$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \leftrightarrow Q \equiv \bot$}
+\UnaryInfC{$P \equiv Q'$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \leftrightarrow Q \equiv P$}
+\UnaryInfC{$Q \equiv \top$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \leftrightarrow  Q \equiv Q$}
+\UnaryInfC{$P \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$P \leftrightarrow Q \equiv P'$}
+\UnaryInfC{$Q \equiv \bot$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \leftrightarrow  Q \equiv Q'$}
+\UnaryInfC{$P \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+\begin{equation}
+\AxiomC{$Q \equiv \top$}
+\UnaryInfC{$P \leftrightarrow Q \equiv P$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \equiv \top$}
+\UnaryInfC{$P \leftrightarrow  Q \equiv Q$}
+\DisplayProof \
+\end{equation}
+
+
+\begin{equation}
+\AxiomC{$Q \equiv \bot$}
+\UnaryInfC{$P \leftrightarrow Q \equiv P'$}
+\DisplayProof \hspace*{30pt}
+\AxiomC{$P \equiv \bot$}
+\UnaryInfC{$P \leftrightarrow  Q \equiv Q'$}
+\DisplayProof \
+\end{equation}
+
+
+\begin{equation}
+\AxiomC{$P \equiv Q$}
+\UnaryInfC{$P \leftrightarrow Q \equiv \top$}
+\DisplayProof \
+\end{equation}
+
+
+\begin{equation}
+\AxiomC{$P \equiv Q'$}
+\UnaryInfC{$P \leftrightarrow Q \equiv \bot$}
+\DisplayProof \
+\end{equation}
+
+\end{mydef}
+
+\medskip
+
+
+
+
+
+
+
+\thesischapter{Concrete Railway Model} 
+
+
+In this chapter we will present the work produced in attempt to provide a
+concrete model of the railway (See Chapter 5).
+
+\section{Railway Components}
+
+In the following we have tried to model components of the railway with the intention
+that they could be verified individually and then recombined into different
+configurations.
+
+
+
+ Track Segment 1:
+ Node was used to model a straight piece of track. We have simplified the
+ topological aspect somewhat
+ since the track is generally set up for trains travelling in one direction. We
+ have assumed that a train will not travel the wrong way down a track.
+
+\begin{verbatim}
+
+node Track_Segment1(TrainIn, RedLight, GreenLight, WhiteLight : bool)
+returns(TrackOccupied, TrainOut, Crash: bool)
+var
+
+
+
+let
+
+automaton
+	initial state EMPTY
+
+	let
+	
+			TrackOccupied = false; 
+			TrainOut = false; 
+			Crash = false;
+	
+	tel
+	until
+	if (TrainIn) restart OCCUPIED;
+	
+	state OCCUPIED
+	let
+		TrackOccupied = true ;
+		TrainOut = false;
+		Crash = false;
+	 
+	
+	tel
+	until
+	if ((GreenLight or WhiteLight) and not RedLight) restart TRAINLEAVE;
+	if (TrainIn) restart CRASH;
+	
+	state TRAINLEAVE
+	let
+	
+		TrackOccupied = true;
+		TrainOut = true;
+		Crash = false;
+	
+	tel
+	until
+	if (TrainIn) restart CRASH;
+	if (TrainOut) restart EMPTY;
+	
+	state CRASH
+	let
+	
+		TrackOccupied = true;
+		Crash = true;
+		TrainOut = false;
+	
+	tel
+	
+	returns .. ;
+
+tel
+
+\end{verbatim}
+
+ Track Segment 2:
+ Originally we had modelled certain junctions using this component and
+ of track using this component. 
+ we decided however that we would like to capture all possible ways a train can move across a junction
+ we therefore converted all track segments in junctions to using Track Segment 3.
+
+\begin{verbatim}
+
+node Track_Segment2(TrainIn1, TrainIn2, RedLight, GreenLight,
+                    WhiteLight, PointsNorm, PointsRev : bool)
+returns(TrackOccupied, TrainOut1, TrainOut2, Crash: bool)
+var
+
+
+let
+
+
+automaton
+	initial state EMPTY
+	let
+	
+			TrackOccupied = false; 
+			TrainOut1 = false; 
+			TrainOut2 = false;
+			Crash = false;
+	
+	tel
+	until
+	if (TrainIn1 or TrainIn2) restart OCCUPIED;
+	
+	state OCCUPIED
+	let
+		TrackOccupied = true;
+		TrainOut1 = false;
+		TrainOut2 = false;
+		Crash = false;
+		
+	
+	tel
+	until
+	if ((GreenLight or WhiteLight) and not RedLight) restart TRAINLEAVE;
+	if (TrainIn1 or TrainIn2) restart CRASH;
+	
+	state TRAINLEAVE
+	let
+	
+		TrackOccupied = true;
+		TrainOut1 =  if (PointsRev) then true else false;
+		TrainOut2 = if (PointsNorm) then true else false;
+		Crash = false;
+	
+	tel
+	until 
+	if (TrainIn1 or TrainIn2) restart CRASH;
+	if (TrainOut1 or TrainOut2) restart EMPTY;
+	
+	state CRASH
+	let
+	
+		TrackOccupied = true;
+		Crash = true;
+		TrainOut1 = false;
+		TrainOut2 = false;
+	tel
+	
+	returns .. ;
+
+tel
+
+\end{verbatim}
+
+ Track Segment 3: This is the node that was used to model junctions in the track. The just has
+ been modelled in such a way that the direction of
+ travel along with the points dictate how a train exits the track. 
+
+
+
+
+\begin{verbatim}
+
+
+node Track_Segment3(TrainIn1, TrainIn2, TrainIn3, RedLight, 
+GreenLight, WhiteLight, PointsNorm , PointsRev : bool)
+returns(TrackOccupied, TrainOut1, TrainOut2, TrainOut3 , Crash: bool)
+var
+
+Direction : bool;
+
+let
+
+Direction = false -> if (TrainIn1) then true else (if (TrainIn3) then false 
+							else pre Direction); 
+
+automaton
+	initial state EMPTY
+	let
+	
+			TrackOccupied = false; 
+			TrainOut1 = false; 
+			TrainOut2 = false;
+			TrainOut3 = false;
+			
+			Crash = false;
+	
+	tel
+	until
+	if (TrainIn1 or TrainIn2 or TrainIn3) restart OCCUPIED;
+	
+	state OCCUPIED
+	let
+		TrackOccupied = true ;
+		TrainOut1 = false;
+		Crash = false;
+		TrainOut2 = false;
+		TrainOut3 = false;
+	 
+	
+	tel
+	until
+	if ((GreenLight or WhiteLight) and not RedLight) restart TRAINLEAVE;
+	if (TrainIn1 or TrainIn2 or TrainIn3) restart CRASH;
+	
+	state TRAINLEAVE
+	let
+	
+		TrackOccupied = true;
+		TrainOut1 = if (Direction) then false else true ;
+		Crash = false;
+		TrainOut2 = if (Direction and PointsRev) then true else false ;
+		TrainOut3 = if (Direction and PointsNorm) then true else false;
+	
+	tel
+	until
+	if (TrainIn1 or TrainIn2 or TrainIn3) restart CRASH;
+	if (TrainOut1 or TrainOut2 or TrainOut3) restart EMPTY;
+	
+	state CRASH
+	let
+	
+		TrackOccupied = true;
+		Crash = true;
+		TrainOut1 = false;
+		TrainOut2 = false;
+		TrainOut3 = false;
+	
+	tel
+	
+	returns .. ;
+
+tel
+
+
+\end{verbatim}
+
+
+
+\begin{verbatim}
+
+node Route(RouteCall, RouteSet, PointsLocked,
+ LightsSet, W_track_clear, G_track_clear: bool)
+returns(RouteSelected, DrivePL, DriveG, DriveW, DriveR: bool) 
+let
+automaton
+	initial state STATE1
+	unless
+	if (RouteCall) restart STATE2;
+	let
+	
+		RouteSelected = false;
+		DrivePL = false;
+		DriveG = false;
+		DriveW = false;
+		DriveR = true;
+	
+	tel
+	state STATE2
+	unless
+	if (not RouteSet) restart STATE1;
+	if (RouteCall and PointsLocked and LightsSet) restart STATE3;
+	let
+	
+	
+		RouteSelected = false; 
+		DrivePL = true;
+		DriveG = if (W_track_clear and G_track_clear)
+						then true
+						else false;
+		DriveW = if (W_track_clear and not G_track_clear)	
+						then true
+						else false;
+		DriveR = if ( (W_track_clear and G_track_clear) 
+                      or (W_track_clear and not G_track_clear))
+						then false
+						else true;
+						
+	
+	tel
+	state STATE3
+	unless
+	if (not RouteSet) restart STATE1;
+	let
+	
+		RouteSelected = true;
+		DrivePL = true;
+		DriveG = if (W_track_clear and G_track_clear)
+						then true
+						else false;
+		DriveW = if (W_track_clear and not G_track_clear)	
+						then true
+						else false;
+		DriveR = if ( (W_track_clear and G_track_clear) 
+                      or (W_track_clear and not G_track_clear))
+						then false
+						else true;
+	tel
+	returns .. ;
+	
+
+tel
+
+\end{verbatim}
+
+The following is the \scade \ node that was used to model a point. It contains a
+finite state machine that models the 4 possible states a point can be
+in: Normal and free , Normal and locked, Reverse and free, Reverse and
+locked. One further state that could be added in future is the Unknown
+state. This is where the point is in neither Reverse or Normal but in some
+indeterminate state. 
+
+\begin{verbatim}
+
+node Point(Normal, Reverse, Occupied : bool)
+returns(NLock, NFree, RLock, RFree: bool)
+let
+
+automaton
+  initial state NORMAL_FREE
+	unless
+	if (Occupied) restart NORMAL_LOCK;
+
+	if (Reverse and not Normal and not Occupied) restart REVERSE_FREE;
+	let
+		NLock = false;
+		RLock = false;
+		NFree = true ;
+		RFree = false ;
+	tel
+	until
+
+	
+	state NORMAL_LOCK
+	unless
+	if (not Occupied) restart NORMAL_FREE;
+	let
+		NLock = true;
+		RLock = false;
+		NFree = false ;
+		RFree = false ;
+	
+	tel
+	
+	state REVERSE_FREE
+	unless
+	if (Occupied) restart REVERSE_LOCK;
+	if (not Reverse and Normal and not Occupied) restart NORMAL_FREE;
+	let
+	
+		NLock = false;
+		RLock = false;
+		NFree = false;
+		RFree = true ;
+	
+	
+	
+	tel
+
+
+	
+	state REVERSE_LOCK
+	unless
+	if (not Occupied) restart REVERSE_FREE;
+	let
+		NLock = false;
+		RLock = true;
+		NFree = false;
+		RFree = false;
+			
+			
+	tel
+	
+	returns .. ;
+
+tel
+
+\end{verbatim}
+
+Pointif is a model of a point using if statements instead of the finite state
+machines.
+
+
+\begin{verbatim}
+
+node Pointif(Normal, Reverse, Occupied : bool)
+returns(NLock, NFree, RLock, RFree: bool)
+let
+
+
+		NLock =  (Occupied) ->
+								 ( (pre NFree and Occupied) or (pre NLock and Occupied));
+								 
+		RLock = false ->  (pre RFree or pre RLock) and Occupied ;
+		NFree = ( (Normal and not Reverse) or (not Normal and not Reverse)
+                                  or (Normal and Reverse)) and not Occupied
+					 -> ( ((pre RFree and not Reverse and Normal) or (pre NFree and
+					 (not Reverse or (Reverse and Normal))or pre NLock)) and not Occupied);
+		
+		RFree =  (not Occupied and (Reverse and not Normal)) -> 
+					 ( (pre NFree and not Normal and Reverse and not Occupied ) or  
+					( (pre RFree and (not Normal and (notOccupied or not Reverse)
+                                or (Normal and Reverse)) )  and not Occupied) 
+					or (pre RLock and not Occupied)) ;
+
+
+tel
+
+\end{verbatim}
+
+
+
+\begin{verbatim}
+
+node PointEquiv(Normal, Reverse, Occupied: bool)
+returns(Equivalent , NLock1, NFree1, RLock1, RFree1, 
+              NLock2, NFree2, RLock2, RFree2 : bool)
+
+
+
+let
+
+
+	NLock1, NFree1, RLock1, RFree1	= 	Point(Normal, Reverse, Occupied);
+	NLock2, NFree2, RLock2, RFree2	= 	Pointif(Normal, Reverse, Occupied);
+	
+	Equivalent =((NLock1 and NLock2) or (not NLock1 and not NLock2)) and
+				((NFree1 and NFree2) or (not NFree1 and not NFree2)) and
+				((RFree1 and RFree2) or (not RFree1 and not RFree2)) and
+				((RLock1 and RLock2) or (not RLock1 and not RLock2));
+
+tel
+
+\end{verbatim}
+
+
+\begin{verbatim}
+
+node Point2(Normal, Reverse, Occupied : bool)
+returns(NLock, NFree, RLock, RFree: bool)
+let
+
+automaton
+  initial state INITIAL
+  unless
+  	if (false -> Occupied) restart NORMAL_LOCK;
+	if (false -> Normal) restart NORMAL_FREE;
+	if (false -> Reverse) restart REVERSE_FREE;
+	if (false -> not Reverse and not  Normal and not Occupied) restart NORMAL_FREE;
+	let
+	
+		NLock = false;
+		RLock = false;
+		NFree = true ;
+		RFree = false ;
+	
+	tel
+	until		
+
+	
+	state NORMAL_FREE
+	unless
+	if (Occupied) restart NORMAL_LOCK;
+
+	if (Reverse and not Normal and not Occupied) restart REVERSE_FREE;
+	let
+		NLock = false;
+		RLock = false;
+		NFree = true ;
+		RFree = false ;
+	tel
+	until
+
+	
+	state NORMAL_LOCK
+	unless
+	if (not Occupied) restart NORMAL_FREE;
+	let
+		NLock = true;
+		RLock = false;
+		NFree = false ;
+		RFree = false ;
+	
+	tel
+	
+	state REVERSE_FREE
+	unless
+	if (Occupied) restart REVERSE_LOCK;
+	if (not Reverse and Normal and not Occupied) restart NORMAL_FREE;
+	let
+	
+		NLock = false;
+		RLock = false;
+		NFree = false;
+		RFree = true ;
+	
+	
+	
+	tel
+
+
+	
+	state REVERSE_LOCK
+	unless
+	if (not Occupied) restart REVERSE_FREE;
+	let
+		NLock = false;
+		RLock = true;
+		NFree = false;
+		RFree = false;
+			
+			
+	tel
+	
+	returns .. ;
+tel
+
+\end{verbatim}
+
+\begin{verbatim}
+
+node Pointif2(Normal, Reverse, Occupied : bool)
+returns(NLock, NFree, RLock, RFree: bool)
+let
+
+
+		NLock =  false ->
+								 ( (pre NFree and Occupied) or (pre NLock and Occupied));
+								 
+		RLock = false ->  (pre RFree or pre RLock) and Occupied ;
+		NFree = true
+					 -> ( ((pre RFree and not Reverse and Normal) or (pre NFree and
+					 (not Reverse or (Reverse and Normal))or pre NLock)) and not Occupied);
+		
+		RFree =  false -> 
+					 ( (pre NFree and not Normal and Reverse and not Occupied ) or  
+					( (pre RFree and (not Normal and
+(not Occupied or not Reverse) or (Normal and Reverse)) )  and not Occupied) 
+					or (pre RLock and not Occupied)) ;
+tel
+
+\end{verbatim}
+
+\begin{verbatim}
+
+node PointEquiv2(Normal, Reverse, Occupied: bool)
+returns(Equivalent, Equivalent2, Equivalent3, NLock1,
+ NFree1, RLock1, RFree1, NLock2, NFree2,
+ RLock2, RFree2, NLock3, NFree3, RLock3, RFree3,
+	NLock4, NFree4, RLock4, RFree4 : bool)
+let
+
+
+	NLock1, NFree1, RLock1, RFree1	= 	Point2(Normal, Reverse, Occupied);
+	NLock2, NFree2, RLock2, RFree2	= 	Pointif2(Normal, Reverse, Occupied);
+	NLock3, NFree3, RLock3, RFree3  = 	Point(Normal, Reverse, Occupied);
+	NLock4, NFree4, RLock4, RFree4 	= 	Pointif(Normal, Reverse, Occupied);
+	
+	
+	
+	
+	Equivalent =((NLock1 and NLock2) or (not NLock1 and not NLock2)) and
+			((NFree1 and NFree2) or (not NFree1 and not NFree2)) and
+			((RFree1 and RFree2) or (not RFree1 and not RFree2)) and
+			((RLock1 and RLock2) or (not RLock1 and not RLock2));
+	
+	Equivalent2 = true -> ((NLock1 and NLock3) or (not NLock1 and not NLock3)) and
+			((NFree1 and NFree3) or (not NFree1 and not NFree3)) and
+			((RFree1 and RFree3) or (not RFree1 and not RFree3)) and
+			((RLock1 and RLock3) or (not RLock1 and not RLock3));
+	
+	Equivalent3 = true -> ((NLock2 and NLock4) or (not NLock2 and not NLock4)) and
+			((NFree2 and NFree4) or (not NFree2 and not NFree4)) and
+			((RFree2 and RFree4) or (not RFree2 and not RFree4)) and
+			((RLock2 and RLock4) or (not RLock2 and not RLock4));
+		
+	
+tel
+
+\end{verbatim}
+
+\section{Signals}
+Signals were modelled using the finite state machines in \scade. The signals
+and the aspects they contain were modelled separately. A signal can
+be though of as a device which controls the aspects it contains.  They have an
+Initial state in which the the red aspect is driven. Subsequent states depend
+on the value of the inputs. 
+
+\begin{verbatim}
+
+node Light3Aspect(Red, White , Green: bool)
+returns(LightsSet, R_O_D , W_O_D, G_O_D
+		
+				: bool)
+var
+G_O_A,  G_O_R, W_O_A, W_O_R, R_O_A, R_O_R,
+G_I_A, G_I_D, G_I_R, W_I_A, W_I_D, W_I_R, R_I_A, R_I_D,  R_I_R, 
+G_S_A, G_S_D, G_S_R, W_S_A, W_S_D, W_S_R, R_S_A, R_S_D,  R_S_R : bool;
+
+let 
+
+	G_S_A = false -> (pre G_I_A);
+	G_S_D = false -> (pre G_I_D);
+	G_S_R = false -> (pre G_I_R);
+	W_S_A = false -> (pre W_I_A);
+	W_S_D = false -> (pre W_I_D);
+	W_S_R = false -> (pre W_I_R);
+	R_S_A = false -> (pre R_I_A);
+	R_S_D = false -> (pre R_I_D);
+	R_S_R = false -> (pre R_I_R);
+
+	automaton
+	initial state INITIALISE
+	let
+			G_I_A = false;
+			G_I_D = false;
+			G_I_R = false;
+			W_I_A = false;
+			W_I_D = false;  
+			W_I_R = false;
+			R_I_A = true;
+			R_I_D = true;
+			R_I_R = false;
+			LightsSet = false;
+
+	tel
+	until
+	if (R_O_A and R_O_D and Red) resume RED;
+	if (R_O_A and R_O_D and White) resume WHITE;
+	if (R_O_A and R_O_D and Green) resume GREEN;
+	state RED
+
+	let
+		automaton
+		initial state SETAVAIL
+		unless
+		if (R_S_A and not R_S_D) resume TRANSITIONSTATE; 
+			let
+			G_I_A = G_S_A;
+			G_I_D = G_S_D;
+			G_I_R = G_S_R;
+			W_I_A = W_S_A;
+			W_I_D = W_S_D; 
+			W_I_R = W_S_R;	
+			R_I_A = true;
+			R_I_D = R_S_D;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			tel
+			
+		state TRANSITIONSTATE
+		unless
+		if (R_S_A and R_S_D) resume LIGHTSSET;
+			let
+			G_I_A = G_S_A;
+			G_I_D = false;
+			G_I_R = G_S_R;
+			W_I_A = W_S_A;
+			W_I_D = false; 
+			W_I_R = W_S_R;	
+			R_I_A = true;
+			R_I_D = true;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			
+			
+			tel
+		state LIGHTSSET
+		let
+					G_I_A = false;
+					G_I_D = false;
+					G_I_R = G_S_R;
+					W_I_A = false;
+					W_I_D = false; 
+					W_I_R = W_S_R;	
+					R_I_A = true;
+					R_I_D = true;
+					R_I_R = R_S_R;
+					LightsSet = true;
+		tel
+		
+		returns .. ;
+
+	tel
+	until 
+	if (Green and LightsSet) resume GREEN;
+	if (White and LightsSet) resume WHITE;
+	
+	state WHITE
+	let
+
+		automaton
+		initial state SETAVAIL
+		unless
+		if (W_S_A and not W_S_D) resume TRANSITIONSTATE; 
+		
+			let
+			G_I_A = G_S_A;
+			G_I_D = G_S_D;
+			G_I_R = G_S_R;
+			W_I_A = true;
+			W_I_D = G_S_D; 
+			W_I_R = W_S_R;	
+			R_I_A = R_S_A;
+			R_I_D = R_S_D;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			tel
+		state TRANSITIONSTATE
+		unless
+		if (R_S_A and R_S_D) resume LIGHTSSET;
+			let
+			G_I_A = G_S_A;
+			G_I_D = false;
+			G_I_R = G_S_R;
+			W_I_A = true;
+			W_I_D = true; 
+			W_I_R = W_S_R;	
+			R_I_A = R_S_A;
+			R_I_D = false;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			
+			
+			tel
+		state LIGHTSSET
+		let
+					G_I_A = false;
+					G_I_D = false;
+					G_I_R = G_S_R;
+					W_I_A = true;
+					W_I_D = true; 
+					W_I_R = W_S_R;	
+					R_I_A = false;
+					R_I_D = false;
+					R_I_R = R_S_R;
+					LightsSet = true;
+		tel
+		
+		returns .. ;
+
+	tel
+	until
+	if ((Red and LightsSet)or (not Red and not White
+            and not Green and LightsSet)) resume RED;
+	if (Green and LightsSet) resume GREEN;
+	
+	state GREEN
+	let
+	
+		automaton
+		initial state SETAVAIL
+		unless
+		if (R_S_A and not R_S_D) resume TRANSITIONSTATE; 
+			let
+			G_I_A = true;
+			G_I_D = G_S_D;
+			G_I_R = G_S_R;
+			W_I_A = W_S_A;
+			W_I_D = W_S_D;
+			W_I_R = W_S_R;	
+			R_I_A = R_S_A;
+			R_I_D = R_S_D;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			tel
+			
+		state TRANSITIONSTATE
+		unless
+		if (R_S_A and R_S_D) resume LIGHTSSET;
+			let
+			G_I_A = true;
+			G_I_D = true;
+			G_I_R = G_S_R;
+			W_I_A = W_S_A;
+			W_I_D = false; 
+			W_I_R = W_S_R;	
+			R_I_A = R_S_A;
+			R_I_D = false;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			
+			
+			tel
+		state LIGHTSSET
+		let
+					G_I_A = true;
+					G_I_D = true;
+					G_I_R = G_S_R;
+					W_I_A = false;
+					W_I_D = false; 
+					W_I_R = W_S_R;	
+					R_I_A = false;
+					R_I_D = false;
+					R_I_R = R_S_R;
+					LightsSet = true;
+		tel
+		
+		returns .. ;
+
+				
+		
+	tel
+	until
+	if ((Red and LightsSet) or 
+          (not Red and not White and not Green and LightsSet )) resume RED;
+	if (White and LightsSet) resume WHITE;
+	returns .. ;
+	
+	G_O_A, G_O_D, G_O_R = SignalAspect(G_I_A , G_I_D , G_I_R);
+	W_O_A, W_O_D, W_O_R = SignalAspect(W_I_A , W_I_D , W_I_R);
+	R_O_A, R_O_D, R_O_R = SignalAspect(R_I_A , R_I_D , R_I_R);
+
+	
+	-- Safety Conditions for a 3 Aspect Signal
+	-- ConLight = not (G_O_D and W_O_D  or
+       -- G_O_D and R_O_D or W_O_D and R_O_D);
+	--  Onelight =  G_O_D or W_O_D or R_O_D;
+	
+tel
+
+\end{verbatim}
+
+\begin{verbatim}
+
+node Light2Aspect(Red,Green: bool)
+returns(LightsSet, R_O_D, G_O_D
+		
+				: bool)
+var
+G_O_A, G_O_R, R_O_A, R_O_R,
+G_I_A, G_I_D, G_I_R, R_I_A, R_I_D,  R_I_R,
+G_S_A, G_S_D, G_S_R, R_S_A, R_S_D,  R_S_R : bool;
+
+let 
+
+
+	G_S_A = false -> (pre G_I_A);
+	G_S_D = false -> (pre G_I_D);
+	G_S_R = false -> (pre G_I_R);
+
+	R_S_A = false -> (pre R_I_A);
+	R_S_D = false -> (pre R_I_D);
+	R_S_R = false -> (pre R_I_R);
+
+	automaton
+	initial state INITIALISE
+	let
+			G_I_A = false;
+			G_I_D = false;
+			G_I_R = false;
+			R_I_A = true;
+			R_I_D = true;
+			R_I_R = false;
+			LightsSet = false;
+
+	tel
+	until
+	if (R_O_A and R_O_D and Red) resume RED;
+	if (R_O_A and R_O_D and Green) resume GREEN;
+	state RED
+
+	let
+		automaton
+		initial state SETAVAIL
+		unless
+		if (R_S_A and not R_S_D) resume TRANSITIONSTATE; 
+			let
+			G_I_A = G_S_A;
+			G_I_D = G_S_D;
+			G_I_R = G_S_R;
+			R_I_A = true;
+			R_I_D = R_S_D;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			tel
+			
+		state TRANSITIONSTATE
+		unless
+		if (R_S_A and R_S_D) resume LIGHTSSET;
+			let
+			G_I_A = G_S_A;
+			G_I_D = false;
+			G_I_R = G_S_R;
+			R_I_A = true;
+			R_I_D = true;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			
+			
+			tel
+		state LIGHTSSET
+		let
+					G_I_A = false;
+					G_I_D = false;
+					G_I_R = G_S_R;
+					R_I_A = true;
+					R_I_D = true;
+					R_I_R = R_S_R;
+					LightsSet = true;
+		tel
+		
+		returns .. ;
+
+	tel
+	until 
+	if (Green and LightsSet) resume GREEN;
+	state GREEN
+	let
+	
+		automaton
+		initial state SETAVAIL
+		unless
+		if (R_S_A and not R_S_D) resume TRANSITIONSTATE; 
+			let
+			G_I_A = true;
+			G_I_D = G_S_D;
+			G_I_R = G_S_R;
+			R_I_A = R_S_A;
+			R_I_D = R_S_D;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			tel
+			
+		state TRANSITIONSTATE
+		unless
+		if (R_S_A and R_S_D) resume LIGHTSSET;
+			let
+			G_I_A = true;
+			G_I_D = true;
+			G_I_R = G_S_R;
+			R_I_A = R_S_A;
+			R_I_D = false;
+			R_I_R = R_S_R;
+			LightsSet = false;
+			
+			
+			tel
+		state LIGHTSSET
+		let
+					G_I_A = true;
+					G_I_D = true;
+					G_I_R = G_S_R;
+					R_I_A = false;
+					R_I_D = false;
+					R_I_R = R_S_R;
+					LightsSet = true;
+		tel
+		
+		returns .. ;
+
+				
+		
+	tel
+	until
+	if ((Red and LightsSet) or 
+          (not Red and not Green and LightsSet )) resume RED;
+	returns .. ;
+	
+	G_O_A, G_O_D, G_O_R = SignalAspect(G_I_A , G_I_D , G_I_R);
+	R_O_A, R_O_D, R_O_R = SignalAspect(R_I_A , R_I_D , R_I_R);
+
+	--  ConLight = not (G_O_D and R_O_D);
+	--   Onelight =  G_O_D or R_O_D;
+\end{verbatim}	
+
+Currently the fixed red constantly outputs a boolean stream containing the
+value true. Further behaviour could be modelled at a later stage such as
+failure and reporting.
+
+\begin{verbatim}
+node FixedRed()
+returns(Red : bool)
+var
+
+let
+
+Red = true; 
+	
+
+tel
+\end{verbatim}
+
+The following is the \scade \ model for a signal aspect.
+
+\begin{verbatim}
+
+node SignalAspect(a,d,r : bool) returns (Avail, Driven, Report: bool)
+let
+
+
+	
+	automaton
+		initial state STATE_1
+		unless 
+		if (not a) restart STATE_5;
+		if (d) restart STATE_2;
+		if (r) restart STATE_4;
+		let
+			
+			Avail = true;
+			Driven = false;
+			Report = false;
+			
+		tel
+	
+		state STATE_2
+		unless
+		if (not d) restart STATE_1;
+		if (not a) restart STATE_6;
+		if (r) restart STATE_3;
+		let
+			
+			Avail = true;
+			Driven = true;
+			Report = false;
+		
+		
+		tel
+		
+		
+		state STATE_3
+		unless
+		if (not a) restart STATE_8;
+		if (not d) restart STATE_4;
+		if (not r) restart STATE_2;
+		let
+			
+			Avail = true;
+			Driven = true;
+			Report = true;
+		
+		
+		tel
+		
+		state STATE_4
+		unless
+		if (not a) restart STATE_7;
+		if (d) restart STATE_3;
+		if (not r) restart STATE_1;
+		let
+				
+				
+			Avail = true;
+			Driven = false;
+			Report = true;
+		
+		tel
+		
+		state STATE_5
+		unless 
+		if (a) restart STATE_1;
+		if (r) restart STATE_7;
+		let 
+			
+			
+			Avail = false;
+			Driven = false;
+			Report = false;
+		
+		
+		
+		tel
+		
+		state STATE_6
+		unless
+		if (a) restart STATE_2;
+		if (r) restart STATE_8;
+		let
+		
+			Avail = false;
+			Driven = true;
+			Report = false;
+		
+		tel
+		
+		state STATE_7
+		unless
+		if (a) restart STATE_4;
+		if (not r) restart STATE_5;
+		let
+			
+			Avail = false;
+			Driven = false;
+			Report = true;
+		
+		tel
+		
+		state STATE_8
+		unless
+		if (a) restart STATE_3;
+		if (not r) restart STATE_6;
+		let
+			
+			
+			Avail = false;
+			Driven = true;
+			Report = true;	
+				
+				
+		tel
+		returns .. ;
+		
+		-- AspectSafe = true -> Avail or pre Avail or 
+               (not Avail and not pre Avail and 
+               (not Driven  and not pre Driven) or (Driven and pre Driven));
+		
+
+tel
+
+\end{verbatim}
+
+\section{Route Controller}
+
+\begin{verbatim}
+
+node RouteController(v1204_1_R, v1204_2_R, v1206_R, v1205_R, v1203_R, v1201_R,
+ v1204_1_RS, v1204_2_RS, v1206_RS, v1205_RS, v1203_RS, v1201_RS : bool)
+returns (v1204_1_A, v1204_2_A, v1206_A, v1205_A, v1203_A , v1201_A,
+		v1204_1_C, v1204_2_C, v1206_C, v1205_C, v1203_C, v1201_C,
+		v1204_1_S, v1204_2_S, v1206_S, v1205_S, v1203_S, v1201_S,
+		ConNP1, ConNP2, ConNP3, ConNP4 , ConNP5
+		: bool)
+
+let
+
+
+	-- automaton for conflicting routes
+
+	automaton
+	initial state INIT
+	unless
+    if (v1204_1_R) restart ROUTESET2;
+	if (v1204_2_R) restart ROUTESET1;
+	if (v1206_R) restart ROUTESET1;
+	if (v1205_R) restart ROUTESET3;
+
+	let
+		-- All routes are available initially
+		v1204_1_A = true ;
+		v1204_2_A = true ;
+		v1206_A = true ; 
+		v1205_A = true ;
+		
+		-- No routes have been called in the intial state
+		
+		v1204_1_C = false ;
+		v1204_2_C = false ;
+		v1206_C = false ; 
+		v1205_C = false ;
+		
+		-- No routes are selected in the intial state
+		
+		v1204_1_S = false ;
+		v1204_2_S = false ;
+		v1206_S = false ; 
+		v1205_S = false ;
+		
+	tel
+	
+	
+	state ROUTESET1
+	unless
+	if (not v1206_R  and not v1204_1_R) restart INIT;
+	let
+		--
+		v1204_1_A = if (v1204_2_R) then true else false;
+		v1204_2_A = false ;
+		v1206_A = if (v1206_R) then true else false; 
+		v1205_A = false ;
+		
+		-- The requested route is called
+		v1204_1_C = if (v1204_2_R) then true else false;
+		v1204_2_C = false ; 
+		v1206_C = if (v1206_R) then true else false; 
+		v1205_C = false ;
+		
+		
+		-- if statement for 1206
+		
+	       v1206_S = if (not v1206_RS) then false else true;
+		
+		-- if statement for 1204_2
+	
+		
+				
+		v1204_1_S = if (not v1204_2_RS) then false else true;		
+		
+		v1204_2_S = false ; 
+		v1205_S = false ;
+	
+	tel
+	
+	state ROUTESET2
+	unless
+	if (not v1204_2_R) restart INIT;
+	let
+			
+		v1204_1_A = false ;
+		v1204_2_A = true ;
+		v1206_A = false ; 
+		v1205_A = false ;
+		
+		-- The requested route is called
+		
+		v1204_1_C = false ; 
+		v1204_2_C = true ;
+		v1206_C = false ; 
+		v1205_C = false ;
+		
+		-- automaton for 1204_1
+		
+		
+		automaton
+		initial state NOT_SEL
+		unless 
+		if (v1204_2_RS) restart SEL;
+		let
+		
+			v1204_2_S = false;
+		
+		tel
+		state SEL
+		let
+		
+			v1204_2_S = true;
+		
+		
+		tel	
+		returns .. ;
+		
+		v1206_S = false;
+		v1204_1_S = false;
+		v1205_S = false;
+		
+	
+	tel
+	
+	state ROUTESET3
+	unless
+	if (not v1205_R) restart INIT;
+	let
+			
+		v1204_1_A = false ;
+		v1204_2_A = false ;
+		v1206_A = false ; 
+		v1205_A = true ;
+		
+		-- The requested route is called
+		
+		v1204_1_C = false ; 
+		v1204_2_C = false ;
+		v1206_C = false ; 
+		v1205_C = true ;
+		
+		-- automaton for 1205
+		
+		automaton
+		initial state NOT_SEL
+		unless 
+		if (v1205_RS) restart SEL;
+		let
+		
+			v1205_S = false;
+		
+		tel
+		state SEL
+		let
+		
+			v1205_S = true;
+		
+		
+		tel	
+		returns .. ;
+		
+		v1204_1_S = false;
+		v1204_2_S = false;
+		v1206_S = false;
+	
+	tel
+	returns .. ;
+	
+	--- Routes with no conflicts are always available
+	
+	
+	
+	v1203_A = true;
+	v1201_A = true;
+	
+	-- flows for for route 1203
+	
+	
+	
+			
+	v1203_C = if (v1203_R) then true else false;
+	v1203_S = if (v1203_RS) then true else false;	
+	
+		
+		
+	
+	-- flows for route 1201
+	
+		
+			
+	v1201_C = if(v1201_R) then true else false;
+	v1201_S = if (v1201_RS) then true else false;	
+	
+		
+		--Safety Conditions for Conflicting Routes
+		
+		ConNP1 = not( v1204_1_S and v1205_S); 
+		ConNP2 = not( v1204_1_S and v1204_2_S);
+		ConNP3 = not( v1204_2_S and v1205_S);
+		ConNP4 = not( v1204_2_S and v1206_S);
+		ConNP5 = not( v1206_S and v1205_S);
+	
+	
+tel
+\end{verbatim}
+
+\section{Railway Segment Model}
+
+The following contains the \scade \ model for concrete railway example. Below
+is a list of variable suffixes.
+ 
+
+\begin{itemize}
+
+\item Track Segments
+\begin{itemize}
+\item TO : Track Occupied
+\item O : Train Out
+\item CR : Crash
+\end{itemize}
+
+\item Signals
+\begin{itemize}
+\item RED : Red aspect is showing on the signal
+\item GRE : Green aspect is showing on the signal
+\item WHI : White aspect is showing on the signal
+\item LS  : Lights set
+\end{itemize}
+
+
+
+\item -- Points
+\begin{itemize}
+\item NL : Points locked normal
+\item RL : Points locked reverse
+\item NF : Points free and normal
+\item RF : Points Free and reverse
+\end{itemize}
+\item Routes
+
+\begin{itemize}
+\item R: Route Requested
+\item RS : Route Selected
+\item RC : Route Called
+\item S : Route Set
+\item A : Available
+\item DP : Drive points , caused by a route being called.
+\item DR : Drive Red
+\item DG :
+\item DW :
+
+
+
+\item WTC : The track segments required for a white light are clear.
+\item GTC : The track segments required for a green light are clear.
+
+\end{itemize}
+
+
+
+\end{itemize}
+
+Each track component has a unique identifier.
+
+\begin{center}
+    \begin{tabular}{ | l |  p{5cm} |}
+    \hline
+    Component Type & Component Identifiers \\ \hline
+    Track &   1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011 \\ \hline
+    Points &  1101, 1102, 1103, 1104  \\ \hline
+    Signals & 1201, 1202, 1203, 1204, 1205, 1206, 1207 , 1208, 1209, 1210 \\
+    \hline
+    \end{tabular}
+\end{center}
+
+
+
+\begin{verbatim}
+
+
+node AbstractRailway(v1204_1_R, v1204_2_R, v1206_R , v1205_R,
+                           v1203_R, v1201_R, TrainIn : bool)
+
+returns(sPLRS_1206, sPLRS_1204_1, sPLRS_1204_2,
+	sPLRS_1205,  sNPA_1206, sNPA_1204, sNPA_1205, sNPATR_1206,
+       sNPATR_1204_1, sNPATR_1204_2, sNPATR_1205, nocrash, sTI1001  : bool)
+var 
+v1205_WTC, v1204_1_WTC, v1204_2_WTC, v1206_WTC, v1203_WTC , v1201_WTC : bool;
+v1205_GTC, v1204_1_GTC, v1204_2_GTC, v1206_GTC, v1203_GTC , v1201_GTC : bool;
+	
+ v1204_1_A, v1204_2_A,
+ v1206_A, v1205_A, v1204_1_S, v1204_2_S, v1206_S, v1205_S ,
+v1101_NF , v1101_NL , v1101_RF, v1101_RL, v1102_NF , v1102_NL ,
+    v1102_RF, v1102_RL ,v1103_NF, v1103_NL, v1103_RF , v1103_RL,
+	v1104_NF, v1104_NL, v1104_RF , v1104_RL,
+	
+	v1204_1_RS, v1204_1_DP, v1204_1_DG , v1204_1_DW , v1204_1_DR, 
+	v1204_2_RS , v1204_2_DP, v1204_2_DG , v1204_2_DW , v1204_2_DR, 
+	v1206_RS , v1206_DP, v1206_DG, v1206_DW, v1206_DR,
+	v1205_RS , v1205_DP, v1205_DG , v1205_DW , v1205_DR,
+	v1203_RS , v1203_DP, v1203_DG, v1203_DW, v1203_DR,
+	v1201_RS , v1201_DP, v1201_DG, v1201_DW, v1201_DR,
+	v1204_2_RC, v1204_LS, v1206_LS, v1205_RC, v1205_LS, v1203_RC, 
+	v1203_LS, v1201_RC, v1201_LS,  v1201_RED, v1203_RED, v1204_RED,
+	v1205_RED, v1206_RED, v1204_1_RC, v1206_RC, v1203_S,
+    v1201_S, v1203_A,  v1201_A, v1201_GRE, v1201_WHI,
+	v1001_TO , v1001_O, v1002_TO , v1002_O, v1003_TO, v1003_O,
+	v1204_GRE, v1004_TO , v1004_O_2,
+	v1006_TO, v1006_O, v1205_GRE,  v1005_TO, v1005_O_2,
+	v1007_TO, v1007_O, v1008_TO, v1008_O, v1009_TO, v1009_O,
+	v1010_TO, v1010_O_2 , v1010_O_3, v1011_TO, v1011_O,
+	v1009_O_2, v1004_O,  v1010_O, v1005_O, v1203_WHI, v1203_GRE, v1206_GRE,
+	v8255_1_D, v1208_D, v1209_D, v8257_2_D ,
+      v1001_CR, v1002_CR, v1003_CR, v1004_CR, v1011_CR, v1005_CR,
+	v1006_CR,  v1010_CR, v1009_CR, v1008_CR, v1007_CR , v1005_O_3, v1004_O_3, v1009_O_3
+
+
+	: bool;
+let
+
+-- East Bound Line
+
+
+-- Track 1001 
+v1001_TO , v1001_O, v1001_CR = 
+      Track_Segment1( TrainIn, v1201_RED, v1201_GRE, v1201_WHI );  
+
+-- Track 1002
+-- Since there is no light on this segment
+-- any train can proceed to the next piece of track
+-- hence green and white are set to true untill i find a way of modelling this.
+
+v1002_TO , v1002_O, v1002_CR =
+      Track_Segment1(v1001_O , false, true , true);
+
+-- Track 1003
+v1003_TO, v1003_O, v1003_CR	=
+     Track_Segment1(v1002_O, v1204_RED, v1204_GRE, false);
+	
+-- Track 1004
+v1004_TO, v1004_O , v1004_O_2, v1004_O_3, v1004_CR =
+ 	Track_Segment3(v1003_O, v1009_O_2 , v1005_O_3,
+                    false, true, false, v1101_NL , v1101_RL);
+	
+-- Track 1005
+v1005_TO, v1005_O, v1005_O_2 , v1005_O_3, v1005_CR = 
+      Track_Segment3(v1006_O, false, v1004_O_3,
+                   false , true, false , v1103_NL , v1103_RL);
+
+-- Track 1006
+v1006_TO, v1006_O, v1006_CR = Track_Segment1(v1005_O, v1205_RED, v1205_GRE, false);
+
+-- West Bound Line
+-- Track 1007
+v1007_TO, v1007_O, v1007_CR = Track_Segment1(v1008_O, false, true, false);
+	
+-- Track 8002
+-- Unclear if this track segment is part of the scheme.
+-- v8002_TO, v8002_O, v8002_CR = 
+-- Track_Segment1(v1007_O, v1202_RED , v1202_GRE, v1202_WHI);
+	
+-- Track 1008
+v1008_TO, v1008_O, v1008_CR	=
+      Track_Segment1(v1009_O_3, v1203_RED, v1203_GRE , v1203_WHI);
+	
+-- Track 1009
+v1009_TO, v1009_O, v1009_O_2 , v1009_O_3, v1009_CR =
+       Track_Segment3( v1010_O, v1004_O_2, 
+       false ,  false , true, false, v1102_NL , v1102_RL);
+	
+-- Track 1010
+v1010_TO, v1010_O, v1010_O_2 , v1010_O_3, v1010_CR =
+       Track_Segment3(v1009_O, v1005_O_2,
+       v1011_O , false, true, false, v1104_NL, v1104_RL);
+	
+-- Track 1011
+v1011_TO, v1011_O, v1011_CR	 = Track_Segment1(v1010_O_3, v1206_RED, v1206_GRE, false);
+	
+	
+	-- Points
+-- Left Points 1101/2
+	
+	v1101_NF , v1101_NL , v1101_RF, v1101_RL =	
+      Point( (v1204_1_DP or v1205_DP or v1205_DP), v1204_2_DP, v1004_TO );
+	
+      v1102_NF , v1102_NL , v1102_RF, v1102_RL =
+ 	Point( (v1204_1_DP or v1205_DP or v1205_DP), v1204_2_DP, v1009_TO );
+
+-- Right Points 1103/4
+
+
+	v1103_NF, v1103_NL, v1103_RF , v1103_RL =
+      Point((v1204_1_DP or v1204_2_DP or v1206_DP), v1205_DP, v1005_TO);
+	
+      v1104_NF, v1104_NL, v1104_RF , v1104_RL =
+      Point((v1204_1_DP or v1204_2_DP or v1206_DP), v1205_DP,  v1010_TO);
+
+	
+	
+-- Routes
+-- Route 1204(1) (Ends 8255)
+-- Locks Points Normal 
+-- 1101/2 
+-- 1103/4
+-- Tracks Clear Green : 1004, 1005 , 1006
+-- Tracks Clear White
+
+	v1204_1_WTC = false;
+	v1204_1_GTC = v1004_TO and v1005_TO and v1006_TO;
+	v1204_1_RS, v1204_1_DP, v1204_1_DG , v1204_1_DW , v1204_1_DR =
+       Route(v1204_1_RC, (false -> pre v1204_1_S), 
+      (false -> pre v1101_NL and pre v1102_NL and pre v1103_NL and pre v1104_NL),
+       v1204_LS, v1204_2_WTC , v1204_2_GTC);
+
+
+-- Route 1204(2) (Ends 8257)
+-- Locks Points Normal
+-- 1103/4
+-- Locks Points Reverse
+-- 1101/2
+-- Tracks Clear Green : 1004 , 1009 , 1010 ,1011
+-- Tracks Clear White
+
+	v1204_2_WTC = false;
+	v1204_2_GTC = v1004_TO and v1009_TO and v1010_TO and v1011_TO;
+	v1204_2_RS , v1204_2_DP, v1204_2_DG , v1204_2_DW , v1204_2_DR = 
+      Route( v1204_2_RC, (false -> pre v1204_2_S) ,
+     (false -> pre v1101_RL and pre v1102_RL and pre v1103_NL and pre v1104_NL),
+      v1204_LS, v1204_2_WTC, v1204_2_GTC);
+
+-- Route 1206 (Ends A1203)
+-- Locks Points Normal
+-- 1103/4
+-- 1101/2
+-- Tracks Clear Green : 1010 , 1009 , 1008 , 1007
+-- Tracks Clear White :
+
+	v1206_WTC = false;
+	v1206_GTC = v1010_TO and v1009_TO and v1008_TO and v1007_TO;
+	v1206_RS , v1206_DP, v1206_DG, v1206_DW, v1206_DR	=
+             Route(v1204_2_RC, (false -> pre v1204_2_S) ,
+    (false -> pre v1101_NL and pre v1102_NL and pre v1103_NL and pre v1104_NL),
+ v1206_LS, v1206_WTC, v1206_GTC);
+
+
+-- Route 1205 (Ends A1203)
+-- Locks Points Normal
+-- 1101/2
+-- Locks Points Reverse
+-- 1103/4
+-- Tracks Clear Green : 1005 , 1010 , 1009 , 1008 , 1007
+-- Tracks Clear White
+
+	v1205_WTC = false;
+	v1205_GTC = v1005_TO and v1010_TO and v1009_TO and v1008_TO and v1007_TO;
+	v1205_RS , v1205_DP, v1205_DG , v1205_DW , v1205_DR =
+  	Route(v1205_RC, (false -> pre v1205_S) , 
+      (false -> pre v1101_NL and pre v1102_NL and pre v1103_RL and pre v1104_RL),
+      v1205_LS, v1205_WTC, v1205_GTC);
+
+ 
+-- Routes Without Points
+-- Route 1203
+-- Tracks Clear Green : 1007, 8002
+-- Tracks Clear White : 8004
+
+	v1203_WTC = false;
+	v1203_GTC = v1007_TO; 
+	v1203_RS , v1203_DP, v1203_DG, v1203_DW, v1203_DR	
+       = Route(v1203_RC, 
+      (false -> pre v1203_S), true, v1203_LS, v1203_WTC , v1203_GTC );
+	
+-- Route 1201
+-- Tracks Clear Green : 1002
+-- Tracks Clear White : 1003
+	
+	v1201_GTC = v1002_CR;
+	v1201_WTC = v1003_CR;
+	v1201_RS , v1201_DP, v1201_DG, v1201_DW, v1201_DR	=
+       Route(v1201_RC,(false -> pre v1201_S), true, v1201_LS, v1201_WTC , v1201_GTC);
+
+-- Signals
+-- A1201  (3 Aspect)
+
+	v1201_LS , v1201_RED, v1201_WHI, v1201_GRE =
+       Light3Aspect(v1201_DR, v1201_DW, v1201_DG);
+	
+-- A1202 (3 Aspect)
+-- There is no control table entry for this signal
+-- it may not actually be part of the scheme.
+--	v1202_LS , v1202_RED, v1202_WHI, v1202_GRE =
+--       Light3Aspect(v1202_DR , v1202_DW, v1202_DG);
+	
+-- A1203 (3 Aspect)
+	
+	v1203_LS , v1203_RED, v1203_WHI, v1203_GRE =
+       Light3Aspect(v1203_DR , v1203_DW, v1203_DG);
+	
+-- 1204 (2 Aspect with Route Indicator and RS)
+	
+	v1204_LS , v1204_RED, v1204_GRE = Light2Aspect(v1204_2_DR or
+       v1204_1_DR , ((v1204_1_DG and v1204_1_DW) or (v1204_2_DG and v1204_2_DW) ));
+	
+-- 1205 (2 Aspect with RS)
+
+	v1205_LS , v1205_RED , v1205_GRE =
+      Light2Aspect(v1205_DR, (v1205_DG and v1205_DW ));
+
+-- 1206 (2 Aspect with RS)
+
+	v1206_LS , v1206_RED , v1206_GRE =
+      Light2Aspect(v1206_DR, (v1206_DG and v1206_DW ));
+
+-- Fixed Reds  1207 , 1208 , 1209 , 1210
+
+	v1207_D = FixedRed();
+	v1208_D = FixedRed();
+	v1209_D =	FixedRed();
+	v1210_D =	FixedRed();
+
+	v1204_1_A, v1204_2_A, v1206_A, v1205_A, v1203_A, v1201_A, 
+      v1204_1_RC, v1204_2_RC, v1206_RC, v1205_RC, v1203_RC, 
+      v1201_RC, v1204_1_S, v1204_2_S, v1206_S, v1205_S, v1203_S, v1201_S
+	= RouteController(v1204_1_R, v1204_2_R, v1206_R , v1205_R, v1203_R,
+         v1201_R , v1204_1_RS,  v1204_2_RS, v1206_RS , v1205_RS, v1203_RS , v1201_RS);
+
+	
+	-- Safety Conditions
+	-- Points Locked when Route Set
+	sPLRS_1206 = (not v1206_RS or (v1101_NL and v1102_NL and v1103_NL and v1104_NL));
+	sPLRS_1204_1 = (not v1204_1_RS or (v1101_NL and v1102_NL and v1103_NL and v1104_NL));
+	sPLRS_1204_2 = (not v1204_2_RS or (v1101_RL and v1102_RL and v1103_NL and v1104_NL));
+	sPLRS_1205 = ( not v1205_RS or (v1101_NL and v1102_NL and v1103_RL and v1104_RL));
+	
+	-- No proceed aspect if route not set
+	sNPA_1206 = (not v1206_GRE or v1206_RS);
+	sNPA_1204 = (not v1204_GRE or #(v1204_1_RS , v1204_2_RS));
+    sNPA_1205 = (not v1205_GRE or v1205_RS);
+	
+	
+	-- No proceed aspect if train in route
+	
+	sNPATR_1206 = (not v1206_GRE or (v1010_TO and v1009_TO and v1008_TO and v1007_TO));
+	sNPATR_1204_1 = (not (v1204_GRE and v1204_1_RS) or
+                       (v1004_TO and v1005_TO and v1006_TO));
+	sNPATR_1204_2 = (not (v1204_GRE and v1204_2_RS) or 
+                      (v1004_TO and v1009_TO and v1010_TO and v1011_TO));
+	sNPATR_1205 = (not v1205_GRE or 
+                    (v1005_TO and v1010_TO and v1009_TO and v1008_TO and v1007_TO));
+
+	-- Crashes can not occur
+	
+	nocrash = not v1004_CR;
+	
+	-- Trains coming into a piece of track should occupy it
+	
+	sTI1001   = true -> (not pre TrainIn) or v1001_TO;
+	
+	
+tel
+
+\end{verbatim}
+
+
+\section{Modular Verification}
+
+\subsubsection{Topological Verifcation}
+
+
+\begin{verbatim}
+node ModularVerification1(TrainIn : bool)
+returns (sTrainIn, sTrainOcc, vTRACK1_TO , vTRACK1_O, vTRACK1_CR ,
+vTRACK2_TO , vTRACK2_O, vTRACK_CR  : bool)
+
+let		
+
+		vTRACK1_TO , vTRACK1_O, vTRACK1_CR = Track_Segment1( TrainIn, false, false, true );  
+		vTRACK2_TO , vTRACK2_O, vTRACK_CR = Track_Segment1(vTRACK1_O , false, false , true);
+
+
+		-- Below are the safety conditions to verify that 
+		-- two segments of track behave properly when connected together
+
+		-- Trains Coming into a piece of track should occupy it
+		
+		sTrainIn   = true -> (not pre TrainIn) or vTRACK1_TO;
+
+		-- If a train leaves a piece of track  it should cease
+             -- to occupy this piece of track and occupy the next
+		
+		sTrainOcc = true -> (not pre vTRACK1_O) or 
+            (vTRACK2_TO and (not pre TrainIn or vTRACK1_TO));
+			
+		
+tel
+
+\end{verbatim}
+
+
+\begin{verbatim}
+
+node ModularVerification2(TrainIn, Testpoint: bool)
+returns (vTRACK_TO, vTRACK_O, vTRACK_O_2 , vTRACK_O_3, vTRACK_CR, sTP : bool)
+
+
+let
+
+	vTRACK_TO, vTRACK_O, vTRACK_O_2 , vTRACK_O_3, vTRACK_CR =
+       Track_Segment3(TrainIn , false,
+       false ,  false , true, false , Testpoint , not Testpoint);
+
+		
+		-- Points must influence which direction the train goes on the track.
+		
+		sTP =  not vTRACK_O_2 or  not Testpoint and not vTRACK_O_3 or Testpoint;
+
+tel
+
+\end{verbatim}
+
+\begin{verbatim}
+
+node ModularVerification3(TrainIn, RED , GREEN, WHITE : bool)
+returns ( vTRACK1_TO , vTRACK1_O, vTRACK1_CR ,sRed : bool)
+
+let
+
+		vTRACK1_TO , vTRACK1_O, vTRACK1_CR = Track_Segment1( TrainIn, RED, GREEN, WHITE );  
+
+			-- Trains dont leave the track if a Red light is showing
+			
+			sRed = not RED or vTRACK1_TO;
+
+tel
+
+\end{verbatim}
+
+\subsection{Route Verification}
+
+
+
+
+-- Route Verification
+
+\begin{verbatim}
+node ModularVerification4(RouteSet, PointsLocked, LightsSet,
+                         W_track_clear, G_track_clear : bool)
+returns(RouteSelected , DrivePoints, DriveGreen ,
+         DriveWhite , DriveRed, SafetyRed : bool)
+let
+
+	-- Route(RouteCall, RouteSet, PointsLocked, LightsSet, W_track_clear, G_track_clear)
+	
+ RouteSelected , DrivePoints, DriveGreen , DriveWhite , DriveRed = 
+      Route(false, RouteSet, PointsLocked, LightsSet, W_track_clear, G_track_clear);
+
+	-- If the route is never called The red light and only the red light should be driven.
+
+	SafetyRed = DriveRed and not DriveGreen and not DriveWhite;
+	
+	
+tel
+\end{verbatim}
+
+\begin{verbatim}
+
+node ModularVerification5(RouteCall, RouteSet , PointsLocked , LightsSet,
+                           W_track_clear , G_track_clear : bool)
+returns( RouteSelected , DrivePoints, DriveGreen ,
+         DriveWhite , DriveRed, SafetyRed : bool)
+let
+
+
+
+
+	-- If the Route is called by but the track is not clear
+     -- then the red aspect should be driven. 
+	
+      -- There are two possibilities for the formalisation of this safety condition.
+      -- RouteSelected , DrivePoints, DriveGreen , DriveWhite , DriveRed = 
+      --   Route(RouteCall, RouteSet , PointsLocked , LightsSet , false , false );
+      -- SafetyRed = not RouteCall or (DriveRed and not DriveGreen and not DriveWhite);
+	
+	RouteSelected , DrivePoints, DriveGreen , DriveWhite , DriveRed = 
+        Route(RouteCall, RouteSet , PointsLocked ,
+              LightsSet , W_track_clear , G_track_clear );
+	
+      SafetyRed =  not( RouteCall and not W_track_clear and not G_track_clear)or 
+                   (DriveRed and not DriveGreen and not DriveWhite);
+	
+tel
+\end{verbatim}
+\label{lst:Modver5}
+
+
+\begin{verbatim}
+
+node ModularVerification6(RouteCall, RouteSet , PointsLocked , LightsSet : bool)
+returns(RouteSelected , DrivePoints, DriveGreen , DriveWhite ,
+                                  DriveRed, SafetyCond : bool)
+	
+let
+
+
+	RouteSelected , DrivePoints, DriveGreen , DriveWhite , DriveRed =
+       Route(RouteCall, true , PointsLocked , LightsSet , true , true );
+      
+	-- If the track is clear and the Route is set then the Green light should show.
+
+
+	SafetyCond =  true -> (not pre RouteCall) or  
+               DriveGreen and not DriveWhite and not DriveRed;
+
+tel
+
+\end{verbatim}
+
+
+\begin{verbatim}
+
+node ModularVerification7(RouteCall, RouteSet , PointsLocked , LightsSet : bool)
+returns(RouteSelected , DrivePoints, DriveGreen , DriveWhite ,
+                                  DriveRed, SafetyCond : bool)
+var
+
+	foo : bool;
+let
+
+	foo = false -> if (pre foo or pre RouteCall) then true else false;
+	
+
+	RouteSelected , DrivePoints, DriveGreen , DriveWhite , DriveRed =
+       Route(RouteCall, foo , PointsLocked , LightsSet , true , true );
+
+	SafetyCond =  true -> (not pre RouteCall) or
+       DriveGreen and not DriveWhite and not DriveRed;
+
+tel
+\end{verbatim}
