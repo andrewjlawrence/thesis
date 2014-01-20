@@ -1,0 +1,83 @@
+\thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
+In the following we present the Maude \cite{Maude} and Real Time Maude \cite{RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.
+
+\section{Maude}
+
+\subsection{Maude Specifications}
+
+A Maude specification consists of \alert{functional modules} declared using \texttt{fmod} and \texttt{endfm} which contain the following:
+
+\medskip
+\begin{center}
+\begin{tabular}{| c | l |}
+\hline
+sorts    & \texttt{sort} $s$ or \texttt{sorts}  $s \ s' .$ \\ \hline
+subsorts  & \texttt{subsort} $s < s' \ .$ \\ \hline
+function symbols  & \texttt{op} $f \ :  \ s_1 \ldots s_n$ \texttt{->} $s \ .$ \\ \hline
+variables  & \texttt{vars} $v \ v' : s' .$\\ \hline
+uncondition equations  &\texttt{eq} $t = t' .$\\ \hline
+condition equations & \texttt{ceq} t = t' \texttt{if} $cond$ \\ \hline
+membership axioms & \texttt{mb} $t \ : \ s \ .$ or \texttt{cmb} $t  \ : \ s$ \texttt{if} $cond \ .$  \\ \hline
+\end{tabular}
+\end{center}
+
+
+
+\subsubsection{Example Maude Specification}
+The following is a specification of the natural numbers in Maude:
+
+\begin{verbatim}
+fmod BASIC-NAT is
+        sort Nat .
+
+        op 0 : -> Nat .
+        op s : Nat -> Nat .
+        op _+_ : Nat Nat -> Nat .
+
+        vars N M : Nat .
+
+        eq 0 + N = N .
+        eq s(M) + N = s(M + N) .
+endfm
+\end{verbatim}
+
+
+
+\section{Real Time Maude}
+
+\section{Modelling the European Rail Traffic Management System}
+
+\section{The Maude Liner Temporal Logic Model Checker}
+
+\begin{definition}[Linear Temporal Logic]
+Let $AP$ be the set of atomic proposition names then:
+
+\begin{itemize}
+\item if $p \in AP$ then $p$ is a path formula
+
+\item if $f$ and $g$ are path formulas then $\star f$ and $f \circ g$ are path formulas where $\star \in \{\neg,\mathbf{X},\mathbf{G}, \mathbf{F}\}$ and $\circ \in \{ \wedge,\vee,\textbf{R},\textbf{U} \}$
+\end{itemize}
+
+\end{definition}
+
+a \emph{path} is a sequence of states $s_1, \ldots s_n$ and a \emph{path formula} is one that holds in each given state of a path.
+
+%%%
+%%% We need to formalise the following definition. Semantics of Linear Temporal Logic Formula?
+%%% 
+
+Linear Temporal Logic has the following operations:
+
+\begin{itemize}
+\item \textbf{X} $f$ : The property $f$ holds in the \alert{next} moment of time. \\
+\item \textbf{G} $f$ : The property $f$ is \alert{globally} true. i.e. it holds for all times on all paths. \\
+\item \textbf{F} $f$ : The property $f$ is \alert{finally} true. i.e. there exists a time such that the property $f$ holds on a path. \\
+\item $f$ \textbf{U} $g$ : For all paths the property globally $f$ holds \alert{until} property $g$ holds. \\
+\item $f$ \textbf{R} $g$ : f holds up to and including the point when $g$ holds.\\
+\end{itemize}
+
+
+
+
+
+\section{Model Checking the European Rail Traffic Management System}
