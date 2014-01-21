@@ -1,11 +1,16 @@
 \thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
 In the following we present the Maude \cite{Maude} and Real Time Maude \cite{RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.
 
-\section{Maude}
 
+\section{The European Rail Traffic Management System}
+
+\section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
+
+\section{Maude}
+In the following section we shall describe the Maude tool and specifications. 
 \subsection{Maude Specifications}
 
-A Maude specification consists of \alert{functional modules} declared using \texttt{fmod} and \texttt{endfm} which contain the following:
+A Maude specification consists of \emph{functional modules} declared using \texttt{fmod} and \texttt{endfm} which contain the following:
 
 \medskip
 \begin{center}
@@ -45,36 +50,99 @@ endfm
 
 \section{Real Time Maude}
 
+\subsection{Real Time Maude Specifications}
+
+\subsubsection*{Example Real Time Maude Specification}
+The following a very simple model of a train Real Time Maude that moves one unit of distance in one time unit along a circular track of length 500. It defines a sort \texttt{TrainState} and a single state \texttt{move}. We have a constructor train of type \texttt{System} which consists of a train state and a natural number.  
+
+
+\begin{verbatim}
+(tmod DISCRETE-SINGLE-TRAIN is protecting NAT-TIME-DOMAIN .
+  sort TrainState .
+  ops  move :  -> TrainState [ctor] .
+  op train : TrainState Nat -> System [ctor] .
+ 
+  vars N : Time .
+  crl [travel] : {train(move,N)} => {train(move,N + 1)} in time 1 if N < 500 .
+  rl [reset] : {train(move,500)} => {train(move,0)} . 
+         
+endtm)
+\end{verbatim}
+
+\subsubsection*{Executing a Real TIme Maude Specification}
+Real Time Maude allows one to execute or simulate a real time system by applying rewriting rules to a term of type \texttt{System}.
+The command \texttt{(trew \{System\} in time <= t)} will attempt to rewrite the
+\begin{center}
+\texttt{(trew {train(move,0)} in time <= 100 .)}
+\end{center}
+
+\begin{verbatim}
+rewrites: 4027 in 4ms cpu (3ms real) (1006750 rewrites/second)
+
+Timed rewrite  {train(move,0)} in DISCRETE-SINGLE-TRAIN 
+with mode deterministic time increase in time <= 100
+
+Result ClockedSystem :
+  {train(move,100)} in time 100
+\end{verbatim}
+
+
+\subsection{Object Orientated Specification in Real Time Maude}
+
+
 \section{Modelling the European Rail Traffic Management System}
 
-\section{The Maude Liner Temporal Logic Model Checker}
+\section{The Maude Linear Temporal Logic Model Checker}
+The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
 
-\begin{definition}[Linear Temporal Logic]
+\subsection{Linear Temporal Logic}
+In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}. 
+
+\begin{mydef}[Atomic Propositions]
+Given a set of symbols $S$ we inductively define the set of atomic propositions AP as follows:
+\begin{itemize}
+\item If $s$ is in the set of symbols $s \in S$ then $s \in AP$.
+
+\item if $p_1$ is an atomic proposition $p_1 \in AP$ then $\neg p_1 \in AP$.
+
+\item given two atomic propositions $p_1$ and $p_2$ then $p_1 \circ p_2 \in AP$ where $\circ$ is a propositional connective $\circ \in \{ \wedge,\vee,\to \} $.
+\end{itemize} 
+\end{mydef}
+
+\begin{mydef}[Syntax of Linear Temporal Logic]
 Let $AP$ be the set of atomic proposition names then:
 
 \begin{itemize}
-\item if $p \in AP$ then $p$ is a path formula
+\item $\top$ and $\bot$ are well formed formulas.
+\item if $p \in AP$ then $p$ is well formed formula (wff).
 
-\item if $f$ and $g$ are path formulas then $\star f$ and $f \circ g$ are path formulas where $\star \in \{\neg,\mathbf{X},\mathbf{G}, \mathbf{F}\}$ and $\circ \in \{ \wedge,\vee,\textbf{R},\textbf{U} \}$
+\item if $f$ and $g$ are wff  then $\star f$ and $f \circ g$ are wffs where $\star \in \{\neg,\mathbf{X},\mathbf{G}, \mathbf{F}\}$ and $\circ \in \{ \wedge,\vee,\textbf{R},\textbf{U} \}$.
 \end{itemize}
 
-\end{definition}
+\end{mydef}
 
+
+LTL operations can be used to speak about paths through a system specified as a Kripke structure.
 a \emph{path} is a sequence of states $s_1, \ldots s_n$ and a \emph{path formula} is one that holds in each given state of a path.
+
+We shall now look at the semantics of LTL firstly using an informal description of the LTL operations and secondly by giving a formal semantics for LTL. The following is a description of the 5 LTL operations over paths of a Kripke Structure.
+
+\begin{itemize}
+\item \textbf{X} $f$ : The property $f$ holds in the \emph{next} moment of time.
+\item \textbf{G} $f$ : The property $f$ is \emph{globally} true. i.e. it holds for all times on all paths. 
+\item \textbf{F} $f$ : The property $f$ is \emph{finally} true. i.e. there exists a time such that the property $f$ holds on a path.
+\item $f$ \textbf{U} $g$ : For all paths the property globally $f$ holds \emph{until} property $g$ holds. 
+\item $f$ \textbf{R} $g$ : f holds up to and including the point when $g$ holds.
+\end{itemize}
 
 %%%
 %%% We need to formalise the following definition. Semantics of Linear Temporal Logic Formula?
 %%% 
-
+\begin{mydef}[Semantics of Linear Temporal Logic]
 Linear Temporal Logic has the following operations:
 
-\begin{itemize}
-\item \textbf{X} $f$ : The property $f$ holds in the \alert{next} moment of time. \\
-\item \textbf{G} $f$ : The property $f$ is \alert{globally} true. i.e. it holds for all times on all paths. \\
-\item \textbf{F} $f$ : The property $f$ is \alert{finally} true. i.e. there exists a time such that the property $f$ holds on a path. \\
-\item $f$ \textbf{U} $g$ : For all paths the property globally $f$ holds \alert{until} property $g$ holds. \\
-\item $f$ \textbf{R} $g$ : f holds up to and including the point when $g$ holds.\\
-\end{itemize}
+
+\end{mydef}
 
 
 

@@ -3,11 +3,11 @@
 
 \section{Introduction}
 
-This thesis is concerned with the formalisation and verification of SAT algorithms and their application to model checking in the railway domain. 
+This thesis is concerned with the application of formal methods within the Railway Domain. Firstly we present a new approach to develop verified SAT solving algorithms and which have been applied the verification of a real world train control system: the solid state interlocking. Secondly we present an approach to formalise the European Rail Traffic Management System (ERTMS) and apply a model checker to verify the systems safety.
 
 
 \section{Aim}
-We intend to develop and apply verified SAT algorithms to the verification of train control systems. Specifically we aim to: 
+We have 2 sets of aims. The first set of aims is in regard to the development of verified SAT solving algorithms and their application to the verification of solid state railway interlocking programs: 
 
 \begin{itemize}
 
@@ -19,98 +19,25 @@ We intend to develop and apply verified SAT algorithms to the verification of tr
 
 \item Extract a clause learning SAT algorithm from the formalisation  of the modified DPLL proof system and show that clause learning increases the efficiency of the solver.
 
-\item Apply verified SAT algorithms to the verification of traditional railway interlockings. 
+\item Apply verified SAT algorithms to the verification of solid state railway interlocking programs. 
 
-\item Formalise of a Hybrid train control system that contains both discrete and continuous data.
+\end{itemize}
 
-\item Apply verified SAT algorithms to the verification of a modern train control system.
+Our second set of aims is in regard to the formal specification and verification of the European Rail Traffic Management System (ERTMS) using Real Time Maude.
+
+\begin{itemize}
+
+\item Formalise ERTMS as a hybrid automata.
+
+\item Formalise ERTMS as a Real Time Maude specification.
+
+\item Verify ERTMS using Real Time Maude's linear temporal logic model checker.
 
 \end{itemize}
 
 
 
 
-
-In this thesis we will be exploring the verification of railway 
-interlockings with a
-view to practical application in industry and investigating the use of a
-commercial piece of software \scade \ suite from Esterel Technologies. We intend to answer the question: How well does \scade \ suite perform the
-verification of code and what ways is it applicable to the verification of
-railway interlockings? We explore the application of model checking where
-we specifically concentrate on two different modelling approaches.
-
-In the first approach we translate
-existing specifications of railway interlockings written in so-called 
-Ladder Logic
-into \scade \ and verify them. To do this a new formalism is introduced 
-to capture
-the semantics of ladder logic using labelled transition systems.
-We first use \scade \ to verify a small toy ladder logic program. In our 
-first
-attempt the translation was done manually. To scale up this approach a tool was created to automatically translate
-ladder logic into \scade \ language. Our work on formalizing ladder logic builds on two
-previous MRes projects by Kanso \cite{KKanso} and James \cite{PJames}. The
-problem of verifying ladder logic was first approached by Kanso \cite{KKanso}
-who was the first to systematically describe ladder logic and who developed
-a prototype translation and verification tool. James \cite{PJames} expanded the
-functionality of the prototype tool by adding model checking techniques which could be
-applied to the verification problem. We have applied \scade \ to the example case studies considered in these
-two previously completed MRes Projects. These include two real world
-railway control systems of considerable size and complexity.
-
-The second approach presented in this project was driven by the desire 
-of industry to change
-the way they model their systems. There is a drive away from low level
-languages towards more powerful high level languages. In a bid to drive down
-costs the concept of reuse is important. Industry would like to have a 
-toolkit
-of components and pre-verified modules from which they can model new
-railways. This led to the development of a new modelling approach which
-embodies these points. An example railway was modelled to provide a case 
-study
-into its use. Verification was then performed on our railway example, on
-individual components and on modules of components.
-
 \section{Thesis Outline}
 
-In Chapter 2 we will introduce a large amount of background information
-regarding the railway, its history and composition. We will give an
-introduction to ladder logic and describe the operation of the Westrace
-Railway Interlocking.
 
-In Chapter 3 we will discuss the theoretical background under-pinning the
-\scade \ suite. We will explore St{\aa}marck's Saturation method giving both an
-informal explanation using several examples and a formal explanation providing
-the theoretical background and implementation details. This is followed by a survey of another technique used to decide the satisfiability of
-propositional formulae namely binary decision diagrams. We provide a
-formal introduction to binary decision diagrams as well as a previously known
-result regarding their complexity.
-
-In Chapter 4 we will explore the verification of ladder logic programs. We
-begin by introducing a toy example ladder logic program for a pelican
-crossing. Throughout this chapter we present several possible formalisations of
-this in the \scade \ language. A new method is presented which captures the semantics of
-ladder logic programs using labelled transition systems. We then present an approach for the
-verification of ladder logic programs using the \scade \ suite. This includes a
-automatic translation of ladder logic programs into the \scade \
-language. We follow this with a discussion of invariants and their addition to
-\scade \ models. Finally we perform a comparison between \scade, the tool
-produced by James \cite{PJames} and the KIND safety property verifier.
-
-In Chapter 5 we will introduce a new modelling approach to capture railway
-domain in  a concrete and modular fashion. This begins with a discussion of
-components modelled, some motivation for the modelling and a description of
-their behaviour. Following this discussion an example is presented of an
-abstract railway modelled using the aforementioned components.  We then have a 
-discussion of the verification of our new modelling approach. This includes the
-verification of topological properties and modules of components. We conclude
-this chapter with a comparison between the first approach and this new
-modelling approach. 
-
-Finally in Chapter 6 we provide a conclusion to this thesis. We provide a
-summary of the work performed and the results achieved. Then we conclude by
-discussing possible directions for future work.
-
-The Appendix is split into two sections. The first contains rules for several proof systems including
-St{\aa}lmarck's saturation method. The second contains the \scade \ language
-code for the concrete modelling approach.
