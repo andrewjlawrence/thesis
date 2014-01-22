@@ -69,13 +69,14 @@ The following a very simple model of a train Real Time Maude that moves one unit
 endtm)
 \end{verbatim}
 
-\subsubsection*{Executing a Real TIme Maude Specification}
+\subsubsection*{Executing a Real Time Maude Specification}
 Real Time Maude allows one to execute or simulate a real time system by applying rewriting rules to a term of type \texttt{System}.
-The command \texttt{(trew \{System\} in time <= t)} will attempt to rewrite the
+The command \texttt{(trew \{System\} in time <= t)} will attempt to rewrite the system to a state $t$ time units in the future. This isnt always possible though as the system may deadlock. The following command attempts to rewrite a train, which initially has distince $0$, to its state in 100 units of time in the future: 
 \begin{center}
 \texttt{(trew {train(move,0)} in time <= 100 .)}
 \end{center}
 
+The result from this timed rewrite is as follows:
 \begin{verbatim}
 rewrites: 4027 in 4ms cpu (3ms real) (1006750 rewrites/second)
 
@@ -88,7 +89,7 @@ Result ClockedSystem :
 
 
 \subsection{Object Orientated Specification in Real Time Maude}
-
+Real Time Maude is based on Full Maude which contains language constructs for object orientated specification.
 
 \section{Modelling the European Rail Traffic Management System}
 
