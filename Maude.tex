@@ -691,6 +691,39 @@ The following are some states reachable in time 2.
 
 \section{Modelling the European Rail Traffic Management System}
 
+\subsubsection*{Modelling the Transition of Time}
+In our previous Real Time Maude specifications we have had a rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define operator $\delta$ which describes how distributed system evolves with time.
+\begin{verbatim}
+
+op delta : Configuration -> Configuration [frozen] . 
+
+var OCREST : ObjectConfiguration .
+
+op delta : Configuration -> Configuration [frozen] . 
+
+rl [timetrans] : {OCREST} => {delta(OCREST)} in time 1 .
+rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
+
+\end{verbatim}
+
+\subsubsection*{Modelling Trains}
+Following our hybrid automata the Train State can 
+
+\begin{verbatim}
+sort TrainState .
+ops  cons acc stop break :  -> TrainState [ctor] .
+
+class Train | state : TrainState, dist : Nat, speed : Nat, ac : Nat,  
+                               ma : Nat, tseg : Nat , maxspeed : Nat .
+\end{verbatim}
+
+\subsubsection*{Modelling the Radio Block Processor}
+
+\subsubsection*{Modelling the Interlocking}
+
+
+
+
 \subsection{Simulating the European Rail Traffic Management System Using Real Time Maude}
 
 \section{The Maude Linear Temporal Logic Model Checker}
