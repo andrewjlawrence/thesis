@@ -561,9 +561,9 @@ endfm
 
 
 \section{Real Time Maude}
-A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}.
+One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. There is an example of a distributed sensor network that has been modelled and verified using this tool.
 \subsection{Real Time Maude Specifications}
-
+A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}.
 \subsubsection*{Example Real Time Maude Specification}
 The following a very simple model of a train Real Time Maude that moves one unit of distance in one time unit along a circular track of length 500. It defines a sort \texttt{TrainState} and a single state \texttt{move}. We have a constructor train of type \texttt{System} which consists of a train state and a natural number.  
 
@@ -601,7 +601,29 @@ Result ClockedSystem :
 
 
 \subsection{Object Orientated Specification in Real Time Maude}
-Real Time Maude is based on Full Maude which contains language constructs for object orientated specification these constructs can be used in \emph{timed object orientated modules} which start with \texttt{tomod} and end with \texttt{endtom}.
+Real Time Maude is based on Full Maude which contains message and object constructs for object orientated specification. Using these constructs its possible to model ERTMS as several synchronously communicating processes. A Real Time Maude specification consists of  \emph{timed object orientated modules} which start with \texttt{tomod} and end with \texttt{endtom}.
+
+\subsubsection*{Configurations in Real Time Maude}
+Objects and messages in a specification are given a sort of \texttt{Configuration} which is a subsort of type \texttt{System}. The composition operation for these configuration allows for a combination of objects and messages to form new configurations. This composition operation is also commutative meaning the order of messages and objects in any configuration is ignored. This allows for more generalised writing rules in an object orientated specification that speak about specific objects and messages that are part of some bigger configuration that does not affect the firing of the rule.
+
+\begin{verbatim}
+mod CONFIGURATION is  
+    *** basic object system sorts  
+    sorts Object Msg Configuration .  
+ 
+    *** construction of configurations  
+    subsort Object Msg < Configuration .  
+    op none : -> Configuration [ctor] .  
+    op __ : Configuration Configuration -> Configuration  
+         [ctor config assoc comm id: none] .
+\end{verbatim}
+
+
+
+\subsubsection*{Example Object Orientated Specification}
+
+
+
 
 \section{Modelling the European Rail Traffic Management System}
 
