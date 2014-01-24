@@ -602,6 +602,19 @@ Result ClockedSystem :
 
 \subsection{Object Orientated Specification in Real Time Maude}
 Real Time Maude is based on Full Maude which contains message and object constructs for object orientated specification. Using these constructs its possible to model ERTMS as several synchronously communicating processes. A Real Time Maude specification consists of  \emph{timed object orientated modules} which start with \texttt{tomod} and end with \texttt{endtom}.
+\medskip
+We can define the following:
+\begin{align*}
+\textbf{classes}: & \texttt{ class C | a1 : ⟨Sort-1⟩, ... , an : ⟨Sort-n⟩ . } \\
+\textbf{objects}: & \texttt{ < O : C | a1 : v1, ... , an : vn >  . } 
+\end{align*}
+where $C$ is the class identifier $O$ is the object name  $a_1 \ldots a_n$ are attribute names and $v_1 \ldots v_n$ are values. \\
+\medskip
+To model communicating processes Real Time Maude uses a messages construct.
+\begin{center}
+\verb|msgs M1 ... Mn : Sort-1 ... Sort-n -> Msg . | 
+\end{center}
+
 
 \subsubsection*{Configurations in Real Time Maude}
 Objects and messages in a specification are given a sort of \texttt{Configuration} which is a subsort of type \texttt{System}. The composition operation for these configuration allows for a combination of objects and messages to form new configurations. This composition operation is also commutative meaning the order of messages and objects in any configuration is ignored. This allows for more generalised writing rules in an object orientated specification that speak about specific objects and messages that are part of some bigger configuration that does not affect the firing of the rule.
@@ -621,11 +634,64 @@ mod CONFIGURATION is
 
 
 \subsubsection*{Example Object Orientated Specification}
+The following is an example consisting of two classes of object which serves to demonstrate some of the advantages of object orientated specification as well as some of the pit falls. Firstly there is the class defining D objects which count modulo 500 and transmit a message containing the current count. Secondly there is class defining a object B that reads messages from a D object. 
 
+\begin{verbatim}
+(tomod EXAMPLE1 is protecting NAT-TIME-DOMAIN .
+  msgs msgD  : Nat -> Msg .  
+  class  D | d : Nat .
+  class  B | b : Nat .
+  vars N: Nat .
+  var O : Oid .
+  var REST : Configuration .
+ 
+  rl [makeD] : {< O : D | d : N > REST} => 
+  {msgD(N + 1 rem 500)  
+  < O : D | d : (N + 1) rem 500 > REST} in time 1 . 
 
+  rl [readB] : {msgD(N) < O : B | > REST} => 
+  {< O : B | b : N > REST}  . 
+endtom)
+\end{verbatim}
+
+We can execute the specification as follows:
+\begin{center}
+\texttt{(trew {< myD : D | d : 0 > < myB : B | b : 0 >} in time <= 2 .)}
+\end{center}
+
+Resulting in the following output:
+\begin{verbatim}
+rewrites: 6246 in 7ms cpu (7ms real) 
+(805000 rewrites/second)
+
+Timed rewrite  {< myD : D | d : 0 > < myB : B | b : 0 >} 
+in EXAMPLE1 with mode deterministic time 
+increase in time <= 2
+
+Result ClockedSystem :
+  {< myB : B | b : 2 > < myD : D | d : 2 >} in time 2
+\end{verbatim}
+
+The following are some states reachable in time 2.
+
+\begin{verbatim}
+{< myB : B | b : 1 > < myD : D | d : 2 >}
+{< myB : B | b : 2 > < myD : D | d : 2 >}
+{msgD(1)< myB : B | b : 2 > < myD : D | d : 2 >}
+{msgD(1)msgD(2)< myB : B | b : 0 > < myD : D | d : 2 >}
+{msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
+\end{verbatim}
+
+\emph{Non-determinism} should be avoided unless it is really is a property you want in a model. One way to remove some of these reachable states is to make the variable \texttt{REST} of sort \texttt{ObjectConfiguration}. This forces objects of the B class to read messages after each incrementation of time. If we make this modification to the specification then the following states are reachable in time 2.
+\begin{verbatim}
+{< myB : B | b : 2 > < myD : D | d : 2 >}
+{msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
+\end{verbatim}
 
 
 \section{Modelling the European Rail Traffic Management System}
+
+\subsection{Simulating the European Rail Traffic Management System Using Real Time Maude}
 
 \section{The Maude Linear Temporal Logic Model Checker}
 The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
@@ -684,3 +750,20 @@ Linear Temporal Logic has the following operations:
 
 
 \section{Model Checking the European Rail Traffic Management System}
+
+
+
+\subsection*{Defining a Satisfaction Relation}
+
+Maude defines $\models$ in the following module:
+\begin{verbatim}
+  fmod SATISFACTION is  
+    protecting BOOL .  
+    sorts State Prop .  
+    op _|=_ : State Prop -> Bool [frozen] .  
+  endfm
+\end{verbatim}
+The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$ we have to this ourselves.
+
+
+\subsection{Execution of The LTL Model Checker}
