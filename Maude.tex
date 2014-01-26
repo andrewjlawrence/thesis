@@ -586,11 +586,17 @@ We define a \emph{real-time rewrite theory} $\mathfrak{R}_{\phi,\tau}$ to be a t
 \begin{itemize}
 \item $\phi$ is an equational theory morphism $\phi : \mathit{Time} \to (\Sigma, E)$ that maps objects in the theory \textit{Time} to objects in the equational theory $(\Sigma , E)$.
 
-\item \textbf{add definition of functional time domain} the time domain is functional i.e. if a term $r$ of sort $\phi(Time)$  has a rewrite proof $\alpha: r \to r'$ then $r = r'$ and the identity proof of $r$ is equivalent to $\alpha$.
+\item The time domain is functional i.e. if a term $r$ of sort $\phi(Time)$  has a rewrite proof $\alpha: r \to r'$ then $r = r'$ and the identity proof of $r$ is equivalent to $\alpha$.
 
-\item
+\item There is a designated sort typically called \textit{State} and a sort \textit{System}, contained within $(\Sigma, E)$, which has no supersorts or subsorts and only one operator that does not satisfy any non trivial equations:
 
-\item
+$$\{\_\}: State \to System$$
+
+Further to this condition, it is all required that the sort \textit{System} does not appear in $s_1, \ldots s_n$ the domain  of  any operator $f: s_1, \ldots s_n$.
+
+\item For each rewrite rule with $u$ and $u'$ of sort \textit{System} in $\mathfrak{R}$ of the following form\footnote{All other rules which are not of this form are called \emph{local} rules and have an instantaneous zero time elapse. These do not act on the system as a whole but rather on one or more of its components.}:
+
+there is an assigned term $\tau_l(x_1 \ldots x_n)$ of sort $\phi(Time)$ within $\tau$.
 
 \end{itemize}
 \end{mydef}
