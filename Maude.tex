@@ -575,7 +575,7 @@ endfm
 \section{Real Time Maude}
 One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. There is an example of a distributed sensor network that has been modelled and verified using this tool.
 \subsection{Real Time Maude Specifications}
-A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration.
+A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration \cite{PO02}. These rewrite rules can be seperated into two categories, the \emph{tick} rules have a non-zero time elapse and the \emph{instantaneous} rules have a time elapse of zero.
 
 \todo{Do we need a  definition of an equational theory morphism?}
  
