@@ -799,6 +799,41 @@ Secondly there are several rewriting rules that deal with granting or denying a 
 
 
 \subsection{Simulating the European Rail Traffic Management System Using Real Time Maude}
+We will now see how this executable specification can be used to simulate and obtain a better understanding of the modelled system. For this purpose we have written a small Haskell program that takes the output from multiple timed rewrites and plots them as a graph.
+
+In the following we use an example initial state containing two trains one of which is slower than the other, an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding.
+
+\begin{verbatim}
+eq initialintstate2 = < inter1 : Inter | state : idle, reqid : 0 , t0 : true, t1 : false, t2 : false, t3 : false, t4 : false > .
+eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, lasttrain : train1,  ma : (train1 |-> 49,train2 |-> 199), pos : (train1 |-> 0, train2 |-> 150) > .
+ rl [inittr1] : initialtrainstate1 => < train1 : Train | state : acc, dist : 0, speed : 0, ac : 1, ma : 49, tseg : 0 , maxspeed : 5 > .
+ rl [inittr2] : initialtrainstate2 => < train2 : Train | state : acc, dist : 150, speed : 0, ac : 1, ma : 199, tseg : 3 , maxspeed : 7 > .
+ eq initialstate2 = {initialtrainstate1 initialtrainstate2 initialintstate2  initialrbcstate2}
+\end{verbatim}
+
+The system is executed using the following command:
+\begin{center}
+(trew initialstate2 in time <= 10 .)
+\end{center}
+
+In the resulting output at time 10 both of the trains have moved a considerable distance and have requested and received new movement authorities.
+ 
+\begin{verbatim}
+rewrites: 14722 in 16ms cpu (16ms real) (920125 rewrites/second)
+
+Timed rewrite  initialstate2 in ERTMS7 with mode deterministic time increase in
+    time <= 10
+
+Result ClockedSystem :
+  {< inter1 : Inter | reqid : 1,state : idle,t0 : true,t1 : false,t2 : false,t3
+    : false,t4 : false > < rbc1 : RBC | lasttrain : train1,ma :(train1 |-> 99,
+    train2 |-> 249),pos :(train1 |-> 30, train2 |-> 184),state : rbcidle > <
+    train1 : Train | ac : 1,dist : 35,ma : 99,maxspeed : 5,speed : 4,state :
+    break,tseg : 0 > < train2 : Train | ac : 1,dist : 189,ma : 249,maxspeed :
+    7,speed : 5,state : acc,tseg : 3 >} in time 10
+\end{verbatim}
+
+
 
 \section{The Maude Linear Temporal Logic Model Checker}
 The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
