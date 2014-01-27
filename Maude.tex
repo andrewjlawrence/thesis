@@ -727,7 +727,7 @@ The following are some states reachable in time 2.
 
 
 \section{Modelling the European Rail Traffic Management System}
-
+In the following we shall give an overview of the specifications used to model the ERTMS system. Following the hybrid automata describe in \ref{} we have defined one class for each of the 3 hybrid automata.
 \subsubsection*{Modelling the Transition of Time}
 In our previous Real Time Maude specifications we have had a rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define operator $\delta$ which describes how distributed system evolves with time.
 \begin{verbatim}
@@ -744,7 +744,7 @@ rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
 \end{verbatim}
 
 \subsubsection*{Modelling Trains}
-Following our hybrid automata the Train State can 
+We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and breaking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.
 
 \begin{verbatim}
 sort TrainState .
@@ -754,11 +754,48 @@ class Train | state : TrainState, dist : Nat, speed : Nat, ac : Nat,
                                ma : Nat, tseg : Nat , maxspeed : Nat .
 \end{verbatim}
 
+We capture the behaviour of trains using a number of instantaneous and tick rewriting rules. The instantaneous rules are used to capture a change of state within a train. For example if the a train is in the cons state distance to the movement authority becomes less than the distance needed to break to zero in the next moment of time one of these rules will fire and cause a state transition. 
+
 \subsubsection*{Modelling the Radio Block Processor}
+We define the RBC state as follows:
+
+\begin{verbatim}
+sort RBCState .
+ops rbcidle ready wait :  -> RBCState [ctor] .
+\end{verbatim}
+
+We define the RBC class as follows:
+
+\begin{center}
+\texttt{class RBC | state : RBCState, lasttrain : Oid, ma : MapON, pos : MapON .}
+\end{center}
+
+An example RBC transition is as follows:
+\begin{center}
+\texttt{ rl [rbcgrant] : \{grant(N) < O : RBC | state : wait, lasttrain : T1, ma : MAP1  > REST\} => \{ < O : RBC | state : rbcidle, ma : insert(T1,endoftrack(N),MAP1) > grantma(T1, endoftrack(N)) REST\} .
+}
+\end{center}
+
 
 \subsubsection*{Modelling the Interlocking}
+An interlocking has two states, either it is idle or it has received a request for a movement authority and must respond. We define an Interlockings state in Real Time Maude as follows:
+
+\begin{verbatim}
+sort InterState .
+ops idle res :  -> InterState [ctor] .
+\end{verbatim}
+The interlocking class consists of a interlocking state, a request id which stores the current track segment requestions and 5 Booleans which indicate whether or not a track segment is occupied. We define an Interlocking class in Real Time Maude as follows:
+\begin{center}  
+\texttt{class Inter | state : InterState, reqid : Nat, t0 : Bool , t1 : Bool , t2 : Bool , t3 : Bool , t4 : Bool .}
+\end{center}
+
+All of the rewrite rules on Interlocking objects are instantaneous and do not effect the transition of time.  We can split these rules into two types. Firstly there are interlocking rules that deal with a request
 
 
+Secondly there are several rewriting rules that deal with granting or denying a received request. There is currently a rule for both denying and granting a request for each track segment depending on the value of the boolean variable.
+\begin{center}
+\texttt{rl [resreq1g] : {< O : Inter | state : res, t1 : false,  reqid : 1 > REST} => {< O : Inter | state : idle > grant(1) REST} .}
+\end{center}
 
 
 \subsection{Simulating the European Rail Traffic Management System Using Real Time Maude}
@@ -834,6 +871,31 @@ Maude defines $\models$ in the following module:
   endfm
 \end{verbatim}
 The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$ we have to this ourselves.
+
+
+We can check that a train is in a specific state as follows:
+\texttt{ops train-cons : Oid -> Prop [ctor] .} \\ \medskip
+\texttt{eq {REST < O1 : Train | state : cons >} |= train-cons(O1') = (O1 == O1') . } \\
+\bigskip
+
+We can check that a train has a certain speed as follows:
+
+\texttt{op train-s : Oid Nat -> Prop [ctor] .} \\ \medskip
+\texttt{eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') = (N1 == N1') and (O1 == O1') .}
+
+We define a Property nomaoverlap(O1,O2) of type \texttt{Oid Oid -> Prop [ctor]} as follows: 
+
+\begin{center}
+\texttt{eq {REST < O1 : Train |  dist : D1 , ma : M1 > < O2 : Train |  dist : D2 , ma : M2 >} |= nomaoverlap(O1',O2') = (O1 == O1') and (O2 == O2') and noolap(D1,M1,D2,M2) .} 
+\end{center}
+
+where 
+
+\begin{center}
+\texttt{eq noolap(D1,M1,D2,M2) = ((D1 < M1) and (M1 < D2) and (D2 < M2)) or ((D2 < M2) and (M2 < D1) and (D1 < M1)) or ((D1 < M1) and (M2 < D1) and (M1 < D2)) or ((D2 < M2) and (M1 < D2) and (M2 < D1) )  .}    
+\end{center}
+
+
 
 
 \subsection{Execution of The LTL Model Checker}
