@@ -801,17 +801,9 @@ Secondly there are several rewriting rules that deal with granting or denying a 
 \subsection{Simulating the European Rail Traffic Management System Using Real Time Maude}
 We will now see how this executable specification can be used to simulate and obtain a better understanding of the modelled system. For this purpose we have written a small Haskell program that takes the output from multiple timed rewrites and plots them as a graph.
 
-In the following we use an example initial state containing two trains one of which is slower than the other, an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding.
+In the following we use an example initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 50. The RBC and the interlocking are both initialised with the trains in these positions.
 
-\begin{verbatim}
-eq initialintstate2 = < inter1 : Inter | state : idle, reqid : 0 , t0 : true, t1 : false, t2 : false, t3 : false, t4 : false > .
-eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, lasttrain : train1,  ma : (train1 |-> 49,train2 |-> 199), pos : (train1 |-> 0, train2 |-> 150) > .
- rl [inittr1] : initialtrainstate1 => < train1 : Train | state : acc, dist : 0, speed : 0, ac : 1, ma : 49, tseg : 0 , maxspeed : 5 > .
- rl [inittr2] : initialtrainstate2 => < train2 : Train | state : acc, dist : 150, speed : 0, ac : 1, ma : 199, tseg : 3 , maxspeed : 7 > .
- eq initialstate2 = {initialtrainstate1 initialtrainstate2 initialintstate2  initialrbcstate2}
-\end{verbatim}
-
-The system is executed using the following command:
+The model of ERTMS  in the  is executed using the following command:
 \begin{center}
 (trew initialstate2 in time <= 10 .)
 \end{center}
