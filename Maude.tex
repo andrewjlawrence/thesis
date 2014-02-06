@@ -767,8 +767,9 @@ ops rbcidle ready wait :  -> RBCState [ctor] .
 We define the RBC class as follows:
 
 \begin{center}
-\texttt{class RBC | state : RBCState, lasttrain : Oid, ma : MapON, pos : MapON .}
+\texttt{class RBC | state : RBCState, lasttrain : Oid, ma : MapON, pos : MapON , curreq : SetO  .}
 \end{center}
+We use maps to store the current movement authorities and positions of the various trains. In order to prevent an infinite amount of requests being made to an interlocking we limit the rbc to make one request on behalf of each train to the interlocking.  To do this we use  \texttt{curreq}, a set of oids, to store which trains have had a request made for them at a given moment of time.
 
 An example RBC transition is as follows:
 \begin{center}
