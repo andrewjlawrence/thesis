@@ -1,3 +1,5 @@
+\newcommand{\rtmaude}{Real Time Maude}
+
 \thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
 In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.
 
@@ -811,22 +813,23 @@ The model of ERTMS  in the  is executed using the following command:
 
 In the resulting output at time 10 both of the trains have moved a considerable distance and have requested and received new movement authorities.
  
-\begin{verbatim}
-rewrites: 14722 in 16ms cpu (16ms real) (920125 rewrites/second)
+\begin{figure}
+\includegraphics{t1graph.png}
+\capture{A graph comparing the distance and speed of train1}
+\end{figure}
 
-Timed rewrite  initialstate2 in ERTMS7 with mode deterministic time increase in
-    time <= 10
+\begin{figure}
+\includegraphics{t2graph.png}
+\caption{A graph comparing the distance and speed of train2}
+\end{figure}
 
-Result ClockedSystem :
-  {< inter1 : Inter | reqid : 1,state : idle,t0 : true,t1 : false,t2 : false,t3
-    : false,t4 : false > < rbc1 : RBC | lasttrain : train1,ma :(train1 |-> 99,
-    train2 |-> 249),pos :(train1 |-> 30, train2 |-> 184),state : rbcidle > <
-    train1 : Train | ac : 1,dist : 35,ma : 99,maxspeed : 5,speed : 4,state :
-    break,tseg : 0 > < train2 : Train | ac : 1,dist : 189,ma : 249,maxspeed :
-    7,speed : 5,state : acc,tseg : 3 >} in time 10
-\end{verbatim}
+\begin{figure}
+\label{t1t2graph}
+\includegraphics{t1t2graph.png}
+\caption{A graph comparing the distances of train1 and train2}
+\end{figure}
 
-
+In fig\ref{t1t2} we see that train2 never enters the same track segment as train1.
 
 \section{The Maude Linear Temporal Logic Model Checker}
 The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
@@ -844,6 +847,8 @@ Given a set of symbols $S$ we inductively define the set of atomic propositions 
 \item given two atomic propositions $p_1$ and $p_2$ then $p_1 \circ p_2 \in AP$ where $\circ$ is a propositional connective $\circ \in \{ \wedge,\vee,\to \} $.
 \end{itemize} 
 \end{mydef}
+
+Using these atomic propositions combined with the temporal operators it is possible to define a syntax for temporal logic formulae.
 
 \begin{mydef}[Syntax of Linear Temporal Logic]
 Let $AP$ be the set of atomic proposition names then:
@@ -885,12 +890,11 @@ Linear Temporal Logic has the following operations:
 
 
 \section{Model Checking the European Rail Traffic Management System}
-
-
+In the following section we will demonstrate an approach to apply the \rtmaude LTL model checker to verify the \rtmaude specification described previously.
+Firstly we shall define the property we want to check in the Real Time Maude system. To do this we have to define a satisfaction relation which describes what it means for the property to hold in a state of the system we are checking. Then we describe the results of applying the \rtmaude LTL model checker to verify the system. 
 
 \subsection*{Defining a Satisfaction Relation}
-
-Maude defines $\models$ in the following module:
+We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a \rtmaude specification. The satisfaction relation itself is predefined in a specification. Maude defines the satisfaction relation $\models$ in the following module:
 \begin{verbatim}
   fmod SATISFACTION is  
     protecting BOOL .  
@@ -899,7 +903,6 @@ Maude defines $\models$ in the following module:
   endfm
 \end{verbatim}
 The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$ we have to this ourselves.
-
 
 We can check that a train is in a specific state as follows:
 \texttt{ops train-cons : Oid -> Prop [ctor] .} \\ \medskip
@@ -911,19 +914,35 @@ We can check that a train has a certain speed as follows:
 \texttt{op train-s : Oid Nat -> Prop [ctor] .} \\ \medskip
 \texttt{eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') = (N1 == N1') and (O1 == O1') .}
 
-We define a Property nomaoverlap(O1,O2) of type \texttt{Oid Oid -> Prop [ctor]} as follows: 
+The main movement authority that we want to check is that the movement authorities of two trains does not over lap.
+To do this we define a Property nomaoverlap(O1,O2) of type \texttt{Oid Oid -> Prop [ctor]} as follows: 
 
 \begin{center}
 \texttt{eq {REST < O1 : Train |  dist : D1 , ma : M1 > < O2 : Train |  dist : D2 , ma : M2 >} |= nomaoverlap(O1',O2') = (O1 == O1') and (O2 == O2') and noolap(D1,M1,D2,M2) .} 
 \end{center}
 
-where 
+This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. 
 
 \begin{center}
 \texttt{eq noolap(D1,M1,D2,M2) = ((D1 < M1) and (M1 < D2) and (D2 < M2)) or ((D2 < M2) and (M2 < D1) and (D1 < M1)) or ((D1 < M1) and (M2 < D1) and (M1 < D2)) or ((D2 < M2) and (M1 < D2) and (M2 < D1) )  .}    
 \end{center}
 
-
-
-
 \subsection{Execution of The LTL Model Checker}
+
+The \rtmaude LTL model checker is then called using the following command:
+
+\begin{center}
+\texttt{(mc initialstate2 |=t [] nomaoverlap(train1,train2) in time <= 30 .)}
+\end{center}
+The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 30. This results in the following output from real time maude which indicates that the property was succesfully verified in 3 minutes and 22 seconds.
+\begin{verbatim}
+rewrites: 138889387 in 179663ms cpu (202024ms real) (773054 rewrites/second)
+
+Model check initialstate2 |=t[]nomaoverlap(train1,train2)in 
+MODEL-CHECK-ERTMS8 in time <= 30 with mode deterministic time increase
+
+Result Bool :
+  true
+\end{verbatim}
+
+Unfortunately the \rtmaude LTL model checker can not detect the congruence between difference configurations of control system. Therefore the state space is infinite and it is impossible to do untimed model checking on the above model checking problem. It is however possible to do timed model checking within a reasonable time limit that allows for all behaviours of the system to be verified.
