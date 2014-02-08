@@ -1,7 +1,7 @@
 \newcommand{\rtmaude}{Real Time Maude}
 
 \thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.The property we verify is that no two trains on our example railway share the same movement authority which 
 
 
 \section{The European Rail Traffic Management System}
@@ -14,6 +14,7 @@ One formalism which we can use to real about systems such as ERTMS is hybrid aut
 
 \end{mydef}
 
+The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains 5 track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route.
 
 \begin{figure} [h!]
 
@@ -60,17 +61,17 @@ One formalism which we can use to real about systems such as ERTMS is hybrid aut
 \tikzstyle{biarrow}=[<->,very thick,shorten >=7pt,shorten <=7pt]
 
 
-\node (A) [font = \scriptsize]  at (topleft)                  {D =1500 };
+\node (A) [font = \scriptsize]  at (topleft)                  {D =150 };
 
 \node (B) [font = \scriptsize]    at (botleft)          {D = 0};
 
-\node (C)[font = \scriptsize] at (top)  { D = 1000
+\node (C)[font = \scriptsize] at (top)  { D = 100
 						};
 
-\node (D)[font = \scriptsize] at (botright)  { D = 500
+\node (D)[font = \scriptsize] at (botright)  { D = 50
 						};
 
-\node (E) [font = \scriptsize] at (topright) {D = 2000};
+\node (E) [font = \scriptsize] at (topright) {D = 200};
 
 \draw [arrow] (D) -- node[right] {$t_1$} (E);
 \draw [arrow] (A) -- node[below = 10pt] {$t_4$} (B);
@@ -814,18 +815,24 @@ The model of ERTMS  in the  is executed using the following command:
 In the resulting output at time 10 both of the trains have moved a considerable distance and have requested and received new movement authorities.
  
 \begin{figure}
-\includegraphics{t1graph.png}
-\capture{A graph comparing the distance and speed of train1}
+\begin{center}
+\includegraphics[scale=0.35]{t1graph.png}
+\end{center}
+\caption{A graph comparing the distance and speed of train1}
 \end{figure}
 
 \begin{figure}
-\includegraphics{t2graph.png}
+\begin{center}
+\includegraphics[scale=0.35]{t2graph.png}
+\end{center}
 \caption{A graph comparing the distance and speed of train2}
 \end{figure}
 
 \begin{figure}
 \label{t1t2graph}
-\includegraphics{t1t2graph.png}
+\begin{center}
+\includegraphics[scale=0.35]{t1t2graph.png}
+\end{center}
 \caption{A graph comparing the distances of train1 and train2}
 \end{figure}
 
