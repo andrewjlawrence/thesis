@@ -580,8 +580,23 @@ One extension of Maude that has been used to model and verify hybrid systems is 
 \subsection{Real Time Maude Specifications}
 A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration \cite{PO02}. These rewrite rules can be seperated into two categories, the \emph{tick} rules have a non-zero time elapse and the \emph{instantaneous} rules have a time elapse of zero.
 
-\todo{Do we need a  definition of an equational theory morphism?}
- 
+The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process. Real time Maude comes with two of these specifications as standard the most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time during the specification as it allows for the best results during the verification process.
+
+\begin{mydef}[Equational theory morphism]
+ We define an \emph{equational theory morphism} $H: (\Sigma,E) \to (\Sigma', E')$ to consist of the following
+\begin{itemize}
+\item a monotone map $H:sorts(\Sigma) \to sorts(\Sigma')$ which maps  sorts in $\Sigma$  to sorts in $\Sigma'$
+
+\item a mapping of function symbols $f : s_1 \ldots s_n \to s$ in $\Sigma$
+\begin{enumerate}
+
+\item blah
+
+\end{enumerate}
+
+\end{itemize}
+
+\end{mydef}
 
 \begin{mydef}[Real-Time Rewrite Theory]
 We define a \emph{real-time rewrite theory} $\mathfrak{R}_{\phi,\tau}$ to be a tuple $(\mathfrak{R}, \phi,\tau)$ containing a rewrite theory $\mathfrak{R} = (\Sigma, E,L,R) $ where:
@@ -816,14 +831,14 @@ In the resulting output at time 10 both of the trains have moved a considerable 
  
 \begin{figure}
 \begin{center}
-\includegraphics[scale=0.35]{t1graph.png}
+\includegraphics[scale=0.4]{t1graph.png}
 \end{center}
 \caption{A graph comparing the distance and speed of train1}
 \end{figure}
 
 \begin{figure}
 \begin{center}
-\includegraphics[scale=0.35]{t2graph.png}
+\includegraphics[scale=0.4]{t2graph.png}
 \end{center}
 \caption{A graph comparing the distance and speed of train2}
 \end{figure}
@@ -831,7 +846,7 @@ In the resulting output at time 10 both of the trains have moved a considerable 
 \begin{figure}
 \label{t1t2graph}
 \begin{center}
-\includegraphics[scale=0.35]{t1t2graph.png}
+\includegraphics[scale=0.4]{t1t2graph.png}
 \end{center}
 \caption{A graph comparing the distances of train1 and train2}
 \end{figure}
@@ -897,11 +912,11 @@ Linear Temporal Logic has the following operations:
 
 
 \section{Model Checking the European Rail Traffic Management System}
-In the following section we will demonstrate an approach to apply the \rtmaude LTL model checker to verify the \rtmaude specification described previously.
-Firstly we shall define the property we want to check in the Real Time Maude system. To do this we have to define a satisfaction relation which describes what it means for the property to hold in a state of the system we are checking. Then we describe the results of applying the \rtmaude LTL model checker to verify the system. 
+In the following section we will demonstrate an approach to apply the Real Time Maude LTL model checker to verify the Real Time Maude specification described previously.
+Firstly we shall define the property we want to check in the Real Time Maude system. To do this we have to define a satisfaction relation which describes what it means for the property to hold in a state of the system we are checking.  The property we shall consider in this case is that the moment authorities of two trains in system do not overlap. Logical property we define identifies the individual trains using their object identifiers and then computes whether or not an over lap has occured using a boolean formula.  We shall show that it is possible to verify this property over a time period large enough for all normal behaviours of the system to occur. 
 
 \subsection*{Defining a Satisfaction Relation}
-We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a \rtmaude specification. The satisfaction relation itself is predefined in a specification. Maude defines the satisfaction relation $\models$ in the following module:
+We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a Real Time Maude specification. The satisfaction relation itself is predefined in a specification as an operation which takes a State and a property which is of type Prop and computes a boolean. Maude defines the satisfaction relation $\models$ in the following module:
 \begin{verbatim}
   fmod SATISFACTION is  
     protecting BOOL .  
@@ -909,7 +924,7 @@ We shall now describe how to define the behaviour of the satisfaction relation f
     op _|=_ : State Prop -> Bool [frozen] .  
   endfm
 \end{verbatim}
-The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$ we have to this ourselves.
+The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$. It is left to the user of the model checker to define the behaviour for their own purposes.
 
 We can check that a train is in a specific state as follows:
 \texttt{ops train-cons : Oid -> Prop [ctor] .} \\ \medskip
