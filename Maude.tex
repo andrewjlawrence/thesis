@@ -582,15 +582,20 @@ A Real Timed Maude specification consists of \emph{timed modules} that start wit
 
 The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process. Real time Maude comes with two of these specifications as standard the most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time during the specification as it allows for the best results during the verification process.
 
-\begin{mydef}[Equational theory morphism]
+\begin{mydef}[Equational Theory Morphism]
  We define an \emph{equational theory morphism} $H: (\Sigma,E) \to (\Sigma', E')$ to consist of the following
 \begin{itemize}
 \item a monotone map $H:sorts(\Sigma) \to sorts(\Sigma')$ which maps  sorts in $\Sigma$  to sorts in $\Sigma'$
 
-\item a mapping of function symbols $f : s_1 \ldots s_n \to s$ in $\Sigma$
+\item a mapping which maps every function symbol $f : s_1 \ldots s_n \to s$ in $\Sigma$ to some term $H(f_{s_1 \ldots s_n, s})$ from $\Sigma'$ of sort $H(s)$ such that the following conditions are satisfied:
 \begin{enumerate}
 
-\item blah
+\item  $\var{H(f_{s_1 \ldots s_n, s})} \subseteq {x_1:H(s_1), \ldots, x_n:H(s_n)}$
+
+\item if the operator $f: s_1 \ldots s_n \to s$ can be subsort overloaded $f: s'_1 \ldots s'_n \to s'$ such that $s_i \leq s'_i, s\leq s'$ then it is possible to substute each variable $x_i:H(s'_i)$ by the corresponding variable $x_i:H(s_i)$ in the term $H(f_{s'_1 \ldots s'_n, s}$ and obtain $H(f_{s_1 \ldots s_n, s)}$.
+
+\item For every axiom $(\forall y_1:s_1, \ldots y_k : s_k) u = v \ \textbf{if} \ C$ in E the homomorphic extension of $H^*$ to terms and equations in the condition $C$ causes the following to hold:
+   $$E' \models (\forall y_1 : H(s_1), \ldots, y_k : H(s_k)) H^*(u) = H^*(v) \ \textbf{if} \ H^*(C)$$
 
 \end{enumerate}
 
