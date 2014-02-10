@@ -779,6 +779,10 @@ class Train | state : TrainState, dist : Nat, speed : Nat, ac : Nat,
 
 We capture the behaviour of trains using a number of instantaneous and tick rewriting rules. The instantaneous rules are used to capture a change of state within a train. For example if the a train is in the cons state distance to the movement authority becomes less than the distance needed to break to zero in the next moment of time one of these rules will fire and cause a state transition. 
 
+We use the following function to compute the breaking distance:
+
+The division operation is based on repeated subtraction and finally taking the floor or the resulting number. When we divide a number by 2 in the breaking function we add 1 to change this to the ceiling of the resulting number. This prevents a situation where we have a distance of 1 from our moment authority but the breaking distance is 0.
+
 \subsubsection*{Modelling the Radio Block Processor}
 We define the RBC state as follows:
 
