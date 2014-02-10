@@ -9,8 +9,20 @@ In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cit
 \section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
 One formalism which we can use to real about systems such as ERTMS is hybrid automata \cite{TH96}.
 
-\begin{mydef}[Hybrid Automaton]
+\begin{mydef}[Hybrid Automaton: Syntax]
+The syntax of a hybrid automaton $H$ comprises of the following:
+\begin{description}
+\item[Variables] A finite set $X = \{x_1, \ldots x_n \}$ of variables which range over the real numbers.
 
+\item[Control graph]
+
+\item[Initial, invariant and flow conditions]
+
+\item[Jump Conditions]
+
+\item[Events]
+
+\end{description}
 
 \end{mydef}
 
@@ -592,9 +604,9 @@ The interpretation of the abstract time domain is mapped to a concrete specifica
 
 \item  $\var{H(f_{s_1 \ldots s_n, s})} \subseteq {x_1:H(s_1), \ldots, x_n:H(s_n)}$
 
-\item if the operator $f: s_1 \ldots s_n \to s$ can be subsort overloaded $f: s'_1 \ldots s'_n \to s'$ such that $s_i \leq s'_i, s\leq s'$ then it is possible to substute each variable $x_i:H(s'_i)$ by the corresponding variable $x_i:H(s_i)$ in the term $H(f_{s'_1 \ldots s'_n, s}$ and obtain $H(f_{s_1 \ldots s_n, s)}$.
+\item if the operator $f: s_1 \ldots s_n \to s$ can be subsort overloaded $f: s'_1 \ldots s'_n \to s'$ such that $s_i \leq s'_i, s\leq s'$ then it is possible to substute each variable $x_i:H(s'_i)$ by the corresponding variable $x_i:H(s_i)$ in the term $H(f_{s'_1 \ldots s'_n, s})$ and obtain $H(f_{s_1 \ldots s_n, s})$.
 
-\item For every axiom $(\forall y_1:s_1, \ldots y_k : s_k) u = v \ \textbf{if} \ C$ in E the homomorphic extension of $H^*$ to terms and equations in the condition $C$ causes the following to hold:
+\item For every axiom: $$(\forall y_1:s_1, \ldots y_k : s_k) u = v \ \textbf{if} \ C$$ in E the homomorphic extension of $H^*$ to terms and equations in the condition $C$ causes the following to hold:
    $$E' \models (\forall y_1 : H(s_1), \ldots, y_k : H(s_k)) H^*(u) = H^*(v) \ \textbf{if} \ H^*(C)$$
 
 \end{enumerate}
