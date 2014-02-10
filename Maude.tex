@@ -12,11 +12,11 @@ One formalism which we can use to real about systems such as ERTMS is hybrid aut
 \begin{mydef}[Hybrid Automaton: Syntax]
 The syntax of a hybrid automaton $H$ comprises of the following:
 \begin{description}
-\item[Variables] A finite set $X = \{x_1, \ldots x_n \}$ of variables which range over the real numbers.
+\item[Variables] A finite set $X = \{x_1, \ldots x_n \}$ of variables which range over the real numbers. The cardinality of $|X|$ is called the \emph{dimension} of $H$. The variable set has a corresponding dotted variable set $\dot{X} = \{\dot{x}_1, \ldots \dot{x}_n \}$ which represents the continuous changes of variables and a primed variable set $X' = \{x'_1, \ldots , x'_n \}$ that represents  values at the conclusion of a discrete change.
 
-\item[Control graph]
+\item[Control graph] A finite directed multigraph $(V,E)$ consisting of a set of vertices which we shall refer to as \emph{control modes} and a set of edges $E$ which we shall refer to as \emph{control switches}.
 
-\item[Initial, invariant and flow conditions]
+\item[Initial, invariant and flow conditions] Three functions \emph{init},\emph{inv} and \emph{flow} that label each control mode $v \in V$ with three predicates.
 
 \item[Jump Conditions]
 
@@ -972,12 +972,12 @@ This definition features an external operation which computes a boolean dependin
 
 \subsection{Execution of The LTL Model Checker}
 
-The \rtmaude LTL model checker is then called using the following command:
+The Real Time Maude LTL model checker is then called using the following command:
 
 \begin{center}
 \texttt{(mc initialstate2 |=t [] nomaoverlap(train1,train2) in time <= 30 .)}
 \end{center}
-The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 30. This results in the following output from real time maude which indicates that the property was succesfully verified in 3 minutes and 22 seconds.
+The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 30. This results in the following output from Real Time MAude which indicates that the property was succesfully verified in 3 minutes and 22 seconds.
 \begin{verbatim}
 rewrites: 138889387 in 179663ms cpu (202024ms real) (773054 rewrites/second)
 
@@ -988,4 +988,4 @@ Result Bool :
   true
 \end{verbatim}
 
-Unfortunately the \rtmaude LTL model checker can not detect the congruence between difference configurations of control system. Therefore the state space is infinite and it is impossible to do untimed model checking on the above model checking problem. It is however possible to do timed model checking within a reasonable time limit that allows for all behaviours of the system to be verified.
+Unfortunately the Real Time Maude LTL model checker can not detect the congruence between difference configurations of control system. Therefore the state space is infinite and it is impossible to do untimed model checking on the above model checking problem. It is however possible to do timed model checking within a reasonable time limit that allows for all behaviours of the system to be verified.
