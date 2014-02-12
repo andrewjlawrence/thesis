@@ -904,10 +904,10 @@ Let $AP$ be the set of atomic proposition names then:
 \end{itemize}
 
 \end{mydef}
-
+We write $LTL(AP)$ to denote the LTL logic formulas for a given set of atomic propositions $AP$.
 
 LTL operations can be used to speak about paths through a system specified as a Kripke structure.
-a \emph{path} is a sequence of states $s_1, \ldots s_n$ and a \emph{path formula} is one that holds in each given state of a path.
+a \emph{path} $\pi$ is a sequence of states $s_1, \ldots s_n$ and a \emph{path formula} is one that holds in each given state of a path. We define $Path(K,s_0)$ to be the set of paths starting at state $s_0$ in the Kripke structure $K$ as the set of functions $\phi : N \to S$ such that $\phi(0) = a$ and the $\phi(n) \to \phi(n+1)$. 
 
 We shall now look at the semantics of LTL firstly using an informal description of the LTL operations and secondly by giving a formal semantics for LTL. The following is a description of the 5 LTL operations over paths of a Kripke Structure.
 
@@ -923,8 +923,11 @@ We shall now look at the semantics of LTL firstly using an informal description 
 %%% We need to formalise the following definition. Semantics of Linear Temporal Logic Formula?
 %%% 
 \begin{mydef}[Semantics of Linear Temporal Logic]
-Linear Temporal Logic has the following operations:
+We define the semantics of a linear temporal logic formula in terms of a satisfaction relation over a Kripke structure $K = (S,T,L)$ and a state $s \in S$:
 
+$$K,s \models \phi$$
+
+where $\phi \in LTL(AP)$
 
 \end{mydef}
 
