@@ -1,12 +1,12 @@
 \thesischapter{Background: The European Rail Traffic Management System}
 
-In the following we will try to describe ETCS is greater detail and give an informal description of how a combined system should function.
+In the following we will try to describe ERTMS is greater detail and give an informal description of how a combined system should function.
 
 
-\subsection*{ETCS levels}
+\subsection*{ERTMS levels}
 The European Train Control System is seperated into different levels of implementation. These range from being a compliment to traditional signalling to a complete replacement for it. Currently both level 1 and 2 have been implemented in different parts of the world and level 3 is still in the conceptual phase and has yet to be implemented anywhere.
 
-\textbf{ETCS Level 1:} (Figure \ref{fig:ETCSLevel1}) Movement authorites are calucated based on the underlying signalling system and then transmitted from the trackside to the train through the use of an electronic beacon called a Eurobalise.  The Eurobalise also enable train detection at the trackside and pass relevant information regarding train movement via the landside equipment unit (LEU) to the interlocking and signalling centre. While this level makes use of an interlocking,  it does not make use of a radio block controller unlike later levels of ETCS.  \\
+\textbf{ERTMS Level 1:} (Figure \ref{fig:ERTMSLevel1}) Movement authorites are calucated based on the underlying signalling system and then transmitted from the trackside to the train through the use of an electronic beacon called a Eurobalise.  The Eurobalise also enable train detection at the trackside and pass relevant information regarding train movement via the landside equipment unit (LEU) to the interlocking and signalling centre. While this level makes use of an interlocking,  it does not make use of a radio block controller unlike later levels of ERTMS.  \\
 
 
 
@@ -37,7 +37,7 @@ The European Train Control System is seperated into different levels of implemen
 \filldraw [blue] (4, 0.4) rectangle (4.72, 0);
 
 
-\node[rectangle, black, fill = white, draw ] at (3, 0.3) {ETCS};
+\node[rectangle, black, fill = white, draw ] at (3, 0.3) {ERTMS};
 
 
 %% Draw Windows
@@ -59,9 +59,9 @@ The European Train Control System is seperated into different levels of implemen
 \node[isosceles triangle, fill = black , minimum width = 0.63cm, shape border rotate = 90] at (4.3,0.45) {};
 
 \filldraw [blue] (3.9,0.33) rectangle (4.5, 0.45);
-%%% Draw ETCS
+%%% Draw ERTMS
 
-\node[rectangle, black, fill = white, draw ] at (3, 0.3) {ETCS};
+\node[rectangle, black, fill = white, draw ] at (3, 0.3) {ERTMS};
 
 \node[cloud callout, fill = white, cloud puffs  = 11, aspect = 2, cloud puff arc = 120, inner xsep = 0.4cm , callout relative pointer = {(0.315cm, -0.25cm)} ] at (2.1, 0.7) {};
 
@@ -107,12 +107,12 @@ The European Train Control System is seperated into different levels of implemen
 
 
 
- \caption{ETCS Level 1}
-\label{fig:ETCSLevel1}
+ \caption{ERTMS Level 1}
+\label{fig:ERTMSLevel1}
 \end{figure}
 \end{center}
 
-\textbf{ETCS Level 2:}  (Figure \ref{fig:ETCSLevel2})  Movement authorities are calucated based on the blocks contained in the underlying signalling system by the radio block processor which is located in the radio block centre. Data is continously transmitted via radio between the radio block centre and the train in both directions. Movement authorities are transmitted to the train and the train gives its location relative to a given balise This transmission is complemented by on the spot transmission between the track side balise and the train. These track side balise act as both a beacon and a point of reference enabling the train to determine its location along the track. Train detection is also performed at the trackside using track circuits and axle counters, however these determine whether a segment of track is occupied for the purpose of route setting, rather than the exact location of the train.  .\\
+\textbf{ERTMS Level 2:}  (Figure \ref{fig:ERTMSLevel2})  Movement authorities are calucated based on the blocks contained in the underlying signalling system by the radio block processor which is located in the radio block centre. Data is continously transmitted via radio between the radio block centre and the train in both directions. Movement authorities are transmitted to the train and the train gives its location relative to a given balise This transmission is complemented by on the spot transmission between the track side balise and the train. These track side balise act as both a beacon and a point of reference enabling the train to determine its location along the track. Train detection is also performed at the trackside using track circuits and axle counters, however these determine whether a segment of track is occupied for the purpose of route setting, rather than the exact location of the train.  .\\
 
 
 
@@ -143,7 +143,7 @@ The European Train Control System is seperated into different levels of implemen
 \filldraw [blue] (4, 0.4) rectangle (4.72, 0);
 
 
-\node[rectangle, black, fill = white, draw ] at (3, 0.3) {ETCS};
+\node[rectangle, black, fill = white, draw ] at (3, 0.3) {ERTMS};
 
 
 %% Draw Windows
@@ -165,9 +165,9 @@ The European Train Control System is seperated into different levels of implemen
 \node[isosceles triangle, fill = black , minimum width = 0.63cm, shape border rotate = 90] at (4.3,0.45) {};
 
 \filldraw [blue] (3.9,0.33) rectangle (4.5, 0.45);
-%%% Draw ETCS
+%%% Draw ERTMS
 
-\node[rectangle, black, fill = white, draw ] at (3, 0.3) {ETCS};
+\node[rectangle, black, fill = white, draw ] at (3, 0.3) {ERTMS};
 
 \node[cloud callout, fill = white, cloud puffs  = 11, aspect = 2, cloud puff arc = 120, inner xsep = 0.4cm , callout relative pointer = {(0.315cm, -0.25cm)} ] at (2.1, 0.7) {};
 
@@ -220,13 +220,13 @@ The European Train Control System is seperated into different levels of implemen
 
 
 
- \caption{ETCS Level 2}
-\label{fig:ETCSLevel2}
+ \caption{ERTMS Level 2}
+\label{fig:ERTMSLevel2}
 \end{figure}
 \end{center}
 
 
-\textbf{ETCS Level 3:}  (Figure \ref{fig:ETCSLevel3})  Instead of using the block system based on track circuits from previous levels, the train itself is considered a moving block.  Route locking and route releasing are performed by the radio block centre using information gathered from trains. Similarily to ETCS Level 2 communication takes place via radio between the train and the radio block centre. Integrity checking is performed on board the train as it continously monitors its position along the track.
+\textbf{ERTMS Level 3:}  (Figure \ref{fig:ERTMSLevel3})  Instead of using the block system based on track circuits from previous levels, the train itself is considered a moving block.  Route locking and route releasing are performed by the radio block centre using information gathered from trains. Similarily to ERTMS Level 2 communication takes place via radio between the train and the radio block centre. Integrity checking is performed on board the train as it continously monitors its position along the track.
 
 
 
@@ -280,8 +280,8 @@ The European Train Control System is seperated into different levels of implemen
 \node[isosceles triangle, fill = black , minimum width = 0.63cm, shape border rotate = 90] at (4.3,0.45) {};
 
 \filldraw [blue] (3.9,0.33) rectangle (4.5, 0.45);
-%%% Draw ETCS
-\node[rectangle, black, fill = white, draw ] at (3.4 , 0.3) {ETCS};
+%%% Draw ERTMS
+\node[rectangle, black, fill = white, draw ] at (3.4 , 0.3) {ERTMS};
 
 \node[cloud callout, fill = white, cloud puffs  = 11, aspect = 2, cloud puff arc = 120, inner xsep = 0.4cm , callout relative pointer = {(0.315cm, -0.25cm)} ] at (2.4, 0.7) {};
 
@@ -334,8 +334,8 @@ The European Train Control System is seperated into different levels of implemen
 
 
 
- \caption{ETCS Level 3}
-\label{fig:ETCSLevel3}
+ \caption{ERTMS Level 3}
+\label{fig:ERTMSLevel3}
 \end{figure}
 \end{center}
 
@@ -519,7 +519,7 @@ Train 2
 \end{sideways}
 \centering
 
- \caption{Movement Authorities in ETCS Level 1}
+ \caption{Movement Authorities in ERTMS Level 1}
 \label{fig:trackplan}
 \end{figure}
 \end{center}
@@ -527,9 +527,9 @@ Train 2
 
 \subsection*{An Informal Description of the Combined System}
 In the following we will present a high level description of the combined interlocking and radio block processor system.
-The aim of specifying a combined system is to get rid of the inconsistencies and problems caused by the interface between the RBC and interlocking. A prime example of such an inconsistency occurs when a high speed ETCS enabled train travels along a line, under the guidence of a movment authority it is possible for the train to travel through an ordinary red light.  
+The aim of specifying a combined system is to get rid of the inconsistencies and problems caused by the interface between the RBC and interlocking. A prime example of such an inconsistency occurs when a high speed ERTMS enabled train travels along a line, under the guidence of a movment authority it is possible for the train to travel through an ordinary red light.  
 
- The components of the system which we are trying to capture can be found inside the dotted line in figure \ref{fig:ETCSCombine}. These consist of the interlocking and radio block processor. Currently the interface between them is biased in one direction, most of the information travels from the interlocking locking to the radio block processor. Some information does go in the other direction for example the radio block centre will notify the interlocking when a ETCS enabled train is travelling along the line.  However other possibilities for a partition exist in a combined system exist, for example the route setting and releasing could take place in the radio block centre. There is also different possibilities from the level of partitioning/ integration of the system, it could be the case that a fully integrated system is much simplier however such a system would have to be constructed from scratch. 
+ The components of the system which we are trying to capture can be found inside the dotted line in figure \ref{fig:ERTMSCombine}. These consist of the interlocking and radio block processor. Currently the interface between them is biased in one direction, most of the information travels from the interlocking locking to the radio block processor. Some information does go in the other direction for example the radio block centre will notify the interlocking when a ERTMS enabled train is travelling along the line.  However other possibilities for a partition exist in a combined system exist, for example the route setting and releasing could take place in the radio block centre. There is also different possibilities from the level of partitioning/ integration of the system, it could be the case that a fully integrated system is much simplier however such a system would have to be constructed from scratch. 
 
 
 
@@ -601,7 +601,7 @@ The aim of specifying a combined system is to get rid of the inconsistencies and
 
 
  \caption{Current Situation}
-\label{fig:ETCSCombine}
+\label{fig:ERTMSCombine}
 \end{figure}
 \end{center}
 
@@ -611,7 +611,7 @@ We will make the following assumptions in the modelling of the combined system:
 
 \item We assume that positioning works and that the location of the trains is known at all times.
 
-\item We assume that all trains are fitted with the ETCS system.
+\item We assume that all trains are fitted with the ERTMS system.
 
 \item We will only work with one radio block controller. Trains are assumed to enter and exit the controlled area.
 
@@ -629,7 +629,7 @@ As part of this project we will also have to formalise new safety properties for
 \end{itemize}
 
 
-\section{Typical  ETCS Scenario}
+\section{Typical  ERTMS Scenario}
 
 Consider the following scenario involving 3 trains attempting to cross a double junction.
 
@@ -774,7 +774,7 @@ For this example we will time table the trains in alphabetical order.
 \begin{figure} [H]
 
 \begin{center}
-\begin{tikzpicture}[node distance = 3cm]
+\begin{tikzpicture}[node distance = 3cm, scale = 1.5]
 \tikzstyle{arrow}=[->,shorten >=7pt,shorten <=7pt]
 
 
@@ -797,18 +797,18 @@ For this example we will time table the trains in alphabetical order.
 
 \draw[->](0, 9.5) -- node[above, font = \small ]{Route Req} (2, 9.5);
 \draw[<-](0, 9) -- node[above, font = \small]{Route Ack}(2,9); 
-\draw[->](0,8.5) -- node[above = 7pt,left = 3pt, font = \small]{Points Set} (4, 8.5);
-\draw[<-](0, 8) -- node[above = 7pt, right = 2pt, font = \small]{Points Ack} (4, 8);  
-\draw[->](0,7.5) -- node[above = 7pt,left = 28pt, font = \small]{MA D $\to$ C} (6, 7.5);
-\draw[<-](0, 7) -- node[above = 7pt, right = 34pt, font = \small]{MA Ack} (6, 7);  
-\draw[<-](0, 6.5) -- node[above = 7pt, right = 28pt, font = \small]{Position Rep} (6, 6.5);  
+\draw[->](0,8.5) -- node[above, font = \small]{Points Set} (4, 8.5);
+\draw[<-](0, 8) -- node[above , font = \small]{Points Ack} (4, 8);  
+\draw[->](0,7.5) -- node[above, font = \small]{MA D $\to$ C} (6, 7.5);
+\draw[<-](0, 7) -- node[above, font = \small]{MA Ack} (6, 7);  
+\draw[<-](0, 6.5) -- node[above, font = \small]{Position Rep} (6, 6.5);  
 
 
 \draw[->](0, 5) -- node[above, font = \small ]{Route Req} (2, 5);
 \draw[<-](0, 4.5) -- node[above, font = \small]{Route Ack}(2,4.5); 
-\draw[->](0,4) -- node[above = 7pt,left = 3pt, font = \small]{Points Set} (4, 4);
-\draw[<-](0, 3.5) -- node[above = 7pt, right = 2pt, font = \small]{Points Ack} (4, 3.5);  
-\draw[->](0,3) -- node[above = 7pt,left = 56pt, font = \small]{MA A $\to$ B} (8, 3);
+\draw[->](0,4) -- node[above, font = \small]{Points Set} (4, 4);
+\draw[<-](0, 3.5) -- node[above, font = \small]{Points Ack} (4, 3.5);  
+\draw[->](0,3) -- node[above, font = \small]{MA A $\to$ B} (8, 3);
 
 
 
