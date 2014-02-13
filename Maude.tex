@@ -923,11 +923,24 @@ We shall now look at the semantics of LTL firstly using an informal description 
 %%% We need to formalise the following definition. Semantics of Linear Temporal Logic Formula?
 %%% 
 \begin{mydef}[Semantics of Linear Temporal Logic]
-We define the semantics of a linear temporal logic formula in terms of a satisfaction relation over a Kripke structure $K = (S,T,L)$ and a state $s \in S$:
+We define the semantics of a linear temporal logic formula $\phi \in LTL(AP)$ in terms of a satisfaction relation $$K,s \models \phi$$ over a Kripke structure $K = (S,T,L)$ and a state $s \in S$ as follows:
 
-$$K,s \models \phi$$
+$$K,s \models \phi$$ holds if and only if $\forall \pi \in Path(K, s)$, $K,\pi \models \phi$ holds.
 
-where $\phi \in LTL(AP)$
+We define what it means for $K, \pi \models \phi$ to hold inductively as follows:
+
+\begin{itemize} 
+\item $K,\pi \models \phi$ always holds.
+
+\item For some atomic proposition $p \in AP$ the following always holds:
+     $$K,\pi \models p \leftrightarrow p \in L(\pi(0))$$
+
+\item For some LTL formula $\mathbf{X} \phi \in LTL(K)$ the following always holds:
+$$ $$
+
+where $succ$ is a successor function $succ: N \_ \to N$ such that $succ;\pi(n) = \pi(succ(n)) = \pi(n + 1)$.
+
+\end{itemize}
 
 \end{mydef}
 
