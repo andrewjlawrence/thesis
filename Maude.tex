@@ -26,6 +26,41 @@ The syntax of a hybrid automaton $H$ comprises of the following:
 Where $\freevar{P}$ is the set of free variables in the predicate $P$.
 \end{mydef}
 
+
+\begin{mydef}[Labelled Transition System]
+We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
+\begin{itemize}
+
+\item $S$ is a possibly infinite set of states
+
+\item $S_0$ is a set of initial states $S_0 \subseteq S$
+
+\item $L$ is a set of \emph{labels}
+
+\item $T$ is a binary relation $\xrightarrow{a}$ over the state space $S$.
+
+\end{itemize}
+\end{mydef}
+
+When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.
+
+\begin{mydef}[Transition Semantics of Hybrid Automata]
+We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed transition system} $LTS^t_H = (S,S_0,L,T)$ as follows:
+
+
+\begin{itemize}
+ 
+\item The state space $S$ of the timed transition system is defined as, $S, S_0 \subseteq V \times R^n$. A state is in the state space $(v,x) \in S_0$ iff the closed predicate $inv(v)[X := x]$ holds. In addition to the previous condition a state is in the initial state space $(v,x) \in S_0$ iff the closed predicate $init(v)[X := x]]$ holds. We call a subset of the state space $S$ a \emph{H-region}.
+
+
+\item
+
+
+\end{itemize}
+
+
+\end{mydef}
+
 The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains 5 track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route.
 
 \begin{figure} [h!]

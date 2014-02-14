@@ -1,10 +1,10 @@
 \thesischapter{Background: The European Rail Traffic Management System}
 
-In the following we will try to describe ERTMS is greater detail and give an informal description of how a combined system should function.
+Following the successful use of the solid state interlocking for over 30 years Railway Engineers are trying to employ modern technologies such as GPS and mobile data communication to gain a much finer control than the tradition discrete solid state interocking and their boolean track circuits would allow. This has led to the development of the European Rail Traffic Management System (ERTMS) which combines the tradition discrete control systems of the railway with continuous systems. This new system consists of a \emph{radio block processor} which negotiates with the tradition interlocking in order to grant lenghts of track to a train in the form of a \emph{movement authority} (MA). Trains are free to move along the lengths of track granted to them in the form of a MA and communicate their position, speed and requests for further segments of track over radio to the radio block processor.
 
 
 \subsection*{ERTMS levels}
-The European Train Control System is seperated into different levels of implementation. These range from being a compliment to traditional signalling to a complete replacement for it. Currently both level 1 and 2 have been implemented in different parts of the world and level 3 is still in the conceptual phase and has yet to be implemented anywhere.
+ERTMS is seperated into different levels of implementation. These range from being a compliment to traditional signalling to a complete replacement for it. Currently both level 1 and 2 have been implemented in different parts of the world and level 3 is still in the conceptual phase and has yet to be implemented anywhere.
 
 \textbf{ERTMS Level 1:} (Figure \ref{fig:ERTMSLevel1}) Movement authorites are calucated based on the underlying signalling system and then transmitted from the trackside to the train through the use of an electronic beacon called a Eurobalise.  The Eurobalise also enable train detection at the trackside and pass relevant information regarding train movement via the landside equipment unit (LEU) to the interlocking and signalling centre. While this level makes use of an interlocking,  it does not make use of a radio block controller unlike later levels of ERTMS.  \\
 
@@ -830,3 +830,6 @@ For this example we will time table the trains in alphabetical order.
 \caption{Message Sequence Chart for "A Common Scenario"}
 \label{fig:ContactOrders}
 \end{figure}
+
+\section{Previous Work: Attempts to Verify ERTMS}
+
