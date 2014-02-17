@@ -53,9 +53,16 @@ We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed tran
 \item The state space $S$ of the timed transition system is defined as, $S, S_0 \subseteq V \times R^n$. A state is in the state space $(v,x) \in S_0$ iff the closed predicate $inv(v)[X := x]$ holds. In addition to the previous condition a state is in the initial state space $(v,x) \in S_0$ iff the closed predicate $init(v)[X := x]]$ holds. We call a subset of the state space $S$ a \emph{H-region}.
 
 
-\item
+\item $L = \Sigma \cup R {\geq 0}$
 
+\item For all events $\sigma \in \Sigma$ such that there exists a control switch $e \in E$, define $(v,x) \xrightarrow{\sigma} (v',x')$ iif the following conditions are satisified:
+\begin{enumerate}
+\item the source and target of $e$ are $v$ and $v'$ respectively. 
+\item the closed predicate $jump(e)[X, X' := x,x']$ holds.
+\item $event(e) = \sigma$.
+\end{enumerate}
 
+\item blah
 \end{itemize}
 
 
