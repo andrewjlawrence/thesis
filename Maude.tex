@@ -140,7 +140,7 @@ The following is a simple example railway we shall use for the purposes of demon
 \draw [arrow] (C) -- node [left] {$t_3$} (D);
 \end{comment}
 We have modelled the ETMS system controlling the pentagon example (see fig \ref{fig:trackplan}) using several hybrid automata. In this example the value $D(t)$ represents the distance from the start point at time $t$. 
-It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 2499$. 
+It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
 
 
 \begin{figure} [h!]
@@ -199,7 +199,7 @@ It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The t
 \end{figure}
 
 
-
+We start by defining a hybrid automaton for the interlocking consisting of 2 states representing whether a request have been made or not, 5 boolean variables representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored and then if the track freedom condition is met then a request is granted, otherwise it is denied.
 
 \begin{mydef}[Interlocking Hybrid Automaton]
 We define a hybrid automaton $H_{IL}$ as follows:
@@ -220,7 +220,8 @@ We define a hybrid automaton $H_{IL}$ as follows:
 	\item $jump(Idle \to Response) :=  Req.z , ReqId' = z$
 
 	
-	\item $jump(Response \to Idle) := if \ (l_{ReqId} = Free \wedge l_{ReqId +1 \, mod \, 5} = Free) \ then \ Grant. ReqId \ else \ Deny.ReqId$ 
+	\item $jump(Response \to Idle) := if \ (l_{ReqId} = Free \wedge l_{ReqId +1 \, mod \, 5} = Free)$ \\
+             \hspace{\fill} $then \ Grant. ReqId \ else \ Deny.ReqId$ 
 
 	\item $jump(Idle \to Idle) := l_x. l_{x+1} , [l_x' = Free, l_{x+1}' = Occupied]$
 
@@ -246,7 +247,7 @@ Secondly we define a hybrid automaton $H_{T}$ which models an individual train.
 
 We define a hybrid automaton $H_{T}$ as follows:
 \begin{description}
-\item[Variables] The state of the interlocking automaton consists of $\underbrace{D(t), EoA}_\text{0, \ldots , 2499}$, \newline $\underbrace{Speed, \dot{Speed}, MaxSpeed, TID}_{\mathbb{N}}$.
+\item[Variables] The state of the interlocking automaton consists of $\underbrace{D(t), EoA}_\text{0, \ldots , 249}$, \newline $\underbrace{Speed, \dot{Speed}, MaxSpeed, TID}_{\mathbb{N}}$.
 
 \item[Control Graph] The control graph of the interlocking automaton consists of four control modes $\{Stop (EoA), \, Braking, \, Accelerating, \, Full \, Allowed \, Speed \}$.
 
@@ -271,7 +272,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 \item[Jump Conditions] \hspace*{0mm}
 
 	\begin{itemize}
-	\item $jump(Full Allowed Speed \to Full Allowed Speed) := l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
+	\item $jump(Full Allowed Speed \to Full Allowed Speed) := l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
 \item $jump(Braking \to Braking) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
 \item $jump(Accelerating \to Accelerating) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
 
@@ -334,8 +335,8 @@ The simplest way to model deceleration would be to assume that the trains speed 
 						};
 
 
-\draw [arrow] (B)  .. controls +(-1.5 cm,  2.75 cm) and +(4.5cm,  -2.5cm ) .. node [right = 2cm, above = 0.5cm, text width=4cm] {Req.z} (C);
-\draw [arrow] (C) .. controls +(1cm,  -3cm) and +(-2.75cm, 1 cm ) ..   node [left = 3 cm, below, text width = 6cm] {$Grant.z \  t_{z} = free \wedge t_{z + 1 \, mod \, 5} = free$\\$Deny.z \ Otherwise$} (B);
+\draw [arrow] (B)  .. controls +(-1.5 cm,  2.75 cm) and +(4.5cm,  -2.5cm ) .. node [right, text width=4cm] {Req.z} (C);
+\draw [arrow] (C) .. controls +(1cm,  -3cm) and +(-2.75cm, 1 cm ) ..   node [left = 3 cm, below, text width = 6cm] {$Grant.z \  \mathbf{if} \ t_{ReqId} = \ free $\\$ \mathbf{else} \ Deny.z \ Otherwise$} (B);
 
 
 \end{tikzpicture} 
