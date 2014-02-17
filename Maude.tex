@@ -53,7 +53,7 @@ We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed tran
 \item The state space $S$ of the timed transition system is defined as, $S, S_0 \subseteq V \times R^n$. A state is in the state space $(v,x) \in S_0$ iff the closed predicate $inv(v)[X := x]$ holds. In addition to the previous condition a state is in the initial state space $(v,x) \in S_0$ iff the closed predicate $init(v)[X := x]]$ holds. We call a subset of the state space $S$ a \emph{H-region}.
 
 
-\item $L = \Sigma \cup R {\geq 0}$
+\item $L = \Sigma \cup R_{\geq 0}$
 
 \item For all events $\sigma \in \Sigma$ such that there exists a control switch $e \in E$, define $(v,x) \xrightarrow{\sigma} (v',x')$ iif the following conditions are satisified:
 \begin{enumerate}
@@ -133,7 +133,7 @@ The following is a simple example railway we shall use for the purposes of demon
 \draw [arrow] (C) -- node [left] {$t_3$} (D);
 \end{comment}
 We have modelled the ETMS system controlling the pentagon example (see fig \ref{fig:trackplan}) using several hybrid automata. In this example the value $D(t)$ represents the distance from the start point at time $t$. 
-It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 2499$. 
+It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
 
 
 \begin{figure} [h!]
@@ -147,43 +147,43 @@ It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The t
 \tikzstyle{biarrow}=[<->,very thick,shorten >=7pt,shorten <=7pt]
 
 
-\node (A) [box1]  at (0,0)                  {\begin{center} \textbf{Stop (EOA)} \\
+\node (A) [box1]  at (0,0)                  {\begin{center} \textbf{Stop (EoA)} \\
 							$Speed = 0$
                                                         $\dot{Speed} = 0$
-							$D(t) = EOA$  \end{center}
+							$D(t) = EoA$  \end{center}
 
                                             };
 
 \node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Accelerating} \\
        $\dot{Speed = 1}$
-       $D(t) < EOA$  \end{center}
+       $D(t) < EoA$  \end{center}
 
 };
 
 \node (C)[box1] at (0, 7.5)  { \begin{center} \textbf{Braking}\\
 					                   $\dot{Speed} = -1$ 
-						           $D(t) < EOA$\end{center}
+						           $D(t) < EoA$\end{center}
                                                
 						};
 
 \node (D)[box1] at (7.5, 7.5)  { \begin{center} \textbf{Full Allowed Speed }\\
 					                   $Speed = MaxSpeed$
                                                             $\dot{Speed} = 0$
-							    $D(t) < EOA$
+							    $D(t) < EoA$
                                                             \end{center}
                                                
 						};
 
 
 \draw [arrow] (B) -- node[right] {$Speed = max Speed$} (D);
-\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.TrainId.y\\ MA = y\end{center} } (B);
-\draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$D(t) = BD(t, Speed)$\\MA.Req.TID \end{center}} (C);
+\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.TrainID.y\\ MA = y\end{center} } (B);
+\draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$D(t) = BD(t, Speed)$\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) -- node [left] {$Speed = 0$} (A);
-\draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}D(t) = BD(t, Speed)\\MA.Req.TID \end{center}} (C);
-\draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-1.5cm, 0.5 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.TrainId.y\\ MA = y\end{center} } (B);
-\draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 500}.t_{(D(t) \, div \, 500) +1} $\\$D(t) \, mod \, 500 = 0)$\\Train.TID.Pos.D(t) \end{center}} (C);
-\draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 500}.t_{(D(t) \, div \, 500) +1} $\\$D(t) \, mod \, 500 = 0)$\\Train.TID.Pos.D(t) \end{center}} (D);
-\draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 500}.t_{(D(t) \, div \, 500) +1} $\\$D(t) \, mod \, 500 = 0)$\\Train.TID.Pos.D(t) \end{center}} (B);
+\draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}D(t) = BD(t, Speed)\\MA.Req.TrainID \end{center}} (C);
+\draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-1.5cm, 0.5 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.TrainID.y\\ MA = y\end{center} } (B);
+\draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 500}.t_{(D(t) \, div \, 500) +1} $\\$D(t) \, mod \, 500 = 0)$\\Train.TrainID.Pos.D(t) \end{center}} (C);
+\draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 500}.t_{(D(t) \, div \, 500) +1} $\\$D(t) \, mod \, 500 = 0)$\\Train.TrainID.Pos.D(t) \end{center}} (D);
+\draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 500}.t_{(D(t) \, div \, 500) +1} $\\$D(t) \, mod \, 500 = 0)$\\Train.TrainID.Pos.D(t) \end{center}} (B);
 
 \end{tikzpicture} 
 \end{center}
@@ -239,7 +239,7 @@ Secondly we define a hybrid automaton $H_{T}$ which models an individual train.
 
 We define a hybrid automaton $H_{T}$ as follows:
 \begin{description}
-\item[Variables] The state of the interlocking automaton consists of $\underbrace{D(t), EoA}_\text{0, \ldots , 2499}$, \newline $\underbrace{Speed, \dot{Speed}, MaxSpeed, TID}_{\mathbb{N}}$.
+\item[Variables] The state of the interlocking automaton consists of $\underbrace{D(t), EoA}_\text{0, \ldots , 2499}$, \newline $\underbrace{Speed, \dot{Speed}, MaxSpeed, TrainId}_{\mathbb{N}}$.
 
 \item[Control Graph] The control graph of the interlocking automaton consists of four control modes $\{Stop (EoA), \, Braking, \, Accelerating, \, Full \, Allowed \, Speed \}$.
 
@@ -264,17 +264,17 @@ We define a hybrid automaton $H_{T}$ as follows:
 \item[Jump Conditions] \hspace*{0mm}
 
 	\begin{itemize}
-	\item $jump(Full Allowed Speed \to Full Allowed Speed) := l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
-\item $jump(Braking \to Braking) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
-\item $jump(Accelerating \to Accelerating) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
+	\item $jump(Full Allowed Speed \to Full Allowed Speed) := l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
+\item $jump(Braking \to Braking) = l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
+\item $jump(Accelerating \to Accelerating) = l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
 
-	\item $jump(Stop (EoA) \to Accelerating) := MA.TID.y \wedge EoA' = y$ 
+	\item $jump(Stop (EoA) \to Accelerating) := MA.TrainID.y \wedge EoA' = y$ 
 	
-	\item $jump(Braking \to Accelerating) := MA.TID.y \wedge EoA' = y$ 
+	\item $jump(Braking \to Accelerating) := MA.TrainID.y \wedge EoA' = y$ 
 
-	\item $jump(Accelerating \to Braking) := D(t) = BD(t, Speed) \wedge MA.Req.TID$
+	\item $jump(Accelerating \to Braking) := D(t) = BD(t, Speed) \wedge MA.Req.TrainID$
 
-	\item $jump(Full Allowed Speed \to Braking) := D(t) = BD(t, Speed) \wedge MA.Req.TID$
+	\item $jump(Full Allowed Speed \to Braking) := D(t) = BD(t, Speed) \wedge MA.Req.TrainID$
 
 	\item $jump(Accelerating \to Full Allowed Speed)$ := Speed = MaxSpeed
 	
@@ -284,26 +284,26 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 \item[Events] \hspace*{0mm}
 \begin{itemize}
-	\item $event (Stop (EoA) \to Accelerating) := MA.TID.y$
-	\item $event (Braking \to Accelerating) := MA.TID.y$
-	\item $event(Full Allowed Speed \to Full Allowed Speed) := l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
-\item $event(Braking \to Braking) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
-\item $event(Accelerating \to Accelerating) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 500) +1} \wedge D(t) \, mod \, 500 = 0$
+	\item $event (Stop (EoA) \to Accelerating) := MA.TrainID.y$
+	\item $event (Braking \to Accelerating) := MA.TrainID.y$
+	\item $event(Full Allowed Speed \to Full Allowed Speed) := l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
+\item $event(Braking \to Braking) = l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
+\item $event(Accelerating \to Accelerating) = l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
 
-	\item $event(Accelerating \to Braking) = MA.Req.TID$
-	\item $event(Full Allowed Speed \to Braking) = MA.Req.TID$
+	\item $event(Accelerating \to Braking) = MA.Req.TrainID$
+	\item $event(Full Allowed Speed \to Braking) = MA.Req.TrainID$
 \end{itemize}
 
 \end{description}
 \end{mydef}
 
-In both $H_{IL}$ and $H_T$ we make use of an event $l_x.l_{x+1}$ to capture the movement of the train from one track segment to the next. In the above hybrid automaton modelling the trains we make use of a function $BD$ that calculates location required to stop at the EOA based on the trains speed. The point at which the train should break would then be modelled as $BD(EOA, speed) = EOA - \frac{speed ^2}{2}$ mod 2500.
+In both $H_{IL}$ and $H_T$ we make use of an event $l_x.l_{x+1}$ to capture the movement of the train from one track segment to the next. In the above hybrid automaton modelling the trains we make use of a function $BD$ that calculates location required to stop at the EoA based on the trains speed. The point at which the train should break would then be modelled as $BD(EoA, speed) = EoA - \frac{speed ^2}{2}$ mod 250.
 
 
 
-This hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $D(t) \leq EOA$ is an invariant of the stopped mode and $D(t) \leq EOA$ is an invariant of all other control modes.
-We define a transition with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 500 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$ and causes TC = x +1. 
-The simplest way to model deceleration would be to assume that the trains speed decreases at $-1$ unit of distance per unit of time.   We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EOA'$ with $EOA < EOA'$ to be received in the $Braking$ and $Stopped$ states. 
+This hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $D(t) \leq EoA$ is an invariant of the stopped mode and $D(t) \leq EoA$ is an invariant of all other control modes.
+We define a transition with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 50 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$ and causes TC = x +1. 
+The simplest way to model deceleration would be to assume that the trains speed decreases at $-1$ unit of distance per unit of time.   We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EoA'$ with $EoA < EoA'$ to be received in the $Braking$ and $Stopped$ states. 
 
 
 
@@ -391,7 +391,7 @@ The simplest way to model deceleration would be to assume that the trains speed 
 
 We define a hybrid automaton $H_{RBC}$ as follows:
 \begin{description}
-\item[Variables] The state of the radio block controller automaton consists of $\underbrace{MA_1, Pos_1, MA_2, Pos_2}_\text{0, \ldots , 2499}$, \newline $\underbrace{LastTrain}_{\mathbb{N}}$.
+\item[Variables] The state of the radio block controller automaton consists of $\underbrace{MA_1, Pos_1, MA_2, Pos_2}_\text{0, \ldots , 249}$, \newline $\underbrace{LastTrain}_{\mathbb{N}}$.
 
 \item[Control Graph] The control graph of the radio block controller automaton consists of four control modes $\{Idle, \, Ready \, to \, Request, \, Wait, \, Granted \}$.
 
@@ -494,7 +494,7 @@ Safety conditions for the combined system can be separated into discrete and con
  the continuous part would state that any movement authority issued by the radio block processor would respect the interlockings separation policy. The discrete part would basically state that there is at least two free track circuits in-between each train.
 
 
-We will now attempt to formalise the safety condition "The train will always break on time".  What this means formally is that starting from the stop mode whenever the train is in the stop start $D(t) \leq EOA$ Assuming we are in the stop mode and the we receive a movement authority with $EOA > D(t)$. Then we move to the accelerating state in this case we shall perform a case distinct on whether we reach the braking point i.e. $D(t) = BD(EoA, speed)$ or we reach maxspeed.
+We will now attempt to formalise the safety condition "The train will always break on time".  What this means formally is that starting from the stop mode whenever the train is in the stop start $D(t) \leq EoA$ Assuming we are in the stop mode and the we receive a movement authority with $EoA > D(t)$. Then we move to the accelerating state in this case we shall perform a case distinct on whether we reach the braking point i.e. $D(t) = BD(EoA, speed)$ or we reach maxspeed.
 
 
 
