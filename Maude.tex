@@ -62,7 +62,14 @@ We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed tran
 \item $event(e) = \sigma$.
 \end{enumerate}
 
-\item blah
+\item We define a transition $(v,x) \xrightarrow{\delta} (v,x')$ for all nonnegative reals $\delta \in R_{\geq 0}$ iff there exists a differentiable function $f: [0, \delta] \to R^n$ such that the following holds:
+\begin{enumerate}
+\item The functions first derivate is $\dot{f} :(0,\delta) \to R^n$
+\item $f(0) = x$
+\item $\forall \epsilon \in (0,\delta)$ both of the predicates $inv(v)[X := f(\epsilon)]$ and $flow(v)[X,\dot{X} := f(\epsilon),\dot{f}(\epsilon)]$ hold.
+\end{enumerate}
+We call the founction f the \emph{witness} of the transition $(v,x) \to (v, x')$
+
 \end{itemize}
 
 
