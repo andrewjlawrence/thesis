@@ -221,8 +221,8 @@ We define a hybrid automaton $H_{IL}$ as follows:
 	\item $jump(Idle \to Response) :=  Req.z , ReqId' = z$
 
 	
-	\item $jump(Response \to Idle) := if \ (l_{ReqId} = Free \wedge l_{ReqId +1 \, mod \, 5} = Free)$ \\
-             \hspace{\fill} $then \ Grant. ReqId \ else \ Deny.ReqId$ 
+	\item $jump(Response \to Idle) := \mathbf{if} \ (l_{ReqId} = Free \wedge l_{ReqId +1 \, mod \, 5} = Free)$ \\
+             \hspace{\fill} $\mathbf{then} \ Grant. ReqId \ \mathbf{else} \ Deny.ReqId$ 
 
 	\item $jump(Idle \to Idle) := l_x. l_{x+1} , [l_x' = Free, l_{x+1}' = Occupied]$
 
@@ -311,7 +311,7 @@ In both $H_{IL}$ and $H_T$ we make use of an event $l_x.l_{x+1}$ to capture the 
 
 
 This hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $D(t) \leq EoA$ is an invariant of the stopped mode and $D(t) \leq EoA$ is an invariant of all other control modes.
-We define a transition with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 50 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$ and causes TC = x +1. 
+We define a transition with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 50 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$. 
 The simplest way to model deceleration would be to assume that the trains speed decreases at $-1$ unit of distance per unit of time.   We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EoA'$ with $EoA < EoA'$ to be received in the $Braking$ and $Stopped$ states. 
 
 
