@@ -503,7 +503,8 @@ Safety conditions for the combined system can be separated into discrete and con
  the continuous part would state that any movement authority issued by the radio block processor would respect the interlockings separation policy. The discrete part would basically state that there is at least two free track circuits in-between each train.
 
 
-We will now attempt to formalise the safety condition "The train will always break on time".  What this means formally is that starting from the stop mode whenever the train is in the stop start $D(t) \leq EOA$ Assuming we are in the stop mode and the we receive a movement authority with $EOA > D(t)$. Then we move to the accelerating state in this case we shall perform a case distinct on whether we reach the braking point i.e. $D(t) = BD(EoA, speed)$ or we reach maxspeed.
+We will now give a proof by induction that the safety condition "The train will always break on time" holds.
+The base case is that we are in the initial state, the stopped mode, with the invariant $D(t) \leq EoA$. If are in the stopped mode and we receive a movement authority with $EoA > D(t)$ then a jump is performed and move to the accelerating state. Since the transition of time does not cause any flow transitions to occur from the base case we do not need to consider it. In the step case we are in one of the 4 modes (Stopped,Braking,Accellerating,) with the invariant $D(t) \geq BD(EoA,speed)$. In these states jump conditions are considered by performing a case distinction is performed on whether we reach the braking point i.e. $D(t) = BD(EoA, speed)$ or we reach maxspeed the transitions result in states in which the invariants still hold. We also consider flow conditions, if time elapses by some amount $\delta$ we either reach the breaking point $D(t) = BD(EoA,Speed)$ and perform a jump into a state in which the invariant still holds or $D(t) > BD(EoA,speed)$ in which case the invariant $D(t) \leq EoA$ holds. 
 
 
 
@@ -530,7 +531,6 @@ into two sub cases  in which the duration of the transition  $\delta = 0$ or $\d
 \item[v = Accelerating] In the case that the duration of the transition $\delta = 0$ and the successor state is $q_{n+1} = (Braking,[D(t)' = D(t), EoA' = EoA,Speed' = Speed ,\dot{Speed}' = \dot{Speed},TID' = TID]$ and either $D(t) = BD(EoA,Speed)$ or $Speed = MaxSpeed$ has occurred. If $D(t) = BD(EoA,Speed)$ then $D(t)' = BD(EoA', Speed') \leq EoA'$. The other case that $Speed = MaxSpeed$, $v' = Full \,  Allowed \, Speed$ and $D(t)' \leq BD(EoA', Speed') \leq EoA'$. If the successor state and the current state are the same then an event has occurred and $D(t) \leq BD(EoA,Speed) < $.
   
 In the case that $\delta \in \mathbb{R}_{< 0}$
-
 
 
  In the $Accelerating$ mode we have $\dot{Speed} = 1$ with $D(t) \leq BD(Speed, t_1) \leq  EoA$. There are two cases either $D(t) = BD(Speed,t_1)$ or $D(t) < BD(Speed, t_1)$.  In the case that $D(t) = BD(Speed,t_1)$  a jump occurs taking the system into the Braking mode
