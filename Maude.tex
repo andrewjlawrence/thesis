@@ -500,10 +500,10 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 
 Safety conditions for the combined system can be separated into discrete and continuous parts.  If we want to specify a safety condition which states that it is not possible for two trains to collide in our current system this could have the following components. 
 
- the continuous part would state that any movement authority issued by the radio block processor would respect the interlockings separation policy. The discrete part would basically state that there is at least two free track circuits in-between each train.
+the continuous part would state that any movement authority issued by the radio block processor would respect the interlockings separation policy. \textbf{(Note: I should up date this part at some point)} The discrete part would basically state that there is at least two free track circuits in-between each train.
 
 
-We will now give a proof by induction that the safety condition "The train will always break on time" holds.
+We will now give a proof by induction that the safety condition "The train will always break on time" holds for a single train automaton.
 The base case is that we are in the initial state, the stopped mode, with the invariant $D(t) \leq EoA$. If are in the stopped mode and we receive a movement authority with $EoA > D(t)$ then a jump is performed and move to the accelerating state. Since the transition of time does not cause any flow transitions to occur from the base case we do not need to consider it. In the step case we are in one of the 4 modes (Stopped,Braking,Accellerating,) with the invariant $D(t) \geq BD(EoA,speed)$. In these states jump conditions are considered by performing a case distinction is performed on whether we reach the braking point i.e. $D(t) = BD(EoA, speed)$ or we reach maxspeed the transitions result in states in which the invariants still hold. We also consider flow conditions, if time elapses by some amount $\delta$ we either reach the breaking point $D(t) = BD(EoA,Speed)$ and perform a jump into a state in which the invariant still holds or $D(t) > BD(EoA,speed)$ in which case the invariant $D(t) \leq EoA$ holds. 
 
 
