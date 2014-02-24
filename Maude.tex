@@ -240,7 +240,22 @@ We define a hybrid automaton $H_{IL}$ as follows:
 \end{itemize}
 
 \end{description}
+\end{mydef} 
+Before we can descibe the behaviour of the train as a hybrid automaton we must first define the equations of motion on which its behaviour is based.
+
+\begin{mydef}[Equations of Motion]
+The following are equations of motion
+\begin{enumerate}
+\item $v = u +at$
+\item $s = ut + \frac{1}{2}at^2$
+\item $s = \frac{1}{2}(u + v)t$
+\item $v^2 = u^2 +2as$
+\item $s = vt - \frac{1}{2}at^2$
+\end{enumerate}
+where s = displacement,u = initital velocity, v = final velocity, a = acceleration and t = time.
 \end{mydef}
+
+Equations number 1 and 2 are the mains one used throughout this formalisation as they allow for the calculation of the distance travelled and speed of a train.
 
 Secondly we define a hybrid automaton $H_{T}$ which models an individual train. 
 
@@ -506,8 +521,7 @@ the continuous part would state that any movement authority issued by the radio 
 We will now give a proof by induction that the safety condition "The train will always break on time" holds for a single train automaton.
 The base case is that we are in the initial state, the stopped mode, with the invariant $D(t) \leq EoA$. If are in the stopped mode and we receive a movement authority with $EoA > D(t)$ then a jump is performed and move to the accelerating state. Since the transition of time does not cause any flow transitions to occur from the base case we do not need to consider it. In the step case we are in one of the 4 modes (Stopped,Braking,Accelerating,) with the invariant $D(t) \geq BD(EoA,speed)$. In these states jump conditions are considered by performing a case distinction is performed on whether we reach the braking point i.e. $D(t) = BD(EoA, speed)$ or we reach maxspeed the transitions result in states in which the invariants still hold. We also consider flow conditions, if time elapses by some amount $\delta$ we either reach the breaking point $D(t) = BD(EoA,Speed)$ and perform a jump into a state in which the invariant still holds or $D(t) > BD(EoA,speed)$ in which case the invariant $D(t) \leq EoA$ holds. 
 
-
-
+Since we have restricted the movement authorities to occur at discrete intervals seperated by 50 units of distances we perform induction over the time interval $(0..1)$ in order to prevent multiple mode changes from occuring durring the induction step. 
 
 \begin{mytheorem}
 Given a live transition system $(S^t_{H_{T}},  L^{t}_{H_T}) $
@@ -519,8 +533,9 @@ Given a live transition system $(S^t_{H_{T}},  L^{t}_{H_T}) $
 
 The proof is performed by fixing a trace $ \langle a_i, q_i \rangle_{i \geq 1}$ and  a label/state pair $(a_n, q_n)$ in the timed trace in which the property holds and then proving that for all possible successor label/state pairs $(a_{n+1},q_{n+1})$. Where  the state $q_n = (v, [D(t), EoA,Speed,\dot{Speed},TrainID])$ and $q_{n+1} = (v', [D(t)', EoA',Speed',\dot{Speed}',TrainID'])$ 
 
-There are 4 cases for $v$ in which we must argue that the transition $q_n \xrightarrow{a_{n+1}} q_{n+1}$  maintains the property $D(t) \leq EOA$. We further divide each other these cases 
-into two sub cases in which the duration of the transition  $\delta = 0$ or $\delta \in \mathbb{R}_{>0}$
+We begin by performing induction on the control mode of the system. 
+There are 4 cases for $v$ in which we must argue that the transition $q_n \xrightarrow{a_{n+1}} q_{n+1}$  maintains the property $D(t) \leq EOA$. We then perform induction on the time giving us a further two sub
+cases in which the duration of the transition  $\delta = 0$ or $\delta \in \mathbb{R}_{>0}$
 
 
 
@@ -530,7 +545,13 @@ into two sub cases in which the duration of the transition  $\delta = 0$ or $\de
 
 \item[v = Accelerating] In the case that the duration of the transition $\delta = 0$ and the successor state is $q_{n+1} = (Braking,[D(t)' = D(t), EoA' = EoA,Speed' = Speed ,\dot{Speed}' = \dot{Speed},TrainID' = TrainID])$ and either $D(t) = BD(EoA,Speed)$ or $Speed = MaxSpeed$ has occurred. If $D(t) = BD(EoA,Speed)$ then $D(t)' = BD(EoA', Speed') \leq EoA'$. The other case that $Speed = MaxSpeed$, $v' = Full \,  Allowed \, Speed$ and $D(t)' \leq BD(EoA', Speed') \leq EoA'$. If the successor state and the current state are the same then an event has occurred and $D(t) \leq BD(EoA,Speed) < EoA$.
   
-In the case that $\delta \in \mathbb{R}_{< 0}$ then a flow transition has occured \textbf{(Note: what are the new values of the state variables)}
+In the case that $\delta \in \mathbb{R}_{< 0}$ then a flow transition has occured and we are one of several
+possible control modes depending on whether the transition of time triggered a jump or not.  The possibilities are as follows:
+
+Acc $\to$ Brake: The train has transitioned between three states during the transition of $\delta$  . The transition to the breaking state was causes by the condition $D(t') = BD(EoA,Speed)$ at some $t'$ during the first duration in the Acc control mode which remains invariant during the Brake control mode //
+
+Acc $\to$ Brake $\to$ Acc: The train has transitioned between three states during the transition of $\delta$  . The transition to the breaking state was causes by the condition $D(t') = BD(EoA,Speed)$ at some $t'$ during the first duration in the Acc control mode which remains invariant during the Brake control mode before the invariant  $D(t'') < BD(EoA,Speed)$ takes hold at all times $t''$ in the second Acc control mode. //
+
 
 
  In the $Accelerating$ mode we have $\dot{Speed} = 1$ with $D(t) \leq BD(EoA, Speed) \leq  EoA$. There are two cases either $D(t) = BD(EoA,Speed)$ or $D(t) < BD(EoA,Speed)$.  In the case that $D(t) = BD(EoA,Speed)$  a jump occurs taking the system into the Braking mode
