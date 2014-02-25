@@ -508,10 +508,13 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 \label{fig:RBCAuton}
 \end{figure}
 
+\begin{mydef}[Live transition system]
+Given a labeled transition system $LTS = (S,T,S_0,L)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} of  $LTS$ to be a finite or  infinite $$
+\end{mydef}
 
+\begin{mydef}[Trace semantics of hybrid automata]
 
-
-
+\end{mydef}
 
 Safety conditions for the combined system can be separated into discrete and continuous parts.  If we want to specify a safety condition which states that it is not possible for two trains to collide in our current system this could have the following components. 
 
@@ -528,6 +531,8 @@ Given a live transition system $(S^t_{H_{T}},  L^{t}_{H_T}) $
 
  $$\forall \langle a_i, q_i \rangle_{i \geq 1} \in L^{t}_{H_T}.  \forall (a_n, (v, [D(t), EoA,Speed,\dot{Speed},TrainID])) \in \langle a_i, q_i \rangle_{i \geq 1}$$ $$ \wedge  D(t) \leq BD(EoA,Speed)  \leq EoA$$ 
 
+under the assumption that the max speed of the train and the track segment size (new MA increments) obey the following
+                     $$s + s^2 < tsegsize$$
 \begin{proof}
 
 
@@ -592,7 +597,7 @@ At the end of the interval $t_2$ a new movement authority $EoA'$ has been grante
 
 Braking $\to$ Acc:  The time interval $\delta$ can be partitioned into 2 separate intervals $t_1$ and $t_2$ corresponding to the two control modes. The argument for the first control mode is same as that as the argument for the first Braking case.  At the end of the interval $t_1$ a new movement authority is received which greatly increases the braking distance far beyond what the train can travel in this possible time interval.
 
-Braking $\to$ Acc $\to$ FAS: The time interval can be partitioned into 3 separate intervals $t_1,t_2$ and $t_3$. The invariant holds in the first two time intervals following the arguement from the previous case Breaking $\to$ Acc. At the end of the Acc mode there is a transition to FAS however since there is not enough time to cross in such a short 
+Braking $\to$ Acc $\to$ FAS: The time interval can be partitioned into 3 separate intervals $t_1,t_2$ and $t_3$. The invariant holds in the first two time intervals following the argument from the previous case Breaking $\to$ Acc. At the end of the Acc mode there is a transition to FAS however since there is no possibility of the train reaching the breaking point we know that $D(t_3) < BD(EoA',Speed)$.
 
 
 
@@ -618,10 +623,7 @@ In the composite automaton $H_{IL}|| H_{T} $  the event $t_x.t_{x+1}$ will only 
 
 
 \begin{proof}
-We have to prove the two directions of the statement.
-
-If the 
-
+We have to prove the two directions of the statement. First we prove the $\to$ direction.
 
 
 
