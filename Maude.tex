@@ -1054,13 +1054,24 @@ We define what it means for $K, \pi \models \phi$ to hold inductively as follows
 \begin{itemize} 
 \item $K,\pi \models \phi$ always holds.
 
-\item For some atomic proposition $p \in AP$ the following always holds:
+\item For all atomic propositions $p \in AP$ the following always holds:
      $$K,\pi \models p \leftrightarrow p \in L(\pi(0))$$
 
-\item For some LTL formula $\mathbf{X} \phi \in LTL(K)$ the following always holds:
-$$ $$
+\item For all LTL formulas $\mathbf{X} \phi \in LTL(K)$ the following always holds:
+$$ K, \pi \models \mathbf{X} \phi \leftrightarrow K, succ;\pi \models \phi $$
 
 where $succ$ is a successor function $succ: N \_ \to N$ such that $succ;\pi(n) = \pi(succ(n)) = \pi(n + 1)$.
+
+\item For all LTL formulas $\phi \mathbf{U} \psi \in LTL(K)$ the following always holds:
+$$K, \pi \models_{LTL} \phi \mathbf{U} \psi \leftrightarrow$$
+$$\exists n \in N.$$
+$$(K,succ^n; \pi \models_{LTL} \psi) \wedge (\forall m \in N. m < n \to K, succ^m;\i \models_{LTL} \phi)$$
+
+\item For all LTL formulas $\neg \phi \in LTL(AP)$ the following always holds:
+$$K,\pi \models_{LTL} \neg \phi \leftrightarrow K,\pi \not\models \phi $$
+
+\item For all LTL formulas $\phi \vee \psi \in LTL(AP)$ the following always holds
+$$K,\pi \models_{LTL} \phi \vee \psi \leftrightarrow K,\pi \models_{LTL} \phi \ \mathrm{or} \ K,\pi \models_{LTL} \psi $$
 
 \end{itemize}
 
