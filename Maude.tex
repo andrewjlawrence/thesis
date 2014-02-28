@@ -1077,9 +1077,25 @@ $$K,\pi \models_{LTL} \phi \vee \psi \leftrightarrow K,\pi \models_{LTL} \phi \ 
 
 \end{mydef}
 
+The semantics for formulas containing other LTL operations can be obtained by using the following equivalences:
+$$\textbf{G} \phi \equiv False \mathbf{R} \phi $$
+$$\textbf{F} \phi \equiv  True \mathbf{U} \phi$$
 
+Combined  with the equivalences for obtaining negative normal form.
 
-
+\begin{mydef}[LTL Negative Normal Form]
+The negative normal form of an LTL formula can be obtained by applying the following equivalences:
+$$\neg True \equiv False$$
+$$\neg False \equiv True$$
+$$\neg \neg \phi \equiv \phi$$
+$$\neg (\phi \vee \psi) \equiv \neg \phi \wedge \neg \psi $$
+$$\neg (\phi \wedge \psi) \equiv \neg \phi \vee \neg \psi$$
+$$\neg \mathbf{X} \phi \equiv \mathbf{X} \neg \phi$$
+$$\neg (\phi \mathbf{U} \psi) \equiv (\neg \phi) \mathbf{R} (\neg \psi)$$
+$$\neg (\phi \mathbf{R} \psi \equiv (\neg \phi) \mathbf{U} (\neg \psi)$$
+from left to right until no further equivalence is applicable.
+\end{mydef}
+ 
 
 \section{Model Checking the European Rail Traffic Management System}
 In the following section we will demonstrate an approach to apply the Real Time Maude LTL model checker to verify the Real Time Maude specification described previously.
