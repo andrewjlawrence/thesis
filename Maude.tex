@@ -1,13 +1,13 @@
 \newcommand{\rtmaude}{Real Time Maude}
 
 \thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.The property we verify is that no two trains on our example railway share the same movement authority which 
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that .. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS.
 
 
 \section{The European Rail Traffic Management System}
 
 \section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
-One formalism which we can use to real about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as 3 Hybrid automata composed in paralell.
+One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as 3 Hybrid automata composed in paralell.
 We begin by defining the syntax of a Hybrid automata before defining its semantics in terms of a labelled transition system.
 \begin{mydef}[Hybrid Automaton: Syntax]
 The syntax of a hybrid automaton $H$ comprises of the following:
@@ -508,13 +508,18 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 \label{fig:RBCAuton}
 \end{figure}
 
-\begin{mydef}[Live transition system]
-Given a labeled transition system $LTS = (S,T,S_0,L)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} of  $LTS$ to be a finite or  infinite $$
+\begin{mydef}[$q_0$-rooted and initialised trajectories]
+Given a labeled transition system $LTS = (S,T,S_0,L)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} as a finite or infinite sequnce of pairs $\langle a_i, q_i \rangle_{i \geq 1}$ of labels $a_1 \in L$ and states $q_i \in S$  such that $q_{i-1} \xrightarrow{a_i} q_{i} \in T$ for all $i \geq 1$. If $q_0 \in S_0$ then the seqence of pairs $\langle a_i, q_i \rangle_{I \geq 1}$ is an \emph{initialized trajectory}. 
 \end{mydef}
+
+\begin{mydef}
+We define a live transition system (LTS,A) to consist of a labelled transition system $LTS$ and a set $A$ of infinite intialised trajectories of $LTS$. If for all of the finite initialised trajectories of $LTS$ there exists an infinite trajectory in $A$ such that the finite trajectory is a prefix of the infinite one then we call $A$ \emph{machine-closed}. We define a \emph{trace} $\langle a_i \rangle_{i \geq 1}$ of (LTS,A) to consist of the labels from the either a finite initialised trajectory of $LTS$ or a trajectory in $A$.
+\end{mydef}
+
 
 \begin{mydef}[Trace semantics of hybrid automata]
-
-\end{mydef}
+All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transition $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}.
+ \end{mydef}
 
 Safety conditions for the combined system can be separated into discrete and continuous parts.  If we want to specify a safety condition which states that it is not possible for two trains to collide in our current system this could have the following components. 
 
@@ -628,13 +633,13 @@ We have to prove the two directions of the statement. First we prove the $\to$ d
 
 
 
-Assume a train is in $t_x$ and $((x-1) mod 5) * 500 \leq D(t) < x *500$.
+Assume a train is in $t_x$ and $((x-1) \ ,mod 5) * 50 \leq D(t) < x *50$.
 
 There are two cases
 \begin{enumerate}
 \item If the train is in the Stopped state then a $t_{x}.t_{x+1}$ event will never occur as it is not possible in this state.
 
-\item The train is moving i.e. it is in either of the $Accelerating, \, Braking , \,  Full \, Allowed \, Speed$ states. In this case the position of the train will be increasing and eventually it will happen that $D(t)  mod 500 = 0$. When since $D(t) mod 500 = 0$  satisfies the jump condition the event
+\item The train is moving i.e. it is in either of the $Accelerating, \, Braking , \,  Full \, Allowed \, Speed$ states. In this case the position of the train will be increasing and eventually it will happen that $D(t) \,  mod \, 50 = 0$. When since $D(t) \, mod \, 50 = 0$  satisfies the jump condition the event
  $t_{x}.t_{x+ 1}$ will occur.  
  
 
@@ -644,7 +649,10 @@ There are two cases
 
 
 \section{Maude}
-In the following section we shall describe the Maude tool and specifications. 
+In the following section we shall describe the term rewriting system Maude. It is a mutli-purpose tool containing support for executable-specification, simulation and verification of systems and software. We make use of all 3 of these capabilities and it is this wide range which draws us towards its use. In order to full understand its use in the specifcation of a real time system we first present a formal and informal definition of a Maude specification followed by an example maude specification to give insight into theses definitions.
+
+
+
 \subsection{Maude Specifications}
 
 A Maude specification consists of \emph{functional modules} declared using \texttt{fmod} and \texttt{endfm} which contain the following:
@@ -698,7 +706,11 @@ endfm
 
 
 \section{Real Time Maude}
-One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. There is an example of a distributed sensor network that has been modelled and verified using this tool.
+One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. This contains specifc support enabling the modelling and verification of real-timed and discrete timed systems. There is an example of a distributed sensor network that has been modelled and verified using this tool. It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example, only model checked a portion of the state space of our example using this tool. This is however enough to have confidence in the correctness of the system with respect to a given safety condition.
+
+
+
+
 \subsection{Real Time Maude Specifications}
 A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration \cite{PO02}. These rewrite rules can be seperated into two categories, the \emph{tick} rules have a non-zero time elapse and the \emph{instantaneous} rules have a time elapse of zero.
 
@@ -982,10 +994,10 @@ In the resulting output at time 10 both of the trains have moved a considerable 
 \caption{A graph comparing the distances of train1 and train2}
 \end{figure}
 
-In fig\ref{t1t2} we see that train2 never enters the same track segment as train1.
+In fig \ref{t1t2} we see that train2 never enters the same track segment as train1.
 
 \section{The Maude Linear Temporal Logic Model Checker}
-The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
+The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}.  This is a useful automatic tool which allows for the verification and analysis of real time systems. In addition to the positive verification results in which a safety property holds,  the system produces, in the case of a negative verification resuIt, a counter example trace which shows the. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
 
 \subsection{Linear Temporal Logic}
 In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}. 
