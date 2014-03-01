@@ -3,6 +3,10 @@
 \thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
 In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that .. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS.
 
+\subsection*{Related Work}
+The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. 
+
+On the front of hybrid automata, ERTMS has been verified in the form of Hybrid Automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}
 
 \section{The European Rail Traffic Management System}
 
@@ -143,6 +147,15 @@ The following is a simple example railway we shall use for the purposes of demon
 We have modelled the ERTMS system controlling the pentagon example (see fig \ref{fig:trackplan}) using several hybrid automata. In this example the value $D(t)$ represents the distance from the start point at time $t$. 
 It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
 
+\begin{myremark}[Train Movement Events]
+The following two \emph{train movement events} will be abbreviated in some diagrams:
+\begin{align*}
+\textbf{train movement events}  \ :=  \ &( \textbf{if} \ D(t) \, mod \, 50 = 0)  \\
+  &\textbf{then} \  t_{D(t) \, div \, 50}.t_{(D(t) \, div \, 50) +1} \\
+&Train.TrainID.Pos.D(t)
+\end{align*} 
+
+\end{myremark}
 
 \begin{figure} [h!]
 
@@ -188,10 +201,10 @@ It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The t
 \draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$D(t) = BD(t, Speed)$\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) -- node [left] {$Speed = 0$} (A);
 \draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}D(t) = BD(t, Speed)\\MA.Req.TrainID \end{center}} (C);
-\draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-1.5cm, 0.5 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.TrainID.y\\ MA = y\end{center} } (B);
-\draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 50}.t_{(D(t) \, div \, 50) +1} $\\$D(t) \, mod \, 50 = 0)$\\Train.TrainID.Pos.D(t) \end{center}} (C);
-\draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 50}.t_{(D(t) \, div \, 50) +1} $\\$D(t) \, mod \, 50 = 0)$\\Train.TrainID.Pos.D(t) \end{center}} (D);
-\draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}$(t_{D(t) \, div \, 50}.t_{(D(t) \, div \, 50) +1} $\\$D(t) \, mod \, 50 = 0)$\\Train.TrainID.Pos.D(t) \end{center}} (B);
+\draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-1.5cm, 0.5 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y\end{center} } (B);
+\draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center}\textbf{train movement events} \end{center}} (C);
+\draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center} \textbf{train movement events} \end{center}} (D);
+\draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}\textbf{train movement events} \end{center}} (B);
 
 \end{tikzpicture} 
 \end{center}
@@ -200,7 +213,8 @@ It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The t
 \end{figure}
 
 
-We start by defining a hybrid automaton for the interlocking consisting of 2 states representing whether a request have been made or not, 5 boolean variables representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored and then if the track freedom condition is met then a request is granted, otherwise it is denied.
+We start by defining a hybrid automaton for the interlocking consisting of 2 states representing whether a request have been made or not, 5 boolean variables representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored and then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
+
 
 \begin{mydef}[Interlocking Hybrid Automaton]
 We define a hybrid automaton $H_{IL}$ as follows:
@@ -256,6 +270,22 @@ where s = displacement,u = initital velocity, v = final velocity, a = accelerati
 \end{mydef}
 
 Equations number 1 and 2 are the mains one used throughout this formalisation as they allow for the calculation of the distance travelled and speed of a train.
+The train automaton modelling the trains we make use of a function $BD$ that calculates location required to stop at the EoA based on the trains speed. The simplest way to model deceleration would be to assume that the trains speed decreases at $-1$ unit of distance per unit of time. 
+
+\begin{mydef}[Breaking Distance]
+We define the breaking distance for a train given its movement authority $EoA$ and a speed $Speed$  as follows: 
+
+$$ BD(EoA, speed) = EoA - \frac{speed ^2}{2} mod 250 $$
+\end{mydef}
+
+
+
+
+This hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $D(t) \leq EoA$ is an invariant of the stopped mode and $D(t) \leq EoA$ is an invariant of all other control modes.
+We define a transition with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 50 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$. 
+   We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EoA'$ with $EoA < EoA'$ to be received in the $Braking$ and $Stopped$ states.  This is triggered by the event MA.x.y if $x = TrainID$ then $y$ becomes the new movement authority.
+
+
 
 Secondly we define a hybrid automaton $H_{T}$ which models an individual train. 
 
@@ -320,14 +350,6 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 \end{description}
 \end{mydef}
-
-In both $H_{IL}$ and $H_T$ we make use of an event $l_x.l_{x+1}$ to capture the movement of the train from one track segment to the next. In the above hybrid automaton modelling the trains we make use of a function $BD$ that calculates location required to stop at the EoA based on the trains speed. The point at which the train should break would then be modelled as $BD(EoA, speed) = EoA - \frac{speed ^2}{2}$ mod 250.
-
-
-
-This hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $D(t) \leq EoA$ is an invariant of the stopped mode and $D(t) \leq EoA$ is an invariant of all other control modes.
-We define a transition with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 50 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$. 
-The simplest way to model deceleration would be to assume that the trains speed decreases at $-1$ unit of distance per unit of time.   We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EoA'$ with $EoA < EoA'$ to be received in the $Braking$ and $Stopped$ states. 
 
 
 
