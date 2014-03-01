@@ -283,7 +283,7 @@ $$ BD(EoA, speed) = EoA - \frac{speed ^2}{2} mod 250 $$
 
 This hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $D(t) \leq EoA$ is an invariant of the stopped mode and $D(t) \leq EoA$ is an invariant of all other control modes.
 We define a transition with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 50 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$. 
-   We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EoA'$ with $EoA < EoA'$ to be received in the $Braking$ and $Stopped$ states.  This is triggered by the event MA.x.y if $x = TrainID$ then $y$ becomes the new movement authority.
+   We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EoA'$ with $EoA < EoA'$ to be received in the $Braking$ and $Stopped$ states.  This is triggered by the event MA.x.y if $x = TrainID$ then $y$ becomes the new movement authority. The movement event MA.Req.x is used by a train automaton request a movement authority for train x from the RBC automaton.
 
 
 
@@ -1066,6 +1066,7 @@ We shall now look at the semantics of LTL firstly using an informal description 
 %%%
 %%% We need to formalise the following definition. Semantics of Linear Temporal Logic Formula?
 %%% 
+The semantics of LTL is defined inductively in terms of the $\mathbf{X}$ and $\mathbf{U}$ LTL operations which can then be used in combination with operator equivalences to define the semantics of other operations. 
 \begin{mydef}[Semantics of Linear Temporal Logic]
 We define the semantics of a linear temporal logic formula $\phi \in LTL(AP)$ in terms of a satisfaction relation $$K,s \models \phi$$ over a Kripke structure $K = (S,T,L)$ and a state $s \in S$ as follows:
 
