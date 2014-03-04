@@ -197,7 +197,7 @@ The following two \emph{train movement events} will be abbreviated in some diagr
 
 
 \draw [arrow] (B) -- node[right] {$Speed = MaxSpeed$} (D);
-\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.TrainID.y\\ MA = y\end{center} } (B);
+\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x := TrainId\\ \textbf{then} MA = y\end{center} } (B);
 \draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$D(t) = BD(t, Speed)$\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) -- node [left] {$Speed = 0$} (A);
 \draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}D(t) = BD(t, Speed)\\MA.Req.TrainID \end{center}} (C);
@@ -516,13 +516,13 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 
 \draw [arrow] (B)  .. controls +(0.5cm,  1.5 cm) and +(0.5cm,  -1.5 cm ) .. node[right] {$Req.NextTrack(y)$} (D);
 \draw [arrow] (D) .. controls +(-0.5cm,  -1.5cm) and +(-0.5cm, 1.5 cm ) ..   node [left] {$Deny.LastTrain$} (B);
-\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}$MA.Req.x$ \\ $LastTrain = x$\end{center}} (B);
+\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}$MA.Req.x$ \\ $LastTrain := x$\end{center}} (B);
 \draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$Grant.LastTrain$\end{center}} (C);
 \draw [arrow] (C) -- node [left] {$MA.x.EndOf(z)$} (A);
 
-\draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ MA.x = y\end{center}} (C);
-\draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ MA.x = y\end{center}} (D);
-\draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ MA.x = y\end{center}} (B);
+\draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ Pos.x := y\end{center}} (C);
+\draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ Pos.x := y\end{center}} (D);
+\draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ Pos.x := y\end{center}} (B);
 
 \end{tikzpicture} 
 \end{center}
@@ -985,8 +985,18 @@ Secondly there are several rewriting rules that deal with granting or denying a 
 \subsection{Simulating the European Rail Traffic Management System Using Real Time Maude}
 We will now see how this executable specification can be used to simulate and obtain a better understanding of the modelled system. For this purpose we have written a small Haskell program that takes the output from multiple timed rewrites and plots them as a graph.
 
-In the following we use an example initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 50. The RBC and the interlocking are both initialised with the trains in these positions.
+In the following we use an example initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 50. The RBC and the interlocking are both initialised with the trains in these positions. In Maude this initial state is modelled as follows. Firstly, we define the initial states of the component objects individually:
 
+\begin{verbatim}
+ eq initialintstate2 = < inter1 : Inter | state : idle, reqid : 0 , t0 : true, t1 : false, t2 : false, t3 : false, t4 : false > .
+ eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, lasttrain : train1,  ma : (train1 |-> 49,train2 |-> 199), pos : (train1 |-> 0, train2 |-> 150) , curreq : empty > .
+ rl [inittr1] : initialtrainstate1 => < train1 : Train | state : acc, dist : 0, speed : 0, ac : 1, ma : 49, tseg : 0 , maxspeed : 4 > .
+ rl [inittr2] : initialtrainstate2 => < train2 : Train | state : acc, dist : 150, speed : 0, ac : 1, ma : 199, tseg : 3 , maxspeed : 7 > .
+\end{verbatim}
+Secondly, we combine these individual components to form the complete system:
+\begin{verbatim}
+ eq initialstate2 = {initialtrainstate1 initialtrainstate2 initialintstate2  initialrbcstate2} . 
+\end{verbatim}
 The model of ERTMS  in the  is executed using the following command:
 \begin{center}
 \texttt{(trew initialstate2 in time $\leq$ 10 .)}
