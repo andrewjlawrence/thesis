@@ -988,22 +988,42 @@ We will now see how this executable specification can be used to simulate and ob
 In the following we use an example initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 150. The RBC and the interlocking are both initialised with the trains in these positions. In Maude this initial state is modelled as follows. Firstly, we define the initial states of the component objects individually:
 
 \begin{verbatim}
- eq initialintstate2 = < inter1 : Inter | state : idle, reqid : 0 , t0 : true, t1 : false, t2 : false, t3 : false, t4 : false > .
- eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, lasttrain : train1,  ma : (train1 |-> 49,train2 |-> 199), pos : (train1 |-> 0, train2 |-> 150) , curreq : empty > .
- rl [inittr1] : initialtrainstate1 => < train1 : Train | state : acc, dist : 0, speed : 0, ac : 1, ma : 49, tseg : 0 , maxspeed : 4 > .
- rl [inittr2] : initialtrainstate2 => < train2 : Train | state : acc, dist : 150, speed : 0, ac : 1, ma : 199, tseg : 3 , maxspeed : 7 > .
+ eq initialintstate2 = < inter1 : Inter | state : idle, reqid : 0 , 
+                                   t0 : true, t1 : false,  t2 : false, 
+                                   t3 : false, t4 : false > .
+ eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, lasttrain : train1, 
+                                    ma : (train1 |-> 49,train2 |-> 199), 
+                                    pos : (train1 |-> 0, train2 |-> 150) , 
+                                    curreq : empty > .
+ rl [inittr1] : initialtrainstate1 => < train1 : Train | state : acc,  dist : 0, 
+                                                   speed : 0, ac : 1, ma : 49, 
+                                                   tseg : 0 , maxspeed : 4 > .
+ rl [inittr2] : initialtrainstate2 => < train2 : Train | state : acc, dist : 150, 
+                                                  speed : 0, ac : 1, ma : 199,
+                                                  tseg : 3 , maxspeed : 7 > .
 \end{verbatim}
 Secondly, we combine these individual components to form the complete system:
 \begin{verbatim}
- eq initialstate2 = {initialtrainstate1 initialtrainstate2 initialintstate2  initialrbcstate2} . 
+ eq initialstate2 = {initialtrainstate1 initialtrainstate2 
+                         initialintstate2  initialrbcstate2} . 
 \end{verbatim}
 The model of ERTMS  in the  is executed using the following command:
 \begin{center}
-\texttt{(trew initialstate2 in time $\leq$ 10 .)}
+\texttt{(trew initialstate2 in time $\leq$ 50 .)}
 \end{center}
 
-In the resulting output at time 10 both of the trains have moved a considerable distance and have requested and received new movement authorities.
+In the resulting output at time 50 both of the trains have moved a considerable distance and have requested and received new movement authorities.
  
+\begin{verbatim}
+Result ClockedSystem :
+  {< inter1 : Inter | reqid : 3,state : idle,t0 : false,t1 : false,t2 : true,t3
+    : true,t4 : false > < rbc1 : RBC | curreq : train2,lasttrain : train2,ma :(
+    train1 |-> 199, train2 |-> 149),pos :(train1 |-> 180, train2 |-> 122),state
+    : rbcidle > < train1 : Train | ac : 1,dist : 184,ma : 199,maxspeed : 4,
+    speed : 4,state : cons,tseg : 3 > < train2 : Train | ac : 1,dist : 128,ma :
+    149,maxspeed : 7,speed : 5,state : break,tseg : 2 >} in time 50
+\end{verbatim}
+
 \begin{figure}
 \begin{center}
 \includegraphics[scale=0.4]{t1graph.png}
