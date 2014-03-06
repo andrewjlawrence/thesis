@@ -85,9 +85,11 @@ electromechanical \textbf{relays} began to replace purely mechanical relays
 reducing the amount of space needed for a signal box.
 \end{comment}
 
-Another instance of an electrical system replacing a mechanical one occured in the 1920s. New \textbf{colour light signals} replaced  the mechanical semaphore signals and had the advantage of being brighter than the oil lamps of that signal.
+Further instances of an electrical system replacing a mechanical one occurred in the 1920s and subsequently in the 1930s. New \textbf{colour light signals} replaced  the mechanical semaphore signals and had the advantage of being brighter than the oil lamps of that signal.
+Electronic \textbf{control panels}, which contained switches and buttons, replaced the mechanical levers and removed the remaining physical effort needed to operate signalling systems. The combination of track circuits, electronic points and control panels enabled the introduction of \textbf{route setting} where by at the press of a single button a configuration of signals and points could be selected thus enabling a train to travel down a particular route along the track.
 
-
+The next major advancement came some 50 years later and was enabled by the development of microprocessors. The relays and mechanical interlockings were replaced with \textbf{solid state interlockings} which were smaller still and more reliable than relay interlockings.
+These solid state interlockings are one of the systems verified later on in the PhD. Jump forward another 30 years to the current day and we are seeing the development and deployment of a new type of control system which makes use of recent technologies such as GPS, GMS radio  communications that enable signallers to have a far finer grain of control when compared with the discrete track circuits and do not need the physical coloured light signals to function. One such instance of a control system is the European Rail Traffic Management System which is discussed in more detail in Chapter \ref{blah}
 \begin{comment}
 In the 1920s \textbf{colour light signals} replaced mechanical semaphore signals these where much brighter than the oil
 lamps fitted to semaphores and greatly increased the safety of night time
@@ -104,9 +106,11 @@ of such solid state interlockings.
 \end{comment}
 \section{Invensys Rail}
 
-Invensys Rail \cite{Inven} and its previous incarnation Westinghouse Rail Systems Ltd have been
-involved for over 140 years in producing equipment to increase safety in the
-railway industry. Originally they produced air brakes for trains, these had a
+Invensys Rail \cite{Inven} has been producing train control equipment and safety devices for over 140 years starting with its original incarnation Westinghouse Rail Systems Ltd. 
+The first such safety device was train air brakes, if the power was cut from the train then the brake would automatically kick in, entering a failsafe state. The company was also charged with supporting British Rail in its development of the first solid state digital railway interlocking to be installed in Leamington Spa. Currently their operations are focused on supplying railway control systems globally with customers in Australia, Hong Kong, Germany , Spain and the UK. One of the products produced by Invensys that we are interesting in is  a solid state interlocking called the Westrace. This interlocking continually receives input from the railway, decides whether or not a request or railway state is safe using a Ladder Logic program and prevents the railway from entering unsafe states. This ladder logic will be explained later in this chapter. Further information on the railway domain including terminology and methodology can be found in a book by David Kerr and Tony Rowbotham (See \cite{KR01}.)
+\begin{comment}
+
+Originally they produced air brakes for trains, these had a
 failsafe state such that if the power was cut the brakes would automatically stop the train.
 Later on in the company's development they provided support to British Rail
 when the first solid state digital railway interlocking was installed in
@@ -120,7 +124,7 @@ logic will be explained in a later chapter.
 David Kerr and Tony Rowbotham  produced a book that explains the
 terminology and methodology used in the railway industry and by
 Invensys (See \cite{KR01}).  
-
+\end{comment}
 \section{An Overview of the Railway Domain} 
 In this section we present the features of the railway domain that are in
 the scope of this thesis. We hope to provide the reader with the background
