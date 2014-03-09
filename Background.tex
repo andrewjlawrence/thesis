@@ -132,11 +132,15 @@ information and terminology necessary to understand the parts of this thesis.
 
 
 \subsection{The Railway Topology: Track and Points}
+In order to get a better understanding of the railway we will now present a small example physical railway in the form of a junction with a single point. This is a common way of drawing track plans and allows for the topology of a segment of track to be expressed on paper. Further examples and details of the railway topology can be found in \cite{KR01}.
+
+
+\begin{comment}
 We will now present an overview of the physical railway from a topological
 point of view. To do this we will present an example of a small track plan
 of a junction.  If the reader is interested in learning more about the
 topology of the railway a more detailed description can be found in \cite{KR01} 
-
+\end{comment}
 
 \begin{figure}
 
@@ -200,12 +204,18 @@ topology of the railway a more detailed description can be found in \cite{KR01}
 
 
 \subsubsection{Track Segments}
+
+In fig \ref{fig:track}  there are 4 track segments $A,B,C,D$ which is typical of a junction containing a single point. Each track segment contains a track circuit for the purpose of detecting whether it is occupied by a train or not. When a train is present on a segment of track the metal wheels and axel complete the circuit and allow the control system to detect its presense. It is possible for a train to be longer than a track segment and this is particularly the case at junctions other areas where a large amount of control is needed over trains. A shorter track segment allows for a finer grain view of the railway by the interlocking and control system and can allow for a greater through put of trains. Conversely the length of track segments can be far longer on long straight segments of track without any interesting features such as junctions or stations.
+
+\begin{comment}
 A section of track is typically broken down into track segments each
 containing one or more track circuits to detect the presence of a
 train. Typically track segments become larger on long straight stretches of
 track without any interesting topological features such as junctions or
 stations. Likewise track segments become smaller around junctions and stations
 where control over train movement is of greater importance. 
+\end{comment}
+
 
 \subsubsection{Points}
 A point is a physical piece of equipment that is used to 
@@ -213,8 +223,8 @@ form a junction. Due to the nature of the rails and trains it is not possible to
 to just join two segments of track. Instead a point is needed to act as
 physical switch controlling the flow of trains through a junction. A point
 has two positions which are referred to as \textbf{normal} and
-\textbf{reverse}. This presents a safety hazard, for example see figure 2.1, if a train enters
-the junction $b$ from $c$ when the junction is locked in the
+\textbf{reverse}. This presents a safety hazard, for example see figure \ref{fig:track}, if a train enters
+the junction $B$ from $C$ when the junction is locked in the
 position for normal then the train will be derailed. 
 
 
