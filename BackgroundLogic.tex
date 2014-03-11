@@ -1,3 +1,5 @@
+\mathchardef\mhyphen="2D
+
 \chapter{Background: Introduction to Logic}
 We use logic to formally reason about the world around us in an abstract way. At the most basic level we are creating abstract propositions, sentences from these propositions and then using formal rules to deal with these propositions and to derive new information or insight. In the following we give a general introduction to logic and describe some of the formalisms used in this thesis.
 A good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}.
@@ -138,33 +140,56 @@ The natural deduction proof system consists of the following rules:
 \begin{center}
 \AxiomC{$A$}
 \AxiomC{$B $}
-\LeftLabel{$\wedge-intro$}
+\LeftLabel{$\wedge \mhyphen intro$}
 \BinaryInfC{$A \wedge B$}
 \DisplayProof \hspace{10pt}
 \AxiomC{$A \wedge B$}
-\LeftLabel{$\wedge-elim \, (L)$}
+\LeftLabel{$\wedge \mhyphen elim \, (L)$}
 \UnaryInfC{$A$}
 \DisplayProof \hspace{10pt}
 \AxiomC{$A \wedge B$}
-\LeftLabel{$\wedge-elim \, (R)$}
+\LeftLabel{$\wedge \mhyphen elim \, (R)$}
 \UnaryInfC{$A$}
+\DisplayProof
+\end{center}
+\medskip
+
+\begin{center}
+\AxiomC{$A$}
+\LeftLabel{$\vee \mhyphen intro \, (L)$}
+\UnaryInfC{$A \vee B$}
+\DisplayProof \hspace{10pt}
+\AxiomC{$B$}
+\LeftLabel{$\vee \mhyphen intro \, (R)$}
+\UnaryInfC{$A \vee B$}
+\DisplayProof \\
+\end{center} 
+\bigskip
+\begin{center}
+\AxiomC{$A \wedge B$}
+\AxiomC{[A]}
+\AxiomC{}
+\RightLabel{$:u$}
+\UnaryInfC{B}
+\noLine
+\UnaryInfC{\vdots}
+\noLine
+\UnaryInfC{C}
+\LeftLabel{$\vee \mhyphen elim$}
+\TrinaryInfC{$C$}
 \DisplayProof
 \end{center}
 \medskip
 \begin{center}
 \AxiomC{$A$}
-\LeftLabel{$\vee-intro \, (L)$}
+\LeftLabel{$\vee \mhyphen intro \, (L)$}
 \UnaryInfC{$A \vee B$}
 \DisplayProof \hspace{10pt}
-\AxiomC{$B$}
-\LeftLabel{$\vee-intro \, (R)$}
-\UnaryInfC{$A \vee B$}
-\DisplayProof \hspace{10pt}
-\AxiomC{$A \wedge B$}
-\AxiomC{[A]}
-\AxiomC{[B]}
-\LeftLabel{$\vee-elim$}
-\TrinaryInfC{$A$}
+\AxiomC{$A \to B$}
+\AxiomC{A}
+\LeftLabel{$\vee \mhyphen elim$}
+\BinaryInfC{$B$}
 \DisplayProof
 \end{center}
+
 \end{mydef}
