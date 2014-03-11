@@ -1,16 +1,26 @@
 \chapter{Background: Introduction to Logic}
+We use logic to formally reason about the world around us in an abstract way. At the most basic level we are creating abstract propositions, sentences from these propositions and then using formal rules to deal with these propositions and to derive new information or insight. In the following we give a general introduction to logic and describe some of the formalisms used in this thesis.
 A good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}.
 
+
+\subsection{Propositional logic}
+One of the most fundamental forms of logic is propositional logic
+
+
 \begin{mydef}[Propositional Formulae]
-Given a set of symbols $S$ we inductively define the set of propositional formulae $AP$ as follows:
+Given a set of propositional variables $V$ we inductively define the set of propositional formulae $AP$ as follows:
 \begin{itemize}
-\item If $s$ is in the set of symbols $s \in S$ then $s \in AP$.
+\item If $s$ is in the set of symbols $s \in V$ then $s \in AP$.
 
-\item if $p_1$ is an atomic proposition $p_1 \in AP$ then $\neg p_1 \in AP$.
+\item if $p_1$ is a propositional formula $p_1 \in AP$ then $\neg p_1 \in AP$.
 
-\item given two atomic propositions $p_1$ and $p_2$ then $p_1 \circ p_2 \in AP$ where $\circ$ is a propositional connective $\circ \in \{ \wedge,\vee,\to \} $.
+\item given two propositional formulae $p_1$ and $p_2$ then $p_1 \circ p_2 \in AP$ where $\circ$ is a propositional connective $\circ \in \{ \wedge,\vee,\to \} $.
 \end{itemize} 
 \end{mydef}
+In order to define the semantics of propositional logic we first need a function $\tau : \{True,False\}^n \to \{True, False\}$ that gives a logical assignment to the set propositional variables $V$. This function can then be used to describe another function $\bar{\tau}$  
+We assigned these sentences of propositions a value of either True or False using a truth assignment 
+
+
 
 First Order Logic
 
