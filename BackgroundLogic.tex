@@ -4,7 +4,7 @@ A good general introduction to logic from a proof theoretic perspective is \cite
 
 
 \subsection{Propositional logic}
-One of the most fundamental forms of logic is propositional logic
+One of the most fundamental forms of logic is propositional logic which contains operations called connectives that allows one to connect propositional variables to form sentences.
 
 
 \begin{mydef}[Propositional Formulae]
@@ -17,7 +17,8 @@ Given a set of propositional variables $V$ we inductively define the set of prop
 \item given two propositional formulae $p_1$ and $p_2$ then $p_1 \circ p_2 \in AP$ where $\circ$ is a propositional connective $\circ \in \{ \wedge,\vee,\to \} $.
 \end{itemize} 
 \end{mydef}
-In order to define the semantics of propositional logic we first need a function $\tau : \{True,False\}^n \to \{True, False\}$ that gives a logical assignment to the set propositional variables $V$. This function can then be used to describe another function $\bar{\tau}$  
+In order to define the semantics of propositional logic we need the notiona of a truth assignment which is a function $\tau : \{True,False\}^n \to \{True, False\}$ that gives a logical assignment to the set propositional variables $V$. This function can then be used to describe another function $\bar{\tau} : P \to \{True, False\}$ that given a propositional formula $P \in AP$ calculates a truth assignment for that formula based on $\tau$.
+
 We assigned these sentences of propositions a value of either True or False using a truth assignment 
 
 
