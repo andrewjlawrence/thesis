@@ -3,7 +3,7 @@ We use logic to formally reason about the world around us in an abstract way. At
 A good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}.
 
 
-\subsection{Propositional logic}
+\section{Propositional logic}
 One of the most fundamental forms of logic is propositional logic which contains operations called connectives that allows one to connect propositional variables to form sentences.
 
 
@@ -17,16 +17,30 @@ Given a set of propositional variables $V$ we inductively define the set of prop
 \item given two propositional formulae $p_1$ and $p_2$ then $p_1 \circ p_2 \in AP$ where $\circ$ is a propositional connective $\circ \in \{ \wedge,\vee,\to \} $.
 \end{itemize} 
 \end{mydef}
-In order to define the semantics of propositional logic we need the notiona of a truth assignment which is a function $\tau : \{True,False\}^n \to \{True, False\}$ that gives a logical assignment to the set propositional variables $V$. This function can then be used to describe another function $\bar{\tau} : P \to \{True, False\}$ that given a propositional formula $P \in AP$ calculates a truth assignment for that formula based on $\tau$.
+In order to define the semantics of propositional logic we need the notiona of a truth assignment which is a function $\tau : \{True,False\}^n \to \{True, False\}$ that gives a logical assignment to the set propositional variables $V$ which is of size $n$. This function can then be used to describe another function $\bar{\tau} : P \to \{True, False\}$ that given a propositional formula $P \in AP$ calculates a truth assignment for that formula based on $\tau$.
 
 We assigned these sentences of propositions a value of either True or False using a truth assignment 
+\begin{center}
+\begin{tabular}{c | c | c | c | c | c | c} \hline
+$A$ & $B$ & $\neg A$  & $A \wedge B$ & $A \vee B$ & $A \to B$ & $A \leftrightarrow B$  \\ \hline
+ T & F & F  & T & T & T & T \\ \hline 
+ T & T & F  & F & T & F & F \\ \hline
+ F & F & T  & F & T & T & F \\ \hline
+ F & T & T  & F & F & T & T \\ 
+\end{tabular}
+\end{center}
 
+\section{First Order Logic}
+\begin{mydef}[Syntax of First Order Logic]
+Blah
 
+\end{mydef}
 
-First Order Logic
+\begin{mydef}[Semantics of First Order Logic]
 
-LTL Logic
-\subsection{Linear Temporal Logic}
+\end{mydef}
+
+\section{Linear Temporal Logic}
 In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}. 
 
 
@@ -115,6 +129,42 @@ $$\neg (\phi \mathbf{R} \psi \equiv (\neg \phi) \mathbf{U} (\neg \psi)$$
 from left to right until no further equivalence is applicable.
 \end{mydef}
 
-Proof Systems
+\section{Proof Systems}
 
-Natural Deduction
+\section{Natural Deduction}
+The natural deduction proof system was introduced by Gentzen in 1939 \cite{GG69}.
+\begin{mydef}[Natural Deduction] 
+The natural deduction proof system consists of the following rules:
+\begin{center}
+\AxiomC{$A$}
+\AxiomC{$B $}
+\LeftLabel{$\wedge-intro$}
+\BinaryInfC{$A \wedge B$}
+\DisplayProof \hspace{10pt}
+\AxiomC{$A \wedge B$}
+\LeftLabel{$\wedge-elim \, (L)$}
+\UnaryInfC{$A$}
+\DisplayProof \hspace{10pt}
+\AxiomC{$A \wedge B$}
+\LeftLabel{$\wedge-elim \, (R)$}
+\UnaryInfC{$A$}
+\DisplayProof
+\end{center}
+\medskip
+\begin{center}
+\AxiomC{$A$}
+\LeftLabel{$\vee-intro \, (L)$}
+\UnaryInfC{$A \vee B$}
+\DisplayProof \hspace{10pt}
+\AxiomC{$B$}
+\LeftLabel{$\vee-intro \, (R)$}
+\UnaryInfC{$A \vee B$}
+\DisplayProof \hspace{10pt}
+\AxiomC{$A \wedge B$}
+\AxiomC{[A]}
+\AxiomC{[B]}
+\LeftLabel{$\vee-elim$}
+\TrinaryInfC{$A$}
+\DisplayProof
+\end{center}
+\end{mydef}
