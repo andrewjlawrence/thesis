@@ -1,7 +1,7 @@
 \newcommand{\rtmaude}{Real Time Maude}
 
 \thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{}.The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that .. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS.
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{chapter:ERTMS}.The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that a single train automaton always remains within its movement authority. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS.
 
 \subsection*{Related Work}
 The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. 
@@ -10,7 +10,7 @@ On the front of hybrid automata, ERTMS has been verified in the form of Hybrid A
 
 
 \section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
-One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as 3 Hybrid automata composed in paralell.
+One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as 3 Hybrid automata composed in parallel.
 We begin by defining the syntax of a Hybrid automata before defining its semantics in terms of a labelled transition system.
 \begin{mydef}[Hybrid Automaton: Syntax]
 The syntax of a hybrid automaton $H$ comprises of the following:
@@ -30,7 +30,7 @@ The syntax of a hybrid automaton $H$ comprises of the following:
 Where $\freevar{P}$ is the set of free variables in the predicate $P$.
 \end{mydef}
 
-
+\medskip
 \begin{mydef}[Labelled Transition System]
 We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 \begin{itemize}
@@ -45,9 +45,9 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 
 \end{itemize}
 \end{mydef}
-
+\medskip
 When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.
-
+\medskip
 \begin{mydef}[Transition Semantics of Hybrid Automata]
 We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed transition system} $LTS^t_H = (S,S_0,L,T)$ as follows:
 
@@ -78,7 +78,7 @@ We call the founction f the \emph{witness} of the transition $(v,x) \to (v, x')$
 
 
 \end{mydef}
-
+\medskip
 The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains 5 track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route.
 
 \begin{figure} [h!]
@@ -145,7 +145,7 @@ The following is a simple example railway we shall use for the purposes of demon
 \end{comment}
 We have modelled the ERTMS system controlling the pentagon example (see fig \ref{fig:trackplan}) using several hybrid automata. In this example the value $D(t)$ represents the distance from the start point at time $t$. 
 It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
-
+\medskip
 \begin{myremark}[Train Movement Events]
 The following two \emph{train movement events} will be abbreviated in some diagrams:
 \begin{align*}
@@ -155,7 +155,7 @@ The following two \emph{train movement events} will be abbreviated in some diagr
 \end{align*} 
 
 \end{myremark}
-
+\medskip
 \begin{figure} [h!]
 
 \begin{center}
@@ -196,7 +196,7 @@ The following two \emph{train movement events} will be abbreviated in some diagr
 
 
 \draw [arrow] (B) -- node[right] {$Speed = MaxSpeed$} (D);
-\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x := TrainId\\ \textbf{then} MA = y\end{center} } (B);
+\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainId\\ \textbf{then} MA := y\end{center} } (B);
 \draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$D(t) = BD(t, Speed)$\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) -- node [left] {$Speed = 0$} (A);
 \draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}D(t) = BD(t, Speed)\\MA.Req.TrainID \end{center}} (C);
@@ -213,8 +213,7 @@ The following two \emph{train movement events} will be abbreviated in some diagr
 
 
 We start by defining a hybrid automaton for the interlocking consisting of 2 states representing whether a request have been made or not, 5 boolean variables representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored and then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
-
-
+\medskip
 \begin{mydef}[Interlocking Hybrid Automaton]
 We define a hybrid automaton $H_{IL}$ as follows:
 \begin{description}
@@ -254,8 +253,9 @@ We define a hybrid automaton $H_{IL}$ as follows:
 
 \end{description}
 \end{mydef} 
-Before we can descibe the behaviour of the train as a hybrid automaton we must first define the equations of motion on which its behaviour is based.
-
+\medskip
+Before we can describe the behaviour of the train as a hybrid automaton we must first define the equations of motion on which its behaviour is based.
+\medskip
 \begin{mydef}[Equations of Motion]
 The following are equations of motion
 \begin{enumerate}
@@ -267,16 +267,16 @@ The following are equations of motion
 \end{enumerate}
 where s = displacement,u = initital velocity, v = final velocity, a = acceleration and t = time.
 \end{mydef}
-
+\medskip
 Equations number 1 and 2 are the mains one used throughout this formalisation as they allow for the calculation of the distance travelled and speed of a train.
 The train automaton modelling the trains we make use of a function $BD$ that calculates location required to stop at the EoA based on the trains speed. The simplest way to model deceleration would be to assume that the trains speed decreases at $-1$ unit of distance per unit of time. 
-
+\medskip
 \begin{mydef}[Breaking Distance]
 We define the breaking distance for a train given its movement authority $EoA$ and a speed $Speed$  as follows: 
 
 $$ BD(EoA, speed) = EoA - \frac{speed ^2}{2} mod 250 $$
 \end{mydef}
-
+\medskip
 
 
 
@@ -287,7 +287,7 @@ We define a transition with the event $l_x.l_{x+1}$ which is triggered by the co
 
 
 Secondly we define a hybrid automaton $H_{T}$ which models an individual train. 
-
+\medskip
 \begin{mydef}[Train Automaton]
 
 We define a hybrid automaton $H_{T}$ as follows:
@@ -528,15 +528,15 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 
 \label{fig:RBCAuton}
 \end{figure}
-
+\medskip
 \begin{mydef}[$q_0$-rooted and initialised trajectories]
 Given a labeled transition system $LTS = (S,T,S_0,L)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} as a finite or infinite sequnce of pairs $\langle a_i, q_i \rangle_{i \geq 1}$ of labels $a_1 \in L$ and states $q_i \in S$  such that $q_{i-1} \xrightarrow{a_i} q_{i} \in T$ for all $i \geq 1$. If $q_0 \in S_0$ then the seqence of pairs $\langle a_i, q_i \rangle_{I \geq 1}$ is an \emph{initialized trajectory}. 
 \end{mydef}
-
+\medskip
 \begin{mydef}
 We define a live transition system (LTS,A) to consist of a labelled transition system $LTS$ and a set $A$ of infinite intialised trajectories of $LTS$. If for all of the finite initialised trajectories of $LTS$ there exists an infinite trajectory in $A$ such that the finite trajectory is a prefix of the infinite one then we call $A$ \emph{machine-closed}. We define a \emph{trace} $\langle a_i \rangle_{i \geq 1}$ of (LTS,A) to consist of the labels from the either a finite initialised trajectory of $LTS$ or a trajectory in $A$.
 \end{mydef}
-
+\medskip
 
 \begin{mydef}[Trace semantics of hybrid automata]
 All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transition $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}.
@@ -551,7 +551,7 @@ We will now give a proof by induction that the safety condition "The train will 
 The base case is that we are in the initial state, the stopped mode, with the invariant $D(t) \leq EoA$. If are in the stopped mode and we receive a movement authority with $EoA > D(t)$ then a jump is performed and move to the accelerating state. Since the transition of time does not cause any flow transitions to occur from the base case we do not need to consider it. In the step case we are in one of the 4 modes (Stopped,Braking,Accelerating,) with the invariant $D(t) \geq BD(EoA,speed)$. In these states jump conditions are considered by performing a case distinction is performed on whether we reach the braking point i.e. $D(t) = BD(EoA, speed)$ or we reach maxspeed the transitions result in states in which the invariants still hold. We also consider flow conditions, if time elapses by some amount $\delta$ we either reach the breaking point $D(t) = BD(EoA,Speed)$ and perform a jump into a state in which the invariant still holds or $D(t) > BD(EoA,speed)$ in which case the invariant $D(t) \leq EoA$ holds. 
 
 Since we have restricted the movement authorities to occur at discrete intervals seperated by 50 units of distances we perform induction over the time interval $(0..1)$ in order to prevent multiple mode changes from occuring durring the induction step. 
-
+\medskip
 \begin{mytheorem}
 Given a live transition system $(S^t_{H_{T}},  L^{t}_{H_T}) $
 
@@ -735,7 +735,7 @@ One extension of Maude that has been used to model and verify hybrid systems is 
 \subsection{Real Time Maude Specifications}
 A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration \cite{PO02}. These rewrite rules can be seperated into two categories, the \emph{tick} rules have a non-zero time elapse and the \emph{instantaneous} rules have a time elapse of zero.
 
-The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process. Real time Maude comes with two of these specifications as standard the most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time during the specification as it allows for the best results during the verification process.
+The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process. Real time Maude comes with two of these specifications as standard the most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time during the specification as it allows for the best results during the verification process. \textbf{Note: Do we need to describes equational theorys?}
 
 \begin{mydef}[Equational Theory Morphism]
  We define an \emph{equational theory morphism} $H: (\Sigma,E) \to (\Sigma', E')$ to consist of the following
@@ -1101,6 +1101,7 @@ Here we have matched two object identifiers and natural numbers and callled a bo
 \end{center}
 
 \subsection{Execution of The LTL Model Checker}
+\textbf{Note: do we want to describe and verify other safety conditions here?}
 We shall now describe the execution of the LTL model checker in Real Time Maude. This is done using the mc command with some initial state of type system, a satsifaction relation, the LTL formula to be checked and an optional time. The satisfaction relation can be either $\models_u$ for untimed model checking for which time is not specifed or $\models_t$ for which the optional time is specified.
 
 The Real Time Maude LTL model checker is then called using the following command:
