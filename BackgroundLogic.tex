@@ -1,5 +1,5 @@
 \mathchardef\mhyphen="2D
-
+\newcommand{\mathass}[1]{\mathrm{[}#1 {]}}
 \chapter{Background: Introduction to Logic}
 We use logic to formally reason about the world around us in an abstract way. At the most basic level we are creating abstract propositions, sentences from these propositions and then using formal rules to deal with these propositions and to derive new information or insight. In the following we give a general introduction to logic and describe some of the formalisms used in this thesis.
 A good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}.
@@ -134,7 +134,7 @@ from left to right until no further equivalence is applicable.
 \section{Proof Systems}
 
 \section{Natural Deduction}
-The natural deduction proof system was introduced by Gentzen in 1939 \cite{GG69}.
+The natural deduction proof system was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an intuitive manor. 
 \begin{mydef}[Natural Deduction] 
 The natural deduction proof system consists of the following rules:
 \begin{center}
@@ -167,28 +167,68 @@ The natural deduction proof system consists of the following rules:
 \bigskip
 \begin{center}
 \AxiomC{$A \wedge B$}
-\AxiomC{[A]}
-\AxiomC{}
-\RightLabel{$:u$}
-\UnaryInfC{B}
+\AxiomC{$\mathass{A}$}
 \noLine
 \UnaryInfC{\vdots}
 \noLine
-\UnaryInfC{C}
+\UnaryInfC{$C$}
+\AxiomC{$\mathass{B}$}
+\noLine
+\UnaryInfC{\vdots}
+\noLine
+\UnaryInfC{$C$}
 \LeftLabel{$\vee \mhyphen elim$}
 \TrinaryInfC{$C$}
 \DisplayProof
 \end{center}
 \medskip
 \begin{center}
-\AxiomC{$A$}
-\LeftLabel{$\vee \mhyphen intro \, (L)$}
+\AxiomC{$\mathass{A}$}
+\noLine
+\UnaryInfC{$\vdots$}
+\noLine
+\UnaryInfC{$B$}
+\LeftLabel{$\to \mhyphen intro $}
 \UnaryInfC{$A \vee B$}
 \DisplayProof \hspace{10pt}
 \AxiomC{$A \to B$}
-\AxiomC{A}
-\LeftLabel{$\vee \mhyphen elim$}
+\AxiomC{$A$}
+\LeftLabel{$\to \mhyphen elim$}
 \BinaryInfC{$B$}
+\DisplayProof
+\end{center}
+\medskip
+\begin{center}
+\AxiomC{$\bot$}
+\LeftLabel{efq}
+\UnaryInfC{$A$}
+\DisplayProof 
+\end{center}
+\medskip
+\begin{center}
+\AxiomC{$(a/x)A$}
+\LeftLabel{$\forall \mhyphen intro$}
+\UnaryInfC{$\forall x. A$}
+\DisplayProof \hspace{10pt}
+\AxiomC{$\forall x. A$}
+\LeftLabel{$\forall \mhyphen elim$}
+\UnaryInfC{$(t/x) A$}
+\DisplayProof
+\end{center}
+\medskip
+\begin{center}
+\AxiomC{$\exists x. A$}
+\AxiomC{$\mathass{(a/x)A}$}
+\noLine
+\UnaryInfC{$\vdots$}
+\noLine
+\UnaryInfC{$C$}
+\LeftLabel{$\exists \mhyphen elim$}
+\BinaryInfC{$C$}
+\DisplayProof \hspace{10pt}
+\AxiomC{$(a/x) A$}
+\LeftLabel{$\exists \mhyphen intro$}
+\UnaryInfC{$\exists x. A$}
 \DisplayProof
 \end{center}
 
