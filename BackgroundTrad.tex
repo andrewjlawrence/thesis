@@ -247,25 +247,42 @@ the track ahead. Below is a description of the
 aspects used for a three light signal.  
 \end{comment}
 
+
+
 \begin{figure}[h!]
+\begin{center}
+\subfloat[Stop]{
+\begin{tikzpicture}[node distance = 2cm, scale = 0.5]
+\filldraw[black] (0,0) rectangle (1,2.5);
+\filldraw[red] (0.5,0.4) circle (9pt);
+\end{tikzpicture} } \quad
+\subfloat[Caution]{
+\begin{tikzpicture}[node distance = 2cm, scale = 0.5]
+\filldraw[black] (0,0) rectangle (1,2.5);
+\filldraw[yellow] (0.5,1.25) circle (9pt);
+\end{tikzpicture} } \quad
+\subfloat[Proceed]{
+\begin{tikzpicture}[node distance = 2cm, scale = 0.5]
+\filldraw[black] (0,0) rectangle (1,2.5);
+\filldraw[green] (0.5,2.1) circle (9pt);
+\end{tikzpicture} }
+
+\end{center}
+\caption{Typical Coloured Aspects}
+\label{fig:aspects}
+\end{figure}
+
+
 \begin{description}
 
-\item[Green] - If this aspect is displayed it indicates that track ahead is
-  clear for a sufficient distance and the train driver
-  can proceed at full speed to the next signal.
+\item[Red] -  This instructs the driver to stop at this signal and wait for further instructions as the track ahead is not clear  (Fig \ref{fig:aspects} (a)). 
 
-\item[Yellow] - This aspect indicates the track immediately ahead in between
-  this signal and the next is clear however the driver should proceed with
-  caution as a train could be in the track after that.
 
-\item[Red] - This aspect indicates that the track ahead is not clear, the
-  driver should stop and wait at this signal.
+\item[Yellow] - This signal instructs the driver to proceed with caution as although the track ahead is clear the next signal may be a red one which would require the driver to stop (Fig \ref{fig:aspects} (b)).
 
+\item[Green] -  The driver is clear to proceed down the track at full speed to the next signal as long as it is safe to do so. The track ahead is clear for a sufficient distance.
 \end{description}
-\label{fig:3lightsignal}
 
-
-\end{figure}
 
 The one aspect signal is typically a fixed red indicating that is not possible
 to proceed down the track at this current point in time. The two - four aspect
@@ -388,20 +405,19 @@ is as follows:
 
 \begin{figure}[h!]
  \begin{center}
-   \subfigure[A coil]{   \begin{tikzpicture}[scale=0.65, transform shape]
+   \subfloat[A coil]{   \begin{tikzpicture}[scale=0.65, transform shape]
      \draw (0,-0) -- (0,-2);
      \draw (0,-1)  \rungStart \coil{C};
 
    \end{tikzpicture}
 }
-   \subfigure[An open contact]{   \begin{tikzpicture}[scale=0.65, transform shape]
+   \subfloat[An open contact]{   \begin{tikzpicture}[scale=0.65, transform shape]
      \draw (0,-0) -- (0,-2);
      \draw (0,-1)  \rungStart \contact{C};
 
    \end{tikzpicture}
-
 }
-    \subfigure[A closed contact]{   \begin{tikzpicture}[scale=0.65, transform shape]
+    \subfloat[A closed contact]{   \begin{tikzpicture}[scale=0.65, transform shape]
       \draw (0,-0) -- (0,-2);
        \draw (0,-1)  \rungStart \closedContact{C};
 
@@ -426,13 +442,13 @@ disjunction see Figure \ref{fig:ladderconnectives}.
 
 \begin{figure}[h!]
  \begin{center}
-   \subfigure[$x \wedge y$ Conjunction]{   \begin{tikzpicture}[scale=0.65, transform shape]
+   \subfloat[$x \wedge y$ Conjunction]{   \begin{tikzpicture}[scale=0.65, transform shape]
      \draw (0,-0) -- (0,-2);
      \draw (0,-1)  \rungStart \contact{x} \contact{y} ;
 
    \end{tikzpicture}
 }
-   \subfigure[ $x \vee y$ Disjunction]{   \begin{tikzpicture}[scale=0.65, transform shape]
+   \subfloat[ $x \vee y$ Disjunction]{   \begin{tikzpicture}[scale=0.65, transform shape]
      \draw (0,-0) -- (0,-4);
      \draw (0,-1)  \rungStart \contact{x} \nodeLinkInline{A};
      \draw (0,-3)  \rungStart \contact{y} \nodeLink{B}
