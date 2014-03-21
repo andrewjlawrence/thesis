@@ -404,11 +404,11 @@ is as follows:
 
 \begin{description}
 
-\item[Coils]: A coil represents a value that is both output from the program and stored for later used.  We call the process of computing outputs from inputs and previous outputs the firing of a rung. Graphically, the rungs of a ladder are always layed out so that the coil is the right most entity. Its value is computed from left to right using the input variables and connectives.
+\item[Coils]: A coil represents a value that is both output from the program and stored for later used.  We call the process of computing outputs from inputs and previous outputs the firing of a rung. Graphically, the rungs of a ladder are always laid out so that the coil is the right most entity. Its value is computed from left to right using the input variables and connectives.
 
-\item[Open Contacts]:
+\item[Open Contacts]: The entity of the ladder logic diagram used to represent an un-negated variable.
 
-\item[Closed Contacts]:
+\item[Closed Contacts]: The entity of the ladder logic diagram used to represent a negated variable.
 
 \begin{comment}
 \item[Coils]: These are used to represent values that are both stored for later use
@@ -456,12 +456,18 @@ is as follows:
 
 \medskip
 
+The semantics of a given ladder logic run is determined by the entities and the connections between them.  The horizontal and vertical connections have separate meanings and each will compute a different result for the coil connected to them.
+Semantically these graphical connectives can be viewed as connectives in propositional logic. The horizontal connector represents a conjunction of the two variables it connects and a vertical connection represents disjunction between two variables see Fig \ref{fig:ladderconnectives}.
+
+
+\begin{comment}
 A Ladder logic rung is built using these entities and connections between
 them. The shapes of the connections between the contacts determines how the
 value of the coil is computed from them. Using propositional logic for comparison,  
 a horizontal connection between two contacts represents logical conjunction
 and a vertical connection between two contacts represents logical
 disjunction see Figure \ref{fig:ladderconnectives}. 
+\end{comment}
 
 \medskip
 
@@ -490,12 +496,18 @@ disjunction see Figure \ref{fig:ladderconnectives}.
 \end{figure}
 
 \medskip
-
+\begin{comment}
 In section 4 an approach is presented to capture the semantics of ladder logic
 programs using propositional logic.
-
+\end{comment}
 
 \section{Previous Work in this Field}
+There has been many different approaches to verify ladder logic using different tools and techniques. In the following we shall first present several approaches developed at the home research group of the author and secondly look at work from other institutions and organisations. 
+
+
+The Swansea University Railway Verification Group has produced 3 successful MRes These and 2 successful PhD These on this topic each with their own particular focus. The original group work on the project was carried out by Kanso (See \cite{KKanso}), as part of an MRes project,   who invented an approach to translate ladder logic into propositional logic to which he then used inductive verification with a SAT solver \cite{GSPaper}. This approach was applied to a small academic example pelicon crossing and a real world railway interlocking program consisting of approximately 500 rungs. The work done by Kanso was extended by James in another MRes project that applied program slicing to reduce the size of the model checking problem and bounded model checking and temporal induction to verify the interlockings and possibly obtain a counter example in the process. These two MRes projects were themselves inspired by far earlier work in the form of a feasibility study by Fokkink and Hollingshead \cite{WF98}.
+
+
 Previously James carried out work for Invensys, applying various SAT and model
 checking techniques to verify the correctness of a simple pelican crossing and
 two existing railway interlockings consisting of approximately 500 rungs (see
