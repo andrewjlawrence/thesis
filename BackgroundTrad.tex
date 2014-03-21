@@ -283,7 +283,9 @@ aspects used for a three light signal.
 \item[Green] -  The driver is clear to proceed down the track at full speed to the next signal as long as it is safe to do so. The track ahead is clear for a sufficient distance.
 \end{description}
 
+Other types of signal are normally used in more specific circumstances to control trains on certain types of track.  There are normally single aspect fixed red signals at the ends of tracks that provide permanent indicators not to proceed to approaching drivers. On a low speed segments of track a two aspect signal may be used if the stopping distance of approaching trains is short. Whereas on heigh speed segments of track, where the stopped distances are long, 4 aspect signals may be used with two amber signals in order to provide information about the following two signals. This forms part of the standard signalling scheme in the UK however there are no international standards or consensous. Every country has its own particular singalling scheme with their own conventions on the colour and number of signals used. 
 
+\begin{comment}
 The one aspect signal is typically a fixed red indicating that is not possible
 to proceed down the track at this current point in time. The two - four aspect
 signals are used on tracks with different speeds to convey different stopping
@@ -294,12 +296,15 @@ long and the driver needs information for a greater length of track. These
 signalling schemes are fixed in the UK however they are not fixed from country
 to country. On the continent, for example, they may use different conventions,
 colours and number of lights on each signal.
-
+\end{comment}
 
 
 
 \subsection{The Westrace Interlocking}
 
+Railway interlockings are critical components of the railway with the sole purpose of enforcing a safe stating by acting as a safety kernal between the control system and the physical railway. It repeatedly receives commands and instructions from the control system and then applys a set of rules to check the the state of the railway following the application of the control signnals is safe. If the control signals pass this safety check then they are committed to the physical railway in the next cycle. For example if some human inputted schedule requests a route the interlocking will check that the route setting of the route does not conflict with any other routes currently set or any other signalling principles. If these tests are passed then the route  is set in the physical railway in the next cycle.
+
+\begin{comment}
 The railway interlocking is a key component in ensuring the safety of the
 railway. Its job is to apply a set of rules to the requests and commands it receives from the
 control system and check whether or not the future state of the railway is safe.
@@ -308,6 +313,8 @@ then these signals are committed to the physical infrastructure. For example if
 the human controller requests for a route to be set the interlocking will
 process this request and ensure that it does not conflict with other routes
 before allowing the command to be passed to the physical railway.
+\end{comment}
+
 
 \begin{figure}[h!]
 
@@ -341,8 +348,10 @@ before allowing the command to be passed to the physical railway.
 \label{fig:trackstate}
 \end{figure}
 
+The interlocking repeatedly executes a program or a set of rules based on a cycle induced by a discrete timer. On every cycle the rules are applied to a new set of inputs which are read  before committing them as outputs. The Westrace interlocking developed by Siemens executes a so-called ladder logic program on the interlocking which forms the rule set described previously.  In the following we shall describe the 3 stages of operation in the execution of the Westrace interlocking.
 
 
+\begin{comment}
 The railway interlocking repeatedly executes a program or set of rules over some discrete time
 interval. Each time it uses the set of
 rules it contains to process a new set of inputs before committing them as
@@ -350,14 +359,16 @@ outputs. The Westrace interlocking used by Invensys Rail executes a so-called
 ladder logic program to perform this process. 
 The following are the three main stages of operation in the running of an
 Westrace interlocking.
+\end{comment}
+
 
 \begin{description}
 
-\item[Reading of Inputs] - Read inputs from the control systems as well as the physical railway infrastructure.
+\item[Reading of Inputs] - Process input signals from both the control system and the phsycial railway.
 
-\item[Internal Processing] - Execute the ladder logic program with the above inputs and calculate outputs.
+\item[Internal Processing] - Using the inputs execute the ladder logic program in order to calculate the outputs. 
 
-\item[Committing of Outputs] - The outputs calculated in the previous cycle are then passed on to various places including the physical railway.
+\item[Committing of Outputs] - Transmitt the calculated outputs as control signals to the railway and feedback this information to the control system.
 
 \end{description}
 
@@ -366,12 +377,19 @@ Westrace interlocking.
 
 \section{Ladder Logic}
 
+The Westrace Interlocking executes a ladder logic program \cite{IEC03} in order to perform calculations. In the following I shall present a more detailed description of a ladder logic program from the point of view of its fundemental constructs.  
+
+\begin{comment}
 The Westrace Interlocking performs calculations by executing a ladder logic
 program \cite{IEC03}. In the following we will look in more detail at these
 ladder logic programs. The main concepts behind their construction and
 behaviour will be presented. In later chapters we will provide a formal framework
 for the verification of these programs.
+\end{comment}
 
+There is an international standard that governs the graphical  ladder logic language for programmable logic controllers IEC 61131 \cite{IEC03}. The appearence of the ladder logic was designed with control engineers in mind which has led to its graphical ``ladder" like appearance. The ladder consists of rungs, each of which computes an output variable from one or more input variables on the rung. These inputs maybe true inputs to the system or they maybe previously computed outputs from higher up in the ladder.  It is a convention in the railway industry to refer to the input variables as contacts and the output variables as coils. In the following we give a more indepth description of these variables:
+
+\begin{comment}
 The international standard for programmable logic controllers IEC
 61131 \cite{IEC03} describes the graphical language ladder logic. It gets its
 name from its graphical ``ladder'' like appearance which was chosen to suit
@@ -380,12 +398,19 @@ used to compute an output variable from one or more input variables in the rung.
 In the railway industry these input variables are referred to as contacts and
 the output variables are referred to as coils. A description of the entities representing these variables
 is as follows:
-
+\end{comment}
 
 \smallskip
 
 \begin{description}
 
+\item[Coils]: A coil represents a value that is both output from the program and stored for later used.  We call the process of computing outputs from inputs and previous outputs the firing of a rung. Graphically, the rungs of a ladder are always layed out so that the coil is the right most entity. Its value is computed from left to right using the input variables and connectives.
+
+\item[Open Contacts]:
+
+\item[Closed Contacts]:
+
+\begin{comment}
 \item[Coils]: These are used to represent values that are both stored for later use
   and output from the program. The value of a coil is calculated when a rung
   fires making use of the current set of inputs, the previous set of outputs
@@ -398,7 +423,7 @@ is as follows:
 
 
 \item[Closed Contacts]: This entity represents the value of a negated variable.
-
+\end{comment}
 \end{description}
 
 \medskip

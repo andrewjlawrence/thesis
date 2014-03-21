@@ -1067,6 +1067,7 @@ In the following section we will demonstrate an approach to apply the Real Time 
 Firstly we shall define the property we want to check in the Real Time Maude system. To do this we have to define a satisfaction relation which describes what it means for the property to hold in a state of the system we are checking.  The property we shall consider in this case is that the moment authorities of two trains in system do not overlap. Logical property we define identifies the individual trains using their object identifiers and then computes whether or not an over lap has occured using a boolean formula.  We shall show that it is possible to verify this property over a time period large enough for all normal behaviours of the system to occur. 
 
 \subsection*{Defining a Satisfaction Relation}
+The syntax of the properties for which we are going to check using the LTL model checker are defined separately from the semantics in terms of a satisfaction relation.
 We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a Real Time Maude specification. The satisfaction relation itself is predefined in a specification as an operation which takes a State and a property which is of type Prop and computes a boolean. Maude defines the satisfaction relation $\models$ in the following module:
 \begin{verbatim}
   fmod SATISFACTION is  
@@ -1084,9 +1085,11 @@ We can check that a train is in a specific state as follows:
 This predicate holds if there is a train in t he configuration with object identifier O1' and a state cons. 
 
 We can check that a train has a certain speed as follows:
-
+\begin{center}
 \texttt{op train-s : Oid Nat -> Prop [ctor] .} \\ \medskip
 \texttt{eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') = (N1 == N1') and (O1 == O1') .}
+\end{center}
+
 Here the natural number N1 in the train object is matched with N1' in the predicate train-s.
 The main movement authority that we want to check is that the movement authorities of two trains does not over lap.
 To do this we define a Property nomaoverlap(O1,O2) of type \texttt{Oid Oid -> Prop [ctor]} as follows: 
@@ -1099,6 +1102,8 @@ Here we have matched two object identifiers and natural numbers and callled a bo
 \begin{center}
 \texttt{eq noolap(D1,M1,D2,M2) = ((D1 < M1) and (M1 < D2) and (D2 < M2)) or ((D2 < M2) and (M2 < D1) and (D1 < M1)) or ((D1 < M1) and (M2 < D1) and (M1 < D2)) or ((D2 < M2) and (M1 < D2) and (M2 < D1) )  .}    
 \end{center}
+
+This external operation encodes the 4 possible combines of movement authorities and trains in which the movement authorities do not over lap.  The first case is that train one is behind its movement authority which is behind the second train which itself is behind the movement authority. The second case is the reverse of the first case. In the third and fourth cases  one of the trains is behind its movement authority and the other is towards the end of the track and has its movement authority extended into the intial segment at the beginning of the track.
 
 \subsection{Execution of The LTL Model Checker}
 \textbf{Note: do we want to describe and verify other safety conditions here?}
