@@ -1012,10 +1012,11 @@ In the following we use an example initial state containing two trains one of wh
                                                          t0 : true, 
                                                          t1 : false,  
                                                          t2 : false, 
-                                                         t3 : false, 
+                                                         t3 : true, 
                                                          t4 : false > .
 \end{lstlisting}
-The  interlocking is initially idle and the 
+
+The  interlocking is initially idle, the request variable is set to zero, the track segments containing trains are set to true and the remaining track segments are set to false.
 
 \begin{lstlisting}[caption = The initial RBC state in Maude]
  eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, lasttrain : train1, 
