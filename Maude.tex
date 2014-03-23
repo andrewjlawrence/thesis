@@ -6,7 +6,7 @@ In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cit
 \subsection*{Related Work}
 The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. 
 
-On the front of hybrid automata, ERTMS has been verified in the form of Hybrid Automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}
+On the front of hybrid automata, ERTMS has been verified in the form of Hybrid Automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}. The Hi-Maude system \cite{MF11} is an extension of Real Time maude designed specifically modelling interacting hybrid systems and as such it can handle differential equations. It has been used in a case study to model the effects of extreme heat on the human body \cite{MF12}. It is geared towards systems of a highly dynamic nature and may be overkill for a system such as ERTMS with a large discrete component.
 
 
 \section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
@@ -769,7 +769,7 @@ The interpretation of the abstract time domain is mapped to a concrete specifica
 \end{itemize}
 
 \end{mydef}
-
+\medskip
 \begin{mydef}[Real-Time Rewrite Theory]
 We define a \emph{real-time rewrite theory} $\mathfrak{R}_{\phi,\tau}$ to be a tuple $(\mathfrak{R}, \phi,\tau)$ containing a rewrite theory $\mathfrak{R} = (\Sigma, E,L,R) $ where:
 
@@ -794,7 +794,6 @@ there is an assigned term $\tau_l(x_1 \ldots x_n)$ of sort $\phi(Time)$ within $
 \subsubsection*{Example Real Time Maude Specification}
 The following a very simple model of a train Real Time Maude that moves one unit of distance in one time unit along a circular track of length 500. It defines a sort \texttt{TrainState} and a single state \texttt{move}. We have a constructor train of type \texttt{System} which consists of a train state and a natural number.  
 
-
 \begin{lstlisting}
 (tmod DISCRETE-SINGLE-TRAIN is protecting NAT-TIME-DOMAIN .
   sort TrainState .
@@ -808,6 +807,8 @@ The following a very simple model of a train Real Time Maude that moves one unit
          
 endtm)
 \end{lstlisting}
+There is a condition rewrite rule called travel which enables the train to move as long as its current distance is less than 500. There is a reset rule that instantaneously resets the trains distance back to zero when it reaches 500.
+
 
 \subsubsection*{Executing a Real Time Maude Specification}
 Real Time Maude allows one to execute or simulate a real time system by applying rewriting rules to a term of type \texttt{System}.
@@ -1008,54 +1009,63 @@ In the following we use an example initial state containing two trains one of wh
 
 \begin{lstlisting}[caption = The initial interlocking state in Maude]
  eq initialintstate2 = < inter1 : Inter | state : idle, 
-                                                         reqid : 0 , 
-                                                         t0 : true, 
-                                                         t1 : false,  
-                                                         t2 : false, 
-                                                         t3 : true, 
-                                                         t4 : false > .
+                         reqid : 0, t0 : true, 
+                         t1 : false, t2 : false, 
+                         t3 : true, t4 : false > .
 \end{lstlisting}
 
 The  interlocking is initially idle, the request variable is set to zero, the track segments containing trains are set to true and the remaining track segments are set to false.
 
 \begin{lstlisting}[caption = The initial RBC state in Maude]
- eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, lasttrain : train1, 
-                                    ma : (train1 |-> 49,train2 |-> 199), 
-                                    pos : (train1 |-> 0, train2 |-> 150) , 
-                                    curreq : empty > .
+ eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, 
+                         lasttrain : train1,  
+                         ma : (train1 |-> 49, train2 |-> 199), 
+                         pos : (train1 |-> 0, train2 |-> 150), 
+                         curreq : empty > .
+\end{lstlisting}
+
+Like the interlocking, the RBC is also initially idle. Since the lasttrain variable has not effect in this state and will be set in any successive control flow we simply set it to be train1. The movement authorites  and positions of the trains are set within the ma and pos mapping respectively and the current request is empty.  
 
 \begin{lstlisting}[caption = The intital state of train2 in Maude]
  eq initialtrainstate1 = < train1 : Train | state : acc,  dist : 0, 
-                                                   speed : 0, ac : 1, ma : 49, 
-                                                   tseg : 0 , maxspeed : 4 > .
+                           speed : 0, ac : 1, ma : 49, 
+                           tseg : 0, maxspeed : 4 > .
 \end{lstlisting}
- 
+We set the train1 to be accellerating initally with a distance and speed of zero its movement authority is fourty nine , it is in the zero track segment and has a maxspeed of four. 
+
 \begin{lstlisting}[caption = The intial state of train2 in Maude]
-eq initialtrainstate2 > < train2 : Train | state : acc, dist : 150, 
-                                                  speed : 0, ac : 1, ma : 199,
-                                                  tseg : 3 , maxspeed : 7 > .
+eq initialtrainstate2  = < train2 : Train | state : acc, dist : 150, 
+                           speed : 0, ac : 1, ma : 199,
+                           tseg : 3, maxspeed : 7 > .
 \end{lstlisting}
-Secondly, we combine these individual components to form the complete system:
-\begin{verbatim}
+Like train1, train2 is also accellerating initially and has a speed of zero.  Unlike train1 it has a distance of one hundred and fifty, a movement authority of one hundred and ninty nine, it is in the fourth track segment number three and has a maxspeed of four. Both trains have an accelleration of one. 
+
+Using these initial states for the individual objects we can form the initial state for our pentagon example using the following command:
+\begin{lstlisting}
  eq initialstate2 = {initialtrainstate1 initialtrainstate2 
                          initialintstate2  initialrbcstate2} . 
-\end{verbatim}
-The model of ERTMS  in the  is executed using the following command:
+\end{lstlisting}
+The operation initial state 2 is of type System and contains a Configuration consisting of the initial states of train1, train2, the rbc and the interlocking. This initial state forms a model of ERTMS which we can simulate using Real Time Maude to rewrite it to a state after a set number of time steps. The model of ERTMS is executed using the following command:
 \begin{center}
 \texttt{(trew initialstate2 in time $\leq$ 50 .)}
 \end{center}
 
 In the resulting output at time 50 both of the trains have moved a considerable distance and have requested and received new movement authorities.
  
-\begin{verbatim}
+\begin{lstlisting}[caption = The result of rewriting initialstate2 for 50 time steps]
 Result ClockedSystem :
-  {< inter1 : Inter | reqid : 3,state : idle,t0 : false,t1 : false,t2 : true,t3
-    : true,t4 : false > < rbc1 : RBC | curreq : train2,lasttrain : train2,ma :(
-    train1 |-> 199, train2 |-> 149),pos :(train1 |-> 180, train2 |-> 122),state
-    : rbcidle > < train1 : Train | ac : 1,dist : 184,ma : 199,maxspeed : 4,
-    speed : 4,state : cons,tseg : 3 > < train2 : Train | ac : 1,dist : 128,ma :
+  {< inter1 : Inter | reqid : 3,state : idle,
+     t0 : false,t1 : false,t2 : true,
+     t3 : true,t4 : false > 
+   < rbc1 : RBC | curreq : train2,lasttrain : train2,
+     ma : (train1 |-> 199, train2 |-> 149),
+     pos : (train1 |-> 180, train2 |-> 122),
+     state : rbcidle > 
+   < train1 : Train | ac : 1,dist : 184,ma : 199,maxspeed : 4,
+    speed : 4,state : cons,tseg : 3 > 
+   < train2 : Train | ac : 1,dist : 128,ma :
     149,maxspeed : 7,speed : 5,state : break,tseg : 2 >} in time 50
-\end{verbatim}
+\end{lstlisting}
 
 \begin{figure}
 \begin{center}
