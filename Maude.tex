@@ -12,6 +12,7 @@ On the front of hybrid automata, ERTMS has been verified in the form of Hybrid A
 \section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
 One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as 3 Hybrid automata composed in parallel.
 We begin by defining the syntax of a Hybrid automata before defining its semantics in terms of a labelled transition system.
+\medskip
 \begin{mydef}[Hybrid Automaton: Syntax]
 The syntax of a hybrid automaton $H$ comprises of the following:
 \begin{description}
@@ -29,7 +30,18 @@ The syntax of a hybrid automaton $H$ comprises of the following:
 \end{description}
 Where $\freevar{P}$ is the set of free variables in the predicate $P$.
 \end{mydef}
+\medskip
+A hybrid automaton has discrete states called control modes and transitions between these modes called control switches. These control switches are triggered by either some condition on variables or by some event occuring. These events can either occur in some other automaton or they can be fired by an automaton due to some condition being met. The continous transitions of the automaton are described by dotted variables and occur continually over time.
+\medskip
+\begin{myremark}
+The dotted variables represent the rate of change of a given variable over time.
 
+$$\dot{y} = \frac{dy}{dt}$$
+
+This notation was introduced by Newton \cite{CF28}.
+\end{myremark}
+\medskip
+The semantics of the hybrid automaton are described using labelled transitions systems. These transition systems allow us to model the behaviour of a system with a possibly infinite number of discrete labelled states. 
 \medskip
 \begin{mydef}[Labelled Transition System]
 We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
@@ -709,7 +721,7 @@ where $l$ is a label $l \in L$ and $t$, $t'$, $u_i$, $v_i$, $w_j$ and $w'_j$ are
 \subsubsection{Example Maude Specification}
 The following is a specification of the natural numbers in Maude:
 
-\begin{verbatim}
+\begin{lstlisting}[caption = The natural numbers in Maude]
 fmod BASIC-NAT is
         sort Nat .
 
@@ -722,7 +734,7 @@ fmod BASIC-NAT is
         eq 0 + N = N .
         eq s(M) + N = s(M + N) .
 endfm
-\end{verbatim}
+\end{lstlisting}
 
 
 
@@ -783,18 +795,19 @@ there is an assigned term $\tau_l(x_1 \ldots x_n)$ of sort $\phi(Time)$ within $
 The following a very simple model of a train Real Time Maude that moves one unit of distance in one time unit along a circular track of length 500. It defines a sort \texttt{TrainState} and a single state \texttt{move}. We have a constructor train of type \texttt{System} which consists of a train state and a natural number.  
 
 
-\begin{verbatim}
+\begin{lstlisting}
 (tmod DISCRETE-SINGLE-TRAIN is protecting NAT-TIME-DOMAIN .
   sort TrainState .
   ops  move :  -> TrainState [ctor] .
   op train : TrainState Nat -> System [ctor] .
  
   vars N : Time .
-  crl [travel] : {train(move,N)} => {train(move,N + 1)} in time 1 if N < 500 .
+  crl [travel] : {train(move,N)} => {train(move,N + 1)} 
+                                      in time 1 if N < 500 .
   rl [reset] : {train(move,500)} => {train(move,0)} . 
          
 endtm)
-\end{verbatim}
+\end{lstlisting}
 
 \subsubsection*{Executing a Real Time Maude Specification}
 Real Time Maude allows one to execute or simulate a real time system by applying rewriting rules to a term of type \texttt{System}.
@@ -804,7 +817,7 @@ The command \texttt{(trew \{System\} in time <= t)} will attempt to rewrite the 
 \end{center}
 
 The result from this timed rewrite is as follows:
-\begin{verbatim}
+\begin{lstlisting}
 rewrites: 4027 in 4ms cpu (3ms real) (1006750 rewrites/second)
 
 Timed rewrite  {train(move,0)} in DISCRETE-SINGLE-TRAIN 
@@ -812,7 +825,7 @@ with mode deterministic time increase in time <= 100
 
 Result ClockedSystem :
   {train(move,100)} in time 100
-\end{verbatim}
+\end{lstlisting}
 
 
 \subsection{Object Orientated Specification in Real Time Maude}
@@ -834,7 +847,7 @@ To model communicating processes Real Time Maude uses a messages construct.
 \subsubsection*{Configurations in Real Time Maude}
 Objects and messages in a specification are given a sort of \texttt{Configuration} which is a subsort of type \texttt{System}. The composition operation for these configuration allows for a combination of objects and messages to form new configurations. This composition operation is also commutative meaning the order of messages and objects in any configuration is ignored. This allows for more generalised writing rules in an object orientated specification that speak about specific objects and messages that are part of some bigger configuration that does not affect the firing of the rule.
 
-\begin{verbatim}
+\begin{lstlisting}[caption = The Maude Configuration module]
 mod CONFIGURATION is  
     *** basic object system sorts  
     sorts Object Msg Configuration .  
@@ -844,14 +857,14 @@ mod CONFIGURATION is
     op none : -> Configuration [ctor] .  
     op __ : Configuration Configuration -> Configuration  
          [ctor config assoc comm id: none] .
-\end{verbatim}
+\end{lstlisting}
 
 
 
 \subsubsection*{Example Object Orientated Specification}
 The following is an example consisting of two classes of object which serves to demonstrate some of the advantages of object orientated specification as well as some of the pit falls. Firstly there is the class defining D objects which count modulo 500 and transmit a message containing the current count. Secondly there is class defining a object B that reads messages from a D object. 
 
-\begin{verbatim}
+\begin{lstlisting}[caption = Example object orientated specification, label = code:rtmaudeexample]
 (tomod EXAMPLE1 is protecting NAT-TIME-DOMAIN .
   msgs msgD  : Nat -> Msg .  
   class  D | d : Nat .
@@ -867,7 +880,7 @@ The following is an example consisting of two classes of object which serves to 
   rl [readB] : {msgD(N) < O : B | > REST} => 
   {< O : B | b : N > REST}  . 
 endtom)
-\end{verbatim}
+\end{lstlisting}
 
 We can execute the specification as follows:
 \begin{center}
@@ -875,7 +888,7 @@ We can execute the specification as follows:
 \end{center}
 
 Resulting in the following output:
-\begin{verbatim}
+\begin{lstlisting}
 rewrites: 6246 in 7ms cpu (7ms real) 
 (805000 rewrites/second)
 
@@ -885,41 +898,38 @@ increase in time <= 2
 
 Result ClockedSystem :
   {< myB : B | b : 2 > < myD : D | d : 2 >} in time 2
-\end{verbatim}
+\end{lstlisting}
 
 The following are some states reachable in time 2.
 
-\begin{verbatim}
+\begin{lstlisting}
 {< myB : B | b : 1 > < myD : D | d : 2 >}
 {< myB : B | b : 2 > < myD : D | d : 2 >}
 {msgD(1)< myB : B | b : 2 > < myD : D | d : 2 >}
 {msgD(1)msgD(2)< myB : B | b : 0 > < myD : D | d : 2 >}
 {msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
-\end{verbatim}
+\end{lstlisting}
 
 \emph{Non-determinism} should be avoided unless it is really is a property you want in a model. One way to remove some of these reachable states is to make the variable \texttt{REST} of sort \texttt{ObjectConfiguration}. This forces objects of the B class to read messages after each incrementation of time. If we make this modification to the specification then the following states are reachable in time 2.
-\begin{verbatim}
+\begin{lstlisting}
 {< myB : B | b : 2 > < myD : D | d : 2 >}
 {msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
-\end{verbatim}
+\end{lstlisting}
 
 
 \section{Modelling the European Rail Traffic Management System}
 In the following we shall give an overview of the specifications used to model the ERTMS system. Following the hybrid automata describe in \ref{} we have defined one class for each of the 3 hybrid automata.
 \subsubsection*{Modelling the Transition of Time}
 In our previous Real Time Maude specifications we have had a rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define operator $\delta$ which describes how distributed system evolves with time.
-\begin{verbatim}
 
+\begin{lstlisting}[caption = The delta time transition operation, label = code:delta]
 op delta : Configuration -> Configuration [frozen] . 
 
 var OCREST : ObjectConfiguration .
 
-op delta : Configuration -> Configuration [frozen] . 
-
 rl [timetrans] : {OCREST} => {delta(OCREST)} in time 1 .
 rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
-
-\end{verbatim}
+\end{lstlisting}
 
 \subsubsection*{Modelling Trains}
 We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and breaking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.
@@ -996,21 +1006,34 @@ We will now see how this executable specification can be used to simulate and ob
 
 In the following we use an example initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 150. The RBC and the interlocking are both initialised with the trains in these positions. In Maude this initial state is modelled as follows. Firstly, we define the initial states of the component objects individually:
 
-\begin{verbatim}
- eq initialintstate2 = < inter1 : Inter | state : idle, reqid : 0 , 
-                                   t0 : true, t1 : false,  t2 : false, 
-                                   t3 : false, t4 : false > .
+\begin{lstlisting}[caption = The initial interlocking state in Maude]
+ eq initialintstate2 = < inter1 : Inter | state : idle, 
+                                                         reqid : 0 , 
+                                                         t0 : true, 
+                                                         t1 : false,  
+                                                         t2 : false, 
+                                                         t3 : false, 
+                                                         t4 : false > .
+\end{lstlisting}
+The  interlocking is initially idle and the 
+
+\begin{lstlisting}[caption = The initial RBC state in Maude]
  eq initialrbcstate2 = < rbc1 : RBC | state : rbcidle, lasttrain : train1, 
                                     ma : (train1 |-> 49,train2 |-> 199), 
                                     pos : (train1 |-> 0, train2 |-> 150) , 
                                     curreq : empty > .
- rl [inittr1] : initialtrainstate1 => < train1 : Train | state : acc,  dist : 0, 
+
+\begin{lstlisting}[caption = The intital state of train2 in Maude]
+ eq initialtrainstate1 = < train1 : Train | state : acc,  dist : 0, 
                                                    speed : 0, ac : 1, ma : 49, 
                                                    tseg : 0 , maxspeed : 4 > .
- rl [inittr2] : initialtrainstate2 => < train2 : Train | state : acc, dist : 150, 
+\end{lstlisting}
+ 
+\begin{lstlisting}[caption = The intial state of train2 in Maude]
+eq initialtrainstate2 > < train2 : Train | state : acc, dist : 150, 
                                                   speed : 0, ac : 1, ma : 199,
                                                   tseg : 3 , maxspeed : 7 > .
-\end{verbatim}
+\end{lstlisting}
 Secondly, we combine these individual components to form the complete system:
 \begin{verbatim}
  eq initialstate2 = {initialtrainstate1 initialtrainstate2 
@@ -1068,17 +1091,21 @@ Firstly we shall define the property we want to check in the Real Time Maude sys
 
 \subsection*{Defining a Satisfaction Relation}
 The syntax of the properties for which we are going to check using the LTL model checker are defined separately from the semantics in terms of a satisfaction relation.
-We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a Real Time Maude specification. The satisfaction relation itself is predefined in a specification as an operation which takes a State and a property which is of type Prop and computes a boolean. Maude defines the satisfaction relation $\models$ in the following module:
-\begin{verbatim}
+We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a Real Time Maude specification. The satisfaction relation itself is predefined in a specification as an operation which takes a State and a property which is of type Prop and computes a boolean. Maude defines the satisfaction relation $\models$ in the following:
+\medskip
+
+\begin{lstlisting}[caption =  The Maude Satisfaction module, label =code:satsifaction ]
   fmod SATISFACTION is  
     protecting BOOL .  
     sorts State Prop .  
     op _|=_ : State Prop -> Bool [frozen] .  
   endfm
-\end{verbatim}
+\end{lstlisting}
+\medskip
 The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$. It is left to the user of the model checker to define the behaviour for their own purposes. The standard way to define predicates which refer to a given object is by matching object identifiers.
 
 We can check that a train is in a specific state as follows:
+
 \texttt{ops train-cons : Oid -> Prop [ctor] .} \\ \medskip
 \texttt{eq {REST < O1 : Train | state : cons >} |= train-cons(O1') = (O1 == O1') . } \\
 \bigskip
