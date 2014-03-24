@@ -1,7 +1,7 @@
 \newcommand{\rtmaude}{Real Time Maude}
 
 \thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{chapter:ERTMS}.The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that a single train automaton always remains within its movement authority. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS.
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{chapter:ERTMS}.The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that a single train automaton always remains within its movement authority. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS. A general introduction to Maude can be found in \cite{MaudeBook}
 
 \subsection*{Related Work}
 The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. 
@@ -286,7 +286,7 @@ The train automaton modelling the trains we make use of a function $BD$ that cal
 \begin{mydef}[Breaking Distance]
 We define the breaking distance for a train given its movement authority $EoA$ and a speed $Speed$  as follows: 
 
-$$ BD(EoA, speed) = EoA - \frac{speed ^2}{2} mod 250 $$
+$$ BD(EoA, speed) = EoA - \frac{speed ^2}{2} \, mod \, 250 $$
 \end{mydef}
 \medskip
 
@@ -442,7 +442,9 @@ We define a hybrid automaton $H_{T}$ as follows:
 \end{figure}
 \end{comment}
 
-
+\medskip
+Similarily to the train automaton the RBC automaton also has four control modes namely Granted, Idle, Wait and Ready to Request. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the Ready to Request state.  From this state the train sends a request for the next track segment of the LastTrain.
+\medskip
 
 \begin{mydef}[Radio Block Controller Hybrid Automaton]
 
@@ -464,9 +466,9 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 	\item $jump(Ready to Request \to Ready to Request) := Train.x.Pos.y \wedge MA.x = y$
 	\item $jump(Wait \to Wait) := Train.x.Pos.y \wedge MA.x = y$
 	\item $jump(Granted \to Granted) := Train.x.Pos.y \wedge MA.x = y$
-
+	\item $jump(Idle \to Idle) := Train.x.Pos.y \wedge MA.x = y$
 	\item $jump(Idle \to Ready to Request) := MA.Req.x \wedge LastTrain = x$
-	\item $jump(Ready to Request \to Wait) := Req.NextTrack(y)$
+	\item $jump(Ready to Request \to Wait) := Req.NextTrack(TrackSeg(Pos.LastTrain))$
 	\item $jump(Wait \to Ready to Request) := Deny.LastTrain$
 	\item $jump(Wait \to Granted) := Grant.LastTrain$
 	\item $jump(Granted \to Idle) := MA.x.EndOf(z)$
@@ -480,12 +482,12 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 \item $jump(Ready to Request \to Ready to Request) := Train.x.Pos.y$
 	\item $jump(Wait \to Wait) := Train.x.Pos.y$
 	\item $jump(Granted \to Granted) := Train.x.Pos.y $
-
+         \item $jump(Idle \to Idle) := Train.x.Pos.y$
 	\item $jump(Idle \to Ready to Request) := MA.Req.x $
-	\item $jump(Ready to Request \to Wait) := Req.NextTrack(y)$
-	\item $jump(Wait \to Ready to Request) := Deny.LastTrain$
-	\item $jump(Wait \to Granted) := Grant.LastTrain$
-	\item $jump(Granted \to Idle) := MA.x.EndOf(z)$
+	\item $jump(Ready to Request \to Wait) := Req.NextTrack(Pos.LastTrain)$
+	\item $jump(Wait \to Ready to Request) := Deny.x$
+	\item $jump(Wait \to Granted) := Grant.x$
+	\item $jump(Granted \to Idle) := MA.LastTrain.EndOf(NextTrack(Pos.LastTrain)))$
 \end{itemize}
 
 \end{description}
@@ -525,15 +527,17 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 						};
 
 
-\draw [arrow] (B)  .. controls +(0.5cm,  1.5 cm) and +(0.5cm,  -1.5 cm ) .. node[right] {$Req.NextTrack(y)$} (D);
-\draw [arrow] (D) .. controls +(-0.5cm,  -1.5cm) and +(-0.5cm, 1.5 cm ) ..   node [left] {$Deny.LastTrain$} (B);
+\draw [arrow] (B)  .. controls +(0.5cm,  1.5 cm) and +(0.5cm,  -1.5 cm ) .. node[right, text width = 3cm] {\begin{center}$Req.NextTrack($ \\ $Pos.LastTrain)$ \end{center}} (D);
+\draw [arrow] (D) .. controls +(-0.5cm,  -1.5cm) and +(-0.5cm, 1.5 cm ) ..   node [left] {$Deny.x$} (B);
 \draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}$MA.Req.x$ \\ $LastTrain := x$\end{center}} (B);
-\draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$Grant.LastTrain$\end{center}} (C);
-\draw [arrow] (C) -- node [left] {$MA.x.EndOf(z)$} (A);
+\draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$Grant.x$\end{center}} (C);
+\draw [arrow] (C) -- node [left, text width = 4cm] {$MA.x.EndOf($ \\ $NextTrack($ \\ $Pos.LastTrain))$} (A);
 
 \draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ Pos.x := y\end{center}} (C);
 \draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 5pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ Pos.x := y\end{center}} (D);
 \draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ Pos.x := y\end{center}} (B);
+\draw [arrow] (A) .. controls +(-2cm,  -2cm) and +(-2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}$Train.x.Pos.y$\\ Pos.x := y\end{center}} (A);
+
 
 \end{tikzpicture} 
 \end{center}
@@ -719,9 +723,9 @@ where $l$ is a label $l \in L$ and $t$, $t'$, $u_i$, $v_i$, $w_j$ and $w'_j$ are
 \end{mydef}
 
 \subsubsection{Example Maude Specification}
-The following is a specification of the natural numbers in Maude:
+We shall now give a small example specification in the form of the natural numbers in Maude in order to get a feel for the structure of such a specification. We see that the module BASIC-NAT on the first line of the example (CL \ref{code:natnum}). Followed by a sort Nat which forms the type with which we will be working. Next several operations are declared with which we define the natural numbers symbolically. Firstly, we see a 0 operator which forms our basic constructor which is followed by another operation s which allows us to construct successive natural numbers. The infix addition operation $+$ defined using variable place holders  $\_$. The behaviour of the addition operation is defined inductively using two variables N and M and two equations for the base and successor cases.
 
-\begin{lstlisting}[caption = The natural numbers in Maude]
+\begin{lstlisting}[caption = The natural numbers in Maude, label = code:natnum]
 fmod BASIC-NAT is
         sort Nat .
 
@@ -901,9 +905,10 @@ Result ClockedSystem :
   {< myB : B | b : 2 > < myD : D | d : 2 >} in time 2
 \end{lstlisting}
 
+The Maude system rewrites the initial state of the system into the resulting state however that does not mean that this is the only reachable state. This set has some non-determinism in that we do not force the messages to be read immediately and the rewriting equations could be applied in any order. There is a reachable state in time 2 in which both of the messages have not been read meaning that either of them could be read in any order resulting in  . 
 The following are some states reachable in time 2.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = Some of the states reachable by rewriting EXAMPLE1 in two time steps]
 {< myB : B | b : 1 > < myD : D | d : 2 >}
 {< myB : B | b : 2 > < myD : D | d : 2 >}
 {msgD(1)< myB : B | b : 2 > < myD : D | d : 2 >}
@@ -935,13 +940,14 @@ rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
 \subsubsection*{Modelling Trains}
 We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and breaking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.
 
-\begin{verbatim}
+\begin{lstlisting}
 sort TrainState .
 ops  cons acc stop break :  -> TrainState [ctor] .
 
-class Train | state : TrainState, dist : Nat, speed : Nat, ac : Nat,  
-                               ma : Nat, tseg : Nat , maxspeed : Nat .
-\end{verbatim}
+class Train | state : TrainState, dist : Nat, 
+      speed : Nat, ac : Nat, ma : Nat, 
+      tseg : Nat, maxspeed : Nat .
+\end{lstlisting}
 
 We capture the behaviour of trains using a number of instantaneous and tick rewriting rules. The instantaneous rules are used to capture a change of state within a train. For example if the a train is in the cons state distance to the movement authority becomes less than the distance needed to break to zero in the next moment of time one of these rules will fire and cause a state transition. 
 
@@ -949,8 +955,7 @@ We compute the breaking distance as follows:
 \begin{center}\texttt{eq bd(S) = (S * S) div 2 .}\end{center}
 
 
-
-The division operation is based on repeated subtraction and finally taking the floor or the resulting number. When we divide a number by 2 in the breaking function we add 1 to change this to the ceiling of the resulting number. This prevents a situation where we have a distance of 1 from our moment authority but the breaking distance is 0.
+The division operation is based on repeated subtraction and finally taking the floor or the resulting number. When we divide a number by two in the breaking function we add 1 to change this to the ceiling of the resulting number. This prevents a situation where we have a distance of 1 from our moment authority but the breaking distance is zero.
 The distance to the movement authority to the train is computed by:
 \begin{center}
 \texttt{} \\
@@ -959,48 +964,55 @@ The distance to the movement authority to the train is computed by:
 
 When modelling the trains we perform the jumps from accelerating and full allowed speed to breaking if the breaking distance becomes less than the distance to movement authority in the next moment in time.
 
-\subsubsection*{Modelling the Radio Block Processor}
-We define the RBC state as follows:
 
-\begin{verbatim}
+\subsubsection*{Mappings in Maude}
+
+
+\subsubsection*{Modelling the Radio Block Processor}
+The RBC is slightly differently from the hybrid automaton described previously. Instead of having four states the RBC has three states with the behaviour of the granted state being combined into the behaviour of a transition which causes the RBC to leave the wait state. The when the RBC receives a track segment grant fromt the interlocking it immediately grants the movement authority before going back to the idle state.
+ 
+\begin{lstlisting}[caption = The RBC state and class definition in Maude]
 sort RBCState .
 ops rbcidle ready wait :  -> RBCState [ctor] .
-\end{verbatim}
+class RBC | state : RBCState, lasttrain : Oid, ma : MapON, 
+      pos : MapON , curreq : SetO .
+\end{lstlisting}
 
-We define the RBC class as follows:
-
-\begin{center}
-\texttt{class RBC | state : RBCState, lasttrain : Oid, ma : MapON, pos : MapON , curreq : SetO  .}
-\end{center}
 We use maps to store the current movement authorities and positions of the various trains. In order to prevent an infinite amount of requests being made to an interlocking we limit the rbc to make one request on behalf of each train to the interlocking.  To do this we use  \texttt{curreq}, a set of oids, to store which trains have had a request made for them at a given moment of time.
 
 An example RBC transition is as follows:
-\begin{center}
-\texttt{ rl [rbcgrant] : \{grant(N) < O : RBC | state : wait, lasttrain : T1, ma : MAP1  > REST\} => \{ < O : RBC | state : rbcidle, ma : insert(T1,endoftrack(N),MAP1) > grantma(T1, endoftrack(N)) REST\} .
-}
-\end{center}
+\begin{lstlisting}[caption = The state transition for the granting of a movement authority]
+rl [rbcgrant] : {grant(N) < O : RBC | state : wait, 
+   lasttrain : T1, ma : MAP1  > REST} => 
+   { < O : RBC | state : rbcidle, 
+       ma : insert(T1,endoftrack(N),MAP1) > 
+     grantma(T1, endoftrack(N)) REST} .
+\end{lstlisting}
 
 
 \subsubsection*{Modelling the Interlocking}
-An interlocking has two states, either it is idle or it has received a request for a movement authority and must respond. We define an Interlockings state in Real Time Maude as follows:
+An interlocking has two states, either it is idle or it has received a request for a movement authority and must respond. We define an Interlockings state and class in Real Time Maude as follows:
 
-\begin{verbatim}
+\begin{lstlisting}[caption = The interlocking class and states in Maude]
 sort InterState .
 ops idle res :  -> InterState [ctor] .
-\end{verbatim}
-The interlocking class consists of a interlocking state, a request id which stores the current track segment requestions and 5 Booleans which indicate whether or not a track segment is occupied. We define an Interlocking class in Real Time Maude as follows:
-\begin{center}  
-\texttt{class Inter | state : InterState, reqid : Nat, t0 : Bool , t1 : Bool , t2 : Bool , t3 : Bool , t4 : Bool .}
-\end{center}
+class Inter | state : InterState, reqid : Nat, 
+      t0 : Bool, t1 : Bool, t2 : Bool, 
+      t3 : Bool, t4 : Bool .
+\end{lstlisting}
+
+The sort InterState models the state of the interlocking along with two constant operations idle and res which represent the two states. The interlocking class consists of a interlocking state, a request id which stores the current track segment requestions and 5 Booleans which indicate whether or not a track segment is occupied. We define an Interlocking class in Real Time Maude as follows:
+
 
 All of the rewrite rules on Interlocking objects are instantaneous and do not effect the transition of time.  We can split these rules into two types. Firstly there are interlocking rules that deal with a request
 
 
 Secondly there are several rewriting rules that deal with granting or denying a received request. There is currently a rule for both denying and granting a request for each track segment depending on the value of the boolean variable.
-\begin{center}
-\texttt{rl [resreq1g] : {< O : Inter | state : res, t1 : false,  reqid : 1 > REST} => {< O : Inter | state : idle > grant(1) REST} .}
-\end{center}
-
+\begin{lstlisting}[caption = The interlocking transition which grants a track segment request]
+rl [resreq1g] : {< O : Inter | state : res, t
+   1 : false,  reqid : 1 > REST} => 
+   {< O : Inter | state : idle > grant(1) REST} .
+\end{lstlisting}
 
 \subsection{Simulating the European Rail Traffic Management System Using Real Time Maude}
 We will now see how this executable specification can be used to simulate and obtain a better understanding of the modelled system. For this purpose we have written a small Haskell program that takes the output from multiple timed rewrites and plots them as a graph.
@@ -1116,30 +1128,38 @@ We shall now describe how to define the behaviour of the satisfaction relation f
 The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$. It is left to the user of the model checker to define the behaviour for their own purposes. The standard way to define predicates which refer to a given object is by matching object identifiers.
 
 We can check that a train is in a specific state as follows:
-
-\texttt{ops train-cons : Oid -> Prop [ctor] .} \\ \medskip
-\texttt{eq {REST < O1 : Train | state : cons >} |= train-cons(O1') = (O1 == O1') . } \\
-\bigskip
+\begin{lstlisting}[caption = The constant speed property]
+ops train-cons : Oid -> Prop [ctor] .
+eq {REST < O1 : Train | state : cons >} |= train-cons(O1') 
+   = (O1 == O1') . 
+\end{lstlisting}
 This predicate holds if there is a train in t he configuration with object identifier O1' and a state cons. 
 
 We can check that a train has a certain speed as follows:
-\begin{center}
-\texttt{op train-s : Oid Nat -> Prop [ctor] .} \\ \medskip
-\texttt{eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') = (N1 == N1') and (O1 == O1') .}
-\end{center}
+\begin{lstlisting}[caption = The speed property]
+op train-s : Oid Nat -> Prop [ctor] .
+eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') = 
+   (N1 == N1') and (O1 == O1') .
+\end{lstlisting}
 
 Here the natural number N1 in the train object is matched with N1' in the predicate train-s.
 The main movement authority that we want to check is that the movement authorities of two trains does not over lap.
 To do this we define a Property nomaoverlap(O1,O2) of type \texttt{Oid Oid -> Prop [ctor]} as follows: 
 
-\begin{center}
-\texttt{eq {REST < O1 : Train |  dist : D1 , ma : M1 > < O2 : Train |  dist : D2 , ma : M2 >} |= nomaoverlap(O1',O2') = (O1 == O1') and (O2 == O2') and noolap(D1,M1,D2,M2) .} 
-\end{center}
-Here we have matched two object identifiers and natural numbers and callled a boolean function on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. 
+\begin{lstlisting}
+eq {REST < O1 : Train |  dist : D1 , ma : M1 > 
+   < O2 : Train |  dist : D2 , ma : M2 >} |= nomaoverlap(O1',O2') = 
+   (O1 == O1') and (O2 == O2') and noolap(D1,M1,D2,M2) .
+\end{lstlisting}
+Here we have matched two object identifiers and natural numbers and callled a boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. 
 
-\begin{center}
-\texttt{eq noolap(D1,M1,D2,M2) = ((D1 < M1) and (M1 < D2) and (D2 < M2)) or ((D2 < M2) and (M2 < D1) and (D1 < M1)) or ((D1 < M1) and (M2 < D1) and (M1 < D2)) or ((D2 < M2) and (M1 < D2) and (M2 < D1) )  .}    
-\end{center}
+\begin{lstlisting}[caption = The no overlap operation]
+eq noolap(D1,M1,D2,M2) = 
+   ((D1 < M1) and (M1 < D2) and (D2 < M2)) or 
+   ((D2 < M2) and (M2 < D1) and (D1 < M1)) or 
+   ((D1 < M1) and (M2 < D1) and (M1 < D2)) or 
+   ((D2 < M2) and (M1 < D2) and (M2 < D1) )  .  
+\end{lstlisting}
 
 This external operation encodes the 4 possible combines of movement authorities and trains in which the movement authorities do not over lap.  The first case is that train one is behind its movement authority which is behind the second train which itself is behind the movement authority. The second case is the reverse of the first case. In the third and fourth cases  one of the trains is behind its movement authority and the other is towards the end of the track and has its movement authority extended into the intial segment at the beginning of the track.
 
@@ -1152,16 +1172,18 @@ The Real Time Maude LTL model checker is then called using the following command
 \begin{center}
 \texttt{(mc initialstate2 |=t [] nomaoverlap(train1,train2) in time <= 30 .)}
 \end{center}
-The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 30. This results in the following output from Real Time Maude which indicates that the property was succesfully verified in 3 minutes and 22 seconds.
-\begin{verbatim}
-rewrites: 138889387 in 179663ms cpu (202024ms real) (773054 rewrites/second)
+The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 30. This results in the following output from Real Time Maude which indicates that the property was succesfully verified in 3 minutes and 22 seconds taking the system approximately 140 million rewrites.
+\begin{lstlisting}[caption = No overlapping movement authorities model checking result]
+rewrites: 138889387 in 179663ms cpu 
+(202024ms real) (773054 rewrites/second)
 
 Model check initialstate2 |=t[]nomaoverlap(train1,train2)in 
-MODEL-CHECK-ERTMS8 in time <= 30 with mode deterministic time increase
+MODEL-CHECK-ERTMS8 in time <= 30 
+with mode deterministic time increase
 
 Result Bool :
   true
-\end{verbatim}
+\end{lstlisting}
 
 Unfortunately the Real Time Maude LTL model checker can not detect the congruence between difference configurations of control system. Therefore the state space is infinite and it is impossible to do untimed model checking on the above model checking problem. It is however possible to do timed model checking within a reasonable time limit that allows for all behaviours of the system to be verified.
 
