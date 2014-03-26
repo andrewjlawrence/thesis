@@ -965,7 +965,50 @@ The distance to the movement authority to the train is computed by:
 When modelling the trains we perform the jumps from accelerating and full allowed speed to breaking if the breaking distance becomes less than the distance to movement authority in the next moment in time.
 
 
-\subsubsection*{Mappings in Maude}
+\subsubsection*{Sets and Maps in Maude}
+In order to have more general data types Maude allows for parameterised functional modules with the  syntax \texttt{fmod M{$X_1$ :: $T_1$ , $\ldots$ , $X_n$ :: $T_n$} is $\ldots$ endfm} where $n \geq 1$, $X_1$ is the \emph{parameter name} and $T_1$ is the \emph{theory name}.
+
+In the formalisation of the RBC we map use of the map data type to store the position and movement authority of a given train and we use a set to store trains that have made requests in the current time interval. 
+
+
+\begin{lstlisting}[caption = The specification of the Set data type in Maude]
+fmod SET{X :: TRIV} is 
+ protecting EXT-BOOL .
+ protecting NAT .
+ sorts NeSet{X} Set{X} .
+ subsort X$Elt < NeSet{X} < Set{X} .
+
+op empty : -> Set{X} [ctor] .
+op _,_ : Set{X} Set{X} -> Set{X} .
+ 
+
+\end{lstlisting}
+
+
+\begin{lstlisting}[caption = The specification of the Map data type in Maude]
+fmod MAP{X :: TRIV, Y ::  TRIV} is
+ protecting BOOL .
+ sorts Entry{X,Y} Map{X,Y} .
+ subsort Entry{X,Y} < Map{X,Y} .
+
+ op _|->_ : X$Elt Y$Elt -> Entry{X,Y} [ctor] .
+ op empty : -> Map{X,Y} [ctor] .
+ op _,_ : Map{X,Y} Map{X,Y} -> Map{X,Y} 
+     [ctor assoc comm id: empty prec 121 format (d r os d)] .
+ op undefined : -> [Y$Elt] [ctor] .
+
+ var D: X$Elt .
+ vars R R' : Y$Elt .
+ var M : Map{X,Y} .
+\end{lstlisting}
+
+When we use a parameterised data type in a specification it is possible to assign a new sort to the particular parameterised instance of the map or set that we are using.
+\begin{center}
+\texttt{protecting MAP\{Oid,Nat\}  * (sort Map\{Oid,Nat\} to MapON,
+                               sort Entry\{Oid,Nat\} to EntryON) .}
+\end{center}
+
+
 
 
 \subsubsection*{Modelling the Radio Block Processor}
@@ -989,6 +1032,7 @@ rl [rbcgrant] : {grant(N) < O : RBC | state : wait,
      grantma(T1, endoftrack(N)) REST} .
 \end{lstlisting}
 
+This transition captures two of the state transitions in our RBC automaton. Once the interlocking has granted a request to the RBC for track segment $N$ the RBC immediately proceeds to simultaneously update the movement authority mapping entry for that train and issues a \texttt{grantma} message to that train with a new movement authority for the end of track segment $N$.
 
 \subsubsection*{Modelling the Interlocking}
 An interlocking has two states, either it is idle or it has received a request for a movement authority and must respond. We define an Interlockings state and class in Real Time Maude as follows:
