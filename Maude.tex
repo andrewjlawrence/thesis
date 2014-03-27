@@ -58,7 +58,9 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 \end{itemize}
 \end{mydef}
 \medskip
-When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.
+When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of a timed transition system ...
+
+
 \medskip
 \begin{mydef}[Transition Semantics of Hybrid Automata]
 We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed transition system} $LTS^t_H = (S,S_0,L,T)$ as follows:
@@ -84,7 +86,7 @@ We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed tran
 \item $f(0) = x$
 \item $\forall \epsilon \in (0,\delta)$ both of the predicates $inv(v)[X := f(\epsilon)]$ and $flow(v)[X,\dot{X} := f(\epsilon),\dot{f}(\epsilon)]$ hold.
 \end{enumerate}
-We call the founction f the \emph{witness} of the transition $(v,x) \to (v, x')$
+We call the function f the \emph{witness} of the transition $(v,x) \to (v, x')$
 
 \end{itemize}
 
@@ -774,6 +776,10 @@ The interpretation of the abstract time domain is mapped to a concrete specifica
 
 \end{mydef}
 \medskip
+
+A real time rewrite theory is a rewrite theory combined with some concrete implementation of time based on the abstract time domain defined in the time theory. The equational theory morphisms are used to map objects and morphisms in the abstract time domain to the concrete implementation.
+
+\medskip
 \begin{mydef}[Real-Time Rewrite Theory]
 We define a \emph{real-time rewrite theory} $\mathfrak{R}_{\phi,\tau}$ to be a tuple $(\mathfrak{R}, \phi,\tau)$ containing a rewrite theory $\mathfrak{R} = (\Sigma, E,L,R) $ where:
 
@@ -832,6 +838,7 @@ Result ClockedSystem :
   {train(move,100)} in time 100
 \end{lstlisting}
 
+The ability to perform such simulations is useful as it allows for the liveness of a system to be checked. It also provides another way of validating the correctness of a model by perform many of these executions and checking the behaviour of the system over time.
 
 \subsection{Object Orientated Specification in Real Time Maude}
 Real Time Maude is based on Full Maude which contains message and object constructs for object orientated specification. Using these constructs its possible to model ERTMS as several synchronously communicating processes. A Real Time Maude specification consists of  \emph{timed object orientated modules} which start with \texttt{tomod} and end with \texttt{endtom}.
