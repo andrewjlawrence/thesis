@@ -6,11 +6,11 @@ In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cit
 \subsection*{Related Work}
 The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. 
 
-On the front of hybrid automata, ERTMS has been verified in the form of Hybrid Automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}. The Hi-Maude system \cite{MF11} is an extension of Real Time maude designed specifically modelling interacting hybrid systems and as such it can handle differential equations. It has been used in a case study to model the effects of extreme heat on the human body \cite{MF12}. It is geared towards systems of a highly dynamic nature and may be overkill for a system such as ERTMS with a large discrete component.
+On the front of hybrid automata, ERTMS has been verified in the form of Hybrid Automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}. The Hi-Maude system \cite{MF11} is an extension of Real Time Maude designed specifically modelling interacting hybrid systems and as such it can handle differential equations. It has been used in a case study to model the effects of extreme heat on the human body \cite{MF12}. It is geared towards systems of a highly dynamic nature and may be overkill for a system such as ERTMS with a large discrete component.
 
 
 \section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
-One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as 3 Hybrid automata composed in parallel.
+One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as three Hybrid automata composed in parallel.
 We begin by defining the syntax of a Hybrid automata before defining its semantics in terms of a labelled transition system.
 \medskip
 \begin{mydef}[Hybrid Automaton: Syntax]
@@ -31,7 +31,7 @@ The syntax of a hybrid automaton $H$ comprises of the following:
 Where $\freevar{P}$ is the set of free variables in the predicate $P$.
 \end{mydef}
 \medskip
-A hybrid automaton has discrete states called control modes and transitions between these modes called control switches. These control switches are triggered by either some condition on variables or by some event occuring. These events can either occur in some other automaton or they can be fired by an automaton due to some condition being met. The continous transitions of the automaton are described by dotted variables and occur continually over time.
+A hybrid automaton has discrete states called control modes and transitions between these modes called control switches. These control switches are triggered by either some condition on variables or by some event occurring. These events can either occur in some other automaton or they can be fired by an automaton due to some condition being met. The continuous transitions of the automaton are described by dotted variables and occur continually over time.
 \medskip
 \begin{myremark}
 The dotted variables represent the rate of change of a given variable over time.
@@ -73,16 +73,16 @@ We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed tran
 
 \item $L = \Sigma \cup R {\geq 0}$
 
-\item For all events $\sigma \in \Sigma$ such that there exists a control switch $e \in E$, define $(v,x) \xrightarrow{\sigma} (v',x')$ iif the following conditions are satisified:
+\item For all events $\sigma \in \Sigma$ such that there exists a control switch $e \in E$, define $(v,x) \xrightarrow{\sigma} (v',x')$ iif the following conditions are satisfied:
 \begin{enumerate}
 \item the source and target of $e$ are $v$ and $v'$ respectively. 
 \item the closed predicate $jump(e)[X, X' := x,x']$ holds.
 \item $event(e) = \sigma$.
 \end{enumerate}
 
-\item We define a transition $(v,x) \xrightarrow{\delta} (v,x')$ for all nonnegative reals $\delta \in R_{\geq 0}$ iff there exists a differentiable function $f: [0, \delta] \to R^n$ such that the following holds:
+\item We define a transition $(v,x) \xrightarrow{\delta} (v,x')$ for all non-negative reals $\delta \in R_{\geq 0}$ iff there exists a differentiable function $f: [0, \delta] \to R^n$ such that the following holds:
 \begin{enumerate}
-\item The functions first derivate is $\dot{f} :(0,\delta) \to R^n$
+\item The functions first derivative is $\dot{f} :(0,\delta) \to R^n$
 \item $f(0) = x$
 \item $\forall \epsilon \in (0,\delta)$ both of the predicates $inv(v)[X := f(\epsilon)]$ and $flow(v)[X,\dot{X} := f(\epsilon),\dot{f}(\epsilon)]$ hold.
 \end{enumerate}
@@ -279,7 +279,7 @@ The following are equations of motion
 \item $v^2 = u^2 +2as$
 \item $s = vt - \frac{1}{2}at^2$
 \end{enumerate}
-where s = displacement,u = initital velocity, v = final velocity, a = acceleration and t = time.
+where s = displacement,u = initial velocity, v = final velocity, a = acceleration and t = time.
 \end{mydef}
 \medskip
 Equations number 1 and 2 are the mains one used throughout this formalisation as they allow for the calculation of the distance travelled and speed of a train.
@@ -445,7 +445,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 \end{comment}
 
 \medskip
-Similarily to the train automaton the RBC automaton also has four control modes namely Granted, Idle, Wait and Ready to Request. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the Ready to Request state.  From this state the train sends a request for the next track segment of the LastTrain.
+Similarly to the train automaton the RBC automaton also has four control modes namely Granted, Idle, Wait and Ready to Request. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the Ready to Request state.  From this state the train sends a request for the next track segment of the LastTrain.
 \medskip
 
 \begin{mydef}[Radio Block Controller Hybrid Automaton]
@@ -548,11 +548,11 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 \end{figure}
 \medskip
 \begin{mydef}[$q_0$-rooted and initialised trajectories]
-Given a labeled transition system $LTS = (S,T,S_0,L)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} as a finite or infinite sequnce of pairs $\langle a_i, q_i \rangle_{i \geq 1}$ of labels $a_1 \in L$ and states $q_i \in S$  such that $q_{i-1} \xrightarrow{a_i} q_{i} \in T$ for all $i \geq 1$. If $q_0 \in S_0$ then the seqence of pairs $\langle a_i, q_i \rangle_{I \geq 1}$ is an \emph{initialized trajectory}. 
+Given a labelled transition system $LTS = (S,T,S_0,L)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} as a finite or infinite sequence of pairs $\langle a_i, q_i \rangle_{i \geq 1}$ of labels $a_1 \in L$ and states $q_i \in S$  such that $q_{i-1} \xrightarrow{a_i} q_{i} \in T$ for all $i \geq 1$. If $q_0 \in S_0$ then the sequence of pairs $\langle a_i, q_i \rangle_{I \geq 1}$ is an \emph{initialized trajectory}. 
 \end{mydef}
 \medskip
 \begin{mydef}
-We define a live transition system (LTS,A) to consist of a labelled transition system $LTS$ and a set $A$ of infinite intialised trajectories of $LTS$. If for all of the finite initialised trajectories of $LTS$ there exists an infinite trajectory in $A$ such that the finite trajectory is a prefix of the infinite one then we call $A$ \emph{machine-closed}. We define a \emph{trace} $\langle a_i \rangle_{i \geq 1}$ of (LTS,A) to consist of the labels from the either a finite initialised trajectory of $LTS$ or a trajectory in $A$.
+We define a live transition system (LTS,A) to consist of a labelled transition system $LTS$ and a set $A$ of infinite initialised trajectories of $LTS$. If for all of the finite initialised trajectories of $LTS$ there exists an infinite trajectory in $A$ such that the finite trajectory is a prefix of the infinite one then we call $A$ \emph{machine-closed}. We define a \emph{trace} $\langle a_i \rangle_{i \geq 1}$ of (LTS,A) to consist of the labels from the either a finite initialised trajectory of $LTS$ or a trajectory in $A$.
 \end{mydef}
 \medskip
 
@@ -568,7 +568,7 @@ the continuous part would state that any movement authority issued by the radio 
 We will now give a proof by induction that the safety condition "The train will always break on time" holds for a single train automaton.
 The base case is that we are in the initial state, the stopped mode, with the invariant $D(t) \leq EoA$. If are in the stopped mode and we receive a movement authority with $EoA > D(t)$ then a jump is performed and move to the accelerating state. Since the transition of time does not cause any flow transitions to occur from the base case we do not need to consider it. In the step case we are in one of the 4 modes (Stopped,Braking,Accelerating,) with the invariant $D(t) \geq BD(EoA,speed)$. In these states jump conditions are considered by performing a case distinction is performed on whether we reach the braking point i.e. $D(t) = BD(EoA, speed)$ or we reach maxspeed the transitions result in states in which the invariants still hold. We also consider flow conditions, if time elapses by some amount $\delta$ we either reach the breaking point $D(t) = BD(EoA,Speed)$ and perform a jump into a state in which the invariant still holds or $D(t) > BD(EoA,speed)$ in which case the invariant $D(t) \leq EoA$ holds. 
 
-Since we have restricted the movement authorities to occur at discrete intervals seperated by 50 units of distances we perform induction over the time interval $(0..1)$ in order to prevent multiple mode changes from occuring durring the induction step. 
+Since we have restricted the movement authorities to occur at discrete intervals separated by 50 units of distances we perform induction over the time interval $(0..1)$ in order to prevent multiple mode changes from occurring during the induction step. 
 \medskip
 \begin{mytheorem}
 Given a live transition system $(S^t_{H_{T}},  L^{t}_{H_T}) $
@@ -688,7 +688,7 @@ There are two cases
 
 
 \section{Maude}
-In the following section we shall describe the term rewriting system Maude. It is a mutli-purpose tool containing support for executable-specification, simulation and verification of systems and software. We make use of all 3 of these capabilities and it is this wide range which draws us towards its use. In order to full understand its use in the specifcation of a real time system we first present a formal and informal definition of a Maude specification followed by an example maude specification to give insight into theses definitions.
+In the following section we shall describe the term rewriting system Maude. It is a multi-purpose tool containing support for executable-specification, simulation and verification of systems and software. We make use of all 3 of these capabilities and it is this wide range which draws us towards its use. In order to full understand its use in the specification of a real time system we first present a formal and informal definition of a Maude specification followed by an example Maude specification to give insight into theses definitions.
 
 
 
@@ -711,18 +711,21 @@ membership axioms & \texttt{mb} $t \ : \ s \ .$ or \texttt{cmb} $t  \ : \ s$ \te
 \end{center}
 
 %%% Read the Maude papers as this is currently very close to the description of a maude specification found in the RT maude theory paper.
+\medskip
+\begin{mydef}[Equational Theory]
+An equational theory is a 2 tuple $(\Sigma, E)$ where $\Sigma$ is a set of sorts, subsorts and operator declarations  and $E$ is the set of equations modulo $\Sigma$
+\end{mydef}
 
-Formally a Maude specification is a \emph{rewrite theory} of the form $\mathfrak{R}=(\Sigma,E,L,R)$, where 
+Equational theories  form the signature of a Maude specification and provides one with a means to represent data types using various symbols. If we consider the natural numbers defined symbolically  as an equational theory, the set $\Sigma$ would consist of the sort $Nat$ and the operations $0$, $s$, and $+$, the set $E$ would consist of associativity and commutativity for $+$.
+
+Formally a Maude specification is a \emph{rewrite theory} of the form $\mathfrak{R}=(\Sigma,E,L,R)$, where  $(\Sigma, E)$ is an equational theory, $L$ is a set of labels and $R$ is a set of labelled rewrite rules of the form:
 
 $$ [l] : t \to t' \mathbf{if} \bigwedge^{n}_{i = 1} u_i \to v_i \bigwedge^{m}_{j = 1} w_j = w'_j $$
 
-where $l$ is a label $l \in L$ and $t$, $t'$, $u_i$, $v_i$, $w_j$ and $w'_j$ are implicitly universally quantified variables representing $\Sigma$-terms. Maude theories are \emph{order-sorted} allowing for the specification of subsorts which is achieved by including into the specification a partial order relation over sorts. Given two sorts $s$ and $s'$ this partial order relation $s \leq s'$ is interpretted as subset inclusion $A_s \subseteq A_{s'}$ in a model $A$.
+where $l$ is a label $l \in L$ and $t$, $t'$, $u_i$, $v_i$, $w_j$ and $w'_j$ are implicitly universally quantified variables representing $\Sigma$-terms. Maude theories are \emph{order-sorted} allowing for the specification of subsorts which is achieved by including into the specification a partial order relation over sorts. Given two sorts $s$ and $s'$ this partial order relation $s \leq s'$ is interpreted as subset inclusion $A_s \subseteq A_{s'}$ in a model $A$.
 
-
-\begin{mydef}[Rewrite Theory]
-
-
-\end{mydef}
+The behaviour the operations defined in an equational theory are defined in a rewrite theory using the labelled rewrite rules. In the case of the natural numbers it is then possible to provide an definition for $+$ recursively. The base case is where 0 is one of the operands in which case we return the other $0 + N \to N$. The successor case is that we have some non-zero operand represented as a successor to some variable $s(M)$ in which case we apply the successor function to the recursive call of addition with M and the other operand $s(M) + N \to s(M + N)$. 
+ 
 
 \subsubsection{Example Maude Specification}
 We shall now give a small example specification in the form of the natural numbers in Maude in order to get a feel for the structure of such a specification. We see that the module BASIC-NAT on the first line of the example (CL \ref{code:natnum}). Followed by a sort Nat which forms the type with which we will be working. Next several operations are declared with which we define the natural numbers symbolically. Firstly, we see a 0 operator which forms our basic constructor which is followed by another operation s which allows us to construct successive natural numbers. The infix addition operation $+$ defined using variable place holders  $\_$. The behaviour of the addition operation is defined inductively using two variables N and M and two equations for the base and successor cases.
@@ -745,13 +748,13 @@ endfm
 
 
 \section{Real Time Maude}
-One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. This contains specifc support enabling the modelling and verification of real-timed and discrete timed systems. There is an example of a distributed sensor network that has been modelled and verified using this tool. It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example, only model checked a portion of the state space of our example using this tool. This is however enough to have confidence in the correctness of the system with respect to a given safety condition.
+One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. This contains specific support enabling the modelling and verification of real-timed and discrete timed systems. There is an example of a distributed sensor network that has been modelled and verified using this tool. It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example, only model checked a portion of the state space of our example using this tool. This is however enough to have confidence in the correctness of the system with respect to a given safety condition.
 
 
 
 
 \subsection{Real Time Maude Specifications}
-A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration \cite{PO02}. These rewrite rules can be seperated into two categories, the \emph{tick} rules have a non-zero time elapse and the \emph{instantaneous} rules have a time elapse of zero.
+A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration \cite{PO02}. These rewrite rules can be separated into two categories, the \emph{tick} rules have a non-zero time elapse and the \emph{instantaneous} rules have a time elapse of zero.
 
 The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process. Real time Maude comes with two of these specifications as standard the most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time during the specification as it allows for the best results during the verification process. \textbf{Note: Do we need to describes equational theorys?}
 
@@ -822,7 +825,7 @@ There is a condition rewrite rule called travel which enables the train to move 
 
 \subsubsection*{Executing a Real Time Maude Specification}
 Real Time Maude allows one to execute or simulate a real time system by applying rewriting rules to a term of type \texttt{System}.
-The command \texttt{(trew \{System\} in time <= t)} will attempt to rewrite the system to a state $t$ time units in the future. This isnt always possible though as the system may deadlock. The following command attempts to rewrite a train, which initially has distince $0$, to its state in 100 units of time in the future: 
+The command \texttt{(trew \{System\} in time <= t)} will attempt to rewrite the system to a state $t$ time units in the future. This is not always possible though as the system may deadlock. The following command attempts to rewrite a train, which initially has distance $0$, to its state in 100 units of time in the future: 
 \begin{center}
 \texttt{(trew {train(move,0)} in time $\leq$ 100 .)}
 \end{center}
@@ -975,7 +978,7 @@ When modelling the trains we perform the jumps from accelerating and full allowe
 
 
 \subsubsection*{Sets and Maps in Maude}
-In order to have more general data types Maude allows for parameterised functional modules with the  syntax \texttt{fmod M{$X_1$ :: $T_1$ , $\ldots$ , $X_n$ :: $T_n$} is $\ldots$ endfm} where $n \geq 1$, $X_1$ is the \emph{parameter name} and $T_1$ is the \emph{theory name}.
+In order to have more general data types Maude allows for parametrised functional modules with the  syntax \texttt{fmod M{$X_1$ :: $T_1$ , $\ldots$ , $X_n$ :: $T_n$} is $\ldots$ endfm} where $n \geq 1$, $X_1$ is the \emph{parameter name} and $T_1$ is the \emph{theory name}.
 
 In the formalisation of the RBC we map use of the map data type to store the position and movement authority of a given train and we use a set to store trains that have made requests in the current time interval. 
 
@@ -1155,20 +1158,20 @@ Result ClockedSystem :
 In fig \ref{t1t2} we see that train2 never enters the same track segment as train1.
 
 \section{The Maude Linear Temporal Logic Model Checker}
-The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}.  This is a useful automatic tool which allows for the verification and analysis of real time systems. In addition to the positive verification results in which a safety property holds,  the system produces, in the case of a negative verification resuIt, a counter example trace which shows the. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
+The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}.  This is a useful automatic tool which allows for the verification and analysis of real time systems. In addition to the positive verification results in which a safety property holds,  the system produces, in the case of a negative verification result, a counter example trace which shows the. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
 
  
 
 \section{Model Checking the European Rail Traffic Management System}
 In the following section we will demonstrate an approach to apply the Real Time Maude LTL model checker to verify the Real Time Maude specification described previously.
-Firstly we shall define the property we want to check in the Real Time Maude system. To do this we have to define a satisfaction relation which describes what it means for the property to hold in a state of the system we are checking.  The property we shall consider in this case is that the moment authorities of two trains in system do not overlap. Logical property we define identifies the individual trains using their object identifiers and then computes whether or not an over lap has occured using a boolean formula.  We shall show that it is possible to verify this property over a time period large enough for all normal behaviours of the system to occur. 
+Firstly we shall define the property we want to check in the Real Time Maude system. To do this we have to define a satisfaction relation which describes what it means for the property to hold in a state of the system we are checking.  The property we shall consider in this case is that the moment authorities of two trains in system do not overlap. Logical property we define identifies the individual trains using their object identifiers and then computes whether or not an over lap has occurred using a boolean formula.  We shall show that it is possible to verify this property over a time period large enough for all normal behaviours of the system to occur. 
 
 \subsection*{Defining a Satisfaction Relation}
 The syntax of the properties for which we are going to check using the LTL model checker are defined separately from the semantics in terms of a satisfaction relation.
 We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a Real Time Maude specification. The satisfaction relation itself is predefined in a specification as an operation which takes a State and a property which is of type Prop and computes a boolean. Maude defines the satisfaction relation $\models$ in the following:
 \medskip
 
-\begin{lstlisting}[caption =  The Maude Satisfaction module, label =code:satsifaction ]
+\begin{lstlisting}[caption =  The Maude Satisfaction module, label =code:satisfaction ]
   fmod SATISFACTION is  
     protecting BOOL .  
     sorts State Prop .  
@@ -1202,7 +1205,7 @@ eq {REST < O1 : Train |  dist : D1 , ma : M1 >
    < O2 : Train |  dist : D2 , ma : M2 >} |= nomaoverlap(O1',O2') = 
    (O1 == O1') and (O2 == O2') and noolap(D1,M1,D2,M2) .
 \end{lstlisting}
-Here we have matched two object identifiers and natural numbers and callled a boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. 
+Here we have matched two object identifiers and natural numbers and called a boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. 
 
 \begin{lstlisting}[caption = The no overlap operation]
 eq noolap(D1,M1,D2,M2) = 
@@ -1212,11 +1215,11 @@ eq noolap(D1,M1,D2,M2) =
    ((D2 < M2) and (M1 < D2) and (M2 < D1) )  .  
 \end{lstlisting}
 
-This external operation encodes the 4 possible combines of movement authorities and trains in which the movement authorities do not over lap.  The first case is that train one is behind its movement authority which is behind the second train which itself is behind the movement authority. The second case is the reverse of the first case. In the third and fourth cases  one of the trains is behind its movement authority and the other is towards the end of the track and has its movement authority extended into the intial segment at the beginning of the track.
+This external operation encodes the 4 possible combines of movement authorities and trains in which the movement authorities do not over lap.  The first case is that train one is behind its movement authority which is behind the second train which itself is behind the movement authority. The second case is the reverse of the first case. In the third and fourth cases  one of the trains is behind its movement authority and the other is towards the end of the track and has its movement authority extended into the initial segment at the beginning of the track.
 
 \subsection{Execution of The LTL Model Checker}
 \textbf{Note: do we want to describe and verify other safety conditions here?}
-We shall now describe the execution of the LTL model checker in Real Time Maude. This is done using the mc command with some initial state of type system, a satsifaction relation, the LTL formula to be checked and an optional time. The satisfaction relation can be either $\models_u$ for untimed model checking for which time is not specifed or $\models_t$ for which the optional time is specified.
+We shall now describe the execution of the LTL model checker in Real Time Maude. This is done using the mc command with some initial state of type system, a satisfaction relation, the LTL formula to be checked and an optional time. The satisfaction relation can be either $\models_u$ for un-timed model checking for which time is not specified or $\models_t$ for which the optional time is specified.
 
 The Real Time Maude LTL model checker is then called using the following command:
 
@@ -1241,8 +1244,8 @@ Unfortunately the Real Time Maude LTL model checker can not detect the congruenc
 \section{Conclusion}
  We have presented the first attempt at modelling and verifying the combined ERTMS and interlocking system.
 \subsection*{Future Work}
-There are numerous ways in which our model can be extended. One of the biggest problems facing engineers when developing the ERTMS system is time and how it affects the transmition of messages with delays often occuring. This could be easily be modelled following the work \cite{PO07} where delays are modelled in the communications between nodes of a wireless sensor network. Currently our trains have a jerky behaviour in terms of speed, breaking and accelerating in rapid succession there are several other behaviours that trains exibit in real life that we have not captured in our model. Trains have the ability to coast where the engine in not powering the train but the brakes are not active which is used for several purposes. To save energy coasting and accelerating are often combined to hold the train at max speed. The trains may also coast before breaking when reaching the end of a movement authority.
+There are numerous ways in which our model can be extended. One of the biggest problems facing engineers when developing the ERTMS system is time and how it affects the transition of messages with delays often occurring. This could be easily be modelled following the work \cite{PO07} where delays are modelled in the communications between nodes of a wireless sensor network. Currently our trains have a jerky behaviour in terms of speed, breaking and accelerating in rapid succession there are several other behaviours that trains exhibit in real life that we have not captured in our model. Trains have the ability to coast where the engine in not powering the train but the brakes are not active which is used for several purposes. To save energy coasting and accelerating are often combined to hold the train at max speed. The trains may also coast before breaking when reaching the end of a movement authority.
 
-Currently the track is closed and trains are capable of looping round the track giving it an infinite state space. Opening up the track with an entrance and exit would provide the oportunity to model the hand over part of the protocol where new trains must register with the RBC on entering the track and then deregister upon leaving. This opening of the track would also finitise the state space possibly allowing for untimed model checking to take place. This example could then be extended by increasing the complexity of the track further and then modelling routes and points. This would allow for the checking of a further safety conditions that states no train has a movement authority over a point in locked in the wrong direction or a moving point.
+Currently the track is closed and trains are capable of looping round the track giving it an infinite state space. Opening up the track with an entrance and exit would provide the opportunity to model the hand over part of the protocol where new trains must register with the RBC on entering the track and then de-register upon leaving. This opening of the track would also finitise the state space possibly allowing for un-timed model checking to take place. This example could then be extended by increasing the complexity of the track further and then modelling routes and points. This would allow for the checking of a further safety conditions that states no train has a movement authority over a point in locked in the wrong direction or a moving point.
 
-The RBC has the possiblity to pre-emptively grant movement authorities to trains without them requesting it in the case that a train is on a route which contains free sections of track behind a movement authority.  The trains could also request movement authorities before the point at which we reach the braking point.
+The RBC has the possibility to pre-emptively grant movement authorities to trains without them requesting it in the case that a train is on a route which contains free sections of track behind a movement authority.  The trains could also request movement authorities before the point at which we reach the braking point.

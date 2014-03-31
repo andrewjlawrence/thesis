@@ -143,7 +143,7 @@ The natural deduction proof system for minimal logic  consists of the following 
 \begin{tabular}{| c | c |} \hline
 derivation & term \\
 \hline 
-\raisebox{-1\height}{$u:A$} & \raisebox{-1\height}{$u^a$} \\ [3ex] \hline
+\raisebox{-1\height}{$u:A$} & \raisebox{-1\height}{$u^A$} \\ [3ex] \hline
 \raisebox{-1.2\height}{
 \AxiomC{$|M$}
 \noLine
@@ -178,8 +178,13 @@ derivation & term \\
 \UnaryInfC{$A \to B$}
 \DisplayProof} & \raisebox{-3.2\height}{$(\lambda u^AM^B)^{A \to B}$} \\ [12ex] \hline
 
-\raisebox{-1\height}{\AxiomC{$A \to B$}
-\AxiomC{$A$}
+\raisebox{-1\height}{
+\AxiomC{$|M$}
+\noLine
+\UnaryInfC{$A \to B$}
+\AxiomC{$|N$}
+\noLine
+\UnaryInfC{$A$}
 \RightLabel{$\to^-$}
 \BinaryInfC{$B$}
 \DisplayProof} & \raisebox{-1.2\height}{$(M^{A \to B} N^{A})^B$} \\ [5ex] \hline
@@ -221,43 +226,50 @@ derivation & term \\ \hline
 \DisplayProof} & \raisebox{-2.2\height}{$(\exists^+_{x,A} t M^{A[x:=t]})^{\exists x A}$} \\ [10ex] \hline
 
 \raisebox{-1\height}{
-\AxiomC{$\exists x. A$}
-\AxiomC{$\mathass{(a/x)A}$}
+\AxiomC{$|M$}
 \noLine
-\UnaryInfC{$\vdots$}
+\UnaryInfC{$\exists x A$}
+\AxiomC{$\mathass{u:A}$}
 \noLine
-\UnaryInfC{$C$}
+\UnaryInfC{$|N$}
+\noLine
+\UnaryInfC{$B$}
 \RightLabel{$\exists^- (var.cond.)$}
-\BinaryInfC{$C$}
+\BinaryInfC{$B$}
 \DisplayProof} & \raisebox{-3.8\height}{($M^{\exists x A}(u^A.N^B))^B$ (var.cond.)} \\ [15ex] \hline
 
-
-
-\AxiomC{$A$}
-\LeftLabel{$\vee \mhyphen intro \, (L)$}
-\UnaryInfC{$A \vee B$}
-\DisplayProof \hspace{10pt}
-\AxiomC{$B$}
-\LeftLabel{$\vee \mhyphen intro \, (R)$}
-\UnaryInfC{$A \vee B$}
-\DisplayProof \\
- 
-\bigskip
-
-\AxiomC{$A \wedge B$}
-\AxiomC{$\mathass{A}$}
+\raisebox{-1\height}{
+\AxiomC{$|M$}
 \noLine
-\UnaryInfC{\vdots}
+\UnaryInfC{$A$}
+\RightLabel{$\vee^+_0$}
+\UnaryInfC{$A \vee B$}
+\DisplayProof 
+ \hspace{10pt}
+\AxiomC{$|M$}
+\noLine
+\UnaryInfC{$B$}
+\RightLabel{$\vee^+_1$}
+\UnaryInfC{$A \vee B$}
+\DisplayProof} & \raisebox{-2.8\height}{$(\vee l_{0,b} M^A)$ $(\vee l_{1,A}M^{B})^{A \vee B}$}  \\ [10ex] \hline
+
+\raisebox{-1\height}{
+\AxiomC{$|M$}
+\noLine
+\UnaryInfC{$A \wedge B$}
+\AxiomC{$\mathass{u:A}$}
+\noLine
+\UnaryInfC{$|N$}
 \noLine
 \UnaryInfC{$C$}
-\AxiomC{$\mathass{B}$}
+\AxiomC{$\mathass{v:B}$}
 \noLine
-\UnaryInfC{\vdots}
+\UnaryInfC{$|K$}
 \noLine
 \UnaryInfC{$C$}
-\LeftLabel{$\vee \mhyphen elim$}
+\RightLabel{$\vee^- u,v$}
 \TrinaryInfC{$C$}
-\DisplayProof
+\DisplayProof} & \raisebox{-3.8\height}{$(M^{A \vee B} (u^A.N^{C},v^{B}.K^{C}))$} \\ [15ex] \hline
 \end{tabular}
 \end{center}
 
