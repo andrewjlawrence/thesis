@@ -800,8 +800,11 @@ We will assume that initially no routes are set. This means that either a contro
 
 \draw[->](0, 9.5) -- node[above, font = \small ]{Route Req} (2, 9.5);
 \draw[<-](0, 9) -- node[above, font = \small]{Route Ack}(2,9); 
-\draw[->](0,8.5) -- node[above, font = \small]{Points Set} (4, 8.5);
-\draw[<-](0, 8) -- node[above , font = \small]{Points Ack} (4, 8);  
+\draw[-](0,8.5) -- node[above, font = \small]{Points Set} (2, 8.5);
+\draw[->](0,8.5) -- node[above, font = \small]{} (4, 8.5);
+\draw[-](2, 8) -- node[above , font = \small]{Points Ack} (4, 8);  
+\draw[<-](0, 8) -- node[above , font = \small]{} (4, 8);  
+
 \draw[->](0,7.5) -- node[above, font = \small]{MA D $\to$ C} (6, 7.5);
 \draw[<-](0, 7) -- node[above, font = \small]{MA Ack} (6, 7);  
 \draw[<-](0, 6.5) -- node[above, font = \small]{Position Rep} (6, 6.5);  
@@ -809,9 +812,12 @@ We will assume that initially no routes are set. This means that either a contro
 
 \draw[->](0, 5) -- node[above, font = \small ]{Route Req} (2, 5);
 \draw[<-](0, 4.5) -- node[above, font = \small]{Route Ack}(2,4.5); 
-\draw[->](0,4) -- node[above, font = \small]{Points Set} (4, 4);
-\draw[<-](0, 3.5) -- node[above, font = \small]{Points Ack} (4, 3.5);  
-\draw[->](0,3) -- node[above, font = \small]{MA A $\to$ B} (8, 3);
+\draw[-](0,4) -- node[above, font = \small]{Points Set} (2, 4);
+\draw[-](2, 3.5) -- node[above, font = \small]{Points Ack} (4, 3.5); 
+\draw[->](0,4) -- node[above, font = \small]{} (4, 4);
+\draw[<-](0, 3.5) -- node[above, font = \small]{} (4, 3.5);  
+\draw[-](0,3) -- node[above, font = \small]{MA A $\to$ B} (2, 3);
+\draw[->](0,3) -- node[above, font = \small]{} (8, 3);
 
 
 

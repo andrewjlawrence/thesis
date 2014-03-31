@@ -915,7 +915,7 @@ Result ClockedSystem :
 The Maude system rewrites the initial state of the system into the resulting state however that does not mean that this is the only reachable state. This set has some non-determinism in that we do not force the messages to be read immediately and the rewriting equations could be applied in any order. There is a reachable state in time 2 in which both of the messages have not been read meaning that either of them could be read in any order resulting in  . 
 The following are some states reachable in time 2.
 
-\begin{lstlisting}[caption = Some of the states reachable by rewriting EXAMPLE1 in two time steps]
+\begin{lstlisting}[caption = Some of the states reachable by rewriting EXAMPLE1 in two time steps, label = code:reachst ]
 {< myB : B | b : 1 > < myD : D | d : 2 >}
 {< myB : B | b : 2 > < myD : D | d : 2 >}
 {msgD(1)< myB : B | b : 2 > < myD : D | d : 2 >}
@@ -923,15 +923,17 @@ The following are some states reachable in time 2.
 {msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
 \end{lstlisting}
 
-\emph{Non-determinism} should be avoided unless it is really is a property you want in a model. One way to remove some of these reachable states is to make the variable \texttt{REST} of sort \texttt{ObjectConfiguration}. This forces objects of the B class to read messages after each incrementation of time. If we make this modification to the specification then the following states are reachable in time 2.
+\emph{Non-determinism} should be avoided unless it is really is a property you want in a model. One way to remove some of these reachable states is to make the variable \texttt{REST} of sort \texttt{ObjectConfiguration}. This forces objects of the B class to read messages after each incrementation of time. If we make this modification to the specification then the following states, from code listing \ref{code:reachst}, are reachable in time 2.
 \begin{lstlisting}
 {< myB : B | b : 2 > < myD : D | d : 2 >}
 {msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
+(msgD(1)< myB : B | b : 0 > < myD : D | d : 1 >}
+(< myB : B | b : 1 > < myD : D | d : 1 >}
 \end{lstlisting}
 
 
 \section{Modelling the European Rail Traffic Management System}
-In the following we shall give an overview of the specifications used to model the ERTMS system. Following the hybrid automata describe in \ref{} we have defined one class for each of the 3 hybrid automata.
+In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object orientated fashion following the hybrid automata described in \ref{} to define one class for each of the 3 hybrid automata.
 \subsubsection*{Modelling the Transition of Time}
 In our previous Real Time Maude specifications we have had a rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define operator $\delta$ which describes how distributed system evolves with time.
 
@@ -985,8 +987,8 @@ fmod SET{X :: TRIV} is
  sorts NeSet{X} Set{X} .
  subsort X$Elt < NeSet{X} < Set{X} .
 
-op empty : -> Set{X} [ctor] .
-op _,_ : Set{X} Set{X} -> Set{X} .
+ op empty : -> Set{X} [ctor] .
+ op _,_ : Set{X} Set{X} -> Set{X} .
  
 
 \end{lstlisting}
@@ -1052,13 +1054,11 @@ class Inter | state : InterState, reqid : Nat,
       t3 : Bool, t4 : Bool .
 \end{lstlisting}
 
-The sort InterState models the state of the interlocking along with two constant operations idle and res which represent the two states. The interlocking class consists of a interlocking state, a request id which stores the current track segment requestions and 5 Booleans which indicate whether or not a track segment is occupied. We define an Interlocking class in Real Time Maude as follows:
+The sort \texttt{InterState} models the state of the interlocking along with two constant operations idle and res which represent the two states. The interlocking class consists of a interlocking state, a request id which stores the current track segment requestions and 5 Booleans which indicate whether or not a track segment is occupied. We define an Interlocking class in Real Time Maude as follows:
 
 
-All of the rewrite rules on Interlocking objects are instantaneous and do not effect the transition of time.  We can split these rules into two types. Firstly there are interlocking rules that deal with a request
+All of the rewrite rules on Interlocking objects are instantaneous and do not effect the transition of time.  We can split these rules into two types. Firstly there are interlocking rules that deal with the transition of a train from one track segment to another. Secondly there are several rewriting rules that deal with granting or denying a received request. There is currently a rule for both denying and granting a request for each track segment depending on the value of the boolean variable.
 
-
-Secondly there are several rewriting rules that deal with granting or denying a received request. There is currently a rule for both denying and granting a request for each track segment depending on the value of the boolean variable.
 \begin{lstlisting}[caption = The interlocking transition which grants a track segment request]
 rl [resreq1g] : {< O : Inter | state : res, t
    1 : false,  reqid : 1 > REST} => 
