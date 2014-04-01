@@ -304,22 +304,21 @@ formula is the value of the assignment.
 \end{array} \right.
 \]
 
-The type of a formula containing an existential quantifier and a subformula
+The type of a formula containing an existential quantifier and a sub-formula
 $A$ is dependent on the type of $A$. If $A$ contains no computational content
 i.e. $\tau(A) = \epsilon$ then the type of the formula is that of the bound
 variable $x$. Otherwise the type is a product of the type of the bound
 variable $\rho$ and the type of the formula $A$ $\tau (A)$.
 
 \[
-\tau(\exists x^{\rho} A) := \left\{ 
-\begin{array}{l l}
-  \rho & \quad \text{if $\tau(A) = \epsilon$}\\
- \rho \times \tau (A) & \quad \text{otherwise}\\
-\end{array} \right.
+\tau(\exists x^{\rho} A) :=  \rho \times \tau (A)
+\]
+\[
+\tau(\exists_{nc} x^{\rho} A) := 
+ \tau (A) 
 \]
 
-
-The type of a formula containing a universal quantifier and a subformula $A$
+The type of a formula containing a universal quantifier and a sub-formula $A$
 is also dependent on the type of $A$. If $A$ contains no computational content
 i.e. $\tau (A) = \epsilon$ then the type of the whole formula is also
 $\epsilon$. Otherwise if $A$ does have some computational content then the type
@@ -337,7 +336,7 @@ of type $\tau (A)$.
 
 
 The type of a formula $A \to B$ containing the implication operator and
-subformulae $A$ and $B$ is dependent on the types of the subformulae.
+sub-formulae $A$ and $B$ is dependent on the types of the sub-formulae.
 If $\tau (A) = \epsilon$ then the type of the formula is $ \tau (B)$. If $\tau
 (B) = \epsilon$ then the type of the formula is $\epsilon$. Otherwise it
 returns a function that has a parameter with a type of $\tau (A)$ and returns a value with
@@ -417,6 +416,9 @@ The following are the extracted programs for the above axioms.
 
 \end{array} \right.
 \]
+
+There are different induction schemes  that yield different extracted programs however in general they yield a recursion operation. The extracted program $\llbracket ind_j \rrbracket$ is defined to be the recursion operation $\mathcal{R}^{\vec{\mu},\vec{\tau}}_{\mu_j}$
+
 
 
 
