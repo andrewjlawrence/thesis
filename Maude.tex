@@ -982,7 +982,6 @@ In order to have more general data types Maude allows for parametrised functiona
 
 In the formalisation of the RBC we map use of the map data type to store the position and movement authority of a given train and we use a set to store trains that have made requests in the current time interval. 
 
-
 \begin{lstlisting}[caption = The specification of the Set data type in Maude]
 fmod SET{X :: TRIV} is 
  protecting EXT-BOOL .
@@ -993,9 +992,16 @@ fmod SET{X :: TRIV} is
  op empty : -> Set{X} [ctor] .
  op _,_ : Set{X} Set{X} -> Set{X} .
  
+ op insert : X$Elt Set{X} -> Set{X}
+ eq insert(E, S) = E, S
+
+ op _in :: X$Elt Set{X} -> Bool .
+ eq E in (E, S) = true.
+ eq E in S = false [owise] .
 
 \end{lstlisting}
 
+The indivudal elements the set are themselves are a subsort of set, allowing for sets to be constructed using the union operater \texttt{\_,\_} and singleton sets. The in operation computes set membership and is based on the \texttt{otherwise}  meaning that false case will only be applied once the search for true case has been exhausted.
 
 \begin{lstlisting}[caption = The specification of the Map data type in Maude]
 fmod MAP{X :: TRIV, Y ::  TRIV} is
