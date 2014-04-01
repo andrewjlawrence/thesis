@@ -131,10 +131,11 @@ $$\neg (\phi \mathbf{R} \psi \equiv (\neg \phi) \mathbf{U} (\neg \psi)$$
 from left to right until no further equivalence is applicable.
 \end{mydef}
 
-\section{Proof Systems}
 
-\section{Natural Deduction}
-The natural deduction proof system was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an intuitive manor. 
+\section{Formal Foundations of Minlog}
+In the following section we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manor designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is particularly suited for program extraction as its constituent proofs are constructive. This is then extended to classical logical in a constructive manner. In the following we pretend the natural deduction proof system together with the proof terms derived from each rule:
+
+\medskip
 
 \begin{mydef}[Natural Deduction for Minimal Logic] 
 The natural deduction proof system for minimal logic  consists of the following derivation terms for $\wedge$, $\to$ and $\forall$ : \\
@@ -287,12 +288,10 @@ derivation & term \\ \hline
 
 \subsection*{Type}
 Inorder to perform program extraction on a proof we must first deduce the
-type of the program to be extracted from a formula. In \cite{mlcf} the
-type of a formula $A$ is represented by the object $\tau (A)$. If the formula
-$A$ contains some computational content then the $\tau (A)$ represents the type
-of the program extracted from $A$. If $A$ however does not contain any
-computational content then $\tau (A) = \epsilon$.
-We will now give a formal defintion of $\tau (A)$ starting with the type of a
+type of the program to be extracted from a formula. To this end, every formula $A$ is assigned a type $\tau(A)$ which corresponds to the type of the program extracted from $A$. It is possible for a formula to have no computation content $\tau(A) = \epsilon$; such formulas are called \emph{Harrop formulas}.
+
+
+We will now give a formal definition of $\tau (A)$ starting with the type of a
 predicate variable. If the predicate variable has some assignment $\alpha_P$ then the type of that
 formula is the value of the assignment.
 
