@@ -8,6 +8,7 @@ The Maude System has been used for a variety of specification and verification t
 
 On the front of hybrid automata, ERTMS has been verified in the form of Hybrid Automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}. The Hi-Maude system \cite{MF11} is an extension of Real Time Maude designed specifically modelling interacting hybrid systems and as such it can handle differential equations. It has been used in a case study to model the effects of extreme heat on the human body \cite{MF12}. It is geared towards systems of a highly dynamic nature and may be overkill for a system such as ERTMS with a large discrete component.
 
+There is an example of a distributed sensor network employing the OGDC algorithm that has been modelled and verified using Real Time Maude \cite{PO07}.  The Real Time Maude system can also be used for simulation and analysis of systems as seen in the work on the CASH Scheduling Algorithm \cite{PO06}.
 
 \section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
 One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as three Hybrid automata composed in parallel.
@@ -748,7 +749,7 @@ endfm
 
 
 \section{Real Time Maude}
-One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. This contains specific support enabling the modelling and verification of real-timed and discrete timed systems. There is an example of a distributed sensor network that has been modelled and verified using this tool. It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example, only model checked a portion of the state space of our example using this tool. This is however enough to have confidence in the correctness of the system with respect to a given safety condition.
+One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. This contains specific support enabling the modelling and verification of real-timed and discrete timed systems. It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example, only model checked a portion of the state space of our example using this tool. This is however enough to have confidence in the correctness of the system with respect to a given safety condition.
 
 
 \subsection{Real Time Maude Specifications}
