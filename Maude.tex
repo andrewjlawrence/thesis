@@ -1,7 +1,7 @@
 \newcommand{\rtmaude}{Real Time Maude}
 
 \thesischapter{The Application of Real Time Maude to Model and Verify the European Rail Traffic Management System}
-The ERTMS system will be central to many train control systems in the future and ensuring that it is safe is of paramount importance. It poses a particular challenge due to the fact that the system is specified at a high level with each individual country having its own particular implementation. One aspect that is particularly problematic and loosely specified is the interface between the existing interlocking and the RBC as both of these systems have a role to play in ensuring safety. In the following chapter we shall look at modelling and then simulating and verifying the ERTMS system whilst capturing the behaviour of this critical interface between the two systems.
+The ERTMS system will be central to many train control systems in the future and ensuring that it is safe is of paramount importance. It poses a particular challenge due to the fact that the system is specified at a high level with each individual country having its own particular implementation. One aspect that is particularly problematic and loosely specified is the interface between the existing interlocking and the RBC as both of these systems have a role to play in ensuring safety. In the following chapter we shall look at modelling and then simulating and verifying the ERTMS system whilst capturing the behaviour of this critical interface between the two systems. The simulation of the system provides a validation of our modelling in that it shows the system to be live and that the trains behave as expected. We apply model checking in order to verify that certain safety conditions hold in the model we have specified.
 
 In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{chapter:ERTMS}.The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that a single train automaton always remains within its movement authority. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS. A general introduction to Maude can be found in \cite{MaudeBook}.
 
@@ -16,7 +16,9 @@ There is an example of a distributed sensor network employing the OGDC algorithm
 
 There have been several attempts to model and verify parts of the ERTMS system. The scale of the system and differences in implementations from one country to another both make its formalisation challenging. A subset of the systems requirements specification of ERTMS in UML consisting of high level discrete modes and transitions was captured, formalised and verified using the SMV model checker \cite{MG14}. A variety of properties were checked including safety and liveness which were formalised using modes of the system. One safety condition  "the ETCS on-board never leaves the TRIP mode (TR) before the driver has acknowledged the trip and the train has stopped"\footnote{a train enters the TRIP mode after it has over run its stopping point.}, was formalised as an LTL formula with a boolean variable to represent that the train has stopped, it was then successfully verified using SMV. Our work attempts to capture the more concrete behaviour of the overall system including the physical behaviour of trains such as their speed and that of the highly safety critical interface between ERTMS and the interlocking. 
 
-There has been a large amount of work on the modelling and verification of ETCS using differential dynamic logic \cite{AP08} in the Keymaera tool \cite{AP08b}. The RBC handover has been modelled in \cite{YL11}. ETCS \cite{AP09}
+There has been a large amount of work on the modelling and verification of ETCS using differential dynamic logic \cite{AP08} in the Keymaera tool \cite{AP08b}. The RBC handover where a train moves from the area governed by one RBC into another has been modelled in \cite{YL11}. The properties proven in this study include non-derailment and non collision of trains which follows from correct handover and new movement authority generation. ETCS \cite{AP09} itself has been modelled as a dynamical system with external disturbances and verified for safety in terms of collision avoidence, liveness, controlability and reactivity.
+
+There are also several model checkers specifically for the verification of hybrid systems, including HyTech \cite{AR96} and PHAVer \cite{}, which perform an exhaustive search of the state space to check that a given property holds.
 
 \section{Formalising the European Rail Traffic Management System Using Hybrid Automata}
 One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as three Hybrid automata composed in parallel.
@@ -719,6 +721,7 @@ membership axioms & \texttt{mb} $t \ : \ s \ .$ or \texttt{cmb} $t  \ : \ s$ \te
 \end{tabular}
 \end{center}
 
+The data types of a Maude specific are defined using sorts with subtypes expressed as subsorts. Terms are constructed using function symbols and variables. These terms are given behaviour using equations and conditional equations.  
 %%% Read the Maude papers as this is currently very close to the description of a maude specification found in the RT maude theory paper.
 \medskip
 \begin{mydef}[Equational Theory]
@@ -958,6 +961,8 @@ rl [timetrans] : {OCREST} => {delta(OCREST)} in time 1 .
 rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
 \end{lstlisting}
 
+The operation delta is frozen meaning that the configuration contained within will not be evaluated by the Maude until the delta operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the deltas over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own seperately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{} where a delta operation is used to distribute time over a distributed sensor network. 
+
 \subsubsection*{Modelling Trains}
 We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and breaking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.
 
@@ -989,7 +994,7 @@ When modelling the trains we perform the jumps from accelerating and full allowe
 \subsubsection*{Sets and Maps in Maude}
 In order to have more general data types Maude allows for parametrised functional modules with the  syntax \texttt{fmod M{$X_1$ :: $T_1$ , $\ldots$ , $X_n$ :: $T_n$} is $\ldots$ endfm} where $n \geq 1$, $X_1$ is the \emph{parameter name} and $T_1$ is the \emph{theory name}.
 
-In the formalisation of the RBC we map use of the map data type to store the position and movement authority of a given train and we use a set to store trains that have made requests in the current time interval. 
+In the formalisation of the RBC we make use of the Map data type to store the position and movement authority of a given train and we use a Set to store trains that have made requests in the current time interval. 
 
 \begin{lstlisting}[caption = The specification of the Set data type in Maude]
 fmod SET{X :: TRIV} is 
@@ -1027,7 +1032,25 @@ fmod MAP{X :: TRIV, Y ::  TRIV} is
  var D: X$Elt .
  vars R R' : Y$Elt .
  var M : Map{X,Y} .
+
+op insert : X$Elt Y$Elt Map{X,Y} -> Map{X,Y} .
+eq insert(D, R,(M, D |-> R'))
+   = if $hasMapping(M, D)
+    then insert(D, R, M)
+    else (M, D |-> R)
+    fi .
+eq insert(D, R, M) = (M, D |-> R) [owise] .
+
+op $hasMapping : Map{X, Y} X$Elt -> Bool .
+eq $hasMapping((M, D |-> R), D) = true .
+eq $hasMapping(M, D) = false [owise] .
+
+op _[_] : Map{X,Y} X$Elt -> [Y$Ellt] [prec 23] .
+eq (M, D |-> R) [D]
+   = if  $hasMapping(M, D) then undefined else R fi .
+eq M[D] = undefined [owise] .
 \end{lstlisting}
+A Map from type $X$ to type $Y$ consists of entries constructed using the $\_|->\_$ operation on an element of type $X$ and an element of type $Y$. These entries are composed together using the commutative and associative opertation $\_,\_$ to form a Map.  
 
 When we use a parametrised data type in a specification it is possible to assign a new sort to the particular parametrised instance of the map or set that we are using.
 \begin{center}
