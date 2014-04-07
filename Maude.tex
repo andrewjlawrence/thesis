@@ -222,9 +222,10 @@ The following two \emph{train movement events} will be abbreviated in some diagr
 
 \draw [arrow] (B) -- node[right] {$Speed = MaxSpeed$} (D);
 \draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainId\\ \textbf{then} MA := y\end{center} } (B);
-\draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}$D(t) = BD(t, Speed)$\\MA.Req.TrainID \end{center}} (C);
+\draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}DMA(D(t), EoA) =\\ BD(Speed)\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) -- node [left] {$Speed = 0$} (A);
-\draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}D(t) = BD(t, Speed)\\MA.Req.TrainID \end{center}} (C);
+\draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}DMA(D(t),EoA) =\\
+    BD(Speed)\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-1.5cm, 0.5 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y\end{center} } (B);
 \draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center}\textbf{train movement events} \end{center}} (C);
 \draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center} \textbf{train movement events} \end{center}} (D);
@@ -365,9 +366,9 @@ We define a hybrid automaton $H_{T}$ as follows:
 	
 	\item $jump(Braking \to Accelerating) := MA.TrainID.y \wedge EoA' = y$ 
 
-	\item $jump(Accelerating \to Braking) := D(t) = BD(t, Speed) \wedge MA.Req.TrainID$
+	\item $jump(Accelerating \to Braking) := DMA(D(t),EoA) = BD(Speed) \wedge MA.Req.TrainID$
 
-	\item $jump(Full Allowed Speed \to Braking) := D(t) = BD(t, Speed) \wedge MA.Req.TrainID$
+	\item $jump(Full Allowed Speed \to Braking) := DMA(D(t),EoA) = BD(Speed) \wedge MA.Req.TrainID$
 
 	\item $jump(Accelerating \to Full Allowed Speed)$ := Speed = MaxSpeed
 	
@@ -599,7 +600,7 @@ Since we have restricted the movement authorities to occur at discrete intervals
 \begin{mytheorem}
 Given a live transition system $(S^t_{H_{T}},  L^{t}_{H_T}) $
 
- $$\forall \langle a_i, q_i \rangle_{i \geq 1} \in L^{t}_{H_T}.  \forall (a_n, (v, [D(t), EoA,Speed,\dot{Speed},TrainID])) \in \langle a_i, q_i \rangle_{i \geq 1}$$ $$ \wedge  D(t) \leq BD(EoA,Speed)  \leq EoA$$ 
+ $$\forall \langle a_i, q_i \rangle_{i \geq 1} \in L^{t}_{H_T}.  \forall (a_n, (v, [D(t), EoA,Speed,\dot{Speed},TrainID])) \in \langle a_i, q_i \rangle_{i \geq 1}$$ $$ \wedge BD(Speed) \leq DMA(D(t), EoA)$$ 
 
 under the assumption that the max speed of the train and the track segment size (new MA increments) obey the following
                      $$s + s^2 < tsegsize$$
@@ -615,10 +616,10 @@ cases in which the duration of the transition  $\delta = 0$ or $\delta \in \math
 
 
 \begin{description}
-\item[v = Stop] All possible transitions from the stop mode have a duration $\delta = 0$. There is one possible event that $MA.TrainID.y$ which will grant a new movement authority $y$ such that $EoA < y$ and cause a jump to the $Accelerating$ mode with $D(t)' \leq BD(y,Speed') < y$
+\item[v = Stop] All possible transitions from the stop mode have a duration $\delta = 0$. There is one possible event that $MA.TrainID.y$ which will grant a new movement authority $y$ such that $EoA < y$ and cause a jump to the $Accelerating$ mode with $0 = BD(Speed) \leq  DMA(y,Speed') $
 
 
-\item[v = Accelerating] In the case that the duration of the transition $\delta = 0$ and the successor state is $q_{n+1} = (Braking,[D(t)' = D(t), EoA' = EoA,Speed' = Speed ,\dot{Speed}' = \dot{Speed},TrainID' = TrainID])$ and either $D(t) = BD(EoA,Speed)$ or $Speed = MaxSpeed$ has occurred. If $D(t) = BD(EoA,Speed)$ then $D(t)' = BD(EoA', Speed') \leq EoA'$. The other case that $Speed = MaxSpeed$, $v' = Full \,  Allowed \, Speed$ and $D(t)' \leq BD(EoA', Speed') \leq EoA'$. If the successor state and the current state are the same then an event has occurred and $D(t) \leq BD(EoA,Speed) < EoA$.
+\item[v = Accelerating] In the case that the duration of the transition $\delta = 0$ and the successor state is $q_{n+1} = (Braking,[D(t)' = D(t), EoA' = EoA,Speed' = Speed ,\dot{Speed}' = \dot{Speed},TrainID' = TrainID])$ and either $D(t) = BD(EoA,Speed)$ or $Speed = MaxSpeed$ has occurred. If $D(t) = BD(EoA,Speed)$ then $D(t)' = BD(EoA', Speed') \leq EoA'$. The other case that $Speed = MaxSpeed$, $v' = Full \,  Allowed \, Speed$ and  $BD(Speed') \leq DMA(D(t)',EoA')$. If the successor state and the current state are the same then an event has occurred and $BD(Speed) \leq DMA(D(t),EoA')$.
   
 In the case that $\delta \in \mathbb{R}_{< 0}$ then a flow transition has occured and we are one of several
 possible control modes depending on whether the transition of time triggered a jump or not.  The possibilities are as follows: \\
