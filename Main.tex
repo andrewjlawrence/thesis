@@ -59,7 +59,20 @@
 \usepackage{listings}
 \lstset{numbers = left , stepnumber = 1 ,  framexleftmargin=30pt, frame = single}
 
-
+\providecommand{\Monus}{% Don't redefine it if available
+  \mathbin{% We want a binary operation
+    \vphantom{+}% The same height as a plus or minus
+    \text{% Change size in sub/superscripts
+      \mathsurround=0pt % To be on the safe side
+      \ooalign{% Superimpose the two symbols
+        \noalign{\kern-.35ex}% but the dot is raised a bit
+        \hidewidth$\smash{\cdot}$\hidewidth\cr % Dot
+        \noalign{\kern.35ex}% Backup for vertical alignment
+        $-$\cr % Minus
+      }%
+    }%
+  }%
+}
 
 \newcommand{\mybar}{\mbox{\Large \textbar}}
 \newcommand{\mypause}{\pause}
