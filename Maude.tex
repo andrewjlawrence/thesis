@@ -619,7 +619,7 @@ cases in which the duration of the transition  $\delta = 0$ or $\delta \in \math
 \item[v = Stop] All possible transitions from the stop mode have a duration $\delta = 0$. There is one possible event that $MA.TrainID.y$ which will grant a new movement authority $y$ such that $EoA < y$ and cause a jump to the $Accelerating$ mode with $0 = BD(Speed) \leq  DMA(y,Speed') $
 
 
-\item[v = Accelerating] In the case that the duration of the transition is $\delta = 0$ and only control mode jumps caused by events can occur. The only one of these events that affects the invariant $BD(S) \leq DMA(D(t), EoA)$ is that a new movement authority is received $EoA'$ and since movement authorities are always incremented $DMA(D(t), EoA) < DMA(D(t), EoA')$.
+\item[v = Accelerating (Acc)] In the case that the duration of the transition is $\delta = 0$ and only control mode jumps caused by events can occur. The only one of these events that affects the invariant $BD(S) \leq DMA(D(t), EoA)$ is that a new movement authority is received $EoA'$ and since movement authorities are always incremented $DMA(D(t), EoA) < DMA(D(t), EoA')$.
   
 In the case that $\delta \in \mathbb{R}_{< 0}$ then a flow transition has occured and we are one of several
 possible control modes depending on whether the transition of time triggered a jump or not.  The possibilities are as follows: \\
@@ -637,28 +637,31 @@ Acc $\to$ Brake $\to$ Acc: The train has transitioned between three states durin
 with $D(t_1) = BD(Speed,t_1) < EoA$. In the case that $D(t_1) < BD(Speed,t_1)$ time will progress and at some point in the future $t_2$ the train will with reach the braking point $D(t_2) = BD(Speed',t_2)$ or $Speed' = Max Speed \wedge (D(t_2) < BD(Speed', t_2)$.   In the case that $D(t_2) = BD(Speed', t_2)$ a jump will occur taking the train into the braking mode with $D(t_2) = BD(Speed',t_2) < EoA$. Otherwise $Speed = MaxSpeed$ and a jump is performed to the $Full Allowed Speed$ mode with $D(t_2) < BD(Speed', t_2) < EoA$.
 \end{comment}
 
-\item[v = Full Allowed Speed (FAS)] In the $FAS$ mode have 4 possible cases 
+\item[v = Full Allowed Speed (FAS)]
+This is the same as  Accelerating, in the case that the duration of the trainsition is $\delta = 0 $. In the case that $\delta \geq 0$ mode have 4 possible cases 
 
-FAS: The train is travelling at maxspeed and then condition $D(t') = BD(EoA,Speed)$ has not been met for all $t'$ in the real interval $\delta$. The invariant therefore continues to hold.
+FAS: The train is travelling at maxspeed and then condition $BD(Speed(t')) = DMA(D(t'), EoA)$ has not been met for all $t'$ in the real interval $\delta$. The invariant therefore continues to hold.
 
-FAS $\to$ Brake: The time interval $\delta$ can be partitioned into two further time intervals $\delta'$ in which the system is in FAS and $\delta''$ in which the system is in the Brake mode. The argument from the previous FAS case holds for the first time interval. The end of this time interval marks at point at which the condition $D(t) = BD(EoA, Speed)$ for some $t$. For the whole of the time period $t''$ this holds as an invariant $D(t'') = BD(EoA,Speed)$. \\
+FAS $\to$ Brake: The time interval $\delta$ can be partitioned into two time intervals. The first ending at $t_1$ prior to which the system is in FAS and followed by the Brake mode which ends at $t_2$. The argument from the previous FAS case holds for the first time interval. The end of this time interval marks at point at which the condition $BD(Speed) = DMA(D(t_1), EoA)$ is met and for all subsequent points in time  the braking distance remains equal to the distance to the movement authority.. \\
 
-FAS $\to$ Brake $\to$ Acc: The time interval $\delta$ can be partitioned into 3 time intervals $t_1$ for the period in the FAS mode, $t_2$ for the period in the Brake mode and $t_3$ for the period in the Acc Mode. The argument for the time intervals $t_1$ and $t_2$ is the same as the argument for the previous FAS $\to$ Brake case. At the end of the time period $t_2$ a new movement authority $EoA'$ has been granted such that $ BD(EoA,Speed) + 50 =  BD(EoA', Speed)$.  For the whole of the Acc period the invariant $D(t_3) < BD(EoA',Speed)$ holds as previously $D(t'') = BD(EoA,Speed)$ and it is impossible for the train to cover a distance of 50 in one time unit.
+FAS $\to$ Brake $\to$ Acc: The time interval $\delta$ can be partitioned into 3 time intervals. The first interval in which the system is in FAS ends at $t_1$, period in the Brake mode ends at $t_2$ and finally there is a period in the Acc Mode which ends at $t_3$. The argument for the time interval up to $t_2$ is the same as the argument for the previous FAS $\to$ Brake case. A new movement authority $EoA'$ is granted such that $ DMA(D(t_2), EoA) + 50 =  DMA(D(t_2), EoA')$ causing the jump from Brake to  Acc.  For the whole of the  time period spent in the Acc mode the invariant $D(t_3) < BD(EoA',Speed)$ holds as previously $BD(Speed) = DMA(DT(t_1), EoA)$ and it is impossible for the train to cover a distance of fifty in one time unit.
 
 
-FAS $\to$ Brake $\to$ Acc $\to$ $FAS$: This follows the same argument as the previous however the time period has been partitioned into 4 instead of 3. The invariant holds in the final FAS state for the same reason as the preceding Acc state as the control mode jump does not have any effect on the distance of the train.
+FAS $\to$ Brake $\to$ Acc $\to$ $FAS$: This follows the same argument as the previous however the time period has been partitioned into four instead of three. The invariant holds in the final FAS state for the same reason as the preceding Acc state as the control mode jump does not have any effect on the distance of the train.
 
 \begin{comment}
 wo cases  $D(t) = BD(Speed, t)$ with $t = t_1$ or $t_2$,  $t_1 < t_2$. In the first case a jump occurs instantaneously to the $Braking$ mode with $D(t_1) = BD(Speed, t_1) < EoA$ In the second case time elapses to a point in the future $t_2$ and $D(t)$ increases until $D(t_2) = BD(Speed, t_2)$  then the system will perform a jump to the $Braking$ mode with $D(t_2) = BD(Speed, t_2)  < EoA$. 
 \end{comment}
 
 \item[v = Braking]
-In the Braking mode we have $5$ possible cases depending on whether jumps have occurred between the different control modes.
+In the case that $\delta = 0$ there are no 
+
+In the Braking mode with  $\geq \delta \geq 0$ we have $5$ possible cases depending on whether jumps have occurred between the different control modes.
 
 \begin{comment}In the Braking mode there are two cases either $MA.TID.y \wedge Speed > 0$ or $Speed = 0$. Since the train is braking by the definition of $BD$,  $D(t_2) \leq BD(Speed,t_2)$ will continue to hold for any amount of time in this state.  In the case that $MA.TID.y \wedge Speed > 0$ we receive a new movement authority $y$ with $y < EoA$ and a jump is performed to the $Accelerating$ mode with $D(t_2) \leq BD(Speed', t_2) < y$. In the case that $Speed = 0$ a jump occurs to the $Stopped$ state.
 \end{comment}
 
-Braking: The first case is that we remain in the braking mode for the duration of the time interval. The invariant $D(t') = BD(EoA,Speed)$ holds for the duration of the as both the braking distance and distance decrease by the same amount over the time interval.
+Braking: The first case is that we remain in the braking mode for the duration of the time interval. The invariant $BD(Speed) = DMA(D(t), EoA)$ holds for all times $t'$ in the duration of the interval of the as both the braking distance and distance decrease by the same amount over the time interval.
 
 Braking $\to$ Stopped: The time interval $\delta$ can be partitioned into two separate intervals $t_1,t_2$ corresponding to the duration of time spent in the two control modes.  The argument for the first time interval $t_1$ is the same as that for the previous Braking case. 
 The transition from the Braking to Stopped modes is triggered by the speed of the train reaching 0. Up to and including this point in time the invariant $D(t_2) = BD(EoA, Speed)$ holds. For the remainder of the interval $t_2$ the the train is stationary and the invariant continues to hold. 

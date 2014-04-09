@@ -1,1 +1,118 @@
 \chapter{Background: Model Checking}
+
+
+There are many systems in the modern world that are built from communicating concurrent subsystems 
+
+Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science such as electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. In this thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two seperate research teams  Clarke and Emerson \cite{EM82} and Quielle and Sifakis \cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver \cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the state \emph{space explosion problem}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space.
+
+\section{Model Checkng Preliminaries}
+In the following we shall describe some logical fundementals needed to understand model checking. Firstly we shall introduce a form of state transition graph namely \emph{Kripke Structures} which are used capture the behaviour of finite discrete systems. Following this we shall introduce a language \emph{Linear Temporal Logic}which will enable us to formulate properties over these systems.
+
+\begin{mydef}[Kripke Structure]
+Given a set of atomic propositions $AP$. We define a Kripke Structure $M$ to be a four tuple $(S, S_0, R, L)$
+where:
+\begin{itemize} 
+\item $S$ is a finite set of states
+\item $S_0$ is a set of initial states such that $S_0 \subseteq S$
+\item $R$ is a total transition relation such that $R \subseteq S \times S$
+\item $L: S \to 2^{AP}$ is a function that labels each state with the set of atomic propositions holding in that state.
+\end{itemize}
+\end{mydef}
+
+\subsection*{Linear Temporal Logic}
+
+In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}. 
+
+
+Using these atomic propositions combined with the temporal operators it is possible to define a syntax for temporal logic formulae.
+
+\begin{mydef}[Syntax of Linear Temporal Logic]
+Let $AP$ be the set of propositional formulae then:
+
+\begin{itemize}
+\item $\top$ and $\bot$ are well formed formulas.
+\item if $p \in AP$ then $p$ is well formed formula (wff).
+
+\item if $f$ and $g$ are wff  then $\star f$ and $f \circ g$ are wffs where $\star \in \{\neg,\mathbf{X},\mathbf{G}, \mathbf{F}\}$ and $\circ \in \{ \wedge,\vee,\textbf{R},\textbf{U} \}$.
+\end{itemize}
+
+\end{mydef}
+We write $LTL(AP)$ to denote the LTL logic formulas for a given set of atomic propositions $AP$.
+
+LTL operations can be used to speak about paths through a system specified as a Kripke structure.
+a \emph{path} $\pi$ is a sequence of states $s_1, \ldots s_n$ and a \emph{path formula} is one that holds in each given state of a path. We define $Path(K,s_0)$ to be the set of paths starting at state $s_0$ in the Kripke structure $K$ as the set of functions $\phi : N \to S$ such that $\phi(0) = a$ and the $\phi(n) \to \phi(n+1)$. 
+
+We shall now look at the semantics of LTL firstly using an informal description of the LTL operations and secondly by giving a formal semantics for LTL. The following is a description of the 5 LTL operations over paths of a Kripke Structure.
+
+\begin{itemize}
+\item \textbf{X} $f$ : The property $f$ holds in the \emph{next} moment of time.
+\item \textbf{G} $f$ : The property $f$ is \emph{globally} true. i.e. it holds for all times on all paths. 
+\item \textbf{F} $f$ : The property $f$ is \emph{finally} true. i.e. there exists a time such that the property $f$ holds on a path.
+\item $f$ \textbf{U} $g$ : For all paths the property globally $f$ holds \emph{until} property $g$ holds. 
+\item $f$ \textbf{R} $g$ : f holds up to and including the point when $g$ holds.
+\end{itemize}
+
+%%%
+%%% We need to formalise the following definition. Semantics of Linear Temporal Logic Formula?
+%%% 
+The semantics of LTL is defined inductively in terms of the $\mathbf{X}$ and $\mathbf{U}$ LTL operations which can then be used in combination with operator equivalences to define the semantics of other operations.
+ 
+\begin{mydef}[Semantics of Linear Temporal Logic]
+We define the semantics of a linear temporal logic formula $\phi \in LTL(AP)$ in terms of a satisfaction relation $$K,s \models \phi$$ over a Kripke structure $K = (S,T,L)$ and a state $s \in S$ as follows:
+
+$$K,s \models \phi$$ holds if and only if $\forall \pi \in Path(K, s)$, $K,\pi \models \phi$ holds.
+
+We define what it means for $K, \pi \models \phi$ to hold inductively as follows:
+
+\begin{itemize} 
+\item $K,\pi \models \phi$ always holds.
+
+\item For all propositional formulae $p \in AP$ the following always holds:
+     $$K,\pi \models p \leftrightarrow p \in L(\pi(0))$$
+
+\item For all LTL formulas $\mathbf{X} \phi \in LTL(K)$ the following always holds:
+$$ K, \pi \models \mathbf{X} \phi \leftrightarrow K, succ;\pi \models \phi $$
+
+where $succ$ is a successor function $succ: N \_ \to N$ such that $succ;\pi(n) = \pi(succ(n)) = \pi(n + 1)$.
+
+\item For all LTL formulas $\phi \mathbf{U} \psi \in LTL(K)$ the following always holds:
+$$K, \pi \models_{LTL} \phi \mathbf{U} \psi \leftrightarrow$$
+$$\exists n \in N.$$
+$$(K,succ^n; \pi \models_{LTL} \psi) \wedge (\forall m \in N. m < n \to K, succ^m;\i \models_{LTL} \phi)$$
+
+\item For all LTL formulas $\neg \phi \in LTL(AP)$ the following always holds:
+$$K,\pi \models_{LTL} \neg \phi \leftrightarrow K,\pi \not\models \phi $$
+
+\item For all LTL formulas $\phi \vee \psi \in LTL(AP)$ the following always holds
+$$K,\pi \models_{LTL} \phi \vee \psi \leftrightarrow K,\pi \models_{LTL} \phi \ \mathrm{or} \ K,\pi \models_{LTL} \psi $$
+
+\end{itemize}
+
+\end{mydef}
+In the above definition we have defined the semantics for the \textbf{U} and \textbf{X} LTL operations. 
+The semantics for formulas containing other LTL operations can be obtained by using the following equivalences:
+$$\textbf{G} \phi \equiv False \, \mathbf{R} \, \phi $$
+$$\textbf{F} \phi \equiv   True \, \mathbf{U} \, \phi$$
+
+Combined  with the equivalences for obtaining negative normal form.
+
+\begin{mydef}[LTL Negative Normal Form]
+The negative normal form of an LTL formula can be obtained by applying the following equivalences:
+$$\neg True \equiv False$$
+$$\neg False \equiv True$$
+$$\neg \neg \phi \equiv \phi$$
+$$\neg (\phi \vee \psi) \equiv \neg \phi \wedge \neg \psi $$
+$$\neg (\phi \wedge \psi) \equiv \neg \phi \vee \neg \psi$$
+$$\neg \mathbf{X} \phi \equiv \mathbf{X} \neg \phi$$
+$$\neg (\phi \mathbf{U} \psi) \equiv (\neg \phi) \mathbf{R} (\neg \psi)$$
+$$\neg (\phi \mathbf{R} \psi \equiv (\neg \phi) \mathbf{U} (\neg \psi)$$
+from left to right until no further equivalence is applicable.
+\end{mydef}
+
+LTL Model Checking
+
+SAT Based Model Checking
+
+Inductive Verification
+
+Bounded Model Checking
