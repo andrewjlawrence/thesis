@@ -344,17 +344,18 @@ There are different induction schemes  that yield different extracted programs h
 
 The extracted program for an application of general induction is the guarded recursion operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
 
-\begin{lstlisting}
-(GRecGuard ρ1 ρ2 ρ3 τ) μ z1 z2 z3 G t = f z1 z2 z3 t where
-f : ρ1 ⇒ ρ2 ⇒ ρ3 ⇒ Boole ⇒ τ
-f x1 x2 x3 True = G x x2 x3 ([y1, y2, y3].f y1 y2 y3(μ y1 y2 y3 < μ x1 x2 x3))
+\begin{lstlisting}[mathescape]
+(GRecGuard $\rho$1 $\rho$2 $\rho$3 $\tau$) $\mu$ z1 z2 z3 G t = f z1 z2 z3 t where
+f : $\rho$1 $\implies$ $\rho$2 $\implies$ $\rho$3 $\implies$ Boole $\implies$ $\tau$
+f x1 x2 x3 True = G x x2 x3 (
+        [y1, y2, y3].f y1 y2 y3($\mu$ y1 y2 y3 < $\mu$ x1 x2 x3))
 f x1 x2 x3 False = Inhab
 \end{lstlisting}
 
 
 Similarly, the extracted program for non-measure induction is a recursion operation \texttt{Rec}.
 
- it is possible to write the operation Rec list ρ ⇒ τ using a function
+ it is possible to write the operation \texttt{Rec list} $\rho$ $\implies$ $\tau$ using a function
 f : listρ ⇒ τ which gives a more intuitive view of its behaviour.
 \begin{lstlisting}
 (Rec listρ ⇒ τ)ys z G = f ys where
@@ -414,12 +415,13 @@ r1 \ \textbf{r} \ A[x:= r0] & \quad \text{otherwise} \\
 
 
 
-\section{Other Theorem Provers and Their Foundations}
-Unlike Minlog the following 3 interactive theorem provers all have type theoretic foundations
+\section{Other Theorem Provers with Program Extraction Capabilities}
+While Minlog is specifically geared towards extracting programs from proofs there are other examples of theorem provers with program extraction capabilities. An early example of work on a theorem prover with program extraction capabilitieis is the Nuprl system \cite{RC86}. There are also other mature theorem provers with program extraction capabilities such as Coq \cite{YB04}, which is based on the Calculus of Inductive Constructions and Isabelle  \cite{TN99,LP94} which is a generic theorem prover with extensions for many logics. More recently a number of theorem provers based on dependent types \cite{PM80} have emerged including Agda \cite{AB09} and IDRIS \cite{EB11}.
+
 \subsection*{Isabelle} 
-The theorem prover Isabelle \cite{TN99,LP94}
+The theorem prover Isabelle
 \subsection*{Coq} 
-The theorem prover Coq \cite{YB04}
+The theorem prover 
 
 \subsection*{Agda}
 
