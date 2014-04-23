@@ -226,7 +226,18 @@
 \newtheorem{myproof}{Proof}
 \newtheorem{myexample}{Example}
 
+\newcommand{\dpllrule}[1]{\mathbf{#1}}
+\newcommand{\Conflict}{\dpllrule{Conflict}}
+\newcommand{\Unit}{\dpllrule{Unit}}
+\newcommand{\Elim}{\dpllrule{Elim}}
+\newcommand{\Red}{\dpllrule{Red}}
+\newcommand{\Split}{\dpllrule{Split}}
+\newcommand{\resrule}[1]{\mathbf{#1}}
+\newcommand{\Res}{\resrule{Res}}
+\newcommand{\Sub}{\resrule{Sub}}
 
+\newcommand{\modres}[1]{\overset{#1}{\underset{\text{\tiny Res}}{\vdash}}}
+\newcommand{\moddpll}[1]{\overset{#1}{\underset{\text{\tiny DPLL}}{\vdash}}}
 
 
 
@@ -356,6 +367,9 @@ Signed:
 \input{Introduction.tex}
 
 \input{BackgroundLogic.tex}
+
+\input{BackgroundSAT.tex}
+
 \input{EVDP.tex}
 
 \input{ECLSA.tex}
@@ -370,9 +384,11 @@ Signed:
 
 \input{BackgroundERTMS.tex}
 
+\input{Hybridautomata.tex}
 
 \input{Maude.tex}
 
+\input{verifyertms.tex}
 
 
 

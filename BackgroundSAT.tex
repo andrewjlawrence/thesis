@@ -1,23 +1,135 @@
-\chapter{Background: The Satisfiability Problem}
+\chapter{Background: Resolution and the Satisfiability Problem}
+In the following we shall present the satisfiability problem and  algorithms which solve this problem which are commonly known as SAT solvers. We are particularly interested in the Davis Putman Logemann Loveland algorithm \cite{DPLL} which is an improvement of the first SAT solving algorithm by Davis and Putnam \cite{MD60}. This solvers are geared towards solving formulas that are structured in CNF Moving on from these early SAT algorithms, we shall introduce some more recent SAT algorithms that are improvements on the original DPLL algorithm and include optimisations such as \emph{clause learning} and \emph{non-chronological back tracking}. Finally, we look at the resolution algorithm \cite{JR65}, which was directly inspired by the DPLL algorithm, and its associated proof system. The connection between these algorithms is so fundemental infact that the DPLL proof system is equivalent to a restricted form of resolution namely \emph{tree resolution} \cite{} and clause learning algorithms have been shown to implement \emph{general resolution} \cite{}. A general introduction to the satisfiability problem and SAT solvers can be found in The Handbook of Satisfiability \cite{}.
 
-CNF
+
+\section{The Satisfiability Problem}
 
 SAT Problem
 
-\section{DPLL}
-DPLL Proof System
+\section{The DPLL Algorithm}
+The DPLL algorithm attempts to solve the satisfiability problem by performing a search of problem space. The algorithm consists of a split operation which causes a branching over a literal the resulting problems in the two sub trees are then simplified using a set of rules before a further branching is applied.
 
-DPLL Algorithm Example
 
-\section{Clause Learning}
-Grasp
-Chaff ZChaff
+
+
+
+\begin{lstlisting}[caption = Example DPLL Algorithm,mathescape]
+DPLL($\Delta$)
+($\Gamma$,$\Delta'$) = Unit-Resolution($\Delta$)
+if $\Delta$ = {} then
+	return $\Gamma$
+else if {} $\in \Delta$ then
+	return UNSAT
+else
+	select a literal $l$ from $\Delta$
+	if $\Gamma'$ = DPLL($\Delta' \cup \{l\}$) $\neq$ UNSAT then
+		return $\Gamma' \cup \Gamma$ 
+	else if $\Gamma'$ = DPLL($\Delta' \cup \{\neg l\}$) $\neq$ UNSAT then 
+		return $\Gamma' \cup \Gamma$ 
+	else
+		return UNSAT
+\end{lstlisting}
+
+\subsection*{DPLL Proof System}
+
+The  search that this algorithm performs can be viewed as constructing a proof of unsatisfiability for a given formula. The individual operations carried out to during the search correspond to rules in a proof system. The Unit-Resolution step can be broken down into 3 operations, one that adds unit clauses to the valuation, another that removes clauses that have been satisfied by a literal set to true and finally we have a rule that rules a literal from a clause if its opposing literal is in the valuation. There is an axiom rule $\Conflict$ corresponding to the cases in the algorithm where the empty clause has been derived. Finally, there is a branching rule refered to as $\Split$ which a deicison to be made on a literal with a branch in which that literal is true in the valuation and anothe branch in which it is false.
+\medskip
+\begin{mydef}[DPLL Proof System] The DPLL proof system consists 
+of five rules: 
+\label{def:proofsystem-DPLL}
+\bigskip \\
+%
+\begin{center}
+%
+\AxiomC{$\Gamma, l \vdash \Delta $}
+\RightLabel{($\Unit$)}
+\UnaryInfC{$\Gamma \vdash \Delta, \{l \} $}
+\DisplayProof \
+%
+\qquad
+%
+\AxiomC{$\Gamma, l  \vdash \Delta, C$}
+\RightLabel{($\Red$)}
+\UnaryInfC{$\Gamma, l \vdash \Delta, (C,\mybar{l})$}
+\DisplayProof \
+%
+\qquad
+%
+\AxiomC{$\Gamma, l \vdash \Delta$}
+\RightLabel{($\Elim$)}
+\UnaryInfC{$\Gamma, l \vdash \Delta,(C,l)$}
+\DisplayProof \
+
+\bigskip
+
+\AxiomC{$$}
+\RightLabel{($\Conflict$)}
+\UnaryInfC{$\Gamma \vdash \Delta,  \emptyset$}
+\DisplayProof \
+%
+\qquad
+%
+\AxiomC{$\Gamma,l \vdash \Delta$}
+\AxiomC{$\Gamma, \mybar{l} \vdash \Delta$}
+\RightLabel{($\Split$)}
+\BinaryInfC{$\Gamma  \vdash \Delta$}
+\DisplayProof \
+%
+\end{center}
+%
+\end{mydef}
+\section{CDCL Algorithms}
+Similarily to the DPLL algorithms, conflict driven clause learning algorithms take as input a formula $\Delta$ in Conjunctive Normal Form. 
+A valuation in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value. The depth at which a boolean variable $x$ is assigned a value \{0,1 \} in the search tree is called the decision level which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search.
+
+
+GRASP \cite{MS99,MS96}
+Chaff ZChaff \cite{LZ01}
 MiniSAT
+
+
+\begin{lstlisting}[caption = Example CDCL Algorithm, mathescape]
+CDCL($\Delta$,$\Gamma$)
+$(\Delta,\Gamma) = \mathrm{Unit-Resolution}(\Delta,\Gamma)$
+if $\{ \} \in \Delta$
+	then return UNSAT
+$dl \leftarrow 0$
+while($\neg \mathrm{ALLVARIABLESASSIGNED}(\Delta,\Gamma$)) do
+	do (x,v) = select(\Delta,\Gamma)
+ 	     $dl \leftarrow dl + 1$
+ 	     $\Gamma \leftarrow  \Gamma \cup \{ (x,v)\}$
+	     $(\Delta,\Gamma) = \mathrm{Unit-Resolution}(\Delta,\Gamma)$
+
+\end{lstlisting}
+
 
 Example Clause Learning Algorithm
 
 \section{Resolution}
 
 Resolution Proof System
+
+
+\begin{mydef}[Resolution Proof System] The derivable resolution sequents $\Gamma \modres{n} C$ with a derivation of size $n$ are conveniently defined by two rules: Subsumption (or axiom) and resolution.
+%
+\bigskip
+
+\label{def:resolutionps}
+\begin{center}
+\AxiomC{\phantom{$\Delta \modres{n} C \vee l$}}
+\RightLabel{($\Sub$)  $C \subseteq C'$ }
+\UnaryInfC{$\Delta,C \modres{0} C'$}
+\DisplayProof
+%
+\qquad
+%
+\AxiomC{$\Delta \modres{n} C \vee l$}
+\AxiomC{$ \Delta \modres{m} C' \vee \bar{l}$}
+\RightLabel{($\Res$)}
+\BinaryInfC{$\Delta \modres{n + m + 1} C \vee C'$}
+\DisplayProof 
+\end{center}
+\bigskip
+\end{mydef}
 
 Resolution Algorithm

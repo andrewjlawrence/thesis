@@ -6,7 +6,7 @@ There are many systems in the modern world that are built from communicating con
 Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science such as electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. In this thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two seperate research teams  Clarke and Emerson \cite{EM82} and Quielle and Sifakis \cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver \cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the state \emph{space explosion problem}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space.
 
 \section{Model Checkng Preliminaries}
-In the following we shall describe some logical fundementals needed to understand model checking. Firstly we shall introduce a form of state transition system namely \emph{Kripke Structures} which are used capture the behaviour of finite discrete systems. Following this we shall introduce a language \emph{Linear Temporal Logic}which will enable us to formulate properties over these systems.
+In the following we shall describe some logical fundementals needed to understand model checking. Firstly we shall introduce a form of state transition system namely \emph{Kripke Structures} which are used capture the behaviour of finite discrete systems. Following this we shall introduce a language \emph{Linear Temporal Logic} which will enable us to formulate properties over these systems.
 
 \begin{mydef}[Kripke Structure]
 Given a set of atomic propositions $AP$. We define a Kripke Structure $M$ to be a four tuple $(S, S_0, R, L)$
@@ -19,30 +19,64 @@ where:
 \end{itemize}
 \end{mydef}
 
+
+
+
+\begin{mydef}[Reachability]
+Given a transition system $M = (S,S_0, R)$, we define $Reach_R(S, S_0)$ the set of states reachable from $S_0$ in $S$ via the transition relation $R$. Formally it is the least set of states such that the following holds: 
+
+$$ Reach_R(S,S_0) := \{s \in S | s \in S_0 \vee R(r,s) \wedge r \in Reach_R(S,S_0)\} $$
+
+\end{mydef}
+
+\begin{mydef}[Model Safety]
+We define the model represented by a transition system $M = (S,S_0, R)$ to be safe with respect to a safety property $\phi$ if the following holds:
+$$\forall s \in Reach_R(S,S_0). s \models \phi $$
+
+\end{mydef}
+
+\newcommand{\sseq}[2]{s_{{[}#1 \ldots #2 {]}} }
+
+\begin{myremark}
+Given a state $s$ and a set of states $S$ we will abbreivate set membership as a predicate:
+ $$s \in S \leftrightarrow S(s)$$
+
+We also  abbreivate  a sequence of states $s_n \ldots s_m$ as $\sseq{n}{m}$
+
+\end{myremark}
+
+
+\begin{mydef}[Path]
+Given a sequence of states $\sseq{0}{n}$ and a transition relation $R$ we define a path as follows:
+ 
+$$path_R(\sseq{0}{n})  := \forall i \in \{0, \ldots, n-1 \} : R(s_i, s_{i+1})$$
+
+
+\end{mydef}
+
 \subsection*{Linear Temporal Logic}
 
-In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}. 
+In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}.  LTL belongs to a class of logics called temporal logics and is a sub-logic of Computional Tree Logic (CTL*). The formulas of CTL* are built from path quantifiers and temporal operations. There are two path quantifiers, the for all computational paths quantifier \textbf{A} and the exists a computational path quantifier \textbf{E}. 
 
+LTL operations can be used to speak about paths through a system specified as a Kripke structure.
+a \emph{path} $\pi$ is a sequence of states $\sseq{0}{n}$ and a \emph{path formula} is one that holds in each given state of a path. 
 
 Using these atomic propositions combined with the temporal operators it is possible to define a syntax for temporal logic formulae.
 
 \begin{mydef}[Syntax of Linear Temporal Logic]
-Let $AP$ be the set of propositional formulae then:
+Given a set of atomic propositions $AP$ we define an LTL path formula (pf) as follows:
 
 \begin{itemize}
-\item $\top$ and $\bot$ are well formed formulas.
-\item if $p \in AP$ then $p$ is well formed formula (wff).
+\item if $p \in AP$ then $p$ is a pf.
 
-\item if $f$ and $g$ are wff  then $\star f$ and $f \circ g$ are wffs where $\star \in \{\neg,\mathbf{X},\mathbf{G}, \mathbf{F}\}$ and $\circ \in \{ \wedge,\vee,\textbf{R},\textbf{U} \}$.
+\item if $f$ and $g$ are pfs then $\star f$ and $f \circ g$ are pfs where $\star \in \{\neg,\mathbf{X},\mathbf{G}, \mathbf{F}\}$ and $\circ \in \{ \wedge,\vee,\textbf{R},\textbf{U} \}$.
 \end{itemize}
 
 \end{mydef}
-We write $LTL(AP)$ to denote the LTL logic formulas for a given set of atomic propositions $AP$.
 
-LTL operations can be used to speak about paths through a system specified as a Kripke structure.
-a \emph{path} $\pi$ is a sequence of states $s_1, \ldots s_n$ and a \emph{path formula} is one that holds in each given state of a path. We define $Path(K,s_0)$ to be the set of paths starting at state $s_0$ in the Kripke structure $K$ as the set of functions $\phi : N \to S$ such that $\phi(0) = a$ and the $\phi(n) \to \phi(n+1)$. 
 
-We shall now look at the semantics of LTL firstly using an informal description of the LTL operations and secondly by giving a formal semantics for LTL. The following is a description of the 5 LTL operations over paths of a Kripke Structure.
+
+We shall now look at the semantics of LTL firstly using an informal description of the temporal operations from which LTL is constructed and secondly by giving a formal semantics for LTL. The following is a description of the 5 LTL operations over paths of a Kripke Structure.
 
 \begin{itemize}
 \item \textbf{X} $f$ : The property $f$ holds in the \emph{next} moment of time.
@@ -58,7 +92,7 @@ We shall now look at the semantics of LTL firstly using an informal description 
 The semantics of LTL is defined inductively in terms of the $\mathbf{X}$ and $\mathbf{U}$ LTL operations which can then be used in combination with operator equivalences to define the semantics of other operations.
  
 \begin{mydef}[Semantics of Linear Temporal Logic]
-We define the semantics of a linear temporal logic formula $\phi \in LTL(AP)$ in terms of a satisfaction relation $$K,s \models \phi$$ over a Kripke structure $K = (S,T,L)$ and a state $s \in S$ as follows:
+We define the semantics of a linear temporal logic formula $\phi \in LTL(AP)$ in terms of a satisfaction relation $$M,s \models \phi$$ over a Kripke structure $M = (S, S_0,R,L)$ and a state $s \in S$ as follows:
 
 $$K,s \models \phi$$ holds if and only if $\forall \pi \in Path(K, s)$, $K,\pi \models \phi$ holds.
 
@@ -88,6 +122,20 @@ $$K,\pi \models_{LTL} \phi \vee \psi \leftrightarrow K,\pi \models_{LTL} \phi \ 
 
 \end{itemize}
 
+
+
+\begin{center}
+\begin{tabular}{l | l  c  l}
+1. & $M, s \models p$  & $\leftrightarrow$ & $p \in L(s)$ \\
+2. & $M, s \models \neg f_1 $ & $\leftrightarrow$ & $M,s \not\models f_1$ \\
+3. & $M, s \models f_1 \vee f_2$ & $\leftrightarrow$ & $M,s \models f_1$ or $M,s \models f_2$ \\
+4. & $M, s \models f_1 \wedge f_2$ & $\leftrightarrow$ & $M,s \models f_1$ and $M,s \models f_2$ \\ 
+2. & $M,\pi \models f_1$ & $\leftrightarrow$ & $M,\pi(0) \models f_1$ \\
+3. & $M,\pi \models p$ & $\leftrightarrow$ & $blah$
+\end{tabular}
+\end{center}
+
+
 \end{mydef}
 In the above definition we have defined the semantics for the \textbf{U} and \textbf{X} LTL operations. 
 The semantics for formulas containing other LTL operations can be obtained by using the following equivalences:
@@ -111,26 +159,27 @@ from left to right until no further equivalence is applicable.
 
 LTL Model Checking
 
-\section{SAT Based Model Checking}
 
-\begin{mydef}[Reachability]
-Given a transition system $M = (S,S_0, R)$, we define $Reach_R(S, S_0)$ the set of states reachable from $S_0$ in $S$ via the transition relation $R$. Formally it is the least set of states such that the following holds: 
-
-$$ Reach_R(S,S_0) = \{s \in S | s \in S_0 \vee R(r,s) \wedge r \in Reach_R(S,S_0)\} $$
-
-\end{mydef}
-
-\begin{mydef}[Model Safety]
-We define the model represented by a transition system $M = (S,S_0, R)$ to be safe with respect to a safety property $P$ if the following holds:
-$$Reach_R(S,S_0) \subseteq P$$
-
-\end{mydef}
+In the following we shall introduce two general types of model checking which are applied to discrete systems. The first is inductive verification, which is split into two steps consisting of a base case and a step case.   The second that we shall discuss is bounded model checking which attempts to verify a property of the system with an exhaustive search up to a particular depth. There are other types of model checking including temporal induction which has the benefits of both inductive verification and bounded model checking however suffers in terms of speed and the size of the resulting problem.
 
 \subsection*{Inductive Verification}
 
 
+The base case checks that the safety property holds in all intial states of the system. The step case checks that if the system is in a state in which the safety property holds and a transition occurs then the resulting state is also safe, for all possible safe states and transitions out of those states. This method has the advantage over other model checking techniques that it is fast and can verify then entire state space. The disadvantage is that if the safety property is violated then you obtain a pair of states as a counter example instead of a sequence of states that form a counter example trace.
 
+Base case
+
+$$indbase_M(\phi)  := \forall s_0,s_1. S_0(s_0) \wedge R(s_0, s_1) \to s_0 \models \phi \wedge s_1 \models \phi$$
+
+$$indstep_M(\phi) : \forall s,s' \in S \wedge R(s, s') \wedge s \models \phi  \to s' \models \phi$$
 \subsection*{Bounded Model Checking}
 
+In the following we make use of the abbreviation $\sseq{n}{m} \models \phi \leftrightarrow s_n \models \phi \wedge \ldots \wedge  s_m \models \phi$ when writing that a formula holds $\phi$ in a sequence of states $\sseq{n}{m}$.
+
+\begin{mydef}
+
+$$bmc_M(\phi,k):= \forall \sseq{0}{k} \subseteq S \wedge  path_R(\sseq{0}{k}) \wedge S_0(s_0) \to \sseq{0}{k} \models \phi$$
+\end{mydef}
 
 
+\section{SAT Based Model Checking}
