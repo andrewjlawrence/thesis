@@ -98,6 +98,8 @@ $$K,s \models \phi$$ holds if and only if $\forall \pi \in Path(K, s)$, $K,\pi \
 
 We define what it means for $K, \pi \models \phi$ to hold inductively as follows:
 
+\begin{comment}
+
 \begin{itemize} 
 \item $K,\pi \models \phi$ always holds.
 
@@ -122,20 +124,21 @@ $$K,\pi \models_{LTL} \phi \vee \psi \leftrightarrow K,\pi \models_{LTL} \phi \ 
 
 \end{itemize}
 
-
+\end{comment}
 
 \begin{center}
 \begin{tabular}{l | l  c  l}
-1. & $M, s \models p$  & $\Leftrightarrow$ & $p \in L(s)$ \\
-2. & $M, s \models \neg f_1 $ & $\Leftrightarrow$ & $M,s \not\models f_1$ \\
-3. & $M, s \models f_1 \vee f_2$ & $\Leftrightarrow$ & $M,s \models f_1$ or $M,s \models f_2$ \\
-4. & $M, s \models f_1 \wedge f_2$ & $\Leftrightarrow$ & $M,s \models f_1$ and $M,s \models f_2$ \\ 
-5. & $M,\pi \models f_1$ & $\Leftrightarrow$ & $M,\pi(0) \models f_1$ \\
-6. & $M,\pi \models \mathbf{X} g_1$ & $\Leftrightarrow$ & $M, succ;\pi \models \phi$ \\
-7. & $M, \pi \models g_1 \mathbf{U} g_2$ & $\Leftrightarrow$ & $\exists n \in \mathbb{N}. M,succ^n; \pi \models g_2 \wedge \forall m \in \mathbb{N}. m < n \to succ^m; \pi \models g_1$ \\
-8. & $M,\pi \models \mathbf{F} g_1$ & $\Leftrightarrow$ & $\exists n \in \mathbb{N}. M,succ^n;\pi \models g_1$ \\
-9. & $M,\pi \models \mathbf{G} g_1$ & $\Leftrightarrow$ & $\forall n \in \mathbb{N}. M, succ^n;\pi \models g_1$ 
-10. & $M,\pi \models g_1 \mathbf{R} g_2$ &\Leftrightarrow& & $\forall n,m \in \mathbb{N}. i < j \to M,succ^i; \pi \not\models g_1 \to  M,\succ^j \models g_2$ 
+1. & $M, \pi \models p$  & $\Leftrightarrow$ & $p \in L(\pi(0))$ \\
+
+2. & $M, \pi \models \neg \phi $ & $\Leftrightarrow$ & $M,\pi \not\models \phi$ \\
+3. & $M, \pi \models \phi \vee \psi$ & $\Leftrightarrow$ & $M,\pi \models \phi$ or $M,s \models \psi$ \\
+4. & $M, \pi \models \phi \wedge \psi$ & $\Leftrightarrow$ & $M,\pi \models \phi$ and $M,s \models \psi$ \\ 
+5. & $M,\pi \models \phi$ & $\Leftrightarrow$ & $M,\pi(0) \models \phi$ \\
+6. & $M,\pi \models \mathbf{X} \phi$ & $\Leftrightarrow$ & $M, succ;\pi \models \phi$ \\
+7. & $M, \pi \models \phi \mathbf{U} \psi$ & $\Leftrightarrow$ & $\exists n \in \mathbb{N}. M,succ^n; \pi \models \psi \wedge \forall m \in \mathbb{N}. m < n \to succ^m; \pi \models \phi$ \\
+8. & $M,\pi \models \mathbf{F} \phi$ & $\Leftrightarrow$ & $\exists n \in \mathbb{N}. M,succ^n;\pi \models \phi$ \\
+9. & $M,\pi \models \mathbf{G} \phi$ & $\Leftrightarrow$ & $\forall n \in \mathbb{N}. M, succ^n;\pi \models \phi$ \\
+10. & $M,\pi \models \phi \mathbf{R} \psi$ &$\Leftrightarrow$&  $\forall n,m \in \mathbb{N}. i < j \to M,succ^i; \pi \not\models \phi \to  M,\succ^j \models \psi$ 
 \end{tabular}
 \end{center}
 
