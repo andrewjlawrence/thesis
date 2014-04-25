@@ -1,8 +1,9 @@
 \mathchardef\mhyphen="2D
 \newcommand{\mathass}[1]{\mathrm{[}#1 {]}}
 \chapter{Background: Logic and Program Extraction}
-We use logic to formally reason about the world around us in an abstract way. At the most basic level we are creating abstract propositions, sentences from these propositions and then using formal rules to deal with these propositions and to derive new information or insight. In the following we give a general introduction to logic and describe some of the formalisms used in this thesis.
-A good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}.
+We use logic to formally reason about the world around us in an abstract way. At the most basic level we are creating abstract propositions, sentences from these propositions and then using formal rules to deal with these propositions and to derive new information or insight. In the following we give a general introduction to logic and describe some of the formalisms used in this thesis. This starts with syntax and semantics of propositional and first order logic. A good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}. Then we move on to describing the theoretic foundations of the interactive theorem prover Minlog, including the natural deduction calculus, realizability for first order logic and program extraction. We then give an overview of other interactive theorem provers that can be seen as implementing program extraction. 
+
+We are particularily interested in program extraction as it allows for the automatic generation of a program from a interactive constructive proof performed in a theorem prover. This is due to the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that every constructive proof can also be seen as a program. It enables a proof system such as natural deduction  can be directly interpreted as a model of computation i.e. the lambda calculus. 
 
 
 \section{Propositional logic}
@@ -31,6 +32,20 @@ $A$ & $B$ & $\neg A$  & $A \wedge B$ & $A \vee B$ & $A \to B$ & $A \leftrightarr
  F & T & T  & F & F & T & T \\ 
 \end{tabular}
 \end{center}
+
+\begin{mydef}[Satisfaction Relation for Propositional Logic]
+Given a consistent valuation $\Gamma$ and two propositional formulae $\phi, \psi \in PROP$ we define a satisfaction relation $\models$ between a valuation and a formula as follows:
+\begin{itemize}
+\item $\Gamma \models \top$
+\item $\Gamma \not\models \bot$
+\item $\Gamma \models v$ iff $+v \in \Gamma$
+\item $\Gamma \not\models v$ iff $-v \in \Gamma$
+\item $\Gamma \models \neg \phi$ iff $\Gamma \not\models \phi$
+\item $\Gamma \models \phi \wedge \psi$ iff $\Gamma \models \phi$ and $\Gamma \models \psi$
+\item $\Gamma \models \phi \vee \psi$ iff $\Gamma \models \phi$ or $\Gamma \models \psi$
+\end{itemize}
+
+\end{mydef}
 
 \section{First Order Logic}
 \begin{mydef}[Syntax of First Order Logic]
