@@ -56,7 +56,7 @@ $$path_R(\sseq{0}{n})  := \forall i \in \{0, \ldots, n-1 \} : R(s_i, s_{i+1})$$
 
 \subsection*{Linear Temporal Logic}
 
-In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}.  LTL belongs to a class of logics called temporal logics and is a sub-logic of Computional Tree Logic (CTL*). The formulas of CTL* are built from path quantifiers and temporal operations. There are two path quantifiers, the for all computational paths quantifier \textbf{A} and the exists a computational path quantifier \textbf{E}. 
+In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}.  LTL belongs to a class of logics called temporal logics and is a sub-logic of Computional Tree Logic (CTL*) \cite{EE86}. The formulas of CTL* are built from path quantifiers and temporal operations. There are two path quantifiers, the for all computational paths quantifier \textbf{A} and the exists a computational path quantifier \textbf{E}. 
 
 LTL operations can be used to speak about paths through a system specified as a Kripke structure.
 a \emph{path} $\pi$ is a sequence of states $\sseq{0}{n}$ and a \emph{path formula} is one that holds in each given state of a path. 

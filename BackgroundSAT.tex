@@ -3,9 +3,95 @@ In the following we shall present the satisfiability problem and  algorithms whi
 
 
 \section{The Satisfiability Problem}
+In the following section we will introduce some preliminaries followed by the boolean satisfaction problem, which is the problem of finding a set of assignments to the variables of a formula such that the formula itself becomes true. The majority of modern algorithms for solving this problem work on propositional formulas in \emph{conjunctive normal form}. That is the formula is a conjunction of clauses which are themselves disjunctions of literals. This encoding has the advantage that had a very simple and structured form making algorithm implementation easier.
+\medskip
+\begin{mydef}[Preliminaries]
+We define the following preliminaries to use when refering to DPLL SAT algorithms:
 
-SAT Problem
+\begin{enumerate}
+\item A \emph{literal} $l$ is either a positive variable $+v$ or a negative variable $-v$, i.e.\ a variable $v$ with a label $+$ or ${-}$ attached.
 
+\item For every literal $l$ we define the opposite literal $\mybar{l}$ by $\mybar{+v}= -v$, $\mybar{-v} = +v$. 
+
+\item We set $\var(+v) = \var(-v) = v$, $\var(L) = \{\var(l) \mid l\in L\}$
+for a set of literals $L$, and 
+$\var(\Delta) = \bigcup\{\var(L)\mid L\in\Delta\}$ for a set of sets of 
+literals $\Delta$.
+
+\item A \emph{clause} $C$ is a finite set of literals 
+$\{ l_1, \ldots , l_k \}$, to be viewed as the disjunction of the literals.
+
+\item A formula in \emph{conjunctive normal form} (CNF) is a 
+finite conjunction of clauses. 
+%where a clause is a finite disjunction of propositional literals giving it the structure: 
+%%
+%$$\bigwedge^n_{i=1}(l_1 \vee l_2 \vee \ldots \vee l_{k_i})$$.
+%
+By a \emph{formula} $\Delta$ we will always mean a formula in CNF,
+and we will identify it with a finite set of clauses 
+$\{ C_1 , \ldots , C_k \}$, representing the conjunction of the $C_i$.
+
+\item A \emph{valuation} $\Gamma$ is a finite set of literals $\{ l_1, \ldots , l_k \}$ to be viewed as the conjunction of the elements.
+
+\item A valuation $\Gamma$ is \emph{consistent} ($\consistent{\Gamma}$) if 
+%
+$\forall l \,( l \in \Gamma \to \mybar{l} \notin \Gamma)$.
+We let $\consvals$ denote the set of all consistent valuations.
+
+
+\item A \emph{model} is a total function $M$ which maps literals to booleans and satisfies the property
+%
+$\forall l \, (M \ l \leftrightarrow \neg M \ \mybar{l})$.
+%
+\end{enumerate}
+%
+We shall use the abbreviations 
+%
+\begin{itemize}
+%
+\item $M \models \Gamma$, for $\forall l \in \Gamma \, (M \ l)$ 
+(`$M$ is a model of $\Gamma$'),
+%
+\item $M \models \Delta$, for 
+$\forall C \in \Delta \, \exists l \in C \,(M \ l)$ 
+(`$M$ is a model of $\Delta$').
+%
+\end{itemize}
+%
+We call a valuation $\Gamma$ and a formula $\Delta$ \emph{compatible} 
+($\compatible{\Gamma}{\Delta})$
+if there exists a model satisfying both, i.e. 
+$\exists M \, (M \models \Gamma \wedge M\models \Delta)$;
+otherwise $\Gamma$ and $\Delta$ are called \emph{incompatible} 
+($\incompatible{\Gamma}{\Delta}$).
+
+Note: we will modify some of these definitions in order to make algorithmic improvements.
+\end{mydef}
+
+%
+%\begin{definition}
+A \emph{sequent} $\Gamma \vdash \Delta$ is a pair consisting of a valuation and a formula.
+%\end{definition}
+%
+The intended meaning of a sequent $\Gamma \vdash \Delta$ is that $\Gamma$ and $\Delta$
+are incompatible. As a special case, when $\Gamma$ is empty, $\vdash \Delta$ means that $\Delta$ is unsatisfiable. 
+\begin{comment}
+\begin{defi}
+We define an equivalence relation $\sim$ over the formulae $\Delta_1$ and $\Delta_2$ as follows
+$$\Delta_1 \sim \Delta_2 \leftrightarrow \forall C .( C \in \Delta_1 \leftrightarrow C \in \Delta_2) $$
+\end{defi}
+\end{comment}
+%
+In the following we use the notations $X,a := \{x \mid x\in X \lor x = a\}$ 
+(adding $a$ to the set $X$) and 
+$X\setminus a := \{x \mid x\in X \land x \neq a\}$ (removing $a$ from $X$).
+%
+\medskip
+\begin{mydef}[The boolean satisfiability (SAT) problem]
+Given a formula $\Delta$, does there exist a valuation $\Gamma$ such that:
+$$\Gamma \models \Delta$$
+\end{mydef}
+This is an NP complete problem, meaning that it is solveable by a non-deterministic turing machine in polynomial time. Such problem are solved by a back tracking search for a potential solution, first an  assignment the variables is tried, if that fails then the algorithm un does some assignments and tries another solution until all potential solutions have been tried. If all potential solutions do not satisfy the problem then it is said to be unsatisfiable i.e. it has no solution.
 \section{The DPLL Algorithm}
 The DPLL algorithm attempts to solve the satisfiability problem by performing a search of problem space. The algorithm consists of a split operation which causes a branching over a literal the resulting problems in the two sub trees are then simplified using a set of rules before a further branching is applied.
 
