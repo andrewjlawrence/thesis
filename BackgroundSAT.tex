@@ -94,9 +94,20 @@ $$\Gamma \models \Delta$$
 This is an NP complete problem, meaning that it is solveable by a non-deterministic turing machine in polynomial time. Such problem are solved by a back tracking search for a potential solution, first an  assignment the variables is tried, if that fails then the algorithm un does some assignments and tries another solution until all potential solutions have been tried. If all potential solutions do not satisfy the problem then it is said to be unsatisfiable i.e. it has no solution.
 \section{The DPLL Algorithm}
 The DPLL algorithm attempts to solve the satisfiability problem by performing a search of problem space. The algorithm consists of a split operation which causes a branching over a literal the resulting problems in the two sub trees are then simplified using a set of rules before a further branching is applied.
+\bigskip
+\begin{figure}[h!]
+\begin{center}
+\begin{tikzpicture}
+\tikzstyle{arrow}=[->, thick]
+\draw[arrow] (0,0) -- node [above = 10pt, left = 1pt] {$+x_1$} (-1,-1);
 
+\end{tikzpicture}
+\end{center}
+\caption{The branching search of the DPLL algorithme}
+\end{figure}
+\bigskip
 
-
+Add a more detailed explaination of the algorithm.
 
 
 \begin{lstlisting}[caption = Example DPLL Algorithm,mathescape]
@@ -115,6 +126,8 @@ else
 	else
 		return UNSAT
 \end{lstlisting}
+
+
 
 \subsection*{DPLL Proof System}
 
