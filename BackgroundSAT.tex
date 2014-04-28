@@ -123,21 +123,20 @@ $$PHP(2,1) := \{\neg X_1, \neg X_2\}, \{ X_1 \}, \{ X_2 \} $$
 \end{figure}
 \bigskip
 
-Add a more detailed explaination of the algorithm.
-
+The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Delta,\Gamma)$ which takes a formula and a valuation as input and returns either UNSAT in the case that the formula is unsatisfiable or in the satisfiable case it returns a valuation which forms a model of the formula.  The algorithm begins by applying $\mathrm{Unit-Resolution}$, which repeatedly simplifies the formula by removing clauses that contain in a literal in common (Reduce Rule, see \ref{}) with the valuation and by removing literals in clauses with opposing literals in the valuation (Elim Rule, see \ref{}) and then for all resulting \emph{unit} clauses which contain a single literal that literal is added to the valuation (Unit Rule, see \ref{}).  The algorithm then checks to see if the formula is empty in which case the current valuation forms a satisfying assignment for the formula in which case the algorithm terminates.  Otherwise if this is not the case the algorithms checks to see if the empty clause is in the formula, if it is then that clause can not be satisfied and therefore the formula is unsatisfiable with respect to the current valuation and that branch of the algorithm can terminate. If $\mathrm{Unit-Resolution}$ does result in an empty clause then a new literal $l$ is selected from the formula such that neither that literal nor its opposite is in the valuation, then two recursive calls are made, one with the current formula and the valuation extended by $l$ and the second made with the current formula and the valuation extended by the opposite of $l$.
 
 \begin{lstlisting}[caption = Example DPLL Algorithm,mathescape]
-DPLL($\Delta$)
-($\Gamma$,$\Delta'$) = Unit-Resolution($\Delta$)
+DPLL($\Delta, \Gamma$)
+$(\Delta, \Gamma) = \mathrm{Unit-Resolution}(\Delta, \Gamma)$
 if $\Delta$ = {} then
 	return $\Gamma$
 else if {} $\in \Delta$ then
 	return UNSAT
 else
-	select a literal $l$ from $\Delta$
-	if $\Gamma'$ = DPLL($\Delta' \cup \{l\}$) $\neq$ UNSAT then
+	$l = \mathrm{Select}(\Delta, \Gamma)$
+	if $M$ = DPLL($\Delta, \Gamma \cup \{l\}$) $\neq$ UNSAT then
 		return $\Gamma' \cup \Gamma$ 
-	else if $\Gamma'$ = DPLL($\Delta' \cup \{\neg l\}$) $\neq$ UNSAT then 
+	else if $M$ = DPLL($\Delta, \Gamma \cup \{\neg l\}$) $\neq$ UNSAT then 
 		return $\Gamma' \cup \Gamma$ 
 	else
 		return UNSAT
@@ -209,12 +208,17 @@ $(\Delta,\Gamma) = \mathrm{Unit-Resolution}(\Delta,\Gamma)$
 if $\{ \} \in \Delta$
 	then return UNSAT
 $dl \leftarrow 0$
-while($\neg \mathrm{ALLVARIABLESASSIGNED}(\Delta,\Gamma$)) do
-	do (x,v) = select(\Delta,\Gamma)
+while($\neg \mathrm{All-Var-Assigned}(\Delta,\Gamma$)) do
+	do $(x,v) = \mathrm{Select}(\Delta,\Gamma)$
  	     $dl \leftarrow dl + 1$
  	     $\Gamma \leftarrow  \Gamma \cup \{ (x,v)\}$
 	     $(\Delta,\Gamma) = \mathrm{Unit-Resolution}(\Delta,\Gamma)$
-
+	     if $\{ \} \in \Delta$
+              	then $\beta = \mathrm{ConflictAnalysis}(\Delta,\Gamma)$
+		if $(\beta < 0)$
+			then return UNSAT
+			else $\mathrm{Backtrack}(\Delta, \Gamma, \beta)$
+			        $dl \leftarrow \beta$
 \end{lstlisting}
 
 
