@@ -7,7 +7,7 @@ Model checking is a formal method that is typically used to reason about the cor
 
 \section{Model Checkng Preliminaries}
 In the following we shall describe some logical fundementals needed to understand model checking. Firstly we shall introduce a form of state transition system namely \emph{Kripke Structures} which are used capture the behaviour of finite discrete systems. Following this we shall introduce a language \emph{Linear Temporal Logic} which will enable us to formulate properties over these systems.
-
+\medskip
 \begin{mydef}[Kripke Structure]
 Given a set of atomic propositions $AP$. We define a Kripke Structure $M$ to be a four tuple $(S, S_0, R, L)$
 where:
@@ -18,24 +18,24 @@ where:
 \item $L: S \to 2^{AP}$ is a function that labels each state with the set of atomic propositions holding in that state.
 \end{itemize}
 \end{mydef}
-
+\medskip
 When we are formalising properties over a transition system such as a Kripke Structure it is useful from the point of safety to check which states a system can reach from a specific set of initial states. In practice it is rarely possible for a system to be safe for all states and therefore only states that are reachable from a set of safe initial states are considered. We define the set of reachable states inductively, all states in the initial set of states are reachable and a state is reachable if there is a transition to that state from a previous state that is also reachable.
-
+\medskip
 \begin{mydef}[Reachability]
 Given a transition system $M = (S,S_0, R)$, we define $Reach_R(S, S_0)$ the set of states reachable from $S_0$ in $S$ via the transition relation $R$. Formally it is the least set of states such that the following holds: 
 
 $$ Reach_R(S,S_0) := \{s \in S | s \in S_0 \vee R(r,s) \wedge r \in Reach_R(S,S_0)\} $$
 
 \end{mydef}
-
+\medskip
 We define a model to be safe with respect to a safety property if for every state in its reachable set of states that safety property holds.
-
+\medskip
 \begin{mydef}[Model Safety]
 We define the model represented by a transition system $M = (S,S_0, R)$ to be safe with respect to a safety property $\phi$ if the following holds:
 $$\forall s \in Reach_R(S,S_0). s \models \phi $$
 
 \end{mydef}
-
+\medskip
 \newcommand{\sseq}[2]{s_{{[}#1 \ldots #2 {]}} }
 
 \begin{myremark}
@@ -45,16 +45,14 @@ Given a state $s$ and a set of states $S$ we will abbreivate set membership as a
 We also  abbreivate  a sequence of states $s_n \ldots s_m$ as $\sseq{n}{m}$
 
 \end{myremark}
-
-
+\medskip
 \begin{mydef}[Path]
 Given a sequence of states $\sseq{0}{n}$ and a transition relation $R$ we define a path as follows:
  
 $$path_R(\sseq{0}{n})  := \forall i \in \{0, \ldots, n-1 \} : R(s_i, s_{i+1})$$
 
-
 \end{mydef}
-
+\medskip
 \subsection*{Linear Temporal Logic}
 
 In order to perform model checking over a system we typically need a formal language that allows one to speak about time. We need to be able to formalise sentences such as "the next moment of time" and "all moments in time in the future". One such logic that allows us to formalise these statements is linear temporal logic (LTL)\cite{AP77}.  LTL belongs to a class of logics called temporal logics and is a sub-logic of Computional Tree Logic (CTL*) \cite{EE86}. The formulas of CTL* are built from path quantifiers and temporal operations. There are two path quantifiers, the for all computational paths quantifier \textbf{A} and the exists a computational path quantifier \textbf{E}. 
@@ -63,7 +61,7 @@ LTL operations can be used to speak about paths through a system specified as a 
 a \emph{path} $\pi$ is a sequence of states $\sseq{0}{n}$ and a \emph{path formula} is one that holds in each given state of a path. 
 
 Using these atomic propositions combined with the temporal operators it is possible to define a syntax for temporal logic formulae.
-
+\medskip
 \begin{mydef}[Syntax of Linear Temporal Logic]
 Given a set of atomic propositions $AP$ we define an LTL path formula (pf) as follows:
 
@@ -74,11 +72,8 @@ Given a set of atomic propositions $AP$ we define an LTL path formula (pf) as fo
 \end{itemize}
 
 \end{mydef}
-
-
-
+\medskip
 We shall now look at the semantics of LTL firstly using an informal description of the temporal operations from which LTL is constructed and secondly by giving a formal semantics for LTL. The following is a description of the 5 LTL operations over paths of a Kripke Structure.
-
 \begin{itemize}
 \item \textbf{X} $f$ : The property $f$ holds in the \emph{next} moment of time.
 \item \textbf{G} $f$ : The property $f$ is \emph{globally} true. i.e. it holds for all times on all paths. 
@@ -90,8 +85,10 @@ We shall now look at the semantics of LTL firstly using an informal description 
 %%%
 %%% We need to formalise the following definition. Semantics of Linear Temporal Logic Formula?
 %%% 
-The semantics of LTL is defined inductively in terms of the $\mathbf{X}$ and $\mathbf{U}$ LTL operations which can then be used in combination with operator equivalences to define the semantics of other operations.
- 
+
+The semantics of LTL is defined inductively for all operations in the following, it is however possible to define the semantics just in terms of the $\mathbf{X}$ and $\mathbf{U}$ operations and to obtain the semantics for the other operations via equivalences.
+
+ \medskip
 \begin{mydef}[Semantics of Linear Temporal Logic]
 We define the semantics of a linear temporal logic formula $\phi \in LTL(AP)$ in terms of a satisfaction relation $$M,s \models \phi$$ over a Kripke structure $M = (S, S_0,R,L)$ and a state $s \in S$ as follows:
 

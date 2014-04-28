@@ -200,7 +200,7 @@ The first clause learning algorithm was GRASP \cite{MS99,MS96} which exploited t
 Similarily to the DPLL algorithms, conflict driven clause learning algorithms take as input a formula $\Delta$ in Conjunctive Normal Form. 
 A valuation in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value. The depth at which a boolean variable $x$ is assigned a value \{0,1 \} in the search tree is called the decision level which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search. A mapping $\alpha(x)$ is created associating a boolean variable x with a clause $C$ if that variable is assigned by the unit rule applied to $C$ otherwise in the $\alpha(x) = NIL$.
 
-\textbf{Note to self: Find a nice formalisation of the clause learning procedure}
+\textbf{Note to self: Find a nice formalisation of the clause learning procedure, the one in the SAT handbook is not very concrete and highly procedural}
 
 
 
@@ -260,6 +260,8 @@ Resolution Proof System
 
 Resolution Algorithm
 
+
+\section{Translation to CNF}
 
 \section{The Future: Satisfiability Modulo Theory}
 More recently a new type of solver has emerged that can deal with first order formulae, these solvers are based on SAT algorithms and include extra theory modules for reasoning about arithmetic,arrays, quantifiers and equality, hence the name \emph{satisfiability modulo theory}.
