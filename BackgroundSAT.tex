@@ -95,7 +95,7 @@ This is an NP complete problem, meaning that it is solveable by a non-determinis
 \section{The DPLL Algorithm}
 The DPLL algorithm attempts to solve the satisfiability problem by performing a search of problem space. The algorithm consists of a split operation which causes a branching over a literal the resulting problems in the two sub trees are then simplified using a set of rules before a further branching is applied. Consider the following pigeon hole formulae $\mathrm{PHP}(2,1)$ that attempts to put two pigeons into one hole. It is unsatisfiable and therefore the search algorithm branches over the entire space for a result before finally proving that the formula is unsatisfiable.
 
-$$PHP(2,1) := \{\neg X_1, \neg X_2\}, \{ X_1 \}, \{ X_2 \} $$
+$$PHP(2,1) := \{\{\neg X_1, \neg X_2\}, \{ X_1 \}, \{ X_2 \} \}$$
 
 
 \bigskip
@@ -123,7 +123,7 @@ $$PHP(2,1) := \{\neg X_1, \neg X_2\}, \{ X_1 \}, \{ X_2 \} $$
 \end{figure}
 \bigskip
 
-The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Delta,\Gamma)$ which takes a formula and a valuation as input and returns either UNSAT in the case that the formula is unsatisfiable or in the satisfiable case it returns a valuation which forms a model of the formula.  The algorithm begins by applying $\mathrm{Unit-Resolution}$, which repeatedly simplifies the formula by removing clauses that contain in a literal in common (Reduce Rule, see \ref{}) with the valuation and by removing literals in clauses with opposing literals in the valuation (Elim Rule, see \ref{}) and then for all resulting \emph{unit} clauses which contain a single literal that literal is added to the valuation (Unit Rule, see \ref{}).  The algorithm then checks to see if the formula is empty in which case the current valuation forms a satisfying assignment for the formula in which case the algorithm terminates.  Otherwise if this is not the case the algorithms checks to see if the empty clause is in the formula, if it is then that clause can not be satisfied and therefore the formula is unsatisfiable with respect to the current valuation and that branch of the algorithm can terminate. If $\mathrm{Unit-Resolution}$ does result in an empty clause then a new literal $l$ is selected from the formula such that neither that literal nor its opposite is in the valuation, then two recursive calls are made, one with the current formula and the valuation extended by $l$ and the second made with the current formula and the valuation extended by the opposite of $l$.
+The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Delta,\Gamma)$ which takes a formula and a valuation as input and returns either UNSAT in the case that the formula is unsatisfiable or in the satisfiable case it returns a valuation which forms a model of the formula.  The algorithm begins by applying $\mathrm{Unit-Resolution}$, which repeatedly simplifies the formula by removing clauses that contain in a literal in common (Reduce Rule, see definition \ref{def:dpllproofsys}) with the valuation and by removing literals in clauses with opposing literals in the valuation (Elim Rule, see definition \ref{def:dpllproofsys}) and then for all resulting \emph{unit} clauses which contain a single literal that literal is added to the valuation (Unit Rule, see definition \ref{def:dpllproofsys}).  The algorithm then checks to see if the formula is empty in which case the current valuation forms a satisfying assignment for the formula in which case the algorithm terminates.  Otherwise if this is not the case the algorithms checks to see if the empty clause is in the formula, if it is then that clause can not be satisfied and therefore the formula is unsatisfiable with respect to the current valuation and that branch of the algorithm can terminate. If $\mathrm{Unit-Resolution}$ does result in an empty clause then a new literal $l$ is selected from the formula such that neither that literal nor its opposite is in the valuation, then two recursive calls are made, one with the current formula and the valuation extended by $l$ and the second made with the current formula and the valuation extended by the opposite of $l$. 
 
 \begin{lstlisting}[caption = Example DPLL Algorithm,mathescape]
 DPLL($\Delta, \Gamma$)
@@ -142,13 +142,13 @@ else
 		return UNSAT
 \end{lstlisting}
 
-
+The selection of literals is typically made by some heuristics which are a research topic in their own right and therefore beyond the scope of this thesis. We shall make use of simple heurisitics such as simply picking the first literal  or choosing the most commonly occuring literal  from a formula as these produce reasonable performance without overly complicating the algorithm or inducing significant over head.
 
 \subsection*{DPLL Proof System}
 
 The  search that this algorithm performs can be viewed as constructing a proof of unsatisfiability for a given formula. The individual operations carried out to during the search correspond to rules in a proof system. The Unit-Resolution step can be broken down into 3 operations, one that adds unit clauses to the valuation, another that removes clauses that have been satisfied by a literal set to true and finally we have a rule that rules a literal from a clause if its opposing literal is in the valuation. There is an axiom rule $\Conflict$ corresponding to the cases in the algorithm where the empty clause has been derived. Finally, there is a branching rule refered to as $\Split$ which a deicison to be made on a literal with a branch in which that literal is true in the valuation and anothe branch in which it is false.
 \medskip
-\begin{mydef}[DPLL Proof System] The DPLL proof system consists 
+\begin{mydef}[DPLL Proof System]\label{def:dpllproofsys} The DPLL proof system consists 
 of five rules: 
 \label{def:proofsystem-DPLL}
 \bigskip \\
@@ -192,14 +192,21 @@ of five rules:
 \end{center}
 %
 \end{mydef}
-\section{CDCL Algorithms}
+\section{Conflict Driven Clause Learning Algorithms}
+One major improvement to the standard DPLL algorithm is \emph{clause learning} which enables the solvers to learn about the structure of the problem during the proof search, cutting down on the search space in the process. In their most common variant , conflict driven clause learning algorithms, a clause is learned when a conflict is reached that contains the negation of some of the assigned literals that caused the conflict to occur. Typically these algorithms have decision heuristics that allow
+
+The first clause learning algorithm was GRASP \cite{MS99,MS96} which exploited the structure of coflicts and learned new clauses during back tracking search. This was greatly improved on by Chaff \cite{LZ01} which included the two watched literal data structure and a heuristic which received feedback from the clause learning process. MiniSAT
+
 Similarily to the DPLL algorithms, conflict driven clause learning algorithms take as input a formula $\Delta$ in Conjunctive Normal Form. 
-A valuation in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value. The depth at which a boolean variable $x$ is assigned a value \{0,1 \} in the search tree is called the decision level which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search.
+A valuation in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value. The depth at which a boolean variable $x$ is assigned a value \{0,1 \} in the search tree is called the decision level which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search. A mapping $\alpha(x)$ is created associating a boolean variable x with a clause $C$ if that variable is assigned by the unit rule applied to $C$ otherwise in the $\alpha(x) = NIL$.
+
+\textbf{Note to self: Find a nice formalisation of the clause learning procedure}
 
 
-GRASP \cite{MS99,MS96}
-Chaff ZChaff \cite{LZ01}
-MiniSAT
+
+The typical clause learning algorithm functions in a similar way to the DPLL algorithm initial applies unit resolution to the formula. After this it assigns the decision level to zero and then enters a while loop which runs continually until all variables have been assigned.
+
+
 
 
 \begin{lstlisting}[caption = Example CDCL Algorithm, mathescape]
@@ -219,10 +226,10 @@ while($\neg \mathrm{All-Var-Assigned}(\Delta,\Gamma$)) do
 			then return UNSAT
 			else $\mathrm{Backtrack}(\Delta, \Gamma, \beta)$
 			        $dl \leftarrow \beta$
+return (SAT,\Gamma)
 \end{lstlisting}
 
 
-Example Clause Learning Algorithm
 
 \section{Resolution}
 
@@ -252,3 +259,7 @@ Resolution Proof System
 \end{mydef}
 
 Resolution Algorithm
+
+
+\section{The Future: Satisfiability Modulo Theory}
+More recently a new type of solver has emerged that can deal with first order formulae, these solvers are based on SAT algorithms and include extra theory modules for reasoning about arithmetic,arrays, quantifiers and equality, hence the name \emph{satisfiability modulo theory}.
