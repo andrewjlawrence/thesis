@@ -3,7 +3,7 @@
 
 There are many systems in the modern world that are built from communicating concurrent subsystems 
 
-Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science such as electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. In this thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two seperate research teams  Clarke and Emerson \cite{EM82} and Quielle and Sifakis \cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver \cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the state \emph{space explosion problem}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space.
+Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science such as electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. In this thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two seperate research teams  Clarke and Emerson \cite{EM82} and Quielle and Sifakis \cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver \cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the state \emph{space explosion problem}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space. Examples of modern model checkers include SPIN \cite{GH04} which is based around the partial order reduction technique \cite{DP94} and Promela \cite{}.
 
 \section{Model Checkng Preliminaries}
 In the following we shall describe some logical fundementals needed to understand model checking. Firstly we shall introduce a form of state transition system namely \emph{Kripke Structures} which are used capture the behaviour of finite discrete systems. Following this we shall introduce a language \emph{Linear Temporal Logic} which will enable us to formulate properties over these systems.
@@ -45,6 +45,8 @@ Given a state $s$ and a set of states $S$ we will abbreivate set membership as a
 We also  abbreivate  a sequence of states $s_n \ldots s_m$ as $\sseq{n}{m}$
 
 \end{myremark}
+\medskip
+Knowing whether or not an unsafe state is reachable or not so useful from an engineering point of view as it does not provide any information as to how the unsafe state was reached. It is therefore desireable to be able to formulate a \emph{path} or sequence of states through a transition system. In the case that such an unsafe state is found, model checking techniques that check paths through the transition system will be able to provide a such a path as a \emph{counter example trace}.
 \medskip
 \begin{mydef}[Path]
 Given a sequence of states $\sseq{0}{n}$ and a transition relation $R$ we define a path as follows:
@@ -163,29 +165,36 @@ $$\neg (\phi \mathbf{R} \psi \equiv (\neg \phi) \mathbf{U} (\neg \psi)$$
 from left to right until no further equivalence is applicable.
 \end{mydef}
 
-LTL Model Checking
+Model Checking
 
 
 In the following we shall introduce two general types of model checking which are applied to discrete systems. The first is inductive verification, which is split into two steps consisting of a base case and a step case.   The second that we shall discuss is bounded model checking which attempts to verify a property of the system with an exhaustive search up to a particular depth. There are other types of model checking including temporal induction which has the benefits of both inductive verification and bounded model checking however suffers in terms of speed and the size of the resulting problem.
+
+
 
 \subsection*{Inductive Verification}
 
 
 The base case checks that the safety property holds in all intial states of the system. The step case checks that if the system is in a state in which the safety property holds and a transition occurs then the resulting state is also safe, for all possible safe states and transitions out of those states. This method has the advantage over other model checking techniques that it is fast and can verify then entire state space. The disadvantage is that if the safety property is violated then you obtain a pair of states as a counter example instead of a sequence of states that form a counter example trace.
-
-Base case
+\medskip
+\begin{mydef}[Inductive Verification]
+Given a transition system $M$ and a safety property $\phi$ we define inductive verification as follows:
 
 $$indbase_M(\phi)  := \forall s_0,s_1. S_0(s_0) \wedge R(s_0, s_1) \to s_0 \models \phi \wedge s_1 \models \phi$$
-
 $$indstep_M(\phi) : \forall s,s' \in S \wedge R(s, s') \wedge s \models \phi  \to s' \models \phi$$
+
+\end{mydef}
+\medskip
 \subsection*{Bounded Model Checking}
-
-In the following we make use of the abbreviation $\sseq{n}{m} \models \phi \leftrightarrow s_n \models \phi \wedge \ldots \wedge  s_m \models \phi$ when writing that a formula holds $\phi$ in a sequence of states $\sseq{n}{m}$.
-
-\begin{mydef}
+One of the most important model checking techniques in terms of industrial applications is bounded model checking. All possible paths through the system are safety property checked up to a certain bound. This approach is most useful for falisification checking i.e. finding errors and their causes. It is scaleable to industrial applications as they typically exhibit all of their possible behaviours after a short number of time steps. In the following we make use of the abbreviation $\sseq{n}{m} \models \phi \leftrightarrow s_n \models \phi \wedge \ldots \wedge  s_m \models \phi$ when writing that a formula holds $\phi$ in a sequence of states $\sseq{n}{m}$.
+\medskip
+\begin{mydef}[Bounded Model Checking]
+Given a transition system $M$, a safety property $\phi$ and a bound $k$ we define bounded model checking $bmc_M(\phi,k)$ as follows:
 
 $$bmc_M(\phi,k):= \forall \sseq{0}{k} \subseteq S \wedge  path_R(\sseq{0}{k}) \wedge S_0(s_0) \to \sseq{0}{k} \models \phi$$
 \end{mydef}
-
+\medskip
+\textbf{Note to self: I need to add something on loop freedom and inclusion checking for sat based model checking, I also need to describe the LTL model checker in Maude which uses Buchi automaton.}  
 
 \section{SAT Based Model Checking}
+\textbf{Note to self: Do I need to describe the differences between SAT based model checker and other approaches?}

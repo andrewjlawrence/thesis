@@ -1,5 +1,5 @@
 \chapter{Background: Resolution and the Satisfiability Problem}
-In the following we shall present the satisfiability problem and  algorithms which solve this problem which are commonly known as SAT solvers. We are particularly interested in the Davis Putman Logemann Loveland algorithm \cite{DPLL} which is an improvement of the first SAT solving algorithm by Davis and Putnam \cite{MD60}. This solvers are geared towards solving formulas that are structured in CNF Moving on from these early SAT algorithms, we shall introduce some more recent SAT algorithms that are improvements on the original DPLL algorithm and include optimisations such as \emph{clause learning} and \emph{non-chronological back tracking}. Finally, we look at the resolution algorithm \cite{JR65}, which was directly inspired by the DPLL algorithm, and its associated proof system. The connection between these algorithms is so fundemental infact that the DPLL proof system is equivalent to a restricted form of resolution namely \emph{tree resolution} \cite{} and clause learning algorithms have been shown to implement \emph{general resolution} \cite{}. A general introduction to the satisfiability problem and SAT solvers can be found in The Handbook of Satisfiability \cite{}.
+In the following we shall present the satisfiability problem and  algorithms which solve this problem which are commonly known as SAT solvers. We are particularly interested in the Davis Putman Logemann Loveland algorithm \cite{DPLL} which is an improvement of the first SAT solving algorithm by Davis and Putnam \cite{MD60}. This solvers are geared towards solving formulas that are structured in CNF Moving on from these early SAT algorithms, we shall introduce some more recent SAT algorithms that are improvements on the original DPLL algorithm and include optimisations such as \emph{clause learning} and \emph{non-chronological back tracking}. Finally, we look at the resolution algorithm \cite{JR65}, which was directly inspired by the DPLL algorithm, and its associated proof system. The connection between these algorithms is so fundemental infact that the DPLL proof system is equivalent to a restricted form of resolution namely \emph{tree resolution} \cite{} and clause learning algorithms have been shown to implement \emph{general resolution} \cite{}. A general introduction to the satisfiability problem and SAT solvers can be found in The Handbook of Satisfiability \cite{AB09b}.
 
 
 \section{The Satisfiability Problem}
@@ -119,7 +119,7 @@ $$PHP(2,1) := \{\{\neg X_1, \neg X_2\}, \{ X_1 \}, \{ X_2 \} \}$$
 
 \end{tikzpicture}
 \end{center}
-\caption{The branching search of the DPLL algorithm}
+\caption{The branching search of the DPLL algorithm, as when applied to PHP(2,1)}
 \end{figure}
 \bigskip
 
@@ -204,7 +204,7 @@ A valuation in a clause learning algorithm is typically a total function $\Gamma
 
 
 
-The typical clause learning algorithm functions in a similar way to the DPLL algorithm initial applies unit resolution to the formula. After this it assigns the decision level to zero and then enters a while loop which runs continually until all variables have been assigned.
+The typical clause learning algorithm functions in a similar way to the DPLL algorithm initial applies unit resolution to the formula. After this it assigns the decision level to zero and then enters a while loop which runs continually until all variables have been assigned. If it manages to assign a value to everyone of the variables then the current valuation $\Gamma$ can be extended to form a model of the formula $\Delta$.
 
 
 
@@ -262,6 +262,7 @@ Resolution Algorithm
 
 
 \section{Translation to CNF}
+In order to apply most modern SAT solvers typically one has to first econde the SAT problem to CNF. There are a number of translations available, some naive approaches can exponentially increase the size of the resulting formula. In the following we look at the most commonly used encoding called the Tseitin Expansion \cite{GT83}.
 
 \section{The Future: Satisfiability Modulo Theory}
 More recently a new type of solver has emerged that can deal with first order formulae, these solvers are based on SAT algorithms and include extra theory modules for reasoning about arithmetic,arrays, quantifiers and equality, hence the name \emph{satisfiability modulo theory}.
