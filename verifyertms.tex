@@ -1,4 +1,4 @@
-\thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real TIme Maude}
+\thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real Time Maude}
 We will now see how this executable specification can be used to simulate and obtain a better understanding of the modelled system. For this purpose we have written a small Haskell program that takes the output from multiple timed rewrites and plots them as a graph.
 
 In the following we use an example initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 150. The RBC and the interlocking are both initialised with the trains in these positions. In Maude this initial state is modelled as follows. Firstly, we define the initial states of the component objects individually:
@@ -88,7 +88,7 @@ Result ClockedSystem :
 In fig \ref{t1t2} we see that train2 never enters the same track segment as train1.
 
 \section{The Maude Linear Temporal Logic Model Checker}
-The Real Time Maude system includes a model checker for linear temporal logic \cite{ES00}.  This is a useful automatic tool which allows for the verification and analysis of real time systems. In addition to the positive verification results in which a safety property holds,  the system produces, in the case of a negative verification result, a counter example trace which shows the. In the following we shall present formal definitions for linear temporal logic and the model checking problem for formulae in this logic.
+The Real Time Maude system includes an on-the-fly model checker for linear temporal logic \cite{ES00}.  This is a useful automatic tool which allows for the verification and analysis of real time systems. In addition to the positive verification results in which a safety property holds,  the system produces, in the case of a negative verification result, a counter example trace which describes how the error occured from the initial state of the system.
 
  
 

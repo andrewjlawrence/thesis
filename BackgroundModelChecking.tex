@@ -3,7 +3,7 @@
 
 There are many systems in the modern world that are built from communicating concurrent subsystems 
 
-Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science such as electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. In this thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two seperate research teams  Clarke and Emerson \cite{EM82} and Quielle and Sifakis \cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver \cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the state \emph{space explosion problem}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space. Examples of modern model checkers include SPIN \cite{GH04} which is based around the partial order reduction technique \cite{DP94}  and the probablistic model checker Prism \cite{MK11}.
+Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science such as electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. In this thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two seperate research teams  Clarke and Emerson \cite{EM82} and Quielle and Sifakis \cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver \cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the state \emph{space explosion problem}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space. Examples of modern model checkers include SPIN \cite{GH04} which performs on-the-fly model checking  based around the partial order reduction technique \cite{DP94}  and the probablistic model checker Prism \cite{MK11}. The Maude LTL Model Checker \cite{} also performs on-the-fly model checking and the underlying principles behind this will be discusses later in this chapter.
 
 \section{Model Checkng Preliminaries}
 In the following we shall describe some logical fundementals needed to understand model checking. Firstly we shall introduce a form of state transition system namely \emph{Kripke Structures} which are used capture the behaviour of finite discrete systems. Following this we shall introduce a language \emph{Linear Temporal Logic} which will enable us to formulate properties over these systems.
@@ -165,10 +165,10 @@ $$\neg (\phi \mathbf{R} \psi \equiv (\neg \phi) \mathbf{U} (\neg \psi)$$
 from left to right until no further equivalence is applicable.
 \end{mydef}
 
-Model Checking
+\section{Model Checking Propositional Safety Properties Using a SAT Solver}
 
 
-In the following we shall introduce two general types of model checking which are applied to discrete systems. The first is inductive verification, which is split into two steps consisting of a base case and a step case.   The second that we shall discuss is bounded model checking which attempts to verify a property of the system with an exhaustive search up to a particular depth. There are other types of model checking including temporal induction which has the benefits of both inductive verification and bounded model checking however suffers in terms of speed and the size of the resulting problem.
+In the following we shall introduce two general types of model checking  which are applied to check propositional safety properties over discrete systems using a SAT. The first is inductive verification, which is split into two steps consisting of a base case and a step case.   The second that we shall discuss is bounded model checking which attempts to verify a property of the system with an exhaustive search up to a particular depth. There are other types of model checking including temporal induction which has the benefits of both inductive verification and bounded model checking however suffers in terms of speed and the size of the resulting problem. All of these problems are formulated in propositional logic and then translated into CNF using the Tseitin Translation.
 
 
 
@@ -196,5 +196,22 @@ $$bmc_M(\phi,k):= \forall \sseq{0}{k} \subseteq S \wedge  path_R(\sseq{0}{k}) \w
 \medskip
 \textbf{Note to self: I need to add something on loop freedom and inclusion checking for sat based model checking, I also need to describe the LTL model checker in Maude which uses Buchi automaton.}  
 
-\section{SAT Based Model Checking}
+\section{On-the-fly Model Checking of Linear Temporal Logic Properties}
+The process of model checking linear temporal logic involves first  negating the linear temporal  logic property, placing it in negation normal form and then constructing a B{\"u}chi automata for that property that accepts the language of counter examples. The product of the Buchi automata and the state transition system is constructed and a double depth first search is applied.
+
+\subsection{B{\"u}chi Automata}
+
+\begin{mydef}[B{\"u}chi Automata]
+We define a B{\"u}chi automaton $A$ is a five-tuple $(L, S,T,S_0, F)$ where:
+\item $L$ is a finite alphabet
+\item $S$ is a finite set of states
+\item $T \subseteq S \times L \times S$
+\end{mydef}
+
+Strongly connected components
+
+Double depth first search
+
+
+
 \textbf{Note to self: Do I need to describe the differences between SAT based model checker and other approaches?}
