@@ -192,11 +192,11 @@ $$\BD{S} = \frac{S^2}{2} $$
 Since we are working with a loop in the track the distance to the movement authority is calculated modulo the length of the track. 
 \medskip
 \newcommand{\DMA}[2]{\mathrm{DMA}(#1,#2)}
-]\begin{mydef}[Distance to Movement Authority]
+\begin{mydef}[Distance to Movement Authority]
 
 The distance to the movement authority $\mathrm{DMA}$ is calulated from the distance and movement authority as followings:
 \begin{align*}
-\DMA{D(t), MA} & = MA \Monus D(t) \quad \mathbf{if} \ D(t) \leq MA \\
+\DMA{D(t)}{MA} & = MA \Monus D(t) \quad \mathbf{if} \ D(t) \leq MA \\
                          & = 50 \Monus D(t) + MA \quad \mathbf{otherwise}
 \end{align*}
 
@@ -218,11 +218,11 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 \item[Initial, invariant and flow conditions] \hspace*{0mm}
 	\begin{itemize}
-	\item $init(Stopped) :=   \BD{S} \leq \DMA{D(t),EoA}  $.
+	\item $init(Stopped) :=   \BD{S} \leq \DMA{D(t)}{EoA}  $.
 
-	\item $inv(Full Allowed Speed) :=   \dot{Speed} = 0 \wedge \BD{S} \leq \DMA{D(t),EoA}$ 
+	\item $inv(Full Allowed Speed) :=   \dot{Speed} = 0 \wedge \BD{S} \leq \DMA{D(t)}{EoA}$ 
 
-	\item $inv(Braking)  := inv(Accelerating) := \BD{S} \leq \DMA{D(t),EoA}$
+	\item $inv(Braking)  := inv(Accelerating) := \BD{S} \leq \DMA{D(t)}{EoA}$
 
 	
 	\item $inv(Stop (EoA)) := Speed = 0$ 
@@ -240,10 +240,10 @@ We define a hybrid automaton $H_{T}$ as follows:
 \item $jump(Braking \to Braking) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
 \item $jump(Accelerating \to Accelerating) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
 
-	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) := MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y$ 
+	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) := MA.x.y\\ \textbf{if} \ x = TrainID \ \textbf{then} \ MA := y$ 
 	
 
-	\item $jump(Full Allowed Speed \to Braking) :=jump(Accelerating \to Braking) := \DMA{D(t),EoA} = \BD{Speed}, MA.Req.TrainID$
+	\item $jump(Full Allowed Speed \to Braking) := jump(Accelerating \to Braking) := \DMA{D(t)}{EoA} = \BD{Speed}, MA.Req.TrainID$
 
 
 	\item $jump(Accelerating \to Full Allowed Speed)$ := Speed = MaxSpeed
