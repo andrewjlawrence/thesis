@@ -204,7 +204,7 @@ The distance to the movement authority $\mathrm{DMA}$ is calulated from the dist
 
 \end{mydef}
 
-The Train hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $ BD(Speed) \leq DMA(D(t), EoA)$ is an invariant of the stopped mode and $D(t) \leq EoA$ is an invariant of all other control modes.
+The Train hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $ \BD{Speed} \leq \DMA{D(t), EoA}$ is an invariant of the stopped mode and $D(t) \leq EoA$ is an invariant of all other control modes.
 We define a mode jump with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 50 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$. 
    We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EoA'$ with $EoA < EoA'$ to be received in the $Braking$ and $Stopped$ states.  This is triggered by the event MA.x.y if $x = TrainID$ then $y$ becomes the new movement authority. The movement event MA.Req.x is used by a train automaton request a movement authority for train x from the RBC automaton. Secondly we define a hybrid automaton $H_{T}$ which models an individual train. 
 \medskip
@@ -218,11 +218,11 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 \item[Initial, invariant and flow conditions] \hspace*{0mm}
 	\begin{itemize}
-	\item $init(Stopped) :=   BD(S) \leq DMA(D(t),EoA)  $.
+	\item $init(Stopped) :=   \BD{S} \leq \DMA{D(t),EoA}  $.
 
-	\item $inv(Full Allowed Speed) :=   \dot{Speed} = 0 \wedge BD(S) \leq DMA(D(t),EoA)$ 
+	\item $inv(Full Allowed Speed) :=   \dot{Speed} = 0 \wedge \BD{S} \leq \DMA{D(t),EoA}$ 
 
-	\item $inv(Braking)  := inv(Accelerating) := BD(S) \leq DMA(D(t),EoA)$
+	\item $inv(Braking)  := inv(Accelerating) := \BD{S} \leq \DMA{D(t),EoA}$
 
 	
 	\item $inv(Stop (EoA)) := Speed = 0$ 
@@ -243,7 +243,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) := MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y$ 
 	
 
-	\item $jump(Full Allowed Speed \to Braking) :=jump(Accelerating \to Braking) := DMA(D(t),EoA) = BD(Speed), MA.Req.TrainID$
+	\item $jump(Full Allowed Speed \to Braking) :=jump(Accelerating \to Braking) := \DMA{D(t),EoA} = \BD{Speed}, MA.Req.TrainID$
 
 
 	\item $jump(Accelerating \to Full Allowed Speed)$ := Speed = MaxSpeed
