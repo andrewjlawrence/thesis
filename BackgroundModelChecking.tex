@@ -180,7 +180,7 @@ The base case checks that the safety property holds in all intial states of the 
 \begin{mydef}[Inductive Verification]
 Given a transition system $M$ and a safety property $\phi$ we define inductive verification as follows:
 
-$$indbase_M(\phi)  := \forall s_0,s_1. S_0(s_0) \wedge R(s_0, s_1) \to s_0 \models \phi \wedge s_1 \models \phi$$
+$$indbase_M(\phi)  := \forall s_0. S_0(s_0)  \to s_0 \models \phi $$
 $$indstep_M(\phi) : \forall s,s' \in S \wedge R(s, s') \wedge s \models \phi  \to s' \models \phi$$
 
 \end{mydef}
@@ -200,13 +200,20 @@ $$bmc_M(\phi,k):= \forall \sseq{0}{k} \subseteq S \wedge  path_R(\sseq{0}{k}) \w
 The process of model checking linear temporal logic involves first  negating the linear temporal  logic property, placing it in negation normal form and then constructing a B{\"u}chi automata for that property that accepts the language of counter examples. The product of the Buchi automata and the state transition system is constructed and a double depth first search is applied.
 
 \subsection{B{\"u}chi Automata}
+\newcommand{\Buchi}{B{\"u}chi}
+Most applications of model checking typically search for a finite counter example trace in the set of infinite traces of the system. The class of automatons which can accept infinite words is called the $\omega$-automata and the simplest class $\omega-automata$ is \Buchi automata. These \Buchi are a minor modification of finite state automaton in that they have a finite alphabet and a finite set of states but instead of a set of final states the automata have a set of \emph{accepting states}.
 
 \begin{mydef}[B{\"u}chi Automata]
-We define a B{\"u}chi automaton $A$ is a five-tuple $(L, S,T,S_0, F)$ where:
+We define a \Buchi automaton $A$ is a five-tuple $(L, S,T,S_0, F)$ where:
 \item $L$ is a finite alphabet
 \item $S$ is a finite set of states
-\item $T \subseteq S \times L \times S$
+\item $T \subseteq S \times L \times S a transition relation
+\item $S_0 \subseteq S$ a set of initial states 
+\item $F \subseteq S$ is an acceptance condition. The automaton A accepts only the infinite runs which contain at least one state occuring in $F$
 \end{mydef}
+
+A set of states in a \Buchi automaton is a strongly connected component (SCC) if and only if every state in that set is reachable from every other state in that set.
+
 
 Strongly connected components
 
