@@ -240,7 +240,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 \item $jump(Braking \to Braking) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
 \item $jump(Accelerating \to Accelerating) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
 
-	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) := MA.x.y\\ \textbf{if} \ x = TrainID \ \textbf{then} \ MA := y$ 
+	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) := MA.x.y\\ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ 
 	
 
 	\item $jump(Full Allowed Speed \to Braking) := jump(Accelerating \to Braking) := \DMA{D(t)}{EoA} = \BD{Speed}, MA.Req.TrainID$
