@@ -16,6 +16,10 @@ One such automatic verification technique is SAT based model checking which atte
 totality (or universality) of SAT solvers is an issue. For example, in the 2012 SAT competition (www.smtcomp.org) many systems were not total in the sense that they returned
 "Unknown" for certain inputs signifying that they could not deal with the given problem. 
 
+\textbf{Note: Add something about program extraction here.}
+
+Program extraction is another verification technique which allows the production of correct by construction computer programs. It is based around the Curry-Howard correspondence \cite{} which states that constructive proofs performed using the natural deduction calculus can be viewed as programs in the lambda calculus. 
+
 The Railway Verification Group at the Computer Science Department of Swansea University has been researching the development of formal methods for use in real world situations in particular for the development of train control systems. The majority of this work has been in the form of an industrial collaboration with our partner Siemens Rail Automation (UK). Siemens are continously modernising and improving their development processes and as a part of this are looking to use formal methods for the development of their systems. The Westrace interlocking is one such system that is being considered for treatment by formal methods. These interlockings have the benefits of being large but relatively uncomplex and every interlocking developed has to comply to the same range of safety requirements.  We have developed a Another product currently under development by Siemens Rail Automation is the European Rail Traffic Management System. This developed to a European  standard with each country or individual company producing their own implementation. Since the specification is loose and allows for a wide range for implementations this makes modelling of the system desireable to understand possible behaviours and to ensure safe integration with existing infrastructure.
 
 

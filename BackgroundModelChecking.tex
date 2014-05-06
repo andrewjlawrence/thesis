@@ -181,7 +181,7 @@ The base case checks that the safety property holds in all intial states of the 
 Given a transition system $M$ and a safety property $\phi$ we define inductive verification as follows:
 
 $$indbase_M(\phi)  := \forall s_0. S_0(s_0)  \to s_0 \models \phi $$
-$$indstep_M(\phi) : \forall s,s' \in S \wedge R(s, s') \wedge s \models \phi  \to s' \models \phi$$
+$$indstep_M(\phi) : \forall s,s' \in S \wedge R(s, s') \to s \models \phi  \to s' \models \phi$$
 
 \end{mydef}
 \medskip
@@ -191,33 +191,41 @@ One of the most important model checking techniques in terms of industrial appli
 \begin{mydef}[Bounded Model Checking]
 Given a transition system $M$, a safety property $\phi$ and a bound $k$ we define bounded model checking $bmc_M(\phi,k)$ as follows:
 
-$$bmc_M(\phi,k):= \forall \sseq{0}{k} \subseteq S \wedge  path_R(\sseq{0}{k}) \wedge S_0(s_0) \to \sseq{0}{k} \models \phi$$
+$$bmc_M(\phi,k):= \forall \sseq{0}{k} \subseteq S \to  path_R(\sseq{0}{k}) \to S_0(s_0) \to \sseq{0}{k} \models \phi$$
 \end{mydef}
 \medskip
 \textbf{Note to self: I need to add something on loop freedom and inclusion checking for sat based model checking, I also need to describe the LTL model checker in Maude which uses Buchi automaton.}  
 
 \section{On-the-fly Model Checking of Linear Temporal Logic Properties}
-The process of model checking linear temporal logic involves first  negating the linear temporal  logic property, placing it in negation normal form and then constructing a B{\"u}chi automata for that property that accepts the language of counter examples. The product of the Buchi automata and the state transition system is constructed and a double depth first search is applied.
+The Maude LTL model checker performs on-the-fly model checking of an LTL property $\phi$.
+This process of mode checking linear temporal logic involves first  negating the linear temporal  logic property, placing it in negation normal form and then constructing a B{\"u}chi automata for that property that accepts the language of counter examples $\neg \phi$. The product of the Buchi automata and the state transition system is constructed and a double depth first search is applied to search for strongly connected components with a state in which $\neg \phi$ holds.
 
 \subsection{B{\"u}chi Automata}
-\newcommand{\Buchi}{B{\"u}chi}
+\newcommand{\Buchi}{{B{\"u}chi}}
 Most applications of model checking typically search for a finite counter example trace in the set of infinite traces of the system. The class of automatons which can accept infinite words is called the $\omega$-automata and the simplest class $\omega-automata$ is \Buchi automata. These \Buchi are a minor modification of finite state automaton in that they have a finite alphabet and a finite set of states but instead of a set of final states the automata have a set of \emph{accepting states}.
 
 \begin{mydef}[B{\"u}chi Automata]
 We define a \Buchi automaton $A$ is a five-tuple $(L, S,T,S_0, F)$ where:
 \item $L$ is a finite alphabet
 \item $S$ is a finite set of states
-\item $T \subseteq S \times L \times S a transition relation
+\item $T \subseteq S \times L \times S$ a transition relation
 \item $S_0 \subseteq S$ a set of initial states 
 \item $F \subseteq S$ is an acceptance condition. The automaton A accepts only the infinite runs which contain at least one state occuring in $F$
 \end{mydef}
 
-A set of states in a \Buchi automaton is a strongly connected component (SCC) if and only if every state in that set is reachable from every other state in that set.
+The translation of the LTL property into a \Buchi automata takes 3 steps following the approach of Gastin and Oddoux \cite{}:
 
+\begin{enumerate}
+\item Construct a very weak alternating (VWA) automata
+\item Convert this VWA automata into a generalized \Buchi automata
+\item Convert the generalized \Buchi automata into a standard \Buchi automata
+\end{enumerate}
 
-Strongly connected components
+At every step the automaton is simplified by removing unreachable states, subsumed transitions and combining equivalent states. In order to perform model checking we need to be able to find accepting runs of the automata since these accepting runs are infinite they must contain a loop through the automata. Therefore the model checking algorithm partitions the \Buchi automaton into its strongly connected components. A set of states in a \Buchi automaton is a \emph{strongly connected component} (SCC) if and only if every state in that set is reachable from every other state in that set. 
 
-Double depth first search
+The model checking algorithm performs a search for strongly connected components and tests to see whether the the acceptance condition is empty.
+
+Fair strongly connected component?
 
 
 
