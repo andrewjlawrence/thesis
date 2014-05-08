@@ -7,7 +7,7 @@
 \usepackage{bussproofs}
 \usepackage{comment}
 \usepackage{amsthm}
-
+\usepackage{enumitem}
 \usetikzlibrary{arrows,decorations.pathmorphing,backgrounds,fit}
 \usetikzlibrary{shapes.geometric}
 \usepgflibrary{shapes.geometric}
@@ -23,7 +23,7 @@
 
 
 
-\title{Application of Automatic and Interactive Theorem Proving to the Development and Verification of a Combined Railway Control System (Thesis Report)}
+\title{Verification of Train Control Systems: Tools and Techniques (Completion Report)}
 \date{\today}
 
 
@@ -34,132 +34,90 @@
 
 \begin{document}
 \maketitle
+This is an update on the  previous thesis report submitted at the end of 2013
 
 
 
-This thesis is concerned with the formalisation and verification of SAT algorithms and their application to model checking in the railway domain. \smallskip \\
+\section{Progress on the Verification of ERTMS}
+In the previous thesis report I stated that I would verify the ERTMS system using SAT based model checking. I have since discovered that my extracted SAT solvers are unfit for this purpose as they do not implement incremental SAT solving and cannot therefore interface with a SAT based model checker. The decision was therefore made to use the Real Time Maude tool to specify the ERTMS system and verify properties over it. I have specified the behaviour of the trains, interlocking and radio block processor. Combined the 3 specifications together to form the Pentagon example described in our section on formalising ERTMS. I have made use of the simulation capabilities of the system and plotted graphs which validate its behaviour. Finally I verified safety properties such as "The two trains do not crash" and "The two trains do not have overlapping movement authorities" in our ERTMS example using the Maude LTL Model Checker.
 
+\section{Progress On Thesis}
+The thesis is approximately two thirds completed. The following is the current structure of the thesis: 
+\begin{enumerate}
+\item  Introduction  
+\begin{enumerate}  [label*=\arabic*.]
+\item  Introduction 
+\item  Aim
+\item  Thesis Outline
+\end{enumerate}
+\item Background: Logic and Program Extraction 
+\begin{enumerate}[label*=\arabic*.]
+\item Propositional Logic 
+\item First Order Logic 
+\item Formal Foundations of Minlog 
+\item  Other Theorem Provers with Program Extraction Capabilities
+\end{enumerate}
+\item Background: Resolution and the Satisfiability Problem 
+\begin{enumerate}[label*=\arabic*.]
+\item The Satisfiability Problem
+\item The DPLL Algorithm
+\item Conflict Driven Clause Learning Algorithms
+\item Resolution
+\item Translation to CNF
+\item The Future: Satisfiability Modulo Theory
+\end{enumerate}
+\item Extracting Verified Decision Procedures 
+\item Extracting a Clause Learning SAT Algorithm
+\item Background: Traditional Railway Control Systems 
+\begin{enumerate}[label*=\arabic*.]
+\item A History of Railway Signalling and Control Systems 
+\item Invensys Rail 
+\item An Overview of the Railway Domain 
+\item Ladder Logic 
+\item Previous Work in this Field
+\end{enumerate}
+\item Background: Model Checking 
+\begin{enumerate}[label*=\arabic*.]
+\item Model Checkng Preliminaries 
+\item Model Checking Propositional Safety Properties Using a SAT Solver
+\item On-the-fly Model Checking of Linear Temporal Logic Properties 
+\end{enumerate}
+\item The Application and Comparison of X-SAT on Benchmark Problems 
+\item Background: The European Rail Traffic Management System 
+\begin{enumerate}[label*=\arabic*.]
+\item The European Rail Traffic Management System 
+\item Typical ERTMS Scenario
+\item Previous Work: Attempts to Verify ERTMS
+\end{enumerate}
+\item Formalising the European Rail Traffic Management System Using Hybrid
+Automata 
+\begin{enumerate}[label*=\arabic*.]
+\item Hybrid Automata 
+\item Pentagon Example 
+\item Semantics of Hybrid Automata
+\item Automaton Validation 
+\item Conclusion 
+\end{enumerate}
+\item The Modelling of the European Rail Traffic Management System Using
+Real Time Maude 
+\begin{enumerate}[label*=\arabic*.]
+\item Formalising the European Rail Traffix Management System Using Hybrid Automata 
+\item Maude 
+\item Real Time Maude 
+\item Modelling the European Rail Traffic Management System 
+\end{enumerate}
+\item Simulating and Verifying the European Rail Traffic Management System
+Using Real Time Maude
+\begin{enumerate}[label*=\arabic*.]
+\item The Maude Linear Temporal Logic Model Checker 
+\item Model Checking the European Rail Traffic Management System 
+\item Conclusion
+\end{enumerate}
+\end{enumerate}
 
-\section{Themes and Structure of My Thesis}
-%%We intend to develop and apply verified SAT algorithms to the verification of train control systems. Specifically we aim to: 
-%
-We have extracted a SAT algorithm from a completeness proof of the DPLL proof system into the functional programming language Haskell. Then this algorithm was optimised firstly at the proof level using \emph{non-computational} quantifiers and secondly at the Haskell program level using tools from the Glasgow Haskell compiler (GHC). The different versions of this solver were compared with each other, another verified SAT solver Versat and an industrial verification tool the Safety Critical Application Development Environment (SCADE). This comparison was done using both satisfiable and unsatisfiable pigeonhole formulae and on safety conditions for a real world railway interlocking system.  \smallskip \\
-%
-Another SAT algorithm has been extracted from a modified DPLL proof system combined with a modified resolution proof system. This algorithm captures a major optimisation of SAT algorithms namely \emph{clause learning}. This optimisation improves the SAT solver by learning clauses from conflicts during the proof search cutting down on the search space. In contrast the standard DPLL algorithm does not carry any information or learned facts from one branch of the proof search to the other. This optimisation is suited to industrial problems with a very large search space containing a lot of repetition and structure.  \smallskip \\
-%
-We have formalised the European Rail Traffic Management System (ERMTS) as a hybrid automata and several safety properties over the automata. We hope to input this formalisation into a SAT-based  model checking system and apply our SAT solving algorithms to its verification.
-%
-My thesis will describe a process for developing verified SAT algorithms and discuss some possible applications. Specifically the thesis shall contain the following structure:
+I have written most of the background chapters as well as sections on formalising and verifying ERTMS. The work on extracting verified both DPLL and Clause Learning SAT algorithms is written up seperately and needs to be updated and integrated into the thesis.
 
-\begin{itemize}
-
-\item Formalise the DPLL proof system and a proof of its completeness.
-
-\item Extract a standard DPLL SAT algorithm from the formalisation into a functional programming language and test its performance and perform a comparison between different implementations of the algorithm.
-
-\item Modify the formalisation and completeness proof  of the DPLL proof system so that it captures the behaviour conflict driven clause learning SAT algorithms.
-
-\item Extract a clause learning SAT algorithm from the formalisation  of the modified DPLL proof system and show that clause learning increases the efficiency of the solver.
-
-\item Apply verified SAT algorithms to the verification of traditional railway interlockings. 
-
-\item Formalisation of a hybrid train control system that contains both discrete and continuous data.
-
-\item Apply verified SAT algorithms to the verification of a modern train control system.
-
-\end{itemize}
-
-\section{Results}
-In the following we shall discuss some of the results presented in \cite{AL13a} that have yet to be presented in a previous report. We shall begin by presenting new results obtained by running our extracted DPLL SAT algorithm using both the Minlog system and compiled Haskell code.
-\subsection*{Extracting a DPLL algorithm}
-
-We formalised a constructive proof of completeness for the DPLL proof system in \cite{AL12} then we extracted an algorithm from this proof into the Minlog term language. Subsequently we have translated the Minlog term into Haskell code. We have then performed further experiments using this Haskell program.  The compiled Haskell program is significantly faster than the previously presented Minlog program with examples that had previously taken minutes or even hours to run now taking a matter of seconds. Our extracted solver was then further optimised using the Low Level Virtual Machine (LLVM) backend for GHC. The LLVM toolkit \cite{CL04} is a collection of modular compiler and toolchain technologies designed to provide low level optimisations. This has roughly halved the time it takes to run the solver on the unsatisfiable pigeon hole formulae and reduced the time to solve satisfiable pigeonhole formulae by around 20\%  when compared with the code produced by the standard GHC backend. In the following table we see how the algorithm performs when executed using the term writing of the Minlog systen and compiled using GHC using all of its non-dangerous optimisations (-O2) and compiled using the LLVM backend for GHC\footnote{GHC was invoked with the following flags and arguments ghc-llvm = ghc -O2 -pgmlo opt -pgmlc llc -fllvm}. The resulting witnesses for PHP(9,8) and PHP(10,9) are over a gigabyte in size which makes running these examples with the witness option impractical.
-
-\begin{center}
-{\small
-\begin{tabular}{|c||c|c||c|c||c|c|}
-  \hline
-  \textbf{Formula} & \textbf{Minlog (\texttt{- nc})}  & \textbf{Minlog (\texttt{+ nc})} & \multicolumn{2}{|c|}{\textbf{Compiled (\texttt{ghc -O2})}} & \multicolumn{2}{|c|}{\textbf{Compiled (\texttt{ghc-llvm})}} \\ \hline 
-  & \textbf{Witness} & \textbf{Witness} &  \textbf{Witness} & \textbf{Yes/No} & \textbf{Witness} & \textbf{Yes/No} \\ \hline
-  PHP(4,3) & 33.62s & 11.61s    & 0.019s   & 0.006s  & 0.015s & 0.004s  \\ \hline
-  PHP(4,4) &  5.45s  &   5.25s      &  0.019s   & 0.010s & 0.014s & 0.007s   \\ \hline
-  PHP(5,4) &  13m54s      &  2m41s   & 0.055s   &  0.020s & 0.036s & 0.012s  \\ \hline
-  PHP(5,5) & 26.09s &  25.03s    &  0.024s   &  0.015s & 0.020s & 0.010s \\ \hline
-  PHP(6,5) & 5h35m41s & 37m25s  &  0.367s  & 0.066s & 0.279s & 0.039s \\ \hline
-  PHP(6,6) &    1m34.11s    &  1m24.88s    &  0.035s  & 0.025 & 0.025s & 0.015s    \\ \hline \hline
-  PHP(8,8) &   - & - & 0.054s & 0.029s & 0.040s & 0.025s \\ \hline
-  PHP(9,8) &   - & - & -  & 1m21.915s & - & 32.062s  \\ \hline
-  PHP(9,9) &   - & - &  0.064s & 0.042s & 0.052s & 0.030s \\ \hline
-  PHP(10,9) &   - & - & - & 102m 16s  & - & 15m 5s \\ \hline
-\end{tabular}
-}
-\end{center}
-%
-\medskip
- We compared the performance of this optimised solver with that of Versat \cite{DO12}, another verified solver. Versat was formalised in the dependently typed programming language Guru \cite{AS09} and translated into C code. The translation into imperative C code is possible because Guru contains arrays. This also allows for the formalisation and verification of some low level optimisations.  \medskip
-
-\begin{center}
-{\small
-\begin{tabular}{|c||c|c|}
-  \hline
-  \textbf{Formula} & \textbf{\textbf{ghc-llvm}}  & \textbf{versat} \\ \hline 
-  &  \textbf{Yes/No} & \textbf{SAT/UNSAT}  \\ \hline
-  PHP(7,6) &   0.226s & 0.089s \\ \hline
-  PHP(8,7) &   2.42s & 0.794s \\ \hline
-  PHP(9,8) &   32.062s & 17.217s \\ \hline
-  PHP(10,9) &  15m 5s & 15m 46s \\ \hline
-\end{tabular}
-}
-\end{center}
-%
-\medskip 
-We have also applied our optimised solver to the verification of a real world railway control system. The verification problem was formulated following \cite{MS00} using a tool presented in \cite{KK08}. Then this problem was verified using both the SCADE \cite{GS06} suite and our SAT solver. This is a non trivial example of an application of our SAT solver. The following safety condition SC1 results in a SAT problem containing 8166 variables and 14716 clauses. \medskip  
-%
-\begin{comment}
-\begin{align*}
-& SC1 =  (\neg D \vee R) \vee UEC \\
-\end{align*}
-\end{comment}
-%
-\begin{center}
-{\small
-\begin{tabular}{|c||c|c||c|c||c|c|}
-  \hline
-  \textbf{Formula} & \multicolumn{2}{|c||}{\textbf{ghc-llvm}}   & \textbf{SCADE} \\ \hline 
-  &  \textbf{Yes/No} & \textbf{Witness} & \textbf{SAT/Counter Example}  \\ \hline
-  SC1 & 8.401s & 11.930s &  4s \\ \hline
-\end{tabular}
-}
-\end{center}
-%
-
-\subsection*{Extracting a Clause Learning Solver}
-One major optimisation typically implemented by DPLL SAT algorithms is conflict driven clause learning (CDCL). When a conflict is reached by a (CDCL) solver its causes are analysed and then a clause is learned which typically consists of some negated literals from the valuation. If the same branch of the proof search is performed with the learned clause then a conflict will be reached more quickly.  We have modified the DPLL proof system and combined it with a modified unit resolution calculus in order to capture the behaviour of these clause learning algorithms. We have formalised a proof of completeness for these modified proof systems and extracted a clause learning algorithm. More details can be found in \cite{AL13c}.
-
-
-
-\subsection*{Formalising the European Rail Traffic Management System}
-We have formalised ERTMS as several hybrid automata which are composed in paralell. We have done this for a small example railway consisting of 5 track segments connected in a pentagon and 2 trains. We have 3 hybrid automata that model different parts of the system; A train automata, A Interlocking automata and a radio block processor automata. More details can be found in \cite{AL13b}. 
-
-
-
-\section{Remaining Work}
-In the remaining time of my PhD I intend to pursue the following goals.
-\begin{itemize}
-
-\item Discretise the hybrid automata that models ERTMS and formalise a SAT-based model checking problem for each of its safety conditions. Since the continuous part of the hybrid system is rather simple and the discrete part is rather large this problem is more suited to a standard model checker than a hybrid one. Hybrid model checkers typically do not contain the optimisations needed to deal with a large discrete state space.  The discretisation process should yield a problem that is simple enough for a standard model checker and SAT solver to solve efficiently.
-
-\item Find a set of benchmarks that demonstrate the power of our clause learning solver and help us to understand its performance. These benchmarks should be easy for general resolution (DPLL + clause learning) but hard for tree resolution (DPLL). Pebbling formulae are one such possible bench mark however they require 1st unit implication point clause learning which is different from the current clause learning scheme implemented in our solver.
-
-\item Further modify the clause learning resolution calculus so that it captures the behaviour of the 1st UIP clause learning. This clause learning scheme is implemented by Chaff and many other modern clause learning solvers such as MiniSAT.
-
-\item Further my understanding of how lazy evaluation affects the performance of our SAT solving algorithms. To clarify whether laziness captures the behaviour of optimisations such as program slicing that cut down on the search space by removing irrelevant parts of the program. We also want to understand whether lazy data structures such as the two watched literal scheme are made redundant by the inherent laziness of Haskell. 
-
-\end{itemize}
-
-
-
-\bibliographystyle{plain}
-\bibliography{lit}
-
+\section{Current Work}
+I am currently reviewing and correcting the formalisation of ERTMS as a hybrid automaton along with the proofs that validate them. I am also in the process of making the background chapters consistent with each other so that they fit together nicely. We are also planning on submitting an abstract to the Workshop on Algebraic Development Technqiues, in the middle of June, on the formalisation and verification of ERTMS. Finally I intend to integrate the work regarding the extraction SAT algorithms into the thesis along with an appendix containing their formalisation.
+ 
 \end{document}
