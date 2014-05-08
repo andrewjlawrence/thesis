@@ -34,26 +34,24 @@
 
 \begin{document}
 \maketitle
-This is an update on the  previous thesis report submitted at the end of 2013
+This is an update on the  previous completion report submitted at the end of 2013.
 
 
 
 \section{Progress on the Verification of ERTMS}
-In the previous thesis report I stated that I would verify the ERTMS system using SAT based model checking. I have since discovered that my extracted SAT solvers are unfit for this purpose as they do not implement incremental SAT solving and cannot therefore interface with a SAT based model checker. The decision was therefore made to use the Real Time Maude tool to specify the ERTMS system and verify properties over it. I have specified the behaviour of the trains, interlocking and radio block processor. Combined the 3 specifications together to form the Pentagon example described in our section on formalising ERTMS. I have made use of the simulation capabilities of the system and plotted graphs which validate its behaviour. Finally I verified safety properties such as "The two trains do not crash" and "The two trains do not have overlapping movement authorities" in our ERTMS example using the Maude LTL Model Checker.
+In the previous thesis report I stated that I would verify the ERTMS system using SAT based model checking. I have since discovered that my extracted SAT solvers are unfit for this purpose as they do not implement incremental SAT solving and cannot therefore interface with a SAT based model checker. The decision was therefore made to use the Real Time Maude tool to specify the ERTMS system and verify properties over it. I have specified the behaviour of the trains, interlocking and radio block processor and combined the 3 specifications together to form the Pentagon example described in our section on formalising ERTMS. I have made use of the simulation capabilities of the system and plotted graphs which validate its behaviour. Finally I verified safety properties such as "two trains do not crash" and "two trains do not have overlapping movement authorities" in our ERTMS example using the Maude LTL Model Checker.
 
-\section{Progress On Thesis}
+\section{Progress on Thesis}
 The thesis is approximately two thirds completed. The following is the current structure of the thesis: 
 \begin{enumerate}
 \item  Introduction  
 \begin{enumerate}  [label*=\arabic*.]
-\item  Introduction 
-\item  Aim
+\item  Motivation 
+\item  Summary of Results
 \item  Thesis Outline
 \end{enumerate}
 \item Background: Logic and Program Extraction 
 \begin{enumerate}[label*=\arabic*.]
-\item Propositional Logic 
-\item First Order Logic 
 \item Formal Foundations of Minlog 
 \item  Other Theorem Provers with Program Extraction Capabilities
 \end{enumerate}
@@ -101,7 +99,6 @@ Automata
 \item The Modelling of the European Rail Traffic Management System Using
 Real Time Maude 
 \begin{enumerate}[label*=\arabic*.]
-\item Formalising the European Rail Traffix Management System Using Hybrid Automata 
 \item Maude 
 \item Real Time Maude 
 \item Modelling the European Rail Traffic Management System 
