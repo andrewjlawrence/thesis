@@ -39,9 +39,9 @@ This is an update on the  previous completion report submitted at the end of 201
 
 
 \section{Progress on the Verification of ERTMS}
-In the previous thesis report I stated that I would verify the ERTMS system using SAT based model checking. I have since discovered that my extracted SAT solvers are unfit for this purpose as they do not implement incremental SAT solving and cannot therefore interface with a SAT based model checker. The decision was therefore made to use the Real Time Maude tool to specify the ERTMS system and verify properties over it. I have specified the behaviour of the trains, interlocking and radio block processor and combined the 3 specifications together to form the Pentagon example described in our section on formalising ERTMS. I have made use of the simulation capabilities of the system and plotted graphs which validate its behaviour. Finally I verified safety properties such as "two trains do not crash" and "two trains do not have overlapping movement authorities" in our ERTMS example using the Maude LTL Model Checker.
+In the previous thesis report I stated that I would verify the European Rail Traffic Management System (ERTMS) using SAT based model checking. I have since discovered that my extracted SAT solvers are not capable of doing this as they do not implement the low level interface needed to connect with a model checker. The decision was therefore made to use the Real Time Maude tool to specify the ERTMS system and verify properties over it. I have specified the behaviour of the trains, interlocking and radio block processor and combined the 3 specifications together to form the Pentagon example described in our section on formalising ERTMS. I have made use of the simulation capabilities of the system and plotted graphs which validate its behaviour. Finally I verified safety properties such as "two trains do not crash" and "two trains do not have overlapping movement authorities" in our ERTMS example using the Maude LTL Model Checker.
 
-\section{Progress on Thesis}
+\section{Thesis Progress}
 The thesis is approximately two thirds completed. The following is the current structure of the thesis: 
 \begin{enumerate}
 \item  Introduction  
@@ -112,9 +112,9 @@ Using Real Time Maude
 \end{enumerate}
 \end{enumerate}
 
-I have written most of the background chapters as well as sections on formalising and verifying ERTMS. The work on extracting verified both DPLL and Clause Learning SAT algorithms is written up seperately and needs to be updated and integrated into the thesis.
+The results of my thesis can be seperated into two categories. The first contains those that deal with the verification of decision procedures and can be found in chapters 4, 5 and 8. The second category of results deals with the verification of ERTMS and is spread between chapters 10, 11 and 12. I have written most of the background chapters as well as sections on formalising and verifying ERTMS. The work on extracting verified both DPLL and Clause Learning SAT algorithms is written up seperately and needs to be updated and integrated into the thesis.
 
 \section{Current Work}
-I am currently reviewing and correcting the formalisation of ERTMS as a hybrid automaton along with the proofs that validate them. I am also in the process of making the background chapters consistent with each other so that they fit together nicely. We are also planning on submitting an abstract to the Workshop on Algebraic Development Technqiues, in the middle of June, on the formalisation and verification of ERTMS. Finally I intend to integrate the work regarding the extraction SAT algorithms into the thesis along with an appendix containing their formalisation.
+I am currently reviewing and correcting the formalisation of ERTMS as a hybrid automaton along with the proofs that validate them. I am also in the process of making the background chapters consistent with each other so that they fit together nicely. We are planning on submitting an abstract to the Workshop on Algebraic Development Technqiues, in the middle of June, on the formalisation and verification of ERTMS. Finally I intend to integrate the work regarding the extraction SAT algorithms into the thesis along with an appendix containing their formalisation.
  
 \end{document}
