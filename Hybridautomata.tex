@@ -515,12 +515,12 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 
 \item $L$ is a set of \emph{labels}
 
-\item $T$ is a binary relation $\xrightarrow{a}$ over the state space $S$.
+\item $T$ is ternary  relation $S \xrightarrow{a} S$ of type $S \times L \times S$, over the state space $S$.
 
 \end{itemize}
 \end{mydef}
 \medskip
-When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of a timed transition system ...
+When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of  timed transition systems which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automatons real numbered variables.
 
 
 \medskip
@@ -565,14 +565,14 @@ We define a live transition system (LTS,A) to consist of a labelled transition s
 \medskip
 
 \begin{mydef}[Trace semantics of hybrid automata]
-All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transition $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}.
+All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}.
  \end{mydef}
 
 \section{Automaton Validation}
 In the following we prove that each automaton is non-zeno i.e. that time can progress in every state of the system. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case arguement for each control mode of the automaton.
 
 \begin{mytheorem}[Train Automaton is Non-Zeno]
-The hybrid automaton is 
+The hybrid automaton  $H_{T}$ is 
 \begin{proof}
 
 
