@@ -201,7 +201,7 @@ The Maude LTL model checker performs on-the-fly model checking of an LTL propert
 This process of mode checking linear temporal logic involves first  negating the linear temporal  logic property, placing it in negation normal form and then constructing a B{\"u}chi automata for that property that accepts the language of counter examples $\neg \phi$. The product of the Buchi automata and the state transition system is constructed and a double depth first search is applied to search for strongly connected components with a state in which $\neg \phi$ holds.
 
 \subsection{B{\"u}chi Automata}
-\newcommand{\Buchi}{{B{\"u}chi}}
+\newcommand{\Buchi}{B{\"u}chi\xspace}
 Most applications of model checking typically search for a finite counter example trace in the set of infinite traces of the system. The class of automatons which can accept infinite words is called the $\omega$-automata and the simplest class $\omega-automata$ is \Buchi automata. These \Buchi are a minor modification of finite state automaton in that they have a finite alphabet and a finite set of states but instead of a set of final states the automata have a set of \emph{accepting states}.
 
 \begin{mydef}[B{\"u}chi Automata]
