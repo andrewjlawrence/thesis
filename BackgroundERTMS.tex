@@ -646,7 +646,7 @@ In the following we shall demonstrate, by the means of an example using a UML me
 \item Train 3 would like to travel in a route from F to C
 \end{itemize}
 
-We will assume that initially no routes are set. This means that either a controller or a time table will determine the precedence of the trains. For this example we will time table the trains in alphabetical order.
+We will assume that initially no routes are set. This means that either a controller or a time table will determine the precedence of the trains. For this example we will time table the trains in order of their identifying number.
 
 
 
@@ -775,7 +775,7 @@ We will assume that initially no routes are set. This means that either a contro
 \end{figure}
 
 \subsection*{Scenario}
-We shall now describe the behaviour of trains and their interaction with the ERTMS system as they negotiate their way through the double junction. The UML message sequence chart (See fig \ref{fig:seqChart}) shall compliment this description for the first two trains.
+We shall now describe the behaviour of trains and their interaction with the ERTMS system as they negotiate their way through the double junction. The UML message sequence chart (See fig \ref{fig:seqChart}) shall compliment this description for the first two trains. Firstly the Radio Block processor, which is executing the timetable, makes a request to the interlocking to set the route from $D \to C$, since this is currently safe the interlocking will grant the route assignment. Next the RBC sets the points, via the interlocking and trackside infrastructure, and the points respond with an acknowledgement indicating that they have been set. The RBC then grants a movement authority to the train which allows it to move from $D \to C$ which the train acknowledges. Then train then moves from $D \to C$, whilst continually transmitting its position to the RBC.
 
 \begin{figure} [h!]
 
