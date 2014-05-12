@@ -19,7 +19,7 @@ where:
 \end{itemize}
 \end{mydef}
 \medskip
-When we are formalising properties over a transition system such as a Kripke Structure it is useful from the point of safety to check which states a system can reach from a specific set of initial states. In practice it is rarely possible for a system to be safe for all states and therefore only states that are reachable from a set of safe initial states are considered. We define the set of reachable states inductively, all states in the initial set of states are reachable and a state is reachable if there is a transition to that state from a previous state that is also reachable.
+When we are formalising properties over a transition system such as a Kripke Structure it is useful from the point of view of safety to check which states a system can reach from a specific set of initial states. In practice it is rarely possible for a system to be safe for all states and therefore only states that are reachable from a set of safe initial states are considered. We define the set of reachable states inductively, all states in the initial set of states are reachable and a state is reachable if there is a transition to that state from a previous state that is also reachable.
 \medskip
 \begin{mydef}[Reachability]
 Given a transition system $M = (S,S_0, R)$, we define $Reach_R(S, S_0)$ the set of states reachable from $S_0$ in $S$ via the transition relation $R$. Formally it is the least set of states such that the following holds: 

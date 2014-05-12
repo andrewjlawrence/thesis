@@ -108,7 +108,7 @@ Where $\freevar{P}$ is the set of free variables in the predicate $P$.
 \end{mydef}
 \medskip
  
-For example, when we define our train control system it is desired that the speed of the train is $0$, initially and that remains invariant throughout execution of the automaton $init(Stopped) := invar(Stopped) := Speed = 0$ , which is captured by the initial predicate $init(Stopped) := Speed = 0$. The invariant acts as a boundary condition which specifies the limits of the automatons behaviour. If some some reason the system flows into one of these boundaries and no discrete change can occur then time is prevented from continuing.  Such automatons which contain states in which time cannot progress are called \emph{Zeno}. In order to form a transition system from the automaton, it must be \emph{non-Zeno} i.e. time can always progress in every state of the system.  In the following specification events are used to pass messages between different automata placed in parallel. An example event is that of $event(Stopped \to Accelerating) :=MA.x.y \ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ which is triggered by the RBC and causes the train to update the value of its movement authority. flow conditions describe the rate of change of a given variable over time. In our formalisation of a train one such flow condition is $flow(Accelerating) := \dot{Speed} = 1$ which causes the train to accelerate at a speed of one unit per unit of time.
+For example, when we define our train control system it is desired that the speed of the train is $0$, initially and that remains invariant throughout execution of the automaton $init(Stopped) := invar(Stopped) := Speed = 0$ , which is captured by the initial predicate $init(Stopped) := Speed = 0$.  It is also desireable in the Accelerating and Full AllowedSpeed states that the breaking distance is less than or equal to the distance between the train and the end of movement authority $invar(Acc) := invar(Full Alllowed Speed) := BD(S) \leq DMA(D(t), EoA)$. The invariant acts as a boundary condition which specifies the limits of the automatons behaviour, in the case of the Full Allowed Speed and Accelerating states it ensures that the Train can always brake in time and it forces the automaton to perform a transition to the braking state when the boundary of the invariant is reached . If some some reason the system flows into one of these boundaries and no discrete change can occur then time is prevented from continuing.  Such automatons which contain states in which time cannot progress are called \emph{Zeno}. In order to form a transition system from the automaton, it must be \emph{non-Zeno} i.e. time can always progress in every state of the system.  In the following specification events are used to pass messages between different automata placed in parallel. An example event is that of $event(Stopped \to Accelerating) :=MA.x.y \ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ which is triggered by the RBC and causes the train to update the value of its movement authority. flow conditions describe the rate of change of a given variable over time. In our formalisation of a train one such flow condition is $flow(Accelerating) := \dot{Speed} = 1$ which causes the train to accelerate at a speed of one unit per unit of time.
 
 \medskip
 
@@ -133,10 +133,10 @@ We define a hybrid automaton $H_{IL}$ as follows:
 	\item $jump(Idle \to Response) :=  Req.z , ReqId' = z$
 
 	
-	\item $jump(Response \to Idle (1)) :=  l_{ReqID} = Free \wedge l_{ReqID +1 \, mod \, 5} = Free$ 
+	\item $jump(Response \to Idle (1)) :=  l_{ReqID} = Free $ 
     
 
-         \item $jump(Response \to Idle (2)) :=  \neg (l_{ReqID} = Free \wedge l_{ReqID +1 \, mod \, 5} = Free)$
+         \item $jump(Response \to Idle (2)) :=  \neg l_{ReqID} = Free$
 
 
 	\item $jump(Idle \to Idle) := l_x. l_{x+1} , [l_x' = Free, l_{x+1}' = Occupied]$
@@ -234,10 +234,10 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 	\item $inv(Full Allowed Speed) :=   \dot{Speed} = 0 \wedge \BD{S} \leq \DMA{D(t)}{EoA}$ 
 
-	\item $inv(Braking)  :=  \BD{S} \leq \DMA{D(t)}{EoA}$
+	\item $inv(Braking)  :=  \BD{S} = \DMA{D(t)}{EoA}$
          \item $inv(Accelerating) := \BD{S} \leq \DMA{D(t)}{EoA}$
 
-	\item $inv(Stop (EoA)) := Speed = 0$ 
+	\item $inv(Stop (EoA)) := Speed = 0 \wedge D(t) = EoA$ 
              
 	\item $flow(Accelerating):= \dot{Speed} = 1$ 
 	
@@ -294,13 +294,15 @@ We define a hybrid automaton $H_{T}$ as follows:
 \node (A) [box1]  at (0,0)                  {\begin{center} \textbf{Stop (EoA)} \\
 							$Speed = 0$
                                                         $\dot{Speed} = 0$
-							$\BD{Speed} = \DMA{D(t)}{EoA}$  \end{center}
+							$D(t) = EoA$  \end{center}
 
                                             };
 
 \node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Accelerating} \\
        $\dot{Speed = 1}$
-       $\BD{Speed} \leq \DMA{D(t)}{EoA}$  \end{center}
+       $\BD{Speed} \leq \DMA{D(t)}{EoA}$
+       $Speed \leq MaxSpeed$
+  \end{center}
 
 };
 
@@ -313,7 +315,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 \node (D)[box1] at (7.5, 7.5)  { \begin{center} \textbf{Full Allowed Speed }\\
 					                   $Speed = MaxSpeed$
                                                             $\dot{Speed} = 0$
-							    $\BD{Speed} = \DMA{D(t)}{EoA}$
+							    $\BD{Speed} \leq \DMA{D(t)}{EoA}$
                                                             \end{center}
                                                
 						};
@@ -393,7 +395,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 \end{comment}
 
 \medskip
-Similarly to the train automaton the RBC automaton also has four control modes namely Granted, Idle, Wait and Ready to Request. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the Ready to Request state.  From this state the train sends a request for the next track segment of the LastTrain.
+Similarly to the train automaton the RBC automaton also has four control modes namely Granted, Idle, Wait and Ready to Request. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the Ready to Request state.  From this state the train sends a request for the next track segment of the LastTrain. In the following definition we have defined the initial state of the RBC for the pentagon example with the initial positions of the trains A and B being $0$ and $150$ and their movement authorities being $49$ and $199$ respectively.
 \medskip
 
 \begin{mydef}[Radio Block Controller Hybrid Automaton]
@@ -406,7 +408,7 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 
 \item[Initial, invariant and flow conditions] \hspace*{0mm}
 	\begin{itemize}
-	\item $init(Idle) :=   \ldots $
+	\item $init(Idle) :=   MA_1 = 49, Pos_1 = 0, MA_2 = 199, Pos_2 = 150, LastTrain = 0 $
 
 	\end{itemize}
 
@@ -523,6 +525,8 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of  timed transition systems which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automatons real numbered variables.
 
 
+\textbf{Question: Do I need the semantics now that the proof making use of them is gone?}
+
 \medskip
 \begin{mydef}[Transition Semantics of Hybrid Automata]
 We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed transition system} $LTS^t_H = (S,S_0,L,T)$ as follows:
@@ -537,18 +541,18 @@ We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed tran
 
 \item For all events $\sigma \in \Sigma$ such that there exists a control switch $e \in E$, define $(v,x) \xrightarrow{\sigma} (v',x')$ iif the following conditions are satisfied:
 \begin{enumerate}
-\item the source and target of $e$ are $v$ and $v'$ respectively. 
-\item the closed predicate $jump(e)[X, X' := x,x']$ holds.
-\item $event(e) = \sigma$.
+\item the source and target of $e$ are $v$ and $v'$ respectively
+\item the closed predicate $jump(e)[X, X' := x,x']$ holds
+\item $event(e) = \sigma$
 \end{enumerate}
 
 \item We define a transition $(v,x) \xrightarrow{\delta} (v,x')$ for all non-negative reals $\delta \in R_{\geq 0}$ iff there exists a differentiable function $f: [0, \delta] \to R^n$ such that the following holds:
 \begin{enumerate}
 \item The functions first derivative is $\dot{f} :(0,\delta) \to R^n$
 \item $f(0) = x$
-\item $\forall \epsilon \in (0,\delta)$ both of the predicates $inv(v)[X := f(\epsilon)]$ and $flow(v)[X,\dot{X} := f(\epsilon),\dot{f}(\epsilon)]$ hold.
+\item $\forall \epsilon \in (0,\delta)$ both of the predicates $inv(v)[X := f(\epsilon)]$ and $flow(v)[X,\dot{X} := f(\epsilon),\dot{f}(\epsilon)]$ hold
 \end{enumerate}
-We call the function f the \emph{witness} of the transition $(v,x) \to (v, x')$
+We call the function f the \emph{witness} of the transition $(v,x) \to (v, x')$.
 
 \end{itemize}
 
@@ -564,36 +568,38 @@ We define a live transition system (LTS,A) to consist of a labelled transition s
 \end{mydef}
 \medskip
 
+
 \begin{mydef}[Trace semantics of hybrid automata]
-All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}.
+All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}. For a given the set of divergent initialized trajectories $L^t_H$ of the timed transition system $S^t_H$, the hybrid automaton $H$ is \emph{non-zeno} if $L^t_H$ is machined-closed for $S^t_H$.
  \end{mydef}
 
+The automaton is non-zeno if for every possible state of the system reachable from the intial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system.
+
 \section{Automaton Validation}
-In the following we prove that each automaton is non-zeno i.e. that time can progress in every state of the system. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case arguement for each control mode of the automaton. The proof for the interlocking automaton is trivial since it does not contain any continuous variables, flow conditions or invariants and therefore it is not possible for the automaton to enter a state in white time cannot progress.
+In the following we prove that the train automaton is non-zeno i.e. that time can progress in every state of the system. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case arguement for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since it does not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in white time cannot progress.
+\medskip
 
 \begin{mytheorem}[Train Automaton is Non-Zeno]
-The hybrid automaton  $H_{T}$ is 
+The hybrid automaton  $H_{T}$ is non-zeno
 \begin{proof}
 The proof proceeds by performing a case distinction on the state of $H_{T}$.
 \begin{description}
 \item[Case: Stopped] There are no flows in this state, therefore invariant $Speed = 0$ can not be violated.
 
 
-\item[Case: Accelerating] The invariant $\BD{Speed} \leq \DMA{D(t)}{EoA}$ bounds the increase of the variables for the distance and speed which occur in this state. Eventually, the distance and speed will increase enough for $\BD{Speed} = \DMA{D(t)}{EoA}$ to hold and time will no longer be able to progress in this state, however a jump can occur to the Braking state in which the invariant $\BD{Speed} = \DMA{D(t)}{EoA}$ holds.
+\item[Case: Accelerating] The invariant $\BD{Speed} \leq \DMA{D(t)}{EoA}$ bounds the increase of the variables for the distance and speed which occur in this state. Eventually, the distance and speed will increase enough for $\BD{Speed} = \DMA{D(t)}{EoA}$ to hold and time will no longer be able to progress in this state, however a jump can occur to the Braking state in which the invariant $\BD{Speed} = \DMA{D(t)}{EoA}$ holds. The invariant $Speed \leq Maxspeed$ bounds the increase of the $Speed$ variable. In this state the $Speed$ will increase until the bondary of the invariant $Speed \leq MaxSpeed$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Allowed Speed$ state.
 
 
 \item[Case: Full Allowed Speed] 
- 
+The case for the $Full Allowed Speed$ state follows the same arguement as the Accelerating state except for the part relating to the invariant $Speed \leq MaxSpeed$.
 
 \item[Case: Braking]
+The invariant $0 \leq Speed$ is the only invariant to bound the decrease of the speed in the Braking state. When the speed of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state.
 \end{description}
 \end{proof}
 \end{mytheorem}
 
 
-\begin{mytheorem}[Radio Block Processor Automaton is Non-Zeno]
-
-\end{mytheorem}
 
 
 
@@ -602,7 +608,7 @@ The proof proceeds by performing a case distinction on the state of $H_{T}$.
 We will now give a proof by induction that the safety condition "The train will always break on time" holds for a single train automaton.
 The base case is that we are in the initial state, the stopped mode, with the invariant $D(t) \leq EoA$. If are in the stopped mode and we receive a movement authority with $EoA > D(t)$ then a jump is performed and move to the accelerating state. Since the transition of time does not cause any flow transitions to occur from the base case we do not need to consider it. In the step case we are in one of the 4 modes (Stopped,Braking,Accelerating,) with the invariant $BD(Speed) \leq DMA(D(t), EoA)$. In these states jump conditions are considered by performing a case distinction is performed on whether we reach the braking point i.e. $BD(Speed) = DMA(D(t), EoA)$ or we reach maxspeed the transitions result in states in which the invariants still hold. We also consider flow conditions, if time elapses by some amount $\delta$ we either reach the breaking point $BD(Speed) = DMA(D(t), EoA)$ and perform a jump into a state in which the invariant still holds or $BD(Speed) \leq DMA(D(t), EoA)$ in which case the invariant $D(t) \leq EoA$ holds. 
 
-Since we have restricted the movement authorities to occur at discrete intervals separated by 50 units of distances we perform induction over the time interval $(0..1)$ in order to prevent multiple mode changes from occurring during the induction step. 
+Since we have restricted the movement authorities to occur at discrete intervals separated by $50$ units of distances we perform induction over the time interval $(0..1)$ in order to prevent multiple mode changes from occurring during the induction step. 
 \medskip
 \begin{mytheorem}
 Given a live transition system $(S^t_{H_{T}},  L^{t}_{H_T}) $
@@ -727,5 +733,5 @@ There are two cases
 \end{mytheorem}
 \end{comment}
 
-\section{Conclusion}
+%%%\section{Conclusion}
 

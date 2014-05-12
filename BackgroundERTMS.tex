@@ -346,26 +346,12 @@ ERTMS is seperated into different levels of implementation. These range from bei
 \subsection*{Static Speed Profile}
 Traditionally the speed limit along a segment of track was controlled by a combination of speed limit signs at the side of the tracks. In ERTMS this has been replaced by a \emph{static speed profile} which provides the control system on the train with a maximum speed for a given section of track. Each type of train has its own static speed profile depending what it is capable of, for instance a high speed intercity train will have a different static speed profile from a fully loaded freight train. Proving the trains with a static speed profile increases safety further by making speeding less likely and allows for a finer control of the train's speed increasing the capacity of the line.
 
-\subsection*{Movement Authority}
-There are two different types of movement authorities used to restrict the movement of a train along a piece of track (See Figure \ref{fig:trackplan}).
-\begin{description}
-
-\item[End of Authority (EoA)] is the end of the movement authority for a train on a given piece of track. It is a point which the train can not proceed past along that track.
-
-\item[Limit of Authority (LoA)]
- is a train's maximum allowed velocity (VMax) at a position on a piece of track and is calculated using breaking curves.
-
-\end{description}
-
-The on-board control system will automatically apply the brakes if the train exceeds either type of movement authority.
-
-
-
+\afterpage{
 \begin{center}
-\begin{figure}[h!]
+\begin{figure}[p]
 
 \begin{sideways}
-\begin{minipage}{25cm}
+
 
 \begin{tikzpicture}
 
@@ -519,7 +505,6 @@ Train 2
 
 \end{tikzpicture}
 
-\end{minipage}
 \end{sideways}
 \centering
 
@@ -528,17 +513,31 @@ Train 2
 \end{figure}
 \end{center}
 
+}
+\subsection*{Movement Authority}
+There are two different types of movement authorities used to restrict the movement of a train along a piece of track (See Figure \ref{fig:trackplan}).
+\begin{description}
+
+\item[End of Authority (EoA)] is the end of the movement authority for a train on a given piece of track. It is a point which the train can not proceed past along that track.
+
+\item[Limit of Authority (LoA)]
+ is a train's maximum allowed velocity (VMax) at a position on a piece of track and is calculated using breaking curves.
+
+\end{description}
+
+The on-board control system will automatically apply the brakes if the train exceeds either type of movement authority.
+
+
+
+
 
 \subsection*{An Informal Description of the Combined System}
 In the following we will present a high level description of the combined interlocking and radio block processor system.
 The aim of specifying a combined system is to get rid of the inconsistencies and problems caused by the interface between the RBC and interlocking.  These are two seperate control systems each with its method of communicating instructions to the train. The interlocking acts a small safety kernel in the traditional train control system which should also be the case in the combined system, it must have the final say on any instruction to the trains or railtrack. If this is not the case then we may end up in a situation where a train is in a safe position according to one system but not the other. A prime example of such an inconsistency occurs when a high speed ERTMS enabled train travels along a line, under the guidance of a movment authority and is allowed to travel through an ordinary red light.  
 
- The components of the system which we are trying to capture can be found inside the dotted line in figure \ref{fig:ERTMSCombine}. These consist of the interlocking and radio block processor. Currently the interface between them is biased in one direction, most of the information travels from the interlocking to the radio block processor. Some information does go in the other direction; for example the radio block centre will notify the interlocking when a ERTMS enabled train is travelling along the line.  However, other possibilities for a partition in a combined system exist, for example the route setting and releasing could take place in the radio block centre. There are also different possibilities from the level of partitioning/ integration of the system, it could be the case that a fully integrated system is much simplier, however such a system would have to be constructed from scratch. 
-
-
 
 \begin{center}
-\begin{figure}[h!]
+\begin{figure}[H]
 
 
 
@@ -604,10 +603,15 @@ The aim of specifying a combined system is to get rid of the inconsistencies and
 
 
 
- \caption{Current Situation}
+ \caption{Combined System}
 \label{fig:ERTMSCombine}
 \end{figure}
 \end{center}
+
+
+ The components of the system which we are trying to capture can be found inside the dotted line in figure \ref{fig:ERTMSCombine}. These consist of the interlocking and radio block processor. Currently the interface between them is biased in one direction, most of the information travels from the interlocking to the radio block processor. Some information does go in the other direction; for example the radio block centre will notify the interlocking when a ERTMS enabled train is travelling along the line.  However, other possibilities for a partition in a combined system exist, for example the route setting and releasing could take place in the radio block centre. There are also different possibilities from the level of partitioning/ integration of the system, it could be the case that a fully integrated system is much simplier, however such a system would have to be constructed from scratch. 
+
+
 
 We will make the following assumptions in the modelling of the combined system:
 
@@ -634,20 +638,19 @@ As part of this project we will also have to formalise new safety properties for
 
 
 \section{Typical  ERTMS Scenario}
-
-Consider the following scenario involving 3 trains attempting to cross a double junction (See Fig \ref{fig:trackplan}).
+In the following we shall demonstrate, by the means of an example using a UML message sequence chart, of how ERTMS behaves in a typical railway scenario. It involves a track layout called a double junction in which two train tracks are joined to two other train tracks. This type of junction are common where you have two uni-directinal tracks. Trains wishing to leave the section of track can do so easily by travelling over a single point. The other line carrying trains wishing to join the track has to cross the near track with on coming trains before joining the far track. In particular we shall discuss the following scenario involving 3 trains attempting to cross a double junction (See Fig \ref{fig:trackplandd}). 
 
 \begin{itemize}
-\item Train A would like to travel in a route from D to C
-\item Train B would like to travel in a route from A to B
-\item Train C would like to travel in a route from F to C
+\item Train 1 would like to travel in a route from D to C
+\item Train 2 would like to travel in a route from A to B
+\item Train 3 would like to travel in a route from F to C
 \end{itemize}
 
 We will assume that initially no routes are set. This means that either a controller or a time table will determine the precedence of the trains. For this example we will time table the trains in alphabetical order.
 
 
 
-\begin{figure}[H]
+\begin{figure}[h!]
 
 \begin{center}
 
@@ -768,13 +771,13 @@ We will assume that initially no routes are set. This means that either a contro
 \end{center}
 
  \caption{A Common Scenario}
-\label{fig:trackplan}
+\label{fig:trackplandd}
 \end{figure}
 
+\subsection*{Scenario}
+We shall now describe the behaviour of trains and their interaction with the ERTMS system as they negotiate their way through the double junction. The UML message sequence chart (See fig \ref{fig:seqChart}) shall compliment this description for the first two trains.
 
-
-
-\begin{figure} [H]
+\begin{figure} [h!]
 
 \begin{center}
 \begin{tikzpicture}[node distance = 3cm, scale = 1.5]
@@ -837,8 +840,8 @@ We will assume that initially no routes are set. This means that either a contro
 \end{center}
 
 \caption{Message Sequence Chart for "A Common Scenario"}
-\label{fig:ContactOrders}
+\label{fig:SeqChart}
 \end{figure}
 
-\section{Previous Work: Attempts to Verify ERTMS}
+
 

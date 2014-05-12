@@ -6,6 +6,8 @@ We use logic to formally reason about the world around us in an abstract way. At
 We are particularily interested in program extraction as it allows for the automatic generation of a program from a interactive constructive proof performed in a theorem prover. This is due to the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that every constructive proof can also be seen as a program. It enables a proof system such as natural deduction  can be directly interpreted as a model of computation i.e. the lambda calculus. 
 
 
+\begin{comment}
+
 \section{Propositional logic}
 One of the most fundamental forms of logic is propositional logic which contains operations called connectives that allows one to connect propositional variables to form sentences.
 
@@ -57,12 +59,13 @@ Blah
 
 \end{mydef}
 
-
+\end{comment}
 
 \section{Formal Foundations of Minlog}
 In the following section we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manor designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is particularly suited for program extraction as its constituent proofs are constructive. This is then extended to classical logical in a constructive manner. In the following we pretend the natural deduction proof system together with the proof terms derived from each rule:
 
 \medskip
+
 
 \begin{mydef}[Natural Deduction for Minimal Logic] 
 The natural deduction proof system for minimal logic  consists of the following derivation terms for $\wedge$, $\to$ and $\forall$ : \\
@@ -212,6 +215,8 @@ derivation & term \\ \hline
 \medskip
 
 
+
+\section{Program Extraction}
 
 \subsection*{Type}
 Inorder to perform program extraction on a proof we must first deduce the
