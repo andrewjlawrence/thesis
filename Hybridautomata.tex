@@ -5,8 +5,8 @@ The ERTMS system will be central to many train control systems in the future and
 
 \section{Pentagon Example}
 
+The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains 5 track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route. We have modelled the ERTMS system controlling the pentagon example (see fig \ref{fig:trackplan2}) using three hybrid automata. In this example the value $D(t)$ represents the distance from the start point at time $t$. It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
 \medskip
-The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains 5 track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route.
 
 \begin{figure} [h!]
 
@@ -70,19 +70,19 @@ The following is a simple example railway we shall use for the purposes of demon
 \draw [arrow] (B) --  node[above = 10pt] {$t_2$} (C);
 \draw [arrow] (C) -- node [left] {$t_3$} (D);
 \end{comment}
-We have modelled the ERTMS system controlling the pentagon example (see fig \ref{fig:trackplan2}) using several hybrid automata. In this example the value $D(t)$ represents the distance from the start point at time $t$. 
-It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
-\medskip
 
 
 \section{Modelling Assumptions}
 Since this is a first attempt at modelling a complex system we make several assumptions of model inorder to make it manageable so that we can capture its behaviour in a formal specification language and verifiy it using a model checker.
 
 \subsection*{Train Acceleration Behaviour}
-We restrict the train to accelerating at one unit of speed per unit time interval. This causes speed to be a linear function of time and greatly simplifies the laws of motion needed to compute the braking curves. 
+We restrict the train to accelerating at one unit of speed per unit time interval. This causes speed to be a linear function of time and greatly simplifies the laws of motion needed to compute the braking curves.  We also assume that all trains are fitted with the ERTMS system. The positioning systems on the train are assumed to function at all times, constantly providing the radio block processor with correct information regarding the location of the train.
 
 \subsection*{Movement Authorities}
 We only allow movement auhority extensions of one track segment in distance (50 in the pentagon example). We do not allow movement authorities to be revoked for 2 reasons; the first being that it makes the verification of safety properties far more difficult and the second being that the model we have is quite simply and no situations occur in which the movement authority should be revoked.
+
+\subsection{System Size} We assume that the track will be under the control of one radio block processor. If we work with an open section of track in which trains can enter and leave, we shall assume that the handover is performed correctly in an automatic fashion.
+
 
 \section{Hybrid Automata}
 
@@ -523,9 +523,6 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 \end{mydef}
 \medskip
 When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of  timed transition systems which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automatons real numbered variables.
-
-
-\textbf{Question: Do I need the semantics now that the proof making use of them is gone?}
 
 \medskip
 \begin{mydef}[Transition Semantics of Hybrid Automata]
