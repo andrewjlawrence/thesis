@@ -17,7 +17,7 @@ totality (or universality) of SAT solvers is an issue. For example, in the 2012 
 "Unknown" for certain inputs signifying that they could not deal with the given problem. 
 
 
-Another approach to formal verification is that of interactive theorem proving where a tool aids with the human driven construction of a formal proof of correctness for a system. These have the advantage that the machine can check the human produced proof and they typically include a number of built in tactics that in the construction of a proof. Some interactive theorem provers realise the Curry-Howard correspondence \cite{} which states that constructive proofs performed using the natural deduction calculus can be viewed as programs in the lambda calculus.  The process of exploiting this correspondence to produce a program from a proof is called program extraction. This technique allows for the development of programs that are correct by construction as the program comes with a proof that certifies its correctness. The Minlog theorem prover comes with a number specialisations for the purpose of extracting programs from formal proofs.
+Another approach to formal verification is that of interactive theorem proving where a tool aids with the human driven construction of a formal proof of correctness for a system. These have the advantage that the machine can check the human produced proof and they typically include a number of built in tactics that in the construction of a proof. Some interactive theorem provers realise the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that constructive proofs performed using the natural deduction calculus can be viewed as programs in the lambda calculus.  The process of exploiting this correspondence to produce a program from a proof is called program extraction. This technique allows for the development of programs that are correct by construction as the program comes with a proof that certifies its correctness. The Minlog theorem prover comes with a number specialisations for the purpose of extracting programs from formal proofs.
 \begin{comment}
 \textbf{Note: Add something about program extraction here.}
 Alternatively to automatic techniques for verification there are also interactive theorem provers which employ man-machine collaboration in order to prove properties over a system.
@@ -32,10 +32,44 @@ The Railway Verification Group at the Computer Science Department of Swansea Uni
 
 
 \section{Results of the Thesis}
-We have 2 sets of results. The first set of results is in regard to the development of verified SAT solving algorithms and their application to the verification of solid state railway interlocking programs: 
+
+
+The main result of this thesis is the use of program extraction to obtain a verified DPLL SAT solving algorithm that can solve industrial sized problems in the form of verifying solid state interlockings. We have named the resulting SAT solver XSAT and show that its performance is comparable with other verified SAT algorithms. This is the biggest case study so far in the area of program extraction and demonstrates that it can be used for practical purposes. One of the biggest arguements against the use of program extraction is that one loses control over the efficiency of the program. We have demonstrated that it is possible to carry out efficiency considerations at the proof level and therefore obtain a more efficient extracted program. We demonstrate that it is possible to modify the SAT proof system and extract a more advanced SAT algorithm that implements an optimisation called clause learning. We also demonstrate that it is possible to extract a resolution algorithm based on our original DPLL SAT solver.
+
+
+The second result of this thesis is the modelling and verification of the European Rail Traffic Management System using Real Time Maude. First, we formalised the ERTMS system as several hybrid automata in order to capture its behaviour. Then we modelled the system as a Real Time Maude specification and executed the specification of the system to simulate and validate the behaviour of our model. This is the first formalisation of ERTMS to capture the interlocking, radio block processor, train and the communications between them.
+
+
+
+\section{Thesis Outline}
+
+\textbf{Chapter 1}: This introduction. 
+\medskip \\
+\textbf{Chapter 2}: Provides an overview of the formal foundations of the Minlog interactive theorem prover and program extraction. 
+\medskip \\
+\textbf{Chapter 3}: Provides an overview of SAT solving, including the DPLL algorithm and  proof system, clause learning and resolution. 
+\medskip \\
+\textbf{Chapter 4}: Describes an approach using program extraction to obtain a verified SAT solver XSAT.
+\medskip  \\
+\textbf{Chapter 5}: Describes an approach to extract a prototype clause learning SAT algorithm by modifying the DPLL proof system.
+\medskip \\
+\textbf{Chapter 6}: Provides a general introduction to the traditional railway domain.
+\medskip \\
+\textbf{Chapter 7}: Provides an overview of the model checking techiques used in this thesis for verification. \medskip \\
+\textbf{Chapter 8}: Compares XSAT with another verified SAT algorithm and an industrial tool on pigeon hole formulae and on the real world application of verifying a solid state railway interlocking.
+\medskip \\
+\textbf{Chapter 9}: Provides a description of the European Rail Traffic Management System
+\medskip \\
+\textbf{Chapter 10}: Describes the formalisation of the European Rail Traffic Management System as 3 hybrid automata. 
+\medskip \\
+\textbf{Chapter 11}: Describes how the European Rail Traffic Management System can be modelled as a Real Time Maude specification  specification. 
+\medskip \\
+\textbf{Chapter 12}: Validates the Real Time Maude specification of ERTMS using simulation via execution of the specification and describes the verification of the specification using the Maude LTL model checker.
 
 
 \medskip
+
+\begin{comment}
 
 \begin{itemize}
 
@@ -64,8 +98,7 @@ Our second set of results is in regard to the formal specification and verificat
 \end{itemize}
 
 
+\end{comment}
 
-
-\section{Thesis Outline}
 
 

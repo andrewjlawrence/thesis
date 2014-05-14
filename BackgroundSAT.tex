@@ -200,9 +200,54 @@ The first clause learning algorithm was GRASP \cite{MS99,MS96} which exploited t
 Similarily to the DPLL algorithms, conflict driven clause learning algorithms take as input a formula $\Delta$ in Conjunctive Normal Form. 
 A valuation in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value. The depth at which a boolean variable $x$ is assigned a value \{0,1 \} in the search tree is called the decision level which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search. A mapping $\alpha(x)$ is created associating a boolean variable x with a clause $C$ if that variable is assigned by the unit rule applied to $C$ otherwise in the $\alpha(x) = NIL$.
 
-\textbf{Note to self: Find a nice formalisation of the clause learning procedure, the one in the SAT handbook is not very concrete and highly procedural}
+\subsection*{Conflict Analysis}
+The CDCL SAT algorithms cut down on the possible search space for a satisfying assignment by analysing and learning new clauses from conflicts. The causes of the conflict are analysed to see which decision and implied literals that led to the conflict arising. The learned clause contains a negation of these literals such that if it was already in the formula it would have caused the conflict to arise earlier. The decisions and implications that led to the conflict can seen as forming a graph called a \emph{conflict graph}. The literals which are negated to form the learned clause can be seen as forming a bar or cut across the conflict graph.
+Any of these cuts can be used as learned clauses, however typically the smallest clauses perform better in practice.
+\medskip
+\begin{myexample}
+The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$ is as follows.  The notation $x = 1@n$ means the variable $x$ is assigned to true at $n$ and  $x = 0@n$ means the variable x is assigned to false at level $n$. \textbf{Note: Check conflict graph for correctness.}
+%
+\begin{align*}
+        \phi &=C_1 \wedge C_2 \wedge C_3 \wedge C_4 \wedge C_5 \wedge C_6 \wedge C_ 7 \wedge C_8\\
+               &= (x_1 \vee x_2 \vee x_3) \wedge (\neg x_1 \vee x_4) \wedge (\neg x_2 \vee \neg x_4) \wedge (\neg x_4 \vee x_5) \, \wedge \\
+               &\hspace{16pt} (\neg x_3 \vee x_2 \vee  \neg x_5) \wedge (x_2 \vee x_7 \vee x_6) \wedge (\neg x_6 \vee  x_7 \vee x_3) \wedge (\neg x_6 \vee \neg x_7 \vee x_3)
+\end{align*}
 
+%
+\begin{figure} [H]
+\begin{center}
+\begin{tikzpicture}[scale = 1.5]
+\tikzstyle{box}=[text width = 2cm]
+\tikzstyle{arrow}=[->]
+\node (A) [box]  at (0,0)                  {\begin{center} $x_1=1@1$ \end{center}};
+\node (B) [box]  at (1, 1) 		{\begin{center} $x_4 = 1@1$ \end {center}};
+\node (C) [box]  at (2, 2) 		{\begin{center} $x_5 = 1@1$ \end {center}};
+\node (D) [box]  at (3, 1) 		{\begin{center} $x_3 = 0@1$ \end {center}};
+\node (E) [box]  at (2, 0) 		{\begin{center} $x_2 = 0@1$ \end {center}};
+\node (F) [box]  at (4, 0) 		{\begin{center} $\kappa$ \end {center}};
+\node (G) [box]  at (3, -1) 		{\begin{center} $x_6 = 1@2$ \end {center}};
+\node (H) [box]  at (2, -2) 		{\begin{center} $x_7 = 1@2$ \end {center}};
+\draw [arrow] (A) -- node[left] {$C_2$} (B);
+\draw [arrow] (B) -- node[left] {$C_3$} (E);
+\draw [arrow] (B) -- node[left] {$C_4$} (C);
+\draw [arrow] (C) -- node[right] {$C_5$} (D);
+\draw [arrow] (E) -- node[below = 2pt, right] {$C_5$} (D);
+\draw [arrow] (E) -- node[left] {$C_6$} (G);
+\draw [arrow] (H) -- node[left] {$C_6$} (G);
+\draw [arrow] (G) -- node[left] {$C_8$} (F);
+\draw [arrow] (D) -- node[left] {$C_8$} (F);
+\end{tikzpicture} 
+\end{center}
+\caption{Conflict Graph for Example \ref{example1}}
+\label{fig:ContactOrders}
 
+\end{figure}
+
+\end{myexample}
+
+Unit implication points
+
+\subsection*{An Example CDCL Algorithm}
 
 The typical clause learning algorithm functions in a similar way to the DPLL algorithm initial applies unit resolution to the formula. After this it assigns the decision level to zero and then enters a while loop which runs continually until all variables have been assigned. If it manages to assign a value to everyone of the variables then the current valuation $\Gamma$ can be extended to form a model of the formula $\Delta$.
 
