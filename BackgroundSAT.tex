@@ -3,7 +3,7 @@ In the following we shall present the satisfiability problem and  algorithms whi
 
 
 \section{The Satisfiability Problem}
-In the following section we will introduce some preliminaries followed by the boolean satisfaction problem, which is the problem of finding a set of assignments to the variables of a formula such that the formula itself becomes true. The majority of modern algorithms for solving this problem work on propositional formulas in \emph{conjunctive normal form}. That is the formula is a conjunction of clauses which are themselves disjunctions of literals. This encoding has the advantage that had a very simple and structured form making algorithm implementation easier.
+In the following section we will introduce some preliminaries followed by the boolean satisfaction problem, which is the problem of finding a set of assignments to the variables of a formula such that the formula itself becomes true. The majority of modern algorithms for solving this problem work on propositional formulas in \emph{conjunctive normal form}. That is the formula is a conjunction of clauses which are themselves disjunctions of literals. This encoding has the advantage that had a very simple and structured form making algorithm implementation easier. In order to apply most modern SAT solvers typically one has to first encode the SAT problem as a CNF formula. There are a number of translations available, some naive approaches can exponentially increase the size of the resulting formula. In the following we look at the most commonly used encoding called the Tseitin Expansion \cite{GT83}.
 \medskip
 \begin{mydef}[Preliminaries]
 We define the following preliminaries to use when refering to DPLL SAT algorithms:
@@ -202,7 +202,7 @@ A valuation in a clause learning algorithm is typically a total function $\Gamma
 
 \subsection*{Conflict Analysis}
 The CDCL SAT algorithms cut down on the possible search space for a satisfying assignment by analysing and learning new clauses from conflicts. The causes of the conflict are analysed to see which decision and implied literals that led to the conflict arising. The learned clause contains a negation of these literals such that if it was already in the formula it would have caused the conflict to arise earlier. The decisions and implications that led to the conflict can seen as forming a graph called a \emph{conflict graph}. The literals which are negated to form the learned clause can be seen as forming a bar or cut across the conflict graph.
-Any of these cuts can be used as learned clauses, however typically the smallest clauses perform better in practice.
+Any of these cuts can be used as learned clauses, however typically the smallest clauses perform better in practice. The majority of modern SAT algorithms try to exploit \emph{unit implication points} (UIP) which are bottlenecks in the conflict graph which form an alternative decision assignment that will cause a conflict in the same clause. Formally a UIP is a dominator in that all paths from original decision assignment to the conflict must pass through the UIP node in the graph. 
 \medskip
 \begin{myexample}
 The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$ is as follows.  The notation $x = 1@n$ means the variable $x$ is assigned to true at $n$ and  $x = 0@n$ means the variable x is assigned to false at level $n$. \textbf{Note: Check conflict graph for correctness.}
@@ -242,10 +242,24 @@ The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$
 \label{fig:ContactOrders}
 
 \end{figure}
-
 \end{myexample}
 
-Unit implication points
+The clause learning process makes use of a resolution operation $\circ$ which resolves two clauses and removes any complimentary literals contained within the two $C_1 \circ C_2 := \{l | l \in C_1 \vee l \in C_2, \neg (l \in C_1 \wedge \mybar{l} \in C_2 \}$. The conflict anaylsis procedure repeatedly applys resolution clauses that are antecedents of the conflict clause. It also makes use of a predicate that computes whether a clause $\omega$ contains an implied literal $l$ that has been assigned at the decision level $d$.
+
+$\eta(C,l,d) := $
+
+\begin{lstlisting}[caption = Conflict Analysis Procedure, mathescape]
+ConflictAnalysis($\Delta$,$\Gamma$) 
+$i \leftarrow 0$
+$\omega \leftarrow \alpha(\kappa)$
+$d \leftarrow \omega$
+while($\neg \forall l. \eta(\omega,l,d) = 1$)
+ do $\omega \leftarrow  \omega \circ \alpha(l)$
+$\Delta \leftarrow \Delta \cup \{ \omega \}$
+return d
+\end{lstlisting}
+
+
 
 \subsection*{An Example CDCL Algorithm}
 
@@ -271,7 +285,7 @@ while($\neg \mathrm{All-Var-Assigned}(\Delta,\Gamma$)) do
 			then return UNSAT
 			else $\mathrm{Backtrack}(\Delta, \Gamma, \beta)$
 			        $dl \leftarrow \beta$
-return (SAT,\Gamma)
+return (SAT,$\Gamma$)
 \end{lstlisting}
 
 
@@ -305,11 +319,11 @@ Resolution Proof System
 
 Resolution Algorithm
 
-
-\section{Translation to CNF}
-In order to apply most modern SAT solvers typically one has to first econde the SAT problem to CNF. There are a number of translations available, some naive approaches can exponentially increase the size of the resulting formula. In the following we look at the most commonly used encoding called the Tseitin Expansion \cite{GT83}.
-
 \begin{comment}
+\section{Translation to CNF}
+In order to apply most modern SAT solvers typically one has to first encode the SAT problem as a CNF formula. There are a number of translations available, some naive approaches can exponentially increase the size of the resulting formula. In the following we look at the most commonly used encoding called the Tseitin Expansion \cite{GT83}.
+
+
 \section{The Future: Satisfiability Modulo Theory}
 More recently a new type of solver has emerged that can deal with first order formulae, these solvers are based on SAT algorithms and include extra theory modules for reasoning about arithmetic,arrays, quantifiers and equality, hence the name \emph{satisfiability modulo theory}.
 \end{comment}
