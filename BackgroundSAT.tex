@@ -123,7 +123,7 @@ $$PHP(2,1) := \{\{\neg X_1, \neg X_2\}, \{ X_1 \}, \{ X_2 \} \}$$
 \end{figure}
 \bigskip
 
-The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Delta,\Gamma)$ which takes a formula and a valuation as input and returns either UNSAT in the case that the formula is unsatisfiable or in the satisfiable case it returns a valuation which forms a model of the formula.  The algorithm begins by applying $\mathrm{Unit-Resolution}$, which repeatedly simplifies the formula by removing clauses that contain in a literal in common (Reduce Rule, see definition \ref{def:dpllproofsys}) with the valuation and by removing literals in clauses with opposing literals in the valuation (Elim Rule, see definition \ref{def:dpllproofsys}) and then for all resulting \emph{unit} clauses which contain a single literal that literal is added to the valuation (Unit Rule, see definition \ref{def:dpllproofsys}).  The algorithm then checks to see if the formula is empty in which case the current valuation forms a satisfying assignment for the formula in which case the algorithm terminates.  Otherwise if this is not the case the algorithms checks to see if the empty clause is in the formula, if it is then that clause can not be satisfied and therefore the formula is unsatisfiable with respect to the current valuation and that branch of the algorithm can terminate. If $\mathrm{Unit-Resolution}$ does result in an empty clause then a new literal $l$ is selected from the formula such that neither that literal nor its opposite is in the valuation, then two recursive calls are made, one with the current formula and the valuation extended by $l$ and the second made with the current formula and the valuation extended by the opposite of $l$. 
+The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Delta,\Gamma)$ which takes a formula and a valuation as input and returns either UNSAT in the case that the formula is unsatisfiable or in the satisfiable case it returns a valuation which forms a model of the formula.  The algorithm begins by applying $\mathrm{UnitResolution}$, which repeatedly simplifies the formula by removing clauses that contain in a literal in common (Reduce Rule, see definition \ref{def:dpllproofsys}) with the valuation and by removing literals in clauses with opposing literals in the valuation (Elim Rule, see definition \ref{def:dpllproofsys}) and then for all resulting \emph{unit} clauses which contain a single literal that literal is added to the valuation (Unit Rule, see definition \ref{def:dpllproofsys}).  The algorithm then checks to see if the formula is empty in which case the current valuation forms a satisfying assignment for the formula in which case the algorithm terminates.  Otherwise if this is not the case the algorithms checks to see if the empty clause is in the formula, if it is then that clause can not be satisfied and therefore the formula is unsatisfiable with respect to the current valuation and that branch of the algorithm can terminate. If $\mathrm{UnitResolution}$ does result in an empty clause then a new literal $l$ is selected from the formula such that neither that literal nor its opposite is in the valuation, then two recursive calls are made, one with the current formula and the valuation extended by $l$ and the second made with the current formula and the valuation extended by the opposite of $l$. 
 
 \begin{lstlisting}[caption = Example DPLL Algorithm,mathescape]
 DPLL($\Delta, \Gamma$)
@@ -246,7 +246,9 @@ The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$
 
 The clause learning process makes use of a resolution operation $\circ$ which resolves two clauses and removes any complimentary literals contained within the two $C_1 \circ C_2 := \{l | l \in C_1 \vee l \in C_2, \neg (l \in C_1 \wedge \mybar{l} \in C_2 \}$. The conflict anaylsis procedure repeatedly applys resolution clauses that are antecedents of the conflict clause. It also makes use of a predicate that computes whether a clause $\omega$ contains an implied literal $l$ that has been assigned at the decision level $d$.
 
-$\eta(C,l,d) := $
+$$\eta(C,l,d) := l \in C \wedge \delta(l) = d \wedge \alpha(l) \neq NIL$$
+
+The conflict analysis procedure takes as input a formula $\Delta$ and a valuation $\Gamma$. It first assigns resulting decision level of the antecedent of the conflict clause to be the end result. It then computes the learned clause by iterating over the antecedents from the conflict clause and resolving them until it is no longer possible to find a literal such that the $\eta$ predicate holds.
 
 \begin{lstlisting}[caption = Conflict Analysis Procedure, mathescape]
 ConflictAnalysis($\Delta$,$\Gamma$) 
@@ -263,14 +265,14 @@ return d
 
 \subsection*{An Example CDCL Algorithm}
 
-The typical clause learning algorithm functions in a similar way to the DPLL algorithm initial applies unit resolution to the formula. After this it assigns the decision level to zero and then enters a while loop which runs continually until all variables have been assigned. If it manages to assign a value to everyone of the variables then the current valuation $\Gamma$ can be extended to form a model of the formula $\Delta$.
+The typical clause learning algorithm functions in a similar way to the DPLL algorithm initial applies unit resolution to the formula. After this it assigns the decision level to zero and then enters a while loop which runs continually until all variables have been assigned. If it manages to assign a value to everyone of the variables then the current valuation $\Gamma$ can be extended to form a model of the formula $\Delta$. The learned clauses are added to the formula by the $\mathrm{ConflictAnalysis}$ procedure and then cut down on the search space of successive branches of the proof. Even though this algorithm now contains interation instead of the recursion of the DPLL algorithm (See \ref{})  it still searches one branch of the search space before back tracking and going down another.
 
 
 
 
 \begin{lstlisting}[caption = Example CDCL Algorithm, mathescape]
 CDCL($\Delta$,$\Gamma$)
-$(\Delta,\Gamma) = \mathrm{Unit-Resolution}(\Delta,\Gamma)$
+$(\Delta,\Gamma) = \mathrm{UnitResolution}(\Delta,\Gamma)$
 if $\{ \} \in \Delta$
 	then return UNSAT
 $dl \leftarrow 0$
@@ -278,7 +280,7 @@ while($\neg \mathrm{All-Var-Assigned}(\Delta,\Gamma$)) do
 	do $(x,v) = \mathrm{Select}(\Delta,\Gamma)$
  	     $dl \leftarrow dl + 1$
  	     $\Gamma \leftarrow  \Gamma \cup \{ (x,v)\}$
-	     $(\Delta,\Gamma) = \mathrm{Unit-Resolution}(\Delta,\Gamma)$
+	     $(\Delta,\Gamma) = \mathrm{UnitResolution}(\Delta,\Gamma)$
 	     if $\{ \} \in \Delta$
               	then $\beta = \mathrm{ConflictAnalysis}(\Delta,\Gamma)$
 		if $(\beta < 0)$
@@ -289,8 +291,7 @@ return (SAT,$\Gamma$)
 \end{lstlisting}
 
 
-
-\section{Resolution}
+\begin{comment}
 
 Resolution Proof System
 
@@ -317,7 +318,7 @@ Resolution Proof System
 \bigskip
 \end{mydef}
 
-Resolution Algorithm
+\end{comment}
 
 \begin{comment}
 \section{Translation to CNF}

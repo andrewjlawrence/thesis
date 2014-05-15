@@ -218,6 +218,8 @@ derivation & term \\ \hline
 
 \section{Program Extraction}
 
+In the following section we shall give an overview of theoretical foundations of program extraction as it is implemented in the interactive theorem prover Minlog. We shall begin by defining the type of a formula such that if the formula is proven the type corresponds to the type of the extracted program from the proof. Secondly, we shall define the lambda calculus program that can be extracted from a proof term. These proof terms are generated in Minlog by applying the natural deduction calculus to a formual.  FInally we define what it means for a term to realize a formula.
+
 \subsection*{Type}
 Inorder to perform program extraction on a proof we must first deduce the
 type of the program to be extracted from a formula. To this end, every formula $A$ is assigned a type $\tau(A)$ which corresponds to the type of the program extracted from $A$. It is possible for a formula to have no computation content $\tau(A) = \epsilon$; such formulas are called \emph{Harrop formulas}.
@@ -284,7 +286,9 @@ a type of $\tau (B)$.
 \]
 
 \subsection*{The Extracted Program}
-I will now give a definition of a extracted program $\llbracket M \rrbracket$
+Given a proof term it is possible to extract a program in the lamda calculus from that depends on the type of the term. We shall now give a case by case definition of the program extracted from a formula.
+
+ $\llbracket M \rrbracket$
 which has a type $\tau (A)$. Where $M$ is a derivation of the formula $A$ with
 $A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.
 
@@ -438,17 +442,7 @@ r1 \ \textbf{r} \ A[x:= r0] & \quad \text{otherwise} \\
 \section{Other Theorem Provers with Program Extraction Capabilities}
 While Minlog is specifically geared towards extracting programs from proofs there are other examples of theorem provers with program extraction capabilities. An early example of work on a theorem prover with program extraction capabilitieis is the Nuprl system \cite{RC86}. There are also other mature theorem provers with program extraction capabilities such as Coq \cite{YB04}, which is based on the Calculus of Inductive Constructions and Isabelle  \cite{TN99,LP94} which is a generic theorem prover with extensions for many logics. More recently a number of theorem provers based on dependent types \cite{PM80} have emerged including Agda \cite{AB09} and IDRIS \cite{EB11}.
 
-\subsection*{Isabelle} 
-The theorem prover Isabelle
-\subsection*{Coq} 
-The theorem prover 
-
-\subsection*{Agda}
-
 \begin{comment}
-
-\subsection*{Soundness Theorem}
-
 
 \begin{theorem}
 \emph{(Soundness Theorem)}
