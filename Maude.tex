@@ -5,17 +5,16 @@
 
 
 
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model and verify ERTMS \ref{chapter:ERTMS}.The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that a single train automaton always remains within its movement authority. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS. A general introduction to Maude can be found in \cite{MaudeBook}.
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model the ERTMS system (See chapter \ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describing how each of the 3 subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in chapter \ref{chap:hybrid}. Each of these individual components are modelled using object orientated specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects from these classses behaviour. The  built-in message construct of the Real Time Maude system are used to define communication between the subsystems.
 
-The simulation of the system provides a validation of our modelling in that it shows the system to be live and that the trains behave as expected. We apply model checking in order to verify that certain safety conditions hold in the model we have specified.
+
 
 
 \subsection*{Related Work}
-The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. 
+The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. A distributed sensor network employing the OGDC algorithm has been modelled and verified using Real Time Maude \cite{PO07}. The modelling of the progression of time over the sensor network has inspired the distribution of in our ERTMS model. The Real Time Maude system can also be used for simulation and analysis of systems as seen in the work on the CASH Scheduling Algorithm \cite{PO06}. 
 
-On the front of hybrid automata, ERTMS has been verified in the form of Hybrid Automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}. The Hi-Maude system \cite{MF11} is an extension of Real Time Maude designed specifically modelling interacting hybrid systems and as such it can handle differential equations. It has been used in a case study to model the effects of extreme heat on the human body \cite{MF12}. It is geared towards systems of a highly dynamic nature and may be overkill for a system such as ERTMS with a large discrete component.
+On the front of hybrid automata, ETCS has been verified in the form of Hybrid Automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}. The Hi-Maude system \cite{MF11} is an extension of Real Time Maude designed specifically modelling interacting hybrid systems and as such it can handle differential equations. It has been used in a case study to model the effects of extreme heat on the human body \cite{MF12}. It is geared towards systems of a highly dynamic nature and may be overkill for a system such as ERTMS with a large discrete component.
 
-There is an example of a distributed sensor network employing the OGDC algorithm that has been modelled and verified using Real Time Maude \cite{PO07}.  The Real Time Maude system can also be used for simulation and analysis of systems as seen in the work on the CASH Scheduling Algorithm \cite{PO06}.
 
 There have been several attempts to model and verify parts of the ERTMS system. The scale of the system and differences in implementations from one country to another both make its formalisation challenging. A subset of the systems requirements specification of ERTMS in UML consisting of high level discrete modes and transitions was captured, formalised and verified using the SMV model checker \cite{MG14}. A variety of properties were checked including safety and liveness which were formalised using modes of the system. One safety condition  "the ETCS on-board never leaves the TRIP mode (TR) before the driver has acknowledged the trip and the train has stopped"\footnote{a train enters the TRIP mode after it has over run its stopping point.}, was formalised as an LTL formula with a boolean variable to represent that the train has stopped, it was then successfully verified using SMV. Our work attempts to capture the more concrete behaviour of the overall system including the physical behaviour of trains such as their speed and that of the highly safety critical interface between ERTMS and the interlocking. 
 
@@ -45,8 +44,9 @@ condition equations & \texttt{ceq} t = t' \texttt{if} $cond$ \\ \hline
 membership axioms & \texttt{mb} $t \ : \ s \ .$ or \texttt{cmb} $t  \ : \ s$ \texttt{if} $cond \ .$  \\ \hline
 \end{tabular}
 \end{center}
+\medskip
+The data types of a Maude specification are defined using sorts with subtypes expressed as subsorts. Terms are constructed using function symbols and variables which are then  given behaviour using equations and conditional equations.  A maude specification is executed by rewriting, that is the system repeatedly applys rewriting rules to a term until the term can no longer be rewritten.
 
-The data types of a Maude specific are defined using sorts with subtypes expressed as subsorts. Terms are constructed using function symbols and variables. These terms are given behaviour using equations and conditional equations.  
 %%% Read the Maude papers as this is currently very close to the description of a maude specification found in the RT maude theory paper.
 \medskip
 \begin{mydef}[Equational Theory]
@@ -57,15 +57,15 @@ Equational theories  form the signature of a Maude specification and provides on
 
 Formally a Maude specification is a \emph{rewrite theory} of the form $\mathfrak{R}=(\Sigma,E,L,R)$, where  $(\Sigma, E)$ is an equational theory, $L$ is a set of labels and $R$ is a set of labelled rewrite rules of the form:
 
-$$ [l] : t \to t' \mathbf{if} \bigwedge^{n}_{i = 1} u_i \to v_i \bigwedge^{m}_{j = 1} w_j = w'_j $$
+$$ [l] : t \to t' / \mathbf{if} \bigwedge^{n}_{i = 1} u_i \to v_i \bigwedge^{m}_{j = 1} w_j = w'_j $$
 
 where $l$ is a label $l \in L$ and $t$, $t'$, $u_i$, $v_i$, $w_j$ and $w'_j$ are implicitly universally quantified variables representing $\Sigma$-terms. Maude theories are \emph{order-sorted} allowing for the specification of subsorts which is achieved by including into the specification a partial order relation over sorts. Given two sorts $s$ and $s'$ this partial order relation $s \leq s'$ is interpreted as subset inclusion $A_s \subseteq A_{s'}$ in a model $A$.
 
-The behaviour the operations defined in an equational theory are defined in a rewrite theory using the labelled rewrite rules. In the case of the natural numbers it is then possible to provide an definition for $+$ recursively. The base case is where 0 is one of the operands in which case we return the other $0 + N \to N$. The successor case is that we have some non-zero operand represented as a successor to some variable $s(M)$ in which case we apply the successor function to the recursive call of addition with M and the other operand $s(M) + N \to s(M + N)$. 
+The behaviour of the operations defined in an equational theory are defined in a rewrite theory using the labelled rewrite rules. In the case of the natural numbers it is then possible to provide an definition for $+$ recursively. The base case is where 0 is one of the operands in which case we return the other $0 + N \to N$. The successor case is that we have some non-zero operand represented as a successor to some variable $s(M)$ in which case we apply the successor function to the recursive call of addition with M and the other operand $s(M) + N \to s(M + N)$. 
  
 
 \subsubsection{Example Maude Specification}
-We shall now give a small example specification in the form of the natural numbers in Maude in order to get a feel for the structure of such a specification. We see that the module BASIC-NAT on the first line of the example (CL \ref{code:natnum}). Followed by a sort Nat which forms the type with which we will be working. Next several operations are declared with which we define the natural numbers symbolically. Firstly, we see a 0 operator which forms our basic constructor which is followed by another operation s which allows us to construct successive natural numbers. The infix addition operation $+$ defined using variable place holders  $\_$. The behaviour of the addition operation is defined inductively using two variables N and M and two equations for the base and successor cases.
+We shall now give a small example specification in the form of the natural numbers in Maude in order to get a feel for the structure of such a specification. We see that the module BASIC-NAT is declared on the first line of the example (Code listing \ref{code:natnum}). Followed by a sort Nat which forms the type with which we will be working. Next several operations are declared which we use to define the natural numbers symbolically. Firstly, we see the 0 operator which forms our base constructor which is followed by another operation s which allows us to construct successive natural numbers. The addition operation $+$ is defined to be infix using variable place holders represented by an underscore in the declaration  $\_$. The behaviour of the addition operation is defined inductively using two variables N and M and two equations for the base and successor cases. In the base case is that zero added to any natural number results in that natural number. The successor case is that given a successor of some natural number $M$ that number can be added to a number $N$ by taking the successor of $N+M$.
 
 \begin{lstlisting}[caption = The natural numbers in Maude, label = code:natnum]
 fmod BASIC-NAT is
@@ -85,7 +85,7 @@ endfm
 
 
 \section{Real Time Maude}
-One extension of Maude that has been used to model and verify hybrid systems is Real Time Maude. This contains specific support enabling the modelling and verification of real-timed and discrete timed systems. It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example, only model checked a portion of the state space of our example using this tool. This is however enough to have confidence in the correctness of the system with respect to a given safety condition.
+One extension of Maude that can be used to model and verify hybrid systems is Real Time Maude. This contains specific support enabling the modelling and verification of real-timed and discrete timed systems. 
 
 
 \subsection{Real Time Maude Specifications}

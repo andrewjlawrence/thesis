@@ -1,6 +1,8 @@
 \thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real Time Maude}
 In the following chapter we will describe how the Real Time Maude tool can be used to simulate and verify the ERTMS system. The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that a single train automaton always remains within its movement authority. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS. The simulation of the system provides a validation of our modelling in that it shows the system to be live and that the trains behave as expected. We apply model checking in order to verify that certain safety conditions hold in the model we have specified.
 
+It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example, only model checked a portion of the state space of our example using this tool. This is however enough to have confidence in the correctness of the system with respect to a given safety condition.
+
 
 \section{Simulating The Behaviour of ERTMS}
 
