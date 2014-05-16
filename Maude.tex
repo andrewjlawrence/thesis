@@ -85,14 +85,13 @@ endfm
 
 
 \section{Real Time Maude}
-One extension of Maude that can be used to model and verify hybrid systems is Real Time Maude. This contains specific support enabling the modelling and verification of real-timed and discrete timed systems. 
-
+One extension of Maude that can be used to model and verify hybrid systems is Real Time Maude. It contains specific support enabling the modelling and verification of real-timed and discrete timed systems. 
+The Real Time Maude system contains a general theory for time and several specifications of time, including discrete time based on the natural numbers and dense time based on the rationals, that implement that theory.
 
 \subsection{Real Time Maude Specifications}
 A Real Timed Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration \cite{PO02}. These rewrite rules can be separated into two categories, the \emph{tick} rules have a non-zero time elapse and the \emph{instantaneous} rules have a time elapse of zero.
 
-The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process. Real time Maude comes with two of these specifications as standard the most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time during the specification as it allows for the best results during the verification process. 
-
+The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process. Real time Maude comes with two of these specifications as standard the most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time for the specification which will result in a smaller state space and therefore better model checking results during the verification process.
 \medskip
 
 \begin{mydef}[Equational Theory Morphism]
@@ -105,11 +104,10 @@ The interpretation of the abstract time domain is mapped to a concrete specifica
 
 \item  $\var{H(f_{s_1 \ldots s_n, s})} \subseteq {x_1:H(s_1), \ldots, x_n:H(s_n)}$
 
-\item if the operator $f: s_1 \ldots s_n \to s$ can be subsort overloaded $f: s'_1 \ldots s'_n \to s'$ such that $s_i \leq s'_i, s\leq s'$ then it is possible to substitute each variable $x_i:H(s'_i)$ by the corresponding variable $x_i:H(s_i)$ in the term $H(f_{s'_1 \ldots s'_n, s})$ and obtain $H(f_{s_1 \ldots s_n, s})$.
+\item If the operator $f: s_1 \ldots s_n \to s$ can be subsort overloaded $f: s'_1 \ldots s'_n \to s'$ such that $s_i \leq s'_i, s\leq s'$ then it is possible to substitute each variable $x_i:H(s'_i)$ by the corresponding variable $x_i:H(s_i)$ in the term $H(f_{s'_1 \ldots s'_n, s})$ and obtain $H(f_{s_1 \ldots s_n, s})$.
 
 \item For every axiom: $$(\forall y_1:s_1, \ldots y_k : s_k) u = v \ \textbf{if} \ C$$ in E the homomorphic extension of $H^*$ to terms and equations in the condition $C$ causes the following to hold:
    $$E' \models (\forall y_1 : H(s_1), \ldots, y_k : H(s_k)) H^*(u) = H^*(v) \ \textbf{if} \ H^*(C)$$
-
 \end{enumerate}
 
 \end{itemize}
@@ -135,6 +133,8 @@ $$\{\_\}: State \to System$$
 Further to this condition, it is all required that the sort \textit{System} does not appear in $s_1, \ldots s_n$ the domain  of  any operator $f: s_1, \ldots s_n$.
 
 \item For each rewrite rule with $u$ and $u'$ of sort \textit{System} in $\mathfrak{R}$ of the following form\footnote{All other rules which are not of this form are called \emph{local} rules and have an instantaneous zero time elapse. These do not act on the system as a whole but rather on one or more of its components.}:
+$$[l]: u(x_1,\ldots ,x_n) \to u'(x_1,\ldots ,x_n if C(x_1, \ldots ,x_n) \ \textbf{if} \ C(x_1, \ldots ,x_n)$$
+
 
 there is an assigned term $\tau_l(x_1 \ldots x_n)$ of sort $\phi(Time)$ within $\tau$.
 
