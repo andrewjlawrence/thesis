@@ -190,14 +190,16 @@ We can define the following:
 \end{align*}
 where $C$ is the class identifier $O$ is the object name  $a_1 \ldots a_n$ are attribute names and $v_1 \ldots v_n$ are values. \\
 \medskip
-To model communicating processes Real Time Maude uses a messages construct.
+\subsubsection*{Messages}
+To model communicating processes Real Time Maude uses a messages construct:
 \begin{center}
 \verb|msgs M1 ... Mn : Sort-1 ... Sort-n -> Msg . | 
 \end{center}
 
+The message construct acts as a container for data being pased between different communicating sub systems. Rewriting rules are used to capture the behaviour of sending and receiving messages between different objects.
 
 \subsubsection*{Configurations in Real Time Maude}
-Objects and messages in a specification are given a sort of \texttt{Configuration} which is a subsort of type \texttt{System}. The composition operation for these configuration allows for a combination of objects and messages to form new configurations. This composition operation is also commutative meaning the order of messages and objects in any configuration is ignored. This allows for more generalised writing rules in an object orientated specification that speak about specific objects and messages that are part of some bigger configuration that does not affect the firing of the rule.
+Objects and messages in a specification are given a sort of \texttt{Configuration} which is a subsort of type \texttt{System}. The composition operation for configurations allows for a combination of objects and messages to form new configurations. This composition operation is also commutative meaning that the order of messages and objects in any configuration is ignored. This allows for more generalised rewriting rules in an object orientated specification that speak about specific objects and messages that are part of some bigger configuration as the order does not affect the firing of the rule.
 
 \begin{lstlisting}[caption = The Maude Configuration module]
 mod CONFIGURATION is  
@@ -210,8 +212,6 @@ mod CONFIGURATION is
     op __ : Configuration Configuration -> Configuration  
          [ctor config assoc comm id: none] .
 \end{lstlisting}
-
-
 
 \subsubsection*{Example Object Orientated Specification}
 The following is an example consisting of two classes of object which serves to demonstrate some of the advantages of object orientated specification as well as some of the pit falls. Firstly there is the class defining D objects which count modulo 500 and transmit a message containing the current count. Secondly there is class defining a object B that reads messages from a D object. 
@@ -234,12 +234,13 @@ The following is an example consisting of two classes of object which serves to 
 endtom)
 \end{lstlisting}
 
-We can execute the specification as follows:
+We can execute a system consisting of a D  and a B object for 2 times steps using the following command:
 \begin{center}
 \texttt{(trew {< myD : D | d : 0 > < myB : B | b : 0 >} in time <= 2 .)}
 \end{center}
 
 Resulting in the following output:
+\medskip
 \begin{lstlisting}
 rewrites: 6246 in 7ms cpu (7ms real) 
 (805000 rewrites/second)
@@ -264,18 +265,20 @@ The following are some states reachable in time 2.
 \end{lstlisting}
 
 \emph{Non-determinism} should be avoided unless it is really is a property you want in a model. One way to remove some of these reachable states is to make the variable \texttt{REST} of sort \texttt{ObjectConfiguration}. This forces objects of the B class to read messages after each incrementation of time. If we make this modification to the specification then the following states, from code listing \ref{code:reachst}, are reachable in time 2.
-\begin{lstlisting}
+\medskip
+\begin{lstlisting}[caption = States reachable by the modified EXAMPLE1 in two time steps]
 {< myB : B | b : 2 > < myD : D | d : 2 >}
 {msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
 (msgD(1)< myB : B | b : 0 > < myD : D | d : 1 >}
 (< myB : B | b : 1 > < myD : D | d : 1 >}
 \end{lstlisting}
 
-
 \section{Modelling the European Rail Traffic Management System}
-In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object orientated fashion following the hybrid automata described in \ref{} to define one class for each of the 3 hybrid automata.
+In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object orientated fashion following the hybrid automata described in chapter \ref{chap:hybrid} to define one class for each of the 3 hybrid automata. Time has been modelled by the use of a function $\delta$ that distributes the transition of time over objects in the system. Rewriting rules are then applied to $\delta$ containing singleton objects to give each individual object its behaviour. We attempt to remove as much non-determinism from the model as possible by forcing the ERTMS system to read all messages by the end of each time step and by preventing trains from making more than one movement authority request to the radio block processor in a given timestep.
+
+
 \subsubsection*{Modelling the Transition of Time}
-In our previous Real Time Maude specifications we have had a rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define operator $\delta$ which describes how distributed system evolves with time.
+In our previous Real Time Maude specifications we have had a rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently.  Since we are modelling a real life system all of the subsystems much be subjected to time in an equal manner. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define operator $\delta$ which describes how distributed system evolves with time.
 
 \begin{lstlisting}[caption = The delta time transition operation, label = code:delta]
 op delta : Configuration -> Configuration [frozen] . 
@@ -286,7 +289,7 @@ rl [timetrans] : {OCREST} => {delta(OCREST)} in time 1 .
 rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
 \end{lstlisting}
 
-The operation delta is frozen meaning that the configuration contained within will not be evaluated by the Maude until the delta operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the deltas over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own seperately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{} where a delta operation is used to distribute time over a distributed sensor network. 
+The operation $\delta$ is frozen meaning that the configuration contained within will not be evaluated by the Maude until the $\delta$ operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the delta operation over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own seperately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{PO07} where a delta operation is used to distribute time over a distributed sensor network. 
 
 \subsubsection*{Modelling Trains}
 We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and breaking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.
