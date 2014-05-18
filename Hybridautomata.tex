@@ -139,86 +139,14 @@ Such automatons which contain states in which time cannot progress are called \e
 \end{comment}
 \medskip
 
+\begin{myremark}[Multievents and messages]
+We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing of messages that include some data between automata.  We denote a multievent using a label $e$ and some data $x$ composed by a dot $e.x$.  For each possible value of $x$, there is a corresponding edge, event and flow triple that captures the effect of receiving a message containing $x$.
 
+\end{myremark}
 
-We start by defining a hybrid automaton for the interlocking consisting of 2 states representing whether a request have been made or not, 5 boolean variables representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored and then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
-\medskip
-\begin{mydef}[Interlocking Hybrid Automaton]
-We define a hybrid automaton $H_{IL}$ as follows:
-\begin{description}
-\item[Variables] The state of the interlocking automaton consists of five boolean variables  $\underbrace{l_0, \ldots , l_4}_\text{Occupied/Free}$ and a variable $ReqID$ ranging over $\{0 , \ldots , 4 \}$.
+\subsection*{Train Automata}
 
-\item[Control Graph] The control graph of the interlocking automaton consists of two control modes $\{Response, Idle \}$ with five control switches connecting them; $Response \to Idle (1)$, $Response \to Idle (2)$, $Idle \to Response$, $Response \to Response$, $Idle \to Idle$.
-
-\item[Initial, invariant and flow conditions] \hspace*{0mm}
-	\begin{itemize}
-	\item $init(Idle) := [l_0 = Free, l_1 = Free, l_2 = Free, l_3 = Free, l_4 = Free]$.
-
-	\end{itemize}
-
-\item[Jump Conditions] \hspace*{0mm}
-
-	\begin{itemize}
-	\item $jump(Idle \to Response) :=  Req.z , ReqId' = z$
-
-	
-	\item $jump(Response \to Idle (1)) :=  l_{ReqID} = Free $ 
-    
-
-         \item $jump(Response \to Idle (2)) :=  \neg l_{ReqID} = Free$
-
-
-	\item $jump(Idle \to Idle) := l_x. l_{x+1} , [l_x' = Free, l_{x+1}' = Occupied]$
-
-	\item $jump(Response \to Response) := l_x. l_{x+1} , [l_x' = Free, l_{x+1}' = Occupied]$
-
-
-	\end{itemize}
-
-\item[Events] \hspace*{0mm}
-\begin{itemize}
-	\item $event (Idle \to Response) := Req.z$
-	\item $event(Response \to Idle) := Grant.z$
-	\item $event(Response \to Idle (2)) := Deny.z$
-	\item $event(Idle \to Idle) := l_x.l_{x+1}$
-	\item $event(Response \to Response) := l_x.l_{x+1}$	
-\end{itemize}
-
-\end{description}
-\end{mydef} 
-\medskip
-\FloatBarrier
-\begin{figure} [H]
-
-\begin{center}
-\begin{tikzpicture}[scale = 0.60]
-
-\tikzstyle{box1}=[circle, draw, text width =3cm]
-\tikzstyle{box3}=[rectangle, draw, text width = 2cm, font=\scriptsize]
-\tikzstyle{arrow}=[->,shorten >=7pt,shorten <= 7pt]
-\tikzstyle{biarrow}=[<->,very thick,shorten >=7pt,shorten <=7pt]
-
-
-
-\node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Idle} \\ \end{center}
-
-};
-
-\node (C)[box1] at (0, 7.5)  { \begin{center} \textbf{Response}\\ \end{center}                                               
-						};
-
-
-\draw [arrow] (B)  .. controls +(-1.5 cm,  2.75 cm) and +(4.5cm,  -2.5cm ) .. node [right, text width=4cm] {Req.z} (C);
-\draw [arrow] (C) .. controls +(1cm,  -3cm) and +(-2.75cm, 1 cm ) ..   node [left = 3 cm, below, text width = 6cm] {$Grant.z \  \mathbf{if} \ t_{ReqId} = \ free $\\$ \mathbf{else} \ Deny.z \ Otherwise$} (B);
-
-
-\end{tikzpicture} 
-\end{center}
-
-\label{fig:ILAuton}
-\caption{Interlocking Automaton}
-\end{figure}
-The behaviour of the train is based on two of Newtons laws of motion $v = S +at$ and  $v^2 = u^2 +2as$
+The behaviour of the train is based on two of Newton's laws of motion $v = S +at$ and  $v^2 = u^2 +2as$
 ,where s = displacement,u = initial velocity, v = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current S and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the trains S decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to caluate the breaking distance with $u = 0$ and $a = 1$ it can be rewritten to allow for the calculation of the breaking distance.
 \medskip
 
@@ -369,6 +297,86 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 \end{figure}
 
+
+
+
+We start by defining a hybrid automaton for the interlocking consisting of 2 states representing whether a request have been made or not, 5 boolean variables representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored and then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
+\medskip
+\begin{mydef}[Interlocking Hybrid Automaton]
+We define a hybrid automaton $H_{IL}$ as follows:
+\begin{description}
+\item[Variables] The state of the interlocking automaton consists of five boolean variables  $\underbrace{l_0, \ldots , l_4}_\text{Occupied/Free}$ and a variable $ReqID$ ranging over $\{0 , \ldots , 4 \}$.
+
+\item[Control Graph] The control graph of the interlocking automaton consists of two control modes $\{Response, Idle \}$ with five control switches connecting them; $Response \to Idle (1)$, $Response \to Idle (2)$, $Idle \to Response$, $Response \to Response$, $Idle \to Idle$.
+
+\item[Initial, invariant and flow conditions] \hspace*{0mm}
+	\begin{itemize}
+	\item $init(Idle) := [l_0 = Free, l_1 = Free, l_2 = Free, l_3 = Free, l_4 = Free]$.
+
+	\end{itemize}
+
+\item[Jump Conditions] \hspace*{0mm}
+
+	\begin{itemize}
+	\item $jump(Idle \to Response) :=  Req.z , ReqId' = z$
+
+	
+	\item $jump(Response \to Idle (1)) :=  l_{ReqID} = Free $ 
+    
+
+         \item $jump(Response \to Idle (2)) :=  \neg l_{ReqID} = Free$
+
+
+	\item $jump(Idle \to Idle) := l_x. l_{x+1} , [l_x' = Free, l_{x+1}' = Occupied]$
+
+	\item $jump(Response \to Response) := l_x. l_{x+1} , [l_x' = Free, l_{x+1}' = Occupied]$
+
+
+	\end{itemize}
+
+\item[Events] \hspace*{0mm}
+\begin{itemize}
+	\item $event (Idle \to Response) := Req.z$
+	\item $event(Response \to Idle) := Grant.z$
+	\item $event(Response \to Idle (2)) := Deny.z$
+	\item $event(Idle \to Idle) := l_x.l_{x+1}$
+	\item $event(Response \to Response) := l_x.l_{x+1}$	
+\end{itemize}
+
+\end{description}
+\end{mydef} 
+\medskip
+\FloatBarrier
+\begin{figure} [H]
+
+\begin{center}
+\begin{tikzpicture}[scale = 0.60]
+
+\tikzstyle{box1}=[circle, draw, text width =3cm]
+\tikzstyle{box3}=[rectangle, draw, text width = 2cm, font=\scriptsize]
+\tikzstyle{arrow}=[->,shorten >=7pt,shorten <= 7pt]
+\tikzstyle{biarrow}=[<->,very thick,shorten >=7pt,shorten <=7pt]
+
+
+
+\node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Idle} \\ \end{center}
+
+};
+
+\node (C)[box1] at (0, 7.5)  { \begin{center} \textbf{Response}\\ \end{center}                                               
+						};
+
+
+\draw [arrow] (B)  .. controls +(-1.5 cm,  2.75 cm) and +(4.5cm,  -2.5cm ) .. node [right, text width=4cm] {Req.z} (C);
+\draw [arrow] (C) .. controls +(1cm,  -3cm) and +(-2.75cm, 1 cm ) ..   node [left = 3 cm, below, text width = 6cm] {$Grant.z \  \mathbf{if} \ t_{ReqId} = \ free $\\$ \mathbf{else} \ Deny.z \ Otherwise$} (B);
+
+
+\end{tikzpicture} 
+\end{center}
+
+\label{fig:ILAuton}
+\caption{Interlocking Automaton}
+\end{figure}
 
 
 
