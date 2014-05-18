@@ -57,7 +57,7 @@ Equational theories  form the signature of a Maude specification and provides on
 
 Formally a Maude specification is a \emph{rewrite theory} of the form $\mathfrak{R}=(\Sigma,E,L,R)$, where  $(\Sigma, E)$ is an equational theory, $L$ is a set of labels and $R$ is a set of labelled rewrite rules of the form:
 
-$$ [l] : t \to t' / \mathbf{if} \bigwedge^{n}_{i = 1} u_i \to v_i \bigwedge^{m}_{j = 1} w_j = w'_j $$
+$$ [l] : t \to t' \ \mathbf{if} \bigwedge^{n}_{i = 1} u_i \to v_i \bigwedge^{m}_{j = 1} w_j = w'_j $$
 
 where $l$ is a label $l \in L$ and $t$, $t'$, $u_i$, $v_i$, $w_j$ and $w'_j$ are implicitly universally quantified variables representing $\Sigma$-terms. Maude theories are \emph{order-sorted} allowing for the specification of subsorts which is achieved by including into the specification a partial order relation over sorts. Given two sorts $s$ and $s'$ this partial order relation $s \leq s'$ is interpreted as subset inclusion $A_s \subseteq A_{s'}$ in a model $A$.
 

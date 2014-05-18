@@ -6,7 +6,7 @@ The ERTMS system will be central to many train control systems in the future and
 
 \section{Pentagon Example}
 
-The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains 5 track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route. We have modelled the ERTMS system controlling the pentagon example (see fig \ref{fig:trackplan2}) using three hybrid automata. In this example the value $D(t)$ represents the distance from the start point at time $t$. It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
+The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains 5 track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route. We have modelled  a simple implementation of the ERTMS system controlling  a small example railway in the shape of a pentagon example (see fig \ref{fig:pentagon2}) using three hybrid automata (see section \ref{sec:hybrid}). In this example the value $D$ represents the distance from the start point at time $t$. It contains 2 trains $A$ and $B$ and 5 track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
 \medskip
 
 \begin{figure} [h!]
@@ -20,7 +20,7 @@ The following is a simple example railway we shall use for the purposes of demon
 
     \pgfmathtruncatemacro{\value}{(\n - 1) * 50};
     \node at (A.corner \n) [anchor=360/5*(\n-1)+270] {D = \value};
-    \node at (A.side \n) [anchor = 360/5 *(\n-1) +270] {$t_{\n}$};
+    \node at (A.side \n) [anchor = 360/5 *(\n-1) +270] {$l_{\n}$};
 }
 
 \node (B) [draw, rectangle, rotate = 36] at (-1.9,2.6) {Train A};
@@ -29,8 +29,8 @@ The following is a simple example railway we shall use for the purposes of demon
 \end{tikzpicture} 
 \end{center}
 
-\label{fig:trackplan2}
  \caption{Pentagon Example}
+ \label{fig:pentagon2}
 \end{figure}
 
 \begin{comment}
@@ -74,20 +74,38 @@ The following is a simple example railway we shall use for the purposes of demon
 
 
 \section{Modelling Assumptions}
-Since this is a first attempt at modelling a complex system we make several assumptions of model inorder to make it manageable so that we can capture its behaviour in a formal specification language and verifiy it using a model checker.
+Since this is a first attempt at modelling a complex system we make several assumptions of the model in order to make it manageable so that we can capture its behaviour in a formal specification language and verifiy it using a model checker.
 
-\subsection*{Train Acceleration Behaviour}
-We restrict the train to accelerating at one unit of speed per unit time interval. This causes speed to be a linear function of time and greatly simplifies the laws of motion needed to compute the braking curves.  We also assume that all trains are fitted with the ERTMS system. The positioning systems on the train are assumed to function at all times, constantly providing the radio block processor with correct information regarding the location of the train.
+\begin{enumerate}
 
-\subsection*{Movement Authorities}
-We only allow movement auhority extensions of one track segment in distance (50 in the pentagon example). We do not allow movement authorities to be revoked for 2 reasons; the first being that it makes the verification of safety properties far more difficult and the second being that the model we have is quite simply and no situations occur in which the movement authority should be revoked.
+\item The train track is uni-directional.
 
-\subsection{System Size} We assume that the track will be under the control of one radio block processor. If we work with an open section of track in which trains can enter and leave, we shall assume that the handover is performed correctly in an automatic fashion.
+\item The trains can only accelerate one unit of speed per unit time interval.
+
+\item All trains are fitted with the ERTMS system
+
+\item The positioning systems on the train are assumed to function at all times, constantly providing the radio block processor with correct information regarding the location of the train.
+
+\item We only allow movement auhority extensions of one track segment in distance (50 in the pentagon example).
+
+\item We do not allow movement authorities to be revoked.
+
+\item  We assume that the track will be under the control of one radio block processor.
+
+\item  If we work with an open section of track in which trains can enter and leave, we shall assume that the handover is performed correctly in an automatic fashion.
+
+\end{enumerate}
+
+The assumption regarding the acceleration causes S to be a linear function of time and greatly simplifies the laws of motion needed to compute the braking curves.   We do not allow movement authorities to be revoked for 2 reasons; the first being that it makes the verification of safety properties far more difficult and the second being that the model we have is quite simple and the pentagon example does not contain any situations which would cause a movement authority to be revoked.
 
 
-\section{Hybrid Automata}
+
+
+\section{Hybrid Automata} \label{sec:hybrid}
 
 One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of Hybrid Automata before formalising ERTMS as three Hybrid automata composed in parallel. A hybrid automaton has discrete states called control modes and transitions between these modes called control switches. These control switches are triggered by either some condition on variables or by some event occurring. These events can either occur in some other automaton or they can be fired by an automaton due to some condition being met. The continuous transitions of the automaton are described by dotted variables\footnote{The dotted variables represent the rate of change of a given variable over time $\dot{y} = \frac{dy}{dt}$. This notation was introduced by Newton \cite{CF28}.} and occur continually over time.
+
+
 
 \medskip
 \begin{mydef}[Hybrid Automaton: Syntax]
@@ -97,21 +115,25 @@ The syntax of a hybrid automaton $H$ comprises of the following:
 
 \item[Control graph] A finite directed multigraph $(V,E)$ consisting of a set of vertices which we shall refer to as \emph{control modes} and a set of edges $E$ which we shall refer to as \emph{control switches}.
 
-\item[Initial, invariant and flow conditions] Three functions \emph{init},\emph{inv} and \emph{flow} that label each control mode $v \in V$ with three boolean terms such that for all $v \in V$, $\freevar{init(v)} \subseteq X$, $\freevar{inv(v)} \subseteq X$ and $\freevar{flow(v)} \subseteq X \cup \dot{X}$. 
+\item[Initial, invariant and flow conditions] Three functions $\mathrm{init}$, \emph{inv} and \emph{flow} that label each control mode $v \in V$ with three predicates such that for all $v \in V$, $\freevar{\mathrm{init}(v)} \subseteq X$, $\freevar{\mathrm{inv}(v)} \subseteq X$ and $\freevar{\mathrm{flow}(v)} \subseteq X \cup \dot{X}$, where $\freevar{P}$ is the set of free variables in the predicate $P$.
 
 
-\item[Jump Conditions] A function \emph{jump} that labels each edge $e \in E$ with a predicate such that $\freevar{jump(e)} \subseteq X \cup X' $.
+\item[Jump Conditions] A function \emph{jump} that labels each edge $e \in E$ with a predicate such that $\freevar{\mathrm{jump}(e)} \subseteq X \cup X' $.
 
 \item[Events] A finite set $\Sigma$ of \emph{events}, one of which is assigned to  each control switch by a labelling function $event: E \to \Sigma$.
 
 \end{description}
-Where $\freevar{P}$ is the set of free variables in the predicate $P$.
+
 \end{mydef}
 \medskip
  
-For example, when we define our train control system it is desired that the speed of the train is $0$, initially and that remains invariant throughout execution of the automaton $init(Stopped) := invar(Stopped) := Speed = 0$ , which is captured by the initial predicate $init(Stopped) := Speed = 0$.  It is also desireable in the Accelerating and Full AllowedSpeed states that the breaking distance is less than or equal to the distance between the train and the end of movement authority $invar(Acc) := invar(Full Alllowed Speed) := BD(S) \leq DMA(D(t), EoA)$. The invariant acts as a boundary condition which specifies the limits of the automatons behaviour, in the case of the Full Allowed Speed and Accelerating states it ensures that the Train can always brake in time and it forces the automaton to perform a transition to the braking state when the boundary of the invariant is reached . If some some reason the system flows into one of these boundaries and no discrete change can occur then time is prevented from continuing.  Such automatons which contain states in which time cannot progress are called \emph{Zeno}. In order to form a transition system from the automaton, it must be \emph{non-Zeno} i.e. time can always progress in every state of the system.  In the following specification events are used to pass messages between different automata placed in parallel. An example event is that of $event(Stopped \to Accelerating) :=MA.x.y \ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ which is triggered by the RBC and causes the train to update the value of its movement authority. flow conditions describe the rate of change of a given variable over time. In our formalisation of a train one such flow condition is $flow(Accelerating) := \dot{Speed} = 1$ which causes the train to accelerate at a speed of one unit per unit of time.
+The \mathrm{init} function is used to define intial states of the system. Later (see definition \ref{}) these initial states become intial states of a labelled transition system when we define the semantics of hybrid automata. The $inv$ function is used to define regions in which the state of the hybrid automaton exists. If the invariant ceases to hold in one control mode then time can no longer progress in that mode and a jump must occur for time to progress. The $flow$ function describes the rate of change of variables in a particular state. The \mathrm{jump} predicate describes 
+
+For example, when we define our train control system it is desired that the S of the train is $0$, initially and that remains invariant throughout execution of the automaton $init(Stopped) := invar(Stopped) := S = 0$ , which is captured by the initial predicate $init(Stopped) := S = 0$.  It is also desireable in the Accelerating and Full AllowedS states that the breaking distance is less than or equal to the distance between the train and the end of movement authority $invar(Acc) := invar(Full Alllowed S) := BD(S) \leq DMA(D, EoA)$. The invariant acts as a boundary condition which specifies the limits of the automatons behaviour, in the case of the Full Speed and Accelerating states it ensures that the Train can always brake in time and it forces the automaton to perform a transition to the braking state when the boundary of the invariant is reached . If some some reason the system flows into one of these boundaries and no discrete change can occur then time is prevented from continuing.  Such automatons which contain states in which time cannot progress are called \emph{Zeno}. In order to form a transition system from the automaton, it must be \emph{non-Zeno} i.e. time can always progress in every state of the system.  In the following specification events are used to pass messages between different automata placed in parallel. An example event is that of $event(Stopped \to Accelerating) :=MA.x.y \ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ which is triggered by the RBC and causes the train to update the value of its movement authority. flow conditions describe the rate of change of a given variable over time. In our formalisation of a train one such flow condition is $flow(Accelerating) := \dot{S} = 1$ which causes the train to accelerate at a S of one unit per unit of time.
 
 \medskip
+
+
 
 We start by defining a hybrid automaton for the interlocking consisting of 2 states representing whether a request have been made or not, 5 boolean variables representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored and then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
 \medskip
@@ -190,13 +212,12 @@ We define a hybrid automaton $H_{IL}$ as follows:
 \label{fig:ILAuton}
 \caption{Interlocking Automaton}
 \end{figure}
-The behaviour of the train is based on two of Newtons laws of motion $v = u +at$ and  $v^2 = u^2 +2as$
-,where s = displacement,u = initial velocity, v = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current speed and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the trains speed decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to caluate the breaking distance with $u = 0$ and $a = 1$ it can be rewritten to allow for the calculation of the breaking distance.
+The behaviour of the train is based on two of Newtons laws of motion $v = S +at$ and  $v^2 = u^2 +2as$
+,where s = displacement,u = initial velocity, v = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current S and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the trains S decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to caluate the breaking distance with $u = 0$ and $a = 1$ it can be rewritten to allow for the calculation of the breaking distance.
 \medskip
 
-
 \begin{mydef}[Breaking Distance]
-We define the breaking distance for a train in terms of its speed as follows:
+We define the breaking distance for a train in terms of its S as follows:
 
 $$\BD{S} = \frac{S^2}{2} $$
 
@@ -207,61 +228,61 @@ Since we are working with a loop in the track the distance to the movement autho
 
 \begin{mydef}[Distance to Movement Authority]
 
-The distance to the movement authority $\mathrm{DMA}$ is calulated from the distance and movement authority as followings:
+The distance to the movement authority $\mathrm{DMA}$ is calulated from the distance and end of authority as followings:
 \begin{align*}
-\DMA{D(t)}{MA} & = MA \Monus D(t) \quad \mathbf{if} \ D(t) \leq MA \\
-                         & = 250 \Monus D(t) + MA \quad \mathbf{otherwise}
+\DMA{D}{EoA} & = EoA \Monus D \quad \mathbf{if} \ D \leq EoA \\
+                         & = 250 \Monus D + EoA \quad \mathbf{otherwise}
 \end{align*}
 
 
 
 \end{mydef}
 
-The Train hybrid automaton has $4$ control modes namely Braking (Auth), Full Allowed Speed, Accelerating and Stopped and has $5$ variables namely $Maxspeed$,$D(t)$ (Position),  $Speed$, $\dot{Speed}$ and $EoA$. We have that $ \BD{Speed} \leq \DMA{D(t), EoA}$ is an invariant of the stopped mode and $D(t) \leq EoA$ is an invariant of all other control modes.
-We define a mode jump with the event $l_x.l_{x+1}$ which is triggered by the condition $D \,  mod \, 50 = 0$ in the modes $Full Speed$, $Accelerating$ and $Brake$. 
+The Train hybrid automaton has $4$ control modes namely Braking (Auth), Full Speed, Accelerating and Stopped and has $5$ variables namely $max$,$D$ (Position),  $S$, $\dot{S}$ and $EoA$. We have that $ \BD{S} \leq \DMA{D, EoA}$ is an invariant of the stopped mode and $D \leq EoA$ is an invariant of all other control modes.
+We define a mode jump with the event $l_x.l_{x+1}$ which is triggered by the condition $D \, mod \, 50 = 0$ in the modes $Full S$, $Accelerating$ and $Brake$. 
    We compose both the automata for both the interlocking and the hybrid $H_{IL} || H_{T}$. It is possible for a new MA $EoA'$ with $EoA < EoA'$ to be received in the $Braking$ and $Stopped$ states.  This is triggered by the event MA.x.y if $x = TrainID$ then $y$ becomes the new movement authority. The movement event MA.Req.x is used by a train automaton request a movement authority for train x from the RBC automaton. Secondly we define a hybrid automaton $H_{T}$ which models an individual train. 
 \medskip
 \begin{mydef}[Train Automaton]
 
 We define a hybrid automaton $H_{T}$ as follows:
 \begin{description}
-\item[Variables] The state of the interlocking automaton consists of $\underbrace{D(t), EoA}_\text{0, \ldots , 249}$, \newline $\underbrace{Speed, \dot{Speed}, MaxSpeed, TrainID}_{\mathbb{N}}$. The variable D(t) is computed modulo 250 from Speed.
+\item[Variables] The state of the interlocking automaton consists of $\underbrace{D, EoA}_\text{0, \ldots , 249}$, \newline $\underbrace{S, TrainID}_{\mathbb{N}}$. The variable D is computed modulo 250 from S.
 
-\item[Control Graph] The control graph of the interlocking automaton consists of four control modes $\{Stop (EoA), \, Braking, \, Accelerating, \, Full \, Allowed \, Speed \}$.
+\item[Control Graph] The control graph of the interlocking automaton consists of four control modes $\{Stop (EoA), \, Braking, \, Accelerating, \, Full \, Allowed \, S \}$.
 
 \item[Initial, invariant and flow conditions] \hspace*{0mm}
 	\begin{itemize}
-	\item $init(Stopped) :=   \BD{S} \leq \DMA{D(t)}{EoA}  $.
+	\item $init(Stopped) :=   \BD{S} \leq \DMA{D}{EoA}  $.
 
-	\item $inv(Full Allowed Speed) :=   \dot{Speed} = 0 \wedge \BD{S} \leq \DMA{D(t)}{EoA}$ 
+	\item $inv(Full Speed) :=   \dot{S} = 0 \wedge \BD{S} \leq \DMA{D}{EoA}$ 
 
-	\item $inv(Braking)  :=  \BD{S} = \DMA{D(t)}{EoA}$
-         \item $inv(Accelerating) := \BD{S} \leq \DMA{D(t)}{EoA}$
+	\item $inv(Braking)  :=  \BD{S} = \DMA{D}{EoA}$
+         \item $inv(Accelerating) := \BD{S} \leq \DMA{D}{EoA}$
 
-	\item $inv(Stop (EoA)) := Speed = 0 \wedge D(t) = EoA$ 
+	\item $inv(Stop (EoA)) := S = 0 \wedge D = EoA$ 
              
-	\item $flow(Accelerating):= \dot{Speed} = 1$ 
+	\item $flow(Accelerating):= \dot{S} = 1$ 
 	
-	\item $flow(Braking) := \dot{Speed} = -1$
+	\item $flow(Braking) := \dot{S} = -1$
  
 	\end{itemize}
 
 \item[Jump Conditions] \hspace*{0mm}
 
 	\begin{itemize}
-	\item $jump(Full Allowed Speed \to Full Allowed Speed) := l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
-\item $jump(Braking \to Braking) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
-\item $jump(Accelerating \to Accelerating) = l_{D(t) \, div \, 500}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
+	\item $jump(Full Speed \to Full Speed) := l_{D \, div \, 50}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
+\item $jump(Braking \to Braking) = l_{D \, div \, 500}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
+\item $jump(Accelerating \to Accelerating) = l_{D \, div \, 500}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
 
 	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) := MA.x.y\\ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ 
 	
 
-	\item $jump(Full Allowed Speed \to Braking) := jump(Accelerating \to Braking) := \DMA{D(t)}{EoA} = \BD{Speed}, MA.Req.TrainID$
+	\item $jump(Full Speed \to Braking) := jump(Accelerating \to Braking) := \DMA{D}{EoA} = \BD{S}, MA.Req.TrainID$
 
 
-	\item $jump(Accelerating \to Full Allowed Speed) := Speed = MaxSpeed$
+	\item $jump(Accelerating \to Full Speed) := S = max$
 	
-	\item $jump(Braking \to Stop (EoA)) := Speed = 0$
+	\item $jump(Braking \to Stop (EoA)) := S = 0$
 
 	\end{itemize}
 
@@ -269,12 +290,12 @@ We define a hybrid automaton $H_{T}$ as follows:
 \begin{itemize}
 	\item $event (Stop (EoA) \to Accelerating) := MA.TrainID.y$
 	\item $event (Braking \to Accelerating) := MA.TrainID.y$
-	\item $event(Full Allowed Speed \to Full Allowed Speed) := l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
-\item $event(Braking \to Braking) = l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
-\item $event(Accelerating \to Accelerating) = l_{D(t) \, div \, 50}.l_{(D(t) \, div \, 50) +1} \wedge D(t) \, mod \, 50 = 0$
+	\item $event(Full Speed \to Full Speed) := l_{D \, div \, 50}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
+\item $event(Braking \to Braking) = l_{D \, div \, 50}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
+\item $event(Accelerating \to Accelerating) = l_{D \, div \, 50}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
 
 	\item $event(Accelerating \to Braking) = MA.Req.TrainID$
-	\item $event(Full Allowed Speed \to Braking) = MA.Req.TrainID$
+	\item $event(Full Speed \to Braking) = MA.Req.TrainID$
 \end{itemize}
 
 \end{description}
@@ -293,41 +314,41 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 
 \node (A) [box1]  at (0,0)                  {\begin{center} \textbf{Stop (EoA)} \\
-							$Speed = 0$
-                                                        $\dot{Speed} = 0$
-							$D(t) = EoA$  \end{center}
+							$S = 0$
+                                                        $\dot{S} = 0$
+							$D = EoA$  \end{center}
 
                                             };
 
 \node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Accelerating} \\
-       $\dot{Speed = 1}$
-       $\BD{Speed} \leq \DMA{D(t)}{EoA}$
-       $Speed \leq MaxSpeed$
+       $\dot{S = 1}$
+       $\BD{S} \leq \DMA{D}{EoA}$
+       $S \leq max$
   \end{center}
 
 };
 
 \node (C)[box1] at (0, 7.5)  { \begin{center} \textbf{Braking}\\
-					                   $\dot{Speed} = -1$ 
-						           $\BD{Speed} = \DMA{D(t)}{EoA}$\end{center}
+					                   $\dot{S} = -1$ 
+						           $\BD{S} = \DMA{D}{EoA}$\end{center}
                                                
 						};
 
-\node (D)[box1] at (7.5, 7.5)  { \begin{center} \textbf{Full Allowed Speed }\\
-					                   $Speed = MaxSpeed$
-                                                            $\dot{Speed} = 0$
-							    $\BD{Speed} \leq \DMA{D(t)}{EoA}$
+\node (D)[box1] at (7.5, 7.5)  { \begin{center} \textbf{Full Speed }\\
+					                   $S = max$
+                                                            $\dot{S} = 0$
+							    $\BD{S} \leq \DMA{D}{EoA}$
                                                             \end{center}
                                                
 						};
 
 
-\draw [arrow] (B) -- node[right] {$Speed = MaxSpeed$} (D);
+\draw [arrow] (B) -- node[right] {$S = max$} (D);
 \draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainId\\ \textbf{then} MA := y\end{center} } (B);
-\draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}DMA(D(t), EoA) =\\ BD(Speed)\\MA.Req.TrainID \end{center}} (C);
-\draw [arrow] (C) -- node [left] {$Speed = 0$} (A);
-\draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}DMA(D(t),EoA) =\\
-    BD(Speed)\\MA.Req.TrainID \end{center}} (C);
+\draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}DMA(D, EoA) =\\ BD(S)\\MA.Req.TrainID \end{center}} (C);
+\draw [arrow] (C) -- node [left] {$S = 0$} (A);
+\draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}DMA(D,EoA) =\\
+    BD(S)\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-1.5cm, 0.5 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y\end{center} } (B);
 \draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center}\textbf{train movement events} \end{center}} (C);
 \draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center} \textbf{train movement events} \end{center}} (D);
@@ -366,25 +387,25 @@ We define a hybrid automaton $H_{T}$ as follows:
                                             };
 
 \node (B) [box1]    at (5,0)          {\begin{center} \textbf{Accelerating} \\
-       $\dot{D}(t) = pspeed(t)s$  \end{center}
+       $\dot{D}(t) = pSs$  \end{center}
 
 };
 
 \node (C)[box1] at (0, 5)  { \begin{center} \textbf{Braking (Auth)}\\
-					                   $\dot{D}(t) = nspeed(t)$ \end{center}
+					                   $\dot{D}(t) = nS$ \end{center}
                                                
 						};
 
-\node (D)[box1] at (5, 5)  { \begin{center} \textbf{Full Allowed Speed }\\
-					                   $\dot{D}(t) = max\, speed$ \end{center}
+\node (D)[box1] at (5, 5)  { \begin{center} \textbf{Full Speed }\\
+					                   $\dot{D}(t) = max\, S$ \end{center}
                                                
 						};
 
 
-\draw [arrow] (B) -- node[right] {$\dot{D}(t) = max Speed$} (D);
+\draw [arrow] (B) -- node[right] {$\dot{D}(t) = max S$} (D);
 \draw [arrow] (A) -- node[below = 10pt] {Rece new MA} (B);
 \draw [arrow] (D) --  node[below = 10pt] {$t = \ldots$} (C);
-\draw [arrow] (C) -- node [left] {$Speed = 0$} (A);
+\draw [arrow] (C) -- node [left] {$S = 0$} (A);
 
 
 \end{tikzpicture} 
@@ -403,7 +424,7 @@ Similarly to the train automaton the RBC automaton also has four control modes n
 
 We define a hybrid automaton $H_{RBC}$ as follows:
 \begin{description}
-\item[Variables] The state of the radio block controller automaton consists of $\underbrace{MA_1, Pos_1, MA_2, Pos_2}_\text{0, \ldots , 2499}$, \newline $\underbrace{LastTrain}_{\mathbb{N}}$.
+\item[Variables] The state of the radio block controller automaton consists of $\underbrace{MA_1, Pos_1, MA_2, Pos_2}_\text{0, \ldots , 249}$, \newline $\underbrace{LastTrain}_{\mathbb{N}}$.
 
 \item[Control Graph] The control graph of the radio block controller automaton consists of four control modes $\{Idle, \, Ready \, to \, Request, \, Wait, \, Granted \}$.
 
@@ -582,17 +603,17 @@ The hybrid automaton  $H_{T}$ is non-zeno
 \begin{proof}
 The proof proceeds by performing a case distinction on the state of $H_{T}$.
 \begin{description}
-\item[Case: Stopped] There are no flows in this state, therefore invariant $Speed = 0$ can not be violated.
+\item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ can not be violated.
 
 
-\item[Case: Accelerating] The invariant $\BD{Speed} \leq \DMA{D(t)}{EoA}$ bounds the increase of the variables for the distance and speed which occur in this state. Eventually, the distance and speed will increase enough for $\BD{Speed} = \DMA{D(t)}{EoA}$ to hold and time will no longer be able to progress in this state, however a jump can occur to the Braking state in which the invariant $\BD{Speed} = \DMA{D(t)}{EoA}$ holds. The invariant $Speed \leq Maxspeed$ bounds the increase of the $Speed$ variable. In this state the $Speed$ will increase until the bondary of the invariant $Speed \leq MaxSpeed$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Allowed Speed$ state.
+\item[Case: Accelerating] The invariant $\BD{S} \leq \DMA{D}{EoA}$ bounds the increase of the variables for the distance and S which occur in this state. Eventually, the distance and S will increase enough for $\BD{S} = \DMA{D}{EoA}$ to hold and time will no longer be able to progress in this state, however a jump can occur to the Braking state in which the invariant $\BD{S} = \DMA{D}{EoA}$ holds. The invariant $S \leq max$ bounds the increase of the $S$ variable. In this state the $S$ will increase until the bondary of the invariant $S \leq max$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Speed$ state.
 
 
-\item[Case: Full Allowed Speed] 
-The case for the $Full Allowed Speed$ state follows the same arguement as the Accelerating state except for the part relating to the invariant $Speed \leq MaxSpeed$.
+\item[Case: Full Speed] 
+The case for the $Full Speed$ state follows the same arguement as the Accelerating state except for the part relating to the invariant $S \leq max$.
 
 \item[Case: Braking]
-The invariant $0 \leq Speed$ is the only invariant to bound the decrease of the speed in the Braking state. When the speed of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state.
+The invariant $0 \leq S$ is the only invariant to bound the decrease of the S in the Braking state. When the S of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state.
 \end{description}
 \end{proof}
 \end{mytheorem}
@@ -604,33 +625,33 @@ The invariant $0 \leq Speed$ is the only invariant to bound the decrease of the 
 \begin{comment}
 
 We will now give a proof by induction that the safety condition "The train will always break on time" holds for a single train automaton.
-The base case is that we are in the initial state, the stopped mode, with the invariant $D(t) \leq EoA$. If are in the stopped mode and we receive a movement authority with $EoA > D(t)$ then a jump is performed and move to the accelerating state. Since the transition of time does not cause any flow transitions to occur from the base case we do not need to consider it. In the step case we are in one of the 4 modes (Stopped,Braking,Accelerating,) with the invariant $BD(Speed) \leq DMA(D(t), EoA)$. In these states jump conditions are considered by performing a case distinction is performed on whether we reach the braking point i.e. $BD(Speed) = DMA(D(t), EoA)$ or we reach maxspeed the transitions result in states in which the invariants still hold. We also consider flow conditions, if time elapses by some amount $\delta$ we either reach the breaking point $BD(Speed) = DMA(D(t), EoA)$ and perform a jump into a state in which the invariant still holds or $BD(Speed) \leq DMA(D(t), EoA)$ in which case the invariant $D(t) \leq EoA$ holds. 
+The base case is that we are in the initial state, the stopped mode, with the invariant $D \leq EoA$. If are in the stopped mode and we receive a movement authority with $EoA > D$ then a jump is performed and move to the accelerating state. Since the transition of time does not cause any flow transitions to occur from the base case we do not need to consider it. In the step case we are in one of the 4 modes (Stopped,Braking,Accelerating,) with the invariant $BD(S) \leq DMA(D, EoA)$. In these states jump conditions are considered by performing a case distinction is performed on whether we reach the braking point i.e. $BD(S) = DMA(D, EoA)$ or we reach max the transitions result in states in which the invariants still hold. We also consider flow conditions, if time elapses by some amount $\delta$ we either reach the breaking point $BD(S) = DMA(D, EoA)$ and perform a jump into a state in which the invariant still holds or $BD(S) \leq DMA(D, EoA)$ in which case the invariant $D \leq EoA$ holds. 
 
 Since we have restricted the movement authorities to occur at discrete intervals separated by $50$ units of distances we perform induction over the time interval $(0..1)$ in order to prevent multiple mode changes from occurring during the induction step. 
 \medskip
 \begin{mytheorem}
 Given a live transition system $(S^t_{H_{T}},  L^{t}_{H_T}) $
 
- $$\forall \langle a_i, q_i \rangle_{i \geq 1} \in L^{t}_{H_T}.  \forall (a_n, (v, [D(t), EoA,Speed,\dot{Speed},TrainID])) \in \langle a_i, q_i \rangle_{i \geq 1}$$ $$ \to BD(Speed) \leq DMA(D(t), EoA)$$ 
+ $$\forall \langle a_i, q_i \rangle_{i \geq 1} \in L^{t}_{H_T}.  \forall (a_n, (v, [D, EoA,S,\dot{S},TrainID])) \in \langle a_i, q_i \rangle_{i \geq 1}$$ $$ \to BD(S) \leq DMA(D, EoA)$$ 
 
-under the assumption that the max speed of the train and the track segment size (new MA increments) obey the following
-                     $$maxspeed + maxspeed^2 < tsegsize$$
+under the assumption that the max S of the train and the track segment size (new MA increments) obey the following
+                     $$max + max^2 < tsegsize$$
 \begin{proof}
 
 
-The proof is performed by fixing a trace $ \langle a_i, q_i \rangle_{i \geq 1}$ and  a label/state pair $(a_n, q_n)$ in the timed trace in which the property holds and then proving that the property holds for all possible successor label/state pairs $(a_{n+1},q_{n+1})$, where  the state $q_n = (v, [D(t), EoA,Speed,\dot{Speed},TrainID])$ and $q_{n+1} = (v', [D(t)', EoA',Speed',\dot{Speed}',TrainID'])$ 
+The proof is performed by fixing a trace $ \langle a_i, q_i \rangle_{i \geq 1}$ and  a label/state pair $(a_n, q_n)$ in the timed trace in which the property holds and then proving that the property holds for all possible successor label/state pairs $(a_{n+1},q_{n+1})$, where  the state $q_n = (v, [D, EoA,S,\dot{S},TrainID])$ and $q_{n+1} = (v', [D', EoA',S',\dot{S}',TrainID'])$ 
 
 We begin by performing induction on the control mode of the system. 
-There are 4 cases for $v$ in which we must argue that the transition $q_n \xrightarrow{a_{n+1}} q_{n+1}$  maintains the property $D(t) \leq EOA$. We then perform induction on the time giving us a further two sub
+There are 4 cases for $v$ in which we must argue that the transition $q_n \xrightarrow{a_{n+1}} q_{n+1}$  maintains the property $D \leq EOA$. We then perform induction on the time giving us a further two sub
 cases in which the duration of the transition  $\delta = 0$ or $\delta \in \mathbb{R}_{>0}$
 
 
 
 \begin{description}
-\item[v = Stop] All possible transitions from the stop mode have a duration $\delta = 0$. There is one possible event that $MA.TrainID.y$ which will grant a new movement authority $y$ such that $EoA < y$ and cause a jump to the $Accelerating$ mode with $0 = BD(Speed) \leq  DMA(y,Speed') $
+\item[v = Stop] All possible transitions from the stop mode have a duration $\delta = 0$. There is one possible event that $MA.TrainID.y$ which will grant a new movement authority $y$ such that $EoA < y$ and cause a jump to the $Accelerating$ mode with $0 = BD(S) \leq  DMA(y,S') $
 
 
-\item[v = Accelerating (Acc)] In the case that the duration of the transition is $\delta = 0$ and only control mode jumps caused by events can occur. The only one of these events that affects the invariant $BD(S) \leq DMA(D(t), EoA)$ is that a new movement authority is received $EoA'$ and since movement authorities are always incremented $DMA(D(t), EoA) < DMA(D(t), EoA')$.
+\item[v = Accelerating (Acc)] In the case that the duration of the transition is $\delta = 0$ and only control mode jumps caused by events can occur. The only one of these events that affects the invariant $BD(S) \leq DMA(D, EoA)$ is that a new movement authority is received $EoA'$ and since movement authorities are always incremented $DMA(D, EoA) < DMA(D, EoA')$.
   
 In the case that $\delta \in \mathbb{R}_{< 0}$ then a flow transition has occured and we are one of several
 possible control modes depending on whether the transition of time triggered a jump or not.  The possibilities are as follows: \\
@@ -638,49 +659,49 @@ possible control modes depending on whether the transition of time triggered a j
 Acc: The train has accelerated and at not point in time has the distance become equal to the breaking distance therefore the current distance remains below the breaking distance. 
 
 
-Acc $\to$ Brake: The train has transitioned between three states during the transition of $\delta$  . The transition to the breaking state was causes by the condition $BD(Speed(t_1)) = DMA(D(t_1), EoA)$ at some $t_1$ during the first duration in the Acceleration control mode which remains invariant during the Brake control mode 
+Acc $\to$ Brake: The train has transitioned between three states during the transition of $\delta$  . The transition to the breaking state was causes by the condition $BD(S(t_1)) = DMA(D(t_1), EoA)$ at some $t_1$ during the first duration in the Acceleration control mode which remains invariant during the Brake control mode 
 
 
-Acc $\to$ Brake $\to$ Acc: The train has transitioned between three states during the transition of $\delta$  . The transition to the braking state was caused by the condition $BD(Speed(t_1)) = DMA(D(t_1), EoA)$ being met at some $t_1$ during the first duration in the Acc control mode which remains invariant during the Brake control mode. Then at another time $t_2$ the event MA.TrainID.EoA' occurs meaning a new movement authority has been granted EoA' such that $EoA + tsegsize \leq EoA'$ and the train transitions ot the Accelerating mode once again with the train travelling at $Speed(t_1)$.  At this point the invariant $BD(Speed(t_2)) \leq DMA(D(t_2), EoA')$ holds as we know previously at time $t_1$ that $BD(Speed(t_1)) = DMA(D(t_1), EoA)$ holds and since by the assumption $maxspeed + maxspeed^2 < tsegsize$ it is not possible for the train to travel an entire track segment and therefore $BD(Speed(t_3)) \leq DMA(D(t_3), EoA'')$ holds at all times $t_3$ in the second Acceleration control mode. 
+Acc $\to$ Brake $\to$ Acc: The train has transitioned between three states during the transition of $\delta$  . The transition to the braking state was caused by the condition $BD(S(t_1)) = DMA(D(t_1), EoA)$ being met at some $t_1$ during the first duration in the Acc control mode which remains invariant during the Brake control mode. Then at another time $t_2$ the event MA.TrainID.EoA' occurs meaning a new movement authority has been granted EoA' such that $EoA + tsegsize \leq EoA'$ and the train transitions ot the Accelerating mode once again with the train travelling at $S(t_1)$.  At this point the invariant $BD(S(t_2)) \leq DMA(D(t_2), EoA')$ holds as we know previously at time $t_1$ that $BD(S(t_1)) = DMA(D(t_1), EoA)$ holds and since by the assumption $max + max^2 < tsegsize$ it is not possible for the train to travel an entire track segment and therefore $BD(S(t_3)) \leq DMA(D(t_3), EoA'')$ holds at all times $t_3$ in the second Acceleration control mode. 
 
 
 
- In the $Accelerating$ mode we have $\dot{Speed} = 1$ with $D(t) \leq BD(EoA, Speed) \leq  EoA$. There are two cases either $D(t) = BD(EoA,Speed)$ or $D(t) < BD(EoA,Speed)$.  In the case that $D(t) = BD(EoA,Speed)$  a jump occurs taking the system into the Braking mode
-with $D(t_1) = BD(Speed,t_1) < EoA$. In the case that $D(t_1) < BD(Speed,t_1)$ time will progress and at some point in the future $t_2$ the train will with reach the braking point $D(t_2) = BD(Speed',t_2)$ or $Speed' = Max Speed \wedge (D(t_2) < BD(Speed', t_2)$.   In the case that $D(t_2) = BD(Speed', t_2)$ a jump will occur taking the train into the braking mode with $D(t_2) = BD(Speed',t_2) < EoA$. Otherwise $Speed = MaxSpeed$ and a jump is performed to the $Full Allowed Speed$ mode with $D(t_2) < BD(Speed', t_2) < EoA$.
+ In the $Accelerating$ mode we have $\dot{S} = 1$ with $D \leq BD(EoA, S) \leq  EoA$. There are two cases either $D = BD(EoA,S)$ or $D < BD(EoA,S)$.  In the case that $D = BD(EoA,S)$  a jump occurs taking the system into the Braking mode
+with $D(t_1) = BD(S,t_1) < EoA$. In the case that $D(t_1) < BD(S,t_1)$ time will progress and at some point in the future $t_2$ the train will with reach the braking point $D(t_2) = BD(S',t_2)$ or $S' = Max S \wedge (D(t_2) < BD(S', t_2)$.   In the case that $D(t_2) = BD(S', t_2)$ a jump will occur taking the train into the braking mode with $D(t_2) = BD(S',t_2) < EoA$. Otherwise $S = max$ and a jump is performed to the $Full Speed$ mode with $D(t_2) < BD(S', t_2) < EoA$.
 
 
-\item[v = Full Allowed Speed (FAS)]
+\item[v = Full Speed (FAS)]
 This is the same as  Accelerating, in the case that the duration of the trainsition is $\delta = 0 $. In the case that $\delta \geq 0$ mode have 4 possible cases 
 
-FAS: The train is travelling at maxspeed and then condition $BD(Speed(t')) = DMA(D(t'), EoA)$ has not been met for all $t'$ in the real interval $\delta$. The invariant therefore continues to hold.
+FAS: The train is travelling at max and then condition $BD(S(t')) = DMA(D(t'), EoA)$ has not been met for all $t'$ in the real interval $\delta$. The invariant therefore continues to hold.
 
-FAS $\to$ Brake: The time interval $\delta$ can be partitioned into two time intervals. The first ending at $t_1$ prior to which the system is in FAS and followed by the Brake mode which ends at $t_2$. The argument from the previous FAS case holds for the first time interval. The end of this time interval marks at point at which the condition $BD(Speed) = DMA(D(t_1), EoA)$ is met and for all subsequent points in time  the braking distance remains equal to the distance to the movement authority.. \\
+FAS $\to$ Brake: The time interval $\delta$ can be partitioned into two time intervals. The first ending at $t_1$ prior to which the system is in FAS and followed by the Brake mode which ends at $t_2$. The argument from the previous FAS case holds for the first time interval. The end of this time interval marks at point at which the condition $BD(S) = DMA(D(t_1), EoA)$ is met and for all subsequent points in time  the braking distance remains equal to the distance to the movement authority.. \\
 
 
-FAS $\to$ Brake $\to$ Acc: The time interval $\delta$ can be partitioned into 3 time intervals. The first interval in which the system is in FAS ends at $t_1$, period in the Brake mode ends at $t_2$ and finally there is a period in the Acc Mode which ends at $t_3$. The argument for the time interval up to $t_2$ is the same as the argument for the previous FAS $\to$ Brake case. A new movement authority $EoA'$ is granted such that $ DMA(D(t_2), EoA) + 50 =  DMA(D(t_2), EoA')$ causing the jump from Brake to  Acc.  For the whole of the  time period spent in the Acc mode the invariant $D(t_3) < BD(EoA',Speed)$ holds as previously $BD(Speed) = DMA(DT(t_1), EoA)$ and it is impossible for the train to cover a distance of fifty in one time unit.
+FAS $\to$ Brake $\to$ Acc: The time interval $\delta$ can be partitioned into 3 time intervals. The first interval in which the system is in FAS ends at $t_1$, period in the Brake mode ends at $t_2$ and finally there is a period in the Acc Mode which ends at $t_3$. The argument for the time interval up to $t_2$ is the same as the argument for the previous FAS $\to$ Brake case. A new movement authority $EoA'$ is granted such that $ DMA(D(t_2), EoA) + 50 =  DMA(D(t_2), EoA')$ causing the jump from Brake to  Acc.  For the whole of the  time period spent in the Acc mode the invariant $D(t_3) < BD(EoA',S)$ holds as previously $BD(S) = DMA(DT(t_1), EoA)$ and it is impossible for the train to cover a distance of fifty in one time unit.
 
 
 FAS $\to$ Brake $\to$ Acc $\to$ $FAS$: This follows the same argument as the previous however the time period has been partitioned into four instead of three. The invariant holds in the final FAS state for the same reason as the preceding Acc state as the control mode jump does not have any effect on the distance of the train.
 
-wo cases  $D(t) = BD(Speed, t)$ with $t = t_1$ or $t_2$,  $t_1 < t_2$. In the first case a jump occurs instantaneously to the $Braking$ mode with $D(t_1) = BD(Speed, t_1) < EoA$ In the second case time elapses to a point in the future $t_2$ and $D(t)$ increases until $D(t_2) = BD(Speed, t_2)$  then the system will perform a jump to the $Braking$ mode with $D(t_2) = BD(Speed, t_2)  < EoA$. 
+wo cases  $D = BD(S, t)$ with $t = t_1$ or $t_2$,  $t_1 < t_2$. In the first case a jump occurs instantaneously to the $Braking$ mode with $D(t_1) = BD(S, t_1) < EoA$ In the second case time elapses to a point in the future $t_2$ and $D$ increases until $D(t_2) = BD(S, t_2)$  then the system will perform a jump to the $Braking$ mode with $D(t_2) = BD(S, t_2)  < EoA$. 
 
 
 \item[v = Braking]
 In the case that $\delta = 0$ there are no 
 
 In the Braking mode with  $\geq \delta \geq 0$ we have $5$ possible cases depending on whether jumps have occurred between the different control modes.
-In the Braking mode there are two cases either $MA.TID.y \wedge Speed > 0$ or $Speed = 0$. Since the train is braking by the definition of $BD$,  $D(t_2) \leq BD(Speed,t_2)$ will continue to hold for any amount of time in this state.  In the case that $MA.TID.y \wedge Speed > 0$ we receive a new movement authority $y$ with $y < EoA$ and a jump is performed to the $Accelerating$ mode with $D(t_2) \leq BD(Speed', t_2) < y$. In the case that $Speed = 0$ a jump occurs to the $Stopped$ state.
+In the Braking mode there are two cases either $MA.TID.y \wedge S > 0$ or $S = 0$. Since the train is braking by the definition of $BD$,  $D(t_2) \leq BD(S,t_2)$ will continue to hold for any amount of time in this state.  In the case that $MA.TID.y \wedge S > 0$ we receive a new movement authority $y$ with $y < EoA$ and a jump is performed to the $Accelerating$ mode with $D(t_2) \leq BD(S', t_2) < y$. In the case that $S = 0$ a jump occurs to the $Stopped$ state.
 
 
-Braking: The first case is that we remain in the braking mode for the duration of the time interval. The invariant $BD(Speed) = DMA(D(t), EoA)$ holds for all times $t'$ in the duration of the interval of the as both the braking distance and distance decrease by the same amount over the time interval.
+Braking: The first case is that we remain in the braking mode for the duration of the time interval. The invariant $BD(S) = DMA(D, EoA)$ holds for all times $t'$ in the duration of the interval of the as both the braking distance and distance decrease by the same amount over the time interval.
 
 Braking $\to$ Stopped: The time interval $\delta$ can be partitioned into two separate intervals, the first ending at $t_1$ and the second ending at $t_2$, corresponding to the duration of time spent in the two control modes.  The argument for the first time interval  ending at $t_1$ is the same as that for the previous Braking case. 
-The transition from the Braking to Stopped modes at $t_1$ is triggered by the speed of the train reaching $0$. For all points in time $t_1'$ to and including this point in time the invariant $Speed(t_1') = DMA(D(t_1'), EoA)$ holds. For the remainder of the interval ending at $t_2$ the the train is stationary and the invariant continues to hold. By the first induction hypothesis
+The transition from the Braking to Stopped modes at $t_1$ is triggered by the S of the train reaching $0$. For all points in time $t_1'$ to and including this point in time the invariant $S(t_1') = DMA(D(t_1'), EoA)$ holds. For the remainder of the interval ending at $t_2$ the the train is stationary and the invariant continues to hold. By the first induction hypothesis
 
 
 
 Braking $\to$ Stopped $\to$ Acc: In this case the time interval $\delta$ can be split up into three separate intervals, ending with $t_1,t_2$ and $t_3$  respectively, corresponding to the three control modes. The argument for the first two control modes is the same as the argument for the previous case. 
-At the end of the interval $t_2$ a new movement authority $EoA'$ has been granted and all points in time $t_3'$ between $t_2$ and up to including $t_3$ the invariant $BD(Speed(t_3')) < DMA(D(t_3'), EoA')$ since the train has travelled at most one unit of distance during the interval and the movement authority has increased by 50.
+At the end of the interval $t_2$ a new movement authority $EoA'$ has been granted and all points in time $t_3'$ between $t_2$ and up to including $t_3$ the invariant $BD(S(t_3')) < DMA(D(t_3'), EoA')$ since the train has travelled at most one unit of distance during the interval and the movement authority has increased by 50.
 
 
 
@@ -693,9 +714,9 @@ Braking $\to$ Acc $\to$ FAS: The time interval can be partitioned into three sep
 \end{description}
 
 
-Initially we are in the stop state and have $D(t) \leq EOA$. There is only one possible transition from this state. we receive a new movement authority with $D(t) < EOA$ and proceed to the accelerating state.
-We have two possible cases from the accelerating state. The first case is that the train reaches the braking point and enters the braking state $D(t) = BD(t,speed)$. In this case the trains speed speed will decrease by -1 per unit of time and the train will enter the stop state $EOA$.
-The second case is that the train reaches max speed and goes into the maxspeed state. If the train reaches $D(t) = BD(t,speed)$ whilst in the maxspeed state then the train will go into the braking state and the same argument holds from the previous case.
+Initially we are in the stop state and have $D \leq EoA$. There is only one possible transition from this state. we receive a new movement authority with $D < EoA$ and proceed to the accelerating state.
+We have two possible cases from the accelerating state. The first case is that the train reaches the braking point and enters the braking state $D = BD(t,S)$. In this case the trains speed will decrease by -1 per unit of time and the train will enter the stop state $EoA$.
+The second case is that the train reaches max S and goes into the max state. If the train reaches $D = BD(t,S)$ whilst in the max state then the train will go into the braking state and the same argument holds from the previous case.
 
 \end{proof}
 
@@ -716,13 +737,13 @@ We have to prove the two directions of the statement. First we prove the $\to$ d
 
 
 
-Assume a train is in $t_x$ and $((x-1) \ ,mod 5) * 50 \leq D(t) < x *50$.
+Assume a train is in $t_x$ and $((x-1) \ ,mod 5) * 50 \leq D < x *50$.
 
 There are two cases
 \begin{enumerate}
 \item If the train is in the Stopped state then a $t_{x}.t_{x+1}$ event will never occur as it is not possible in this state.
 
-\item The train is moving i.e. it is in either of the $Accelerating, \, Braking , \,  Full \, Allowed \, Speed$ states. In this case the position of the train will be increasing and eventually it will happen that $D(t) \,  mod \, 50 = 0$. When since $D(t) \, mod \, 50 = 0$  satisfies the jump condition the event
+\item The train is moving i.e. it is in either of the $Accelerating, \, Braking , \,  Full \, Allowed \, S$ states. In this case the position of the train will be increasing and eventually it will happen that $D \,  mod \, 50 = 0$. When since $D \, mod \, 50 = 0$  satisfies the jump condition the event
  $t_{x}.t_{x+ 1}$ will occur.  
  
 
