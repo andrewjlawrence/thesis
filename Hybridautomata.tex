@@ -132,28 +132,29 @@ The $\mathrm{init}$ function is used to define intial states of the system. Late
 \begin{comment}
 For example, when we define our train control system it is desired that the S of the train is $0$, initially and that remains invariant throughout execution of the automaton $init(Stopped) := invar(Stopped) := S = 0$ , which is captured by the initial predicate $init(Stopped) := S = 0$.  It is also desireable in the states Accelerating and Full Speed that the braking distance is less than or equal to the distance between the train and the end of movement authority $inv(Acc) := inv(Full Speed) := BD(S) \leq DMA(D, EoA)$. The invariant acts as a boundary condition which specifies the limits of the automatons behaviour. In the case of the Full Speed and Accelerating states it ensures that the train can always brake in time and it forces the automaton to perform a transition to the braking state when the boundary of the invariant is reached . If some some reason the system flows into one of these boundaries and no discrete change can occur then time is prevented from continuing.  \end{comment}
 
-Such automatons which contain states in which time cannot progress are called \emph{Zeno}. In order to form a transition system from the automaton, it must be \emph{non-Zeno} i.e. time can always progress in every state of the system. 
-
+Automata which contain states from which time cannot progress are called \emph{Zeno}. In order to form a transition system from the automaton, it must be \emph{non-Zeno} i.e. time can always progress in every state of the system. 
+\medskip
 \begin{comment}
  In the following specification events are used to pass messages between different automata placed in parallel. An example event is that of $event(Stopped \to Accelerating) :=MA.x.y \ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ which is triggered by the RBC and causes the train to update the value of its movement authority. flow conditions describe the rate of change of a given variable over time. In our formalisation of a train one such flow condition is $flow(Accelerating) := \dot{S} = 1$ which causes the train to accelerate at a S of one unit per unit of time.
 \end{comment}
-\medskip
 
 \begin{myremark}[Multievents and messages]
 We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing of messages that include some data between automata.  We denote a multievent using a label $e$ and some data $x$ composed by a dot $e.x$.  For each possible value of $x$, there is a corresponding edge, event and flow triple that captures the effect of receiving a message containing $x$.
-
 \end{myremark}
 
-\subsection*{Train Automata}
-
-The behaviour of the train is based on two of Newton's laws of motion $v = S +at$ and  $v^2 = u^2 +2as$
-,where s = displacement,u = initial velocity, v = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current S and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the trains S decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to caluate the breaking distance with $u = 0$ and $a = 1$ it can be rewritten to allow for the calculation of the breaking distance.
+\subsection*{Laws of Motion}
+In the following we shall describe how to use the laws of motion to capture of motion of the train.
+The behaviour of the train is based on two of Newton's laws of motion $s = s_0 +at$ and  $s^2 = s_{0}^2 +2ad$,where $d$ = distance, $s_0$ = initial velocity, v = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current S and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the trains S decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to caluate the breaking distance with $u = 0$ and $a = 1$ it can be rewritten to allow for the calculation of the breaking distance.
 \medskip
 
 \begin{mydef}[Breaking Distance]
-We define the breaking distance for a train in terms of its S as follows:
+We define the breaking distance for a train in terms of its speed S and acceleration A is: 
 
-$$\BD{S} = \frac{S^2}{2} $$
+$$\BD{S,A} = \frac{S^2}{-2A} $$
+
+Since the acceleration is $-1$ in our model this becomes:
+
+$$$\BD{S} = \frac{S^2}{2}$
 
 \end{mydef}
 \medskip
@@ -171,6 +172,8 @@ The distance to the movement authority $\mathrm{DMA}$ is calulated from the dist
 
 
 \end{mydef}
+
+\subsection*{Train Automata}
 
 The Train hybrid automaton has $4$ control modes namely Braking (Auth), Full Speed, Accelerating and Stopped and has $5$ variables namely $max$,$D$ (Position),  $S$, $\dot{S}$ and $EoA$. We have that $ \BD{S} \leq \DMA{D, EoA}$ is an invariant of the stopped mode and $D \leq EoA$ is an invariant of all other control modes.
 We define a mode jump with the event $l_x.l_{x+1}$ which is triggered by the condition $D \, mod \, 50 = 0$ in the modes $Full S$, $Accelerating$ and $Brake$. 
@@ -297,10 +300,8 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 \end{figure}
 
-
-
-
-We start by defining a hybrid automaton for the interlocking consisting of 2 states representing whether a request have been made or not, 5 boolean variables representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored and then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
+\subsection*{Interlocking Automata}
+In the following we shall define a hybrid automaton that captures the behaviour of the solid state interlocking.  The automaton has 2 control modes, namely $Idle$ and $Response$, which capture that the interlocking is either idle or processing a response to a request.  The automaton has 5 boolean variables $\{ t_0, \ldots ,t_4 \}$ representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. When a request for a track segment is made that track segment is stored, then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
 \medskip
 \begin{mydef}[Interlocking Hybrid Automaton]
 We define a hybrid automaton $H_{IL}$ as follows:
