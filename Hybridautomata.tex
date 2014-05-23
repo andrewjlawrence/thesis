@@ -74,7 +74,7 @@ The following is a simple example railway we shall use for the purposes of demon
 
 
 \section{Modelling Assumptions}
-Since this is a first attempt at modelling a complex system we make several assumptions of the model in order to make it manageable so that we can capture its behaviour in a formal specification language and verifiy it using a model checker.
+Since this is a first attempt at modelling a complex system we make several assumptions of the model in order to make it manageable so that we can capture its behaviour in a formal specification language and verify it using a model checker.
 
 \begin{enumerate}
 
@@ -86,7 +86,7 @@ Since this is a first attempt at modelling a complex system we make several assu
 
 \item The positioning systems on the train are assumed to function at all times, constantly providing the radio block processor with correct information regarding the location of the train.
 
-\item We only allow movement auhority extensions of one track segment in distance (50 in the pentagon example).
+\item We only allow movement authority extensions of one track segment in distance (50 in the pentagon example).
 
 \item We do not allow movement authorities to be revoked.
 
@@ -127,10 +127,10 @@ The syntax of a hybrid automaton $H$ comprises of the following:
 \end{mydef}
 \medskip
  
-The $\mathrm{init}$ function is used to define intial states of the system. Later (see section \ref{sec:hyseman}) these initial states become intial states of a labelled transition system when we define the semantics of hybrid automata. The $\mathrm{inv}$ function is used to define regions in which the state of the hybrid automaton exists. If the invariant ceases to hold in one control mode then time can no longer progress in that mode and a jump must occur for time to progress. The $flow$ function describes the rate of change of variables in a particular state. The $\mathrm{jump}$ predicate describes the causes and effects of a discrete transition along a control switch using the unprimed and primed variables respectively.
+The $\mathrm{init}$ function is used to define initial states of the system. Later (see section \ref{sec:hyseman}) these initial states become initial states of a labelled transition system when we define the semantics of hybrid automata. The $\mathrm{inv}$ function is used to define regions in which the state of the hybrid automaton exists. If the invariant ceases to hold in one control mode then time can no longer progress in that mode and a jump must occur for time to progress. The $flow$ function describes the rate of change of variables in a particular state. The $\mathrm{jump}$ predicate describes the causes and effects of a discrete transition along a control switch using the un-primed and primed variables respectively.
 
 \begin{comment}
-For example, when we define our train control system it is desired that the S of the train is $0$, initially and that remains invariant throughout execution of the automaton $init(Stopped) := invar(Stopped) := S = 0$ , which is captured by the initial predicate $init(Stopped) := S = 0$.  It is also desireable in the states Accelerating and Full Speed that the braking distance is less than or equal to the distance between the train and the end of movement authority $inv(Acc) := inv(Full Speed) := BD(S) \leq DMA(D, EoA)$. The invariant acts as a boundary condition which specifies the limits of the automatons behaviour. In the case of the Full Speed and Accelerating states it ensures that the train can always brake in time and it forces the automaton to perform a transition to the braking state when the boundary of the invariant is reached . If some some reason the system flows into one of these boundaries and no discrete change can occur then time is prevented from continuing.  \end{comment}
+For example, when we define our train control system it is desired that the S of the train is $0$, initially and that remains invariant throughout execution of the automaton $init(Stopped) := invar(Stopped) := S = 0$ , which is captured by the initial predicate $init(Stopped) := S = 0$.  It is also desirable in the states Accelerating and Full Speed that the braking distance is less than or equal to the distance between the train and the end of movement authority $inv(Acc) := inv(Full Speed) := BD(S) \leq DMA(D, EoA)$. The invariant acts as a boundary condition which specifies the limits of the automatons behaviour. In the case of the Full Speed and Accelerating states it ensures that the train can always brake in time and it forces the automaton to perform a transition to the braking state when the boundary of the invariant is reached . If some some reason the system flows into one of these boundaries and no discrete change can occur then time is prevented from continuing.  \end{comment}
 
 Automata which contain states from which time cannot progress are called \emph{Zeno}. In order to form a transition system from the automaton, it must be \emph{non-Zeno} i.e. time can always progress in every state of the system. 
 \medskip
@@ -139,16 +139,16 @@ Automata which contain states from which time cannot progress are called \emph{Z
 \end{comment}
 
 \begin{myremark}[Multievents and messages]
-We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing of messages that include some data between automata.  We denote a multievent using a label $e$ and some data $x$ composed by a dot $e.x$.  For each possible value of $x$, there is a corresponding edge, event and flow triple that captures the effect of receiving a message containing $x$.
+We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing of messages that include some data between automata.  We denote a multievent using an sequence of labels $e_n$ and data $x_n$ composed using a ".".  For each possible value of $x$, there is a corresponding edge, event and flow triple that captures the effect of receiving a message containing $x$.
 \end{myremark}
 
 \subsection*{Laws of Motion}
 In the following we shall describe how to use the laws of motion to capture of motion of the train.
-The behaviour of the train is based on two of Newton's laws of motion $s = s_0 +at$ and  $s^2 = s_{0}^2 +2ad$, where $d$ = distance, $s_0$ = initial velocity, v = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current S and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the trains S decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to caluate the breaking distance with $u = 0$ and $a = 1$ it can be rewritten to allow for the calculation of the breaking distance.
+The behaviour of the train is based on two of Newton's laws of motion $s = s_0 +at$ and  $s^2 = s_{0}^2 +2ad$, where $d$ = distance, $s_0$ = initial velocity, v = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current S and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the trains S decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to calculate the breaking distance with $u = 0$ and $a = 1$ it can be rewritten to allow for the calculation of the breaking distance.
 \medskip
 
 \begin{mydef}[Breaking Distance]
-We define the breaking distance for a train in terms of its speed S and acceleration A is: 
+We define the breaking distance for a train in terms of its speed S and acceleration A as: 
 
 $$\BD{S,A} = \frac{S^2}{-2A} $$
 
@@ -163,7 +163,7 @@ Since we are working with a loop in the track the distance to the movement autho
 
 \begin{mydef}[Distance to Movement Authority]
 
-The distance to the movement authority $\mathrm{DMA}$ is calulated from the distance and end of authority as followings:
+The distance to the movement authority $\mathrm{DMA}$ is calculated from the distance and end of authority as followings:
 \begin{align*}
 \DMA{D}{EoA} & = EoA \Monus D \quad \mathbf{if} \ D \leq EoA \\
                          & = 250 \Monus D + EoA \quad \mathbf{otherwise}
@@ -177,7 +177,7 @@ Together, both of these functions form are used to compute whether or not the tr
 
 \subsection*{Train Automata}
 
-The Train hybrid automaton has four control modes namely $Braking \, (Auth)$, $Full \, Speed$, $Accelerating$ and $Stopped$ and has three variables namely $D$ (Distance),  $S$ (Speed) and $EoA$ (End of movement authority). We have that $ \BD{S} \leq \DMA{D, EoA}$ is an invariant of the stopped mode and $D \leq EoA$ is an invariant of all other control modes. We define a control switch with the event $l_x.l_{x+1}$ that is triggered by the condition $D \, mod \, 50 = 0$ in the modes $Full \, Speed$, $Accelerating$ and $Brake$ which captures the transition of the train from one track segment to another. It is possible for a new movement authority $EoA'$ to be received with $EoA < EoA'$  in the $Braking$ and $Stopped$ states.  This is triggered by the event $MA.x.y$ occuring then if the variable $x$ matches the train identifier $TrainID$ then $y$ becomes the new movement authority. The movement event $MA.Req.x$ is used by a train automaton request a movement authority for train $x$ from the RBC automaton. 
+The Train hybrid automaton has four control modes namely $Braking \, (Auth)$, $Full \, Speed$, $Accelerating$ and $Stopped$ and has three variables namely $D$ (Distance),  $S$ (Speed) and $EoA$ (End of movement authority). We have that $ \BD{S} \leq \DMA{D, EoA}$ is an invariant of the stopped mode and $D \leq EoA$ is an invariant of all other control modes. We define a control switch with the event $l_x.l_{x+1}$ that is triggered by the condition $D \, mod \, 50 = 0$ in the modes $Full \, Speed$, $Accelerating$ and $Brake$ which captures the transition of the train from one track segment to another. It is possible for a new movement authority $EoA'$ to be received with $EoA < EoA'$  in the $Braking$ and $Stopped$ states.  This is triggered by the event $MA.x.y$ occurring then if the variable $x$ matches the train identifier $TrainID$ then $y$ becomes the new movement authority. The movement event $MA.Req.x$ is used by a train automaton request a movement authority for train $x$ from the RBC automaton. 
 \medskip
 
 
@@ -210,36 +210,35 @@ We define a hybrid automaton $H_{T}$ as follows:
 	\item $flow(Accelerating):= \dot{S} = 1$ 
 	
 	\item $flow(Braking) := \dot{S} = -1$
+
+	\item $flow(Stopped) := flow(Full Speed) := \dot{S} = 0$
  
 	\end{itemize}
 
 \item[Jump Conditions] \hspace*{0mm}
 
 	\begin{itemize}
-	\item $jump(Full \, Speed \to Full \, Speed) := l_{D \, div \, 50}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
-\item $jump(Braking \to Braking) = l_{D \, div \, 500}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
-\item $jump(Accelerating \to Accelerating) = l_{D \, div \, 500}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
 
-	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) := MA.x.y\\ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ 
+
+	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) :=  EoA' = y$ 
 	
 
-	\item $jump(Full \, Speed \to Braking) := jump(Accelerating \to Braking) := \DMA{D}{EoA} = \BD{S}, MA.Req.TrainID$
+	\item $jump(Full \, Speed \to Braking) := jump(Accelerating \to Braking) := \DMA{D}{EoA} = \BD{S}$
 
 
-	\item $jump(Accelerating \to Full \, Speed) := S = max$
+	\item $jump(Accelerating \to Full \, Speed) := S = MaxSpeed$
 	
 	\item $jump(Braking \to Stop \, (EoA)) := S = 0$
 
+	\item $jump(Braking \to Braking) := jump(Accelerating \to Accelerating) := jump(Full \, Speed \to Full \, Speed) := D \, mod \, 50 = 0$
 	\end{itemize}
 
 \item[Events] \hspace*{0mm}
 \begin{itemize}
 	\item $event (Stop \, (EoA) \to Accelerating) := MA.TrainID.y$
 	\item $event (Braking \to Accelerating) := MA.TrainID.y$
-	\item $event(Full \, Speed \to Full \, Speed) := l_{D \, div \, 50}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
-\item $event(Braking \to Braking) = l_{D \, div \, 50}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
-\item $event(Accelerating \to Accelerating) = l_{D \, div \, 50}.l_{(D \, div \, 50) +1} \wedge D \, mod \, 50 = 0$
-
+	\item $event(Full \, Speed \to Full \, Speed) := event(Braking \to Braking) := event(Accelerating \to Accelerating)  := l_{D \, div \, 50}.l_{(D \, div \, 50) +1}$
+\item $event(Full \, Speed \to Full \, Speed (2)) := event(Braking \to Braking (2)) := event(Accelerating \to Accelerating(2)) := Train.TrainID.Pos.D$
 	\item $event(Accelerating \to Braking) = MA.Req.TrainID$
 	\item $event(Full \, Speed \to Braking) = MA.Req.TrainID$
 \end{itemize}
@@ -248,7 +247,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 \end{mydef}
 \medskip
 \begin{myremark}[Train Movement Events]
-We use the following abbreviation to capture the two seperate events and flow conditions for train movement in the automaton diagram:
+We use the following abbreviation to capture the two separate events and flow conditions for train movement in the automaton diagram:
 \begin{align*}
 \mathbf{train \, movement \, events} \, := \ &\mathbf{if} \ D \, mod \, 50 = 0 \\
 						&\mathbf{then} \ l_{D \, div \, 50}.l{D \, div \, 50 +1}, \\
@@ -277,7 +276,7 @@ We use the following abbreviation to capture the two seperate events and flow co
 \node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Accelerating} \\
        $\dot{S = 1}$
        $\BD{S} \leq \DMA{D}{EoA}$
-       $S \leq MaxS$
+       $S \leq MaxSpeed$
   \end{center}
 
 };
@@ -289,7 +288,7 @@ We use the following abbreviation to capture the two seperate events and flow co
 						};
 
 \node (D)[box1] at (7.5, 7.5)  { \begin{center} \textbf{Full Speed }\\
-					                   $S = MaxS$
+					                   $S = MaxSpeed$
                                                             $\dot{S} = 0$
 							    $\BD{S} \leq \DMA{D}{EoA}$
                                                             \end{center}
@@ -323,7 +322,7 @@ In the following we shall define a hybrid automaton that captures the behaviour 
 \begin{mydef}[Interlocking Hybrid Automaton]
 We define a hybrid automaton $H_{IL}$ as follows:
 \begin{description}
-\item[Variables] The state of the interlocking automaton consists of five boolean variables  $\underbrace{l_0, \ldots , l_4}_\text{Occupied/Free}$ and a variable $ReqID$ ranging over $\{0 , \ldots , 4 \}$ storing the last requested track segement.
+\item[Variables] The state of the interlocking automaton consists of five boolean variables  $\underbrace{l_0, \ldots , l_4}_\text{Occupied/Free}$ and a variable $ReqID$ ranging over $\{0 , \ldots , 4 \}$ storing the last requested track segment.
 
 \item[Control Graph] The control graph of the interlocking automaton consists of two control modes $\{Response, Idle \}$ with five control switches connecting them; $Response \to Idle$, $Response \to Idle (2)$, $Idle \to Response$, $Response \to Response$, $Idle \to Idle$.
 
@@ -555,7 +554,7 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 
 Safety conditions for the combined system can be separated into discrete and continuous parts.  If we want to specify a safety condition which states that it is not possible for two trains to collide in our current system this could have the following components. 
 
-the continuous part would state that any movement authority issued by the radio block processor would respect the interlockings separation policy. \textbf{(Note: I should up date this part at some point. In the current Maude implementation the interlocking will grant a track segment if it is not occupied)} The discrete part would basically state that there is at least two free track circuits in-between each train.
+the continuous part would state that any movement authority issued by the radio block processor would respect the interlocking's separation policy. \textbf{(Note: I should up date this part at some point. In the current Maude implementation the interlocking will grant a track segment if it is not occupied)} The discrete part would basically state that there is at least two free track circuits in-between each train.
 
 \section{Semantics of Hybrid Automata} \label{sec:hyseman}
 
@@ -576,7 +575,7 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 \end{itemize}
 \end{mydef}
 \medskip
-When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of  timed transition systems which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automatons real numbered variables.
+When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continuous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of  timed transition systems which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automatons real numbered variables.
 
 \medskip
 \begin{mydef}[Transition Semantics of Hybrid Automata]
@@ -621,28 +620,28 @@ We define a live transition system (LTS,A) to consist of a labelled transition s
 
 
 \begin{mydef}[Trace semantics of hybrid automata]
-All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}. For a given the set of divergent initialized trajectories $L^t_H$ of the timed transition system $S^t_H$, the hybrid automaton $H$ is \emph{non-zeno} if $L^t_H$ is machined-closed for $S^t_H$.
+All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}. For the set of divergent initialized trajectories $L^t_H$ of the timed transition system $S^t_H$, the hybrid automaton $H$ is \emph{non-Zeno} if $L^t_H$ is machined-closed for $S^t_H$.
  \end{mydef}
 
-The automaton is non-zeno if for every possible state of the system reachable from the intial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system.
+The automaton is non-Zeno if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system.
 
 \section{Automaton Validation}
-In the following we prove that the train automaton is non-zeno i.e. that time can progress in every state of the system. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case arguement for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since it does not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in white time cannot progress.
+In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since it does not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in white time cannot progress.
 \medskip
 
 \begin{mytheorem}[Train Automaton is Non-Zeno]
-The hybrid automaton  $H_{T}$ is non-zeno
+The hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory of which it is a prefix in set of divergent initialized trajectories in the automaton.
 \begin{proof}
 The proof proceeds by performing a case distinction on the state of $H_{T}$.
 \begin{description}
 \item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ can not be violated.
 
 
-\item[Case: Accelerating] The invariant $\BD{S} \leq \DMA{D}{EoA}$ bounds the increase of the variables for the distance and S which occur in this state. Eventually, the distance and S will increase enough for $\BD{S} = \DMA{D}{EoA}$ to hold and time will no longer be able to progress in this state, however a jump can occur to the Braking state in which the invariant $\BD{S} = \DMA{D}{EoA}$ holds. The invariant $S \leq max$ bounds the increase of the $S$ variable. In this state the $S$ will increase until the bondary of the invariant $S \leq max$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Speed$ state.
+\item[Case: Accelerating] The invariant $\BD{S} \leq \DMA{D}{EoA}$ bounds the increase of the variables for the distance and S which occur in this state. Eventually, the distance and S will increase enough for $\BD{S} = \DMA{D}{EoA}$ to hold and time will no longer be able to progress in this state, however a jump can occur to the Braking state in which the invariant $\BD{S} = \DMA{D}{EoA}$ holds. The invariant $S \leq MaxSpeed$ bounds the increase of the $S$ variable. In this state the $S$ will increase until the boundary of the invariant $S \leq MaxSpeed$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Speed$ state.
 
 
 \item[Case: Full Speed] 
-The case for the $Full Speed$ state follows the same arguement as the Accelerating state except for the part relating to the invariant $S \leq max$.
+The case for the $Full \, Speed$ state follows the same argument as the Accelerating state except for the part relating to the invariant $S \leq MaxSpeed$.
 
 \item[Case: Braking]
 The invariant $0 \leq S$ is the only invariant to bound the decrease of the S in the Braking state. When the S of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state.
