@@ -135,7 +135,7 @@ eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') =
 
 Here the natural number N1 in the train object is matched with N1' in the predicate train-s.
 The main movement authority that we want to check is that the movement authorities of two trains does not over lap.
-To do this we define a Property nomaoverlap(O1,O2) of type \texttt{Oid Oid -> Prop [ctor]} as follows: 
+To do this we define a property nomaoverlap(O1,O2) of type \texttt{Oid Oid -> Prop [ctor]} as follows: 
 
 \begin{lstlisting}
 eq {REST < O1 : Train |  dist : D1 , ma : M1 > 
@@ -146,10 +146,10 @@ Here we have matched two object identifiers and natural numbers and called a boo
 
 \begin{lstlisting}[caption = The no overlap operation]
 eq noolap(D1,M1,D2,M2) = 
-   ((D1 < M1) and (M1 < D2) and (D2 < M2)) or 
-   ((D2 < M2) and (M2 < D1) and (D1 < M1)) or 
-   ((D1 < M1) and (M2 < D1) and (M1 < D2)) or 
-   ((D2 < M2) and (M1 < D2) and (M2 < D1) )  .  
+   ((D1 <= M1) and (M1 < D2) and (D2 <= M2)) or 
+   ((D2 <= M2) and (M2 < D1) and (D1 <= M1)) or 
+   ((D1 <= M1) and (M2 < D1) and (M1 < D2)) or 
+   ((D2 <= M2) and (M1 < D2) and (M2 < D1) )  .  
 \end{lstlisting}
 
 This external operation encodes the 4 possible combines of movement authorities and trains in which the movement authorities do not over lap.  The first case is that train one is behind its movement authority which is behind the second train which itself is behind the movement authority. The second case is the reverse of the first case. In the third and fourth cases  one of the trains is behind its movement authority and the other is towards the end of the track and has its movement authority extended into the initial segment at the beginning of the track.
