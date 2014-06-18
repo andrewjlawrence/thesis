@@ -1,17 +1,19 @@
 \mathchardef\mhyphen="2D
 \newcommand{\mathass}[1]{\mathrm{[}#1 {]}}
 \chapter{Background: Logic and Program Extraction}
-We use logic to formally reason about the world around us in an abstract way. At the most basic level we are creating abstract propositions, sentences from these propositions and then using formal rules to deal with these propositions and to derive new information or insight. In the following we give a general introduction to logic and describe some of the formalisms used in this thesis. This starts with syntax and semantics of propositional and first order logic. A good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}. Then we move on to describing the theoretic foundations of the interactive theorem prover Minlog, including the natural deduction calculus, realizability for first order logic and program extraction. We then give an overview of other interactive theorem provers that can be seen as implementing program extraction. 
+%%%We use logic to formally reason about the world around us in an abstract way. At the most basic level %%%we are creating abstract propositions, sentences from these propositions and then using formal rules %%%to deal with these propositions and to derive new information or insight. In the following we give a %%%general introduction to logic and describe some of the formalisms used in this thesis. This starts with %%%syntax and semantics of propositional and first order logic.
+This thesis is concerned with using formal methods to verify the correctness of programs. This chapter is concerned one technique in particular that is used to obtain verified programs, namely \emph{program extraction} from proofs as implemented by the interactive theorem prover Minlog. The theorem proven typically specifies the inputs of the system as assumptions and the output of the program as the statement to be proven. A constructive proof is given which describes how to transform the inputs into the required outputs. In the Minlog system the proof is stored as a proof term which can interpretted as a program in the lambda calculus. Once such a proof term has been obtained, it can be automatically translated by the Minlog system into a variety of different functional programming languages. This is due to the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that every constructive proof can also be seen as a program. It enables a proof system such as natural deduction  can be directly interpreted as a model of computation i.e. the lambda calculus.  A general introduction to program extraction from proofs can be found in \cite{SW11}. This thesis assumes a general background in logic, good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}. 
 
-We are particularily interested in program extraction as it allows for the automatic generation of a program from a interactive constructive proof performed in a theorem prover. This is due to the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that every constructive proof can also be seen as a program. It enables a proof system such as natural deduction  can be directly interpreted as a model of computation i.e. the lambda calculus. 
+\subsection*{Current Research Directions in Program Extraction}
+
+Program extraction from imperative programs
 
 
+\subsection*{Other Theorem Provers with Program Extraction Capabilities}
+While Minlog is specifically geared towards extracting programs from proofs there are other examples of theorem provers with program extraction capabilities. An early example of work on a theorem prover with program extraction capabilitieis is the Nuprl system \cite{RC86}. There are also other mature theorem provers with program extraction capabilities such as Coq \cite{YB04}, which is based on the Calculus of Inductive Constructions and Isabelle  \cite{TN99,LP94} which is a generic theorem prover with extensions for many logics. More recently a number of theorem provers based on dependent types \cite{PM80} have emerged including Agda \cite{AB09} and IDRIS \cite{EB11}.
 \begin{comment}
-
 \section{Propositional logic}
 One of the most fundamental forms of logic is propositional logic which contains operations called connectives that allows one to connect propositional variables to form sentences.
-
-
 \begin{mydef}[Propositional Formulae]
 Given a set of atomic proposition names $AP$ we inductively define the set of propositional formulae $Prop$ as follows:
 \begin{itemize}
@@ -60,17 +62,13 @@ Blah
 \end{mydef}
 
 \end{comment}
-
 \section{Formal Foundations of Minlog}
-In the following section we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manor designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is particularly suited for program extraction as its constituent proofs are constructive. This is then extended to classical logical in a constructive manner. In the following we pretend the natural deduction proof system together with the proof terms derived from each rule:
-
-\medskip
-
-
+In the following section we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manor designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is particularly suited for program extraction as its constituent proofs are constructive. This is then extended to classical logical in a constructive manner. In the following we pretend the natural deduction proof system together with the proof terms derived from each rule:  \medskip
+%
 \begin{mydef}[Natural Deduction for Minimal Logic] 
-The natural deduction proof system for minimal logic  consists of the following derivation terms for $\wedge$, $\to$ and $\forall$ : \\
+The natural deduction proof system for minimal logic  consists of the following derivation terms for $\wedge$, $\to$ and $\forall$ : 
 \begin{center}
-\centering
+
 \begin{tabular}{| c | c |} \hline
 derivation & term \\
 \hline 
@@ -99,6 +97,7 @@ derivation & term \\
 \UnaryInfC{$A$}
 \DisplayProof} & \raisebox{-2.8\height}{$(M^{A \wedge B} 0)^A \quad (M^{A \wedge B} 1)^B$} \\ [10ex] \hline
 
+
 \raisebox{-1\height}{
 \AxiomC{$\mathass{u: \,A}$}
 \noLine
@@ -120,6 +119,13 @@ derivation & term \\
 \BinaryInfC{$B$}
 \DisplayProof} & \raisebox{-1.2\height}{$(M^{A \to B} N^{A})^B$} \\ [5ex] \hline
 
+
+\end{tabular}
+\end{center}
+\begin{center}
+\begin{tabular}{|c|c|} \hline
+derivation & term \\ \hline
+
 \raisebox{-1\height}{
 \AxiomC{$|M$}
 \noLine
@@ -137,15 +143,7 @@ derivation & term \\
 \BinaryInfC{$A[x:=t]$}
 \DisplayProof} & \raisebox{-2.8\height}{$(M^{\forall x A}t)^{A[x:=t]}$} \\ [10ex] \hline
 
-\end{tabular}
-\end{center}
 
-\end{mydef}
-
-
-\begin{center}
-\begin{tabular}{|c|c|} \hline
-derivation & term \\ \hline
 
 \raisebox{-1\height}{
 \AxiomC{$t$}
@@ -204,17 +202,16 @@ derivation & term \\ \hline
 \end{tabular}
 \end{center}
 
-
-\medskip
 \begin{center}
 \AxiomC{$\bot$}
 \LeftLabel{efq}
 \UnaryInfC{$A$}
 \DisplayProof 
 \end{center}
-\medskip
 
 
+
+\end{mydef}
 
 \section{Program Extraction}
 
@@ -439,8 +436,6 @@ r1 \ \textbf{r} \ A[x:= r0] & \quad \text{otherwise} \\
 
 
 
-\section{Other Theorem Provers with Program Extraction Capabilities}
-While Minlog is specifically geared towards extracting programs from proofs there are other examples of theorem provers with program extraction capabilities. An early example of work on a theorem prover with program extraction capabilitieis is the Nuprl system \cite{RC86}. There are also other mature theorem provers with program extraction capabilities such as Coq \cite{YB04}, which is based on the Calculus of Inductive Constructions and Isabelle  \cite{TN99,LP94} which is a generic theorem prover with extensions for many logics. More recently a number of theorem provers based on dependent types \cite{PM80} have emerged including Agda \cite{AB09} and IDRIS \cite{EB11}.
 
 \begin{comment}
 
