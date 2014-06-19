@@ -434,3 +434,49 @@ rl [resreq1g] : {< O : Inter | state : res, t
    {< O : Inter | state : idle > grant(1) REST} .
 \end{lstlisting}
 
+\section{Extension to a Small Junction}
+The modelling approach used to model the pentagon example (see \ref{}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main differences with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter \ref{} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
+ 
+\subsection*{Junction Example}
+The junction example consists of one point, two routes, seven track segments, a controller object to schedule trains, an RBC and an interlocking.
+
+\begin{figure}[h!]
+\begin{center}
+\begin{tikzpicture}[node distance = 3cm]
+\draw (0,0) -- (10,0);
+\foreach \n in {1,...,5} {
+  \pgfmathtruncatemacro{\valuem}{(\n - 1)};
+    \node () [above] at (\n *2 -1,0) {$l_{\valuem}$};
+}
+\foreach \n in {2,...,5} {
+  \pgfmathtruncatemacro{\valuem}{(\n - 1)};
+    \draw (\valuem *2, -0.125) -- (\valuem *2, 0.125) ;
+}
+\draw (4.5,-0.2) -- (5.2, -0.2);
+\draw (5.2,-0.2) -- (8,-3);
+\draw (5.575,-0.825) -- (5.825,-0.575);
+\draw (6.725,-1.975) -- (6.975,-1.725);
+\draw (8.125,-2.875) -- (7.875, -3.125);
+\node () [] at (6.6,-1.05) {$l_5$};
+\node () [] at (7.7,-2.15) {$l_6$};
+\draw [->,dashed] (0,1) -- (10,1);
+\node () [above] at (5,1) {Route 1};
+\draw[dashed] (0,-1) -- (4,-1);
+\draw[->,dashed] (4,-1) -- (6,-3);
+\node() [below] at (3,-1.2) {Route 2};
+\end{tikzpicture} 
+\end{center} 
+\caption{Junction Example}
+\label{fig:junctionexample}
+\end{figure}
+
+\subsection*{The Controller Object}
+
+
+\subsection*{Modified Trains, Interlockings and Radio Block Processors}
+
+
+
+
+
+
