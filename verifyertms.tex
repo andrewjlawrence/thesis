@@ -2,7 +2,7 @@
 In the following we describe how the Real Time Maude tool can be used to analyse the performance and safety of the ERTMS system by both simulation and verification using the Maude LTL model checker.  We begin by presenting the simulation of the pentagon example which demonstrates a situation where a slow train is held up by a faster train. Secondly we look at applying model checking to both the pentagon example and the junction example. The safety properties verified for the pentagon example relate to the safety condition "The movement authorities of the two trains do not overlap" whilst the properties for the junction example relate to the safety condition "The point does not move when it is in a trains movement authority".
 
 
-It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example \cite{PO07}, only model checked only a portion of the state space for the pentagon. This is however enough to have confidence in the correctness of the system with respect to a given safety condition. A larger portion of the state space could be model checked by removing non-determinism from the model and making it less loose. This has been done in the junction example where the radio block processor is forced to process movement authorities in one time step.
+It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example \cite{PO07}, only model checked only a portion of the state space for the pentagon. This is however enough to have confidence in the correctness of the system with respect to a given safety condition. A larger portion of the state space could be model checked by removing non-determinism from the model making it more concrete. This has been done in the junction example where the radio block processor is forced to process movement authorities in one time step.
 
 
 \section{Simulating The Behaviour of ERTMS}
@@ -137,7 +137,7 @@ eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') =
 Here the natural number N1 in the train object is matched with N1' in the predicate train-s.
 
 \subsection*{Defining "No Overlapping Movement Authorities"}
-We verifying the safety condition "The movment authorities of two trains do not overlap" by model checking two safety properties MA1 and MA2 that correspond to checking the different possible safe positions over movement authorities and trains on the track. To do this we define a satisfaction relation for two Maude operations of type $\mathbf{Prop}$ which capture each of these safety properties. The first of which can be seen below:
+We verifying the safety condition "The movment authorities of two trains do not overlap" by model checking three safety properties MA1, MA2 and MA3 that correspond to checking the different possible safe positions over movement authorities and trains on the track. To do this we define a satisfaction relation for two Maude operations of type $\mathbf{Prop}$ which capture each of these safety properties. The first of which can be seen below:
 
 \begin{lstlisting}
 eq {REST < O1 : Train |  dist : D1 , ma : M1 > 
@@ -145,19 +145,28 @@ eq {REST < O1 : Train |  dist : D1 , ma : M1 >
    (O1 == O1') and (O2 == O2') and noolap1(D1,M1,D2,M2) .
 \end{lstlisting}
 
-Here we have matched two object identifiers and natural numbers and called a boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. The two sets of inequalities corresponding to the two safety properties are defined below:
+Here we have matched two object identifiers and natural numbers and called a boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. The three sets of inequalities corresponding to the three safety properties are defined below:
 
 \begin{lstlisting}[caption = The no overlap operations]
 eq noolap1(D1,M1,D2,M2) = 
     (D1 <= M1) and (D2 <= M2) implies ((M1 <  D2) or (M2 < D1)) .  
+eq noolap2(D1,M1,D2,M2) = 
+    ((M1 < D1) and (D2 <= M2)) implies (M2 < D1 and M1 < D2) .
+eq noolap3(D1,M1,D2,M2) = 
+    ((M2 < D2) and (D1 <= M1)) implies (M1 < D2 and M2 < D1) .
+
 \end{lstlisting}
 
 There are four possible combinations of trains and movement authorities.  The first case is that train one is behind its movement authority which is behind the second train which itself is behind the movement authority. The second case is the reverse of the first case. In the third and fourth cases  one of the trains is behind its movement authority and the other is towards the end of the track and has its movement authority extended into the initial segment at the beginning of the track.
 
 
 \subsection*{Defining "A Point Does Not Move"}
+We formalise the safety property "a point does not move when it is in a movement authority" as two safety conditions. The first states that it is globally true that if the point is in the movement authority of train1 then the point is set to normal. The second states that it is globally true that if the point is in the movement authority of train2 then the point is set to reverse. These two safety conditions were formalised using 3 Maude operations of type $\mathbf{Prop}$, $\mathbf{pointma}$ is used to compute whether the point is in the movement authority of a train, $\mathbf{pointnormal}$ and $\mathbf{pointreverse} cause the satisfaction relation to hold if the point is in the position corresponding to the property. 
+
+\begin{lstlisting}
 
 
+\end{lstlisting}
 
 \subsection{Execution of The LTL Model Checker}
 \textbf{Note: do we want to describe and verify other safety conditions here?}
@@ -185,9 +194,18 @@ Unfortunately the Real Time Maude LTL model checker can not detect the congruenc
 
 
 \section{Results}
-The following table presents the times taken to verify the 4 safety conditions MA1, MA2, P1 and P2:
+The following table presents the times taken to verify the 4 safety properties MA1, MA2, MA3, P1 and P2:
 
- 
+\begin{tabular}{c | c | c} 
+Safety Condition $ Time Steps Checked $ Time to Solve  
+MA1 & 30 &77.724s 
+MA2 & 30 &79.192s
+MA3 &  30 &79.380s
+P1 & untimed &7.488s
+P2 & untimed & 6.636s
+\end{tabular}
+
+The removal of the non-determinism and finite state space of the junction example has made a large improvement to the model checking of the safety properties.
 
 \section{Conclusion}
  We have presented the first attempt at modelling and verifying the combined ERTMS and interlocking system.
