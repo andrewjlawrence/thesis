@@ -316,8 +316,7 @@ The distance to the movement authority to the train is computed by:
 \texttt{}
 \end{center}
 
-When modelling the trains we perform the jumps from accelerating and full allowed speed to breaking if the breaking distance becomes less than the distance to movement authority in the next moment in time.
-
+In this Maude specification the jumps from accelerating and full speed states to the braking state occur when the braking distance becomes less than the distance to the end of the movement authority in the next moment of time.  The transition of the train one from track segment to another is captured by applying an operation $\textbf{trackseg}$ to the train after every increment in time. The $\textbf{trackseg}$ operation computes whether a track segment transition has occured, if it has then a message is sent to the interlocking to update its track segment variables accordingly.
 
 \subsubsection*{Sets and Maps in Maude}
 In order to have more general data types Maude allows for parametrised functional modules with the  syntax \texttt{fmod M{$X_1$ :: $T_1$ , $\ldots$ , $X_n$ :: $T_n$} is $\ldots$ endfm} where $n \geq 1$, $X_1$ is the \emph{parameter name} and $T_1$ is the \emph{theory name}.
@@ -435,7 +434,7 @@ rl [resreq1g] : {< O : Inter | state : res, t
 \end{lstlisting}
 
 \section{Extension to a Small Junction}
-The modelling approach used to model the pentagon example (see \ref{}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main differences with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter \ref{} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
+The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main differences with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter \ref{} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
  
 \subsection*{Junction Example}
 The junction example consists of one point, two routes, seven track segments, a controller object to schedule trains, an RBC and an interlocking.
@@ -471,9 +470,27 @@ The junction example consists of one point, two routes, seven track segments, a 
 \end{figure}
 
 \subsection*{The Controller Object}
+The open ended nature of the junction example requires an object to act as a scheduler. This role is fulfilled by the controller class. 
 
+\begin{lstlisting}[caption = "Controller Class"]
+class Controller | 
+      trainorder : ListT, trainmax : MapON, trainroute : MapON .
+\end{lstlisting}
+
+The controller class contains 3 parameters which are used to store a list of trains that are going to enter the track. The first parameter \textbf{trainorder} stores a list of object identifiers that are used to name trains whilst the order of the list corresponds to the order in which the trains are added to the track. The other two parameters of the controller class are both mappings from object identifiers to natural numbers. These mappings \textbf{trainmax} and \textbf{trainroute} are used to store the two parameters needed to create the train class namely the trains maximum speed and its route.
+
+The controller object makes one join request, using a \textbf{reqjoin} message containing the object identifier of the first train in the trainorder list and its associated route, to the RBC per unit of time . If this request is granted then the first object identifier in the trainorder list is removed and a new train object is created with that object identifier with its maxspeed and route obtained from the mappings in the controller object. The speed and distance of the new train are both set to zero and a message is sent to the interlocking indicating that the initial tracksegment is now occupied. 
 
 \subsection*{Modified Trains, Interlockings and Radio Block Processors}
+The component classes from the pentagon example have been modified to capture the behaviour of a junction.  The train class has seen the least modification, with only one additional parameter route which stores a natural number corresponding to the trains route. The RBC class has been modified to include a additional mapping from object identifiers to the natural numbers that contains the route of each train. The number of states of an RBC has increased from 3 to 4 with an extra state $\mathbf{waitjoin}$ capturing that a join request has been made. When a join request is made the RBC checks to see if the route requested is currently set. If the route requested is set and the initial track segment is clear then the join request is accepted. If the route is not set then the RBC checks with the interlocking that it can set the route. This requires that the first 3 track segments are clear in order to change the direction of the point. The interlocking class has been modified to capture both the behaviour of the point and the addition of join requests. The point is modelled in the interlocking as two boolean variables $\mathbf{p1n}$ which indicates that the point is driven normal and $\mathbf{p1r}$ which indicates that the point is driven in the reverse direction.
+%
+The RBC has been modified to process any requests in one time step using an operation $\mathbf{nondelta}$ which prevents the transition of time in any non idle state. This removes the possibility for train to take an arbitrary amount of time to respond to a request, significantly cutting down on the state space.
+
+
+
+
+
+
 
 
 

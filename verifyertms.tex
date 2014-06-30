@@ -1,14 +1,15 @@
-\thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real Time Maude}
-In the following chapter we will describe how the Real Time Maude tool can be used to simulate and verify the ERTMS system. The property we verify is that no two trains on our example railway share the same movement authority which in turn prevents the trains from crashing. We begin by capturing ERTMS as a hybrid automaton which allows us to get a grip of its behaviour. We then prove that a single train automaton always remains within its movement authority. Finally we introduce Maude, Real Time Maude and the Real Time Maude LTL Model Checker which we shall use to model, simulate and formally verify ERTMS. The simulation of the system provides a validation of our modelling in that it shows the system to be live and that the trains behave as expected. We apply model checking in order to verify that certain safety conditions hold in the model we have specified.
+\thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real Time Maude}\label{chapter:verifyertms}
+In the following we describe how the Real Time Maude tool can be used to analyse the performance and safety of the ERTMS system by both simulation and verification using the Maude LTL model checker.  We begin by presenting the simulation of the pentagon example which demonstrates a situation where a slow train is held up by a faster train. Secondly we look at applying model checking to both the pentagon example and the junction example. The safety properties verified for the pentagon example relate to the safety condition "The movement authorities of the two trains do not overlap" whilst the properties for the junction example relate to the safety condition "The point does not move when it is in a trains movement authority".
 
-It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example \cite{PO07}, only model checked a portion of the state space of our example using this tool. This is however enough to have confidence in the correctness of the system with respect to a given safety condition.
+
+It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example \cite{PO07}, only model checked only a portion of the state space for the pentagon. This is however enough to have confidence in the correctness of the system with respect to a given safety condition. A larger portion of the state space could be model checked by removing non-determinism from the model and making it less loose. This has been done in the junction example where the radio block processor is forced to process movement authorities in one time step.
 
 
 \section{Simulating The Behaviour of ERTMS}
 
-We will now see how this executable specification can be used to simulate and obtain a better understanding of the modelled system. For this purpose we have written a small Haskell program that takes the output from multiple timed rewrites and plots them as a graph.
+We will now see how this executable specification can be used to simulate and analyse the perofrmanceof the modelled system. Simulation of the system up to a given time $n$ is achieved by rewriting the initial state of the system to each of the intermediate time steps $0 \ldots n$. A simple Haskell program has been written that can parse the output of each step, extract the relevant data and then plot a graph.
 
-In the following we use an example initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 150. The RBC and the interlocking are both initialised with the trains in these positions. In Maude this initial state is modelled as follows. Firstly, we define the initial states of the component objects individually:
+We use an initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 150. The RBC and the interlocking are both initialised with the trains in these positions. In Maude this initial state is modelled as follows. Firstly, we define the initial states of the component objects individually:
 
 \begin{lstlisting}[caption = The initial interlocking state in Maude]
  eq initialintstate2 = < inter1 : Inter | state : idle, 
@@ -134,25 +135,29 @@ eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') =
 \end{lstlisting}
 
 Here the natural number N1 in the train object is matched with N1' in the predicate train-s.
-The main movement authority that we want to check is that the movement authorities of two trains does not over lap.
-To do this we define a property nomaoverlap(O1,O2) of type \texttt{Oid Oid -> Prop [ctor]} as follows: 
+
+\subsection*{Defining "No Overlapping Movement Authorities"}
+We verifying the safety condition "The movment authorities of two trains do not overlap" by model checking two safety properties MA1 and MA2 that correspond to checking the different possible safe positions over movement authorities and trains on the track. To do this we define a satisfaction relation for two Maude operations of type $\mathbf{Prop}$ which capture each of these safety properties. The first of which can be seen below:
 
 \begin{lstlisting}
 eq {REST < O1 : Train |  dist : D1 , ma : M1 > 
-   < O2 : Train |  dist : D2 , ma : M2 >} |= nomaoverlap(O1',O2') = 
-   (O1 == O1') and (O2 == O2') and noolap(D1,M1,D2,M2) .
-\end{lstlisting}
-Here we have matched two object identifiers and natural numbers and called a boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. \textbf{Note to self: Update this safety property}
-
-\begin{lstlisting}[caption = The no overlap operation]
-eq noolap(D1,M1,D2,M2) = 
-   ((D1 <= M1) and (M1 < D2) and (D2 <= M2)) or 
-   ((D2 <= M2) and (M2 < D1) and (D1 <= M1)) or 
-   ((D1 <= M1) and (M2 < D1) and (M1 < D2)) or 
-   ((D2 <= M2) and (M1 < D2) and (M2 < D1) )  .  
+   < O2 : Train |  dist : D2 , ma : M2 >} |= nomaoverlap1(O1',O2') = 
+   (O1 == O1') and (O2 == O2') and noolap1(D1,M1,D2,M2) .
 \end{lstlisting}
 
-This external operation encodes the 4 possible combines of movement authorities and trains in which the movement authorities do not over lap.  The first case is that train one is behind its movement authority which is behind the second train which itself is behind the movement authority. The second case is the reverse of the first case. In the third and fourth cases  one of the trains is behind its movement authority and the other is towards the end of the track and has its movement authority extended into the initial segment at the beginning of the track.
+Here we have matched two object identifiers and natural numbers and called a boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities are satisfied. The two sets of inequalities corresponding to the two safety properties are defined below:
+
+\begin{lstlisting}[caption = The no overlap operations]
+eq noolap1(D1,M1,D2,M2) = 
+    (D1 <= M1) and (D2 <= M2) implies ((M1 <  D2) or (M2 < D1)) .  
+\end{lstlisting}
+
+There are four possible combinations of trains and movement authorities.  The first case is that train one is behind its movement authority which is behind the second train which itself is behind the movement authority. The second case is the reverse of the first case. In the third and fourth cases  one of the trains is behind its movement authority and the other is towards the end of the track and has its movement authority extended into the initial segment at the beginning of the track.
+
+
+\subsection*{Defining "A Point Does Not Move"}
+
+
 
 \subsection{Execution of The LTL Model Checker}
 \textbf{Note: do we want to describe and verify other safety conditions here?}
