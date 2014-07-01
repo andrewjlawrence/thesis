@@ -4,7 +4,9 @@ In the following chapter we present a proof of soundness and completeness for th
 
 \section{Soundness of the DPLL Proof System}
 
-The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the soundness property in the Minlog system however since this has already been presented in \cite{SL08} we will only briefly describe it. In the following we will present some of the preliminary definitions needed for the soundness of the DPLL algorithm.
+The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the incompatibility (\forall M. M \models \Gamma \to M \not\models \Delta)  of the DPLL proof system in Minlog following \cite{SL08}. 
+
+ In the following we will present some of the preliminary definitions needed for the soundness of the DPLL algorithm. (\textbf{Note to self: Add Coq paper reference.})
 
 Instead of proving soundness we formalized a stronger property of incompatibility in Minlog. We define a formula to be incompatible under a valuation if there does not exist a model which models the valuation and the formula. 
 
@@ -20,12 +22,26 @@ The proof proceeds by structural induction on the given derivation of the sequen
 %
 Case \textbf{Conflict}:
 $$\forall \Gamma, \Delta. \emptyset \in \Delta \to \incompatble{\Gamma}{\Delta}$$
+The empty set is trivally unsatisfiable, therefore there does not exist a model that models both $\Gamma$ and $\Delta$.
 
+Case \textbf{Reduce}:
+$$ \incompatible{\Gamma}{\Delta}$$
+
+Case \textbf{Elim}:
+$$\incompatible{\Gamma}{\Delta}$$
+
+Case \textbf{Unit}:
+$$\forall \Gamma,\Delta,l. \{l\} \in \Delta \to \incompatible{\Gamma,l}{\Delta \setminus \{l \} } \to  \incompatible{\Gamma}{\Delta}$$
+There is no such model that models both $\Gamma,l$ and $\Delta \setminus \{ l \}$. In order for a model $M$ that models $\Gamma$ to model $\Delta$ it must be the case that $M l$, this means however that $M$ cannot model the set $\Delta \setminus \{l \}$ or any sets which contain it such as $\Delta$ . 
+
+
+
+Case \textbf{Split}:
+$$\incompatible{\Gamma}{\Delta}$$
 
 
 \end{mytheorem}
-The proof proceeds by structural induction on the given derivation 
-of the sequent $\Gamma \vdash \Delta$. We omit further details.
+
 
 \section{Completeness of the DPLL Proof System}
 
