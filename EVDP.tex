@@ -4,8 +4,7 @@ In the following chapter we present a proof of soundness and completeness for th
 
 \section{Soundness of the DPLL Proof System}
 
-The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the soundness property in the Minlog system however since this has already been presented in \cite{SL08} we will only briefly describe it.
-In the following we will present some of the preliminary definitions needed for the soundness of the DPLL algorithm.
+The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the soundness property in the Minlog system however since this has already been presented in \cite{SL08} we will only briefly describe it. In the following we will present some of the preliminary definitions needed for the soundness of the DPLL algorithm.
 
 Instead of proving soundness we formalized a stronger property of incompatibility in Minlog. We define a formula to be incompatible under a valuation if there does not exist a model which models the valuation and the formula. 
 
@@ -16,6 +15,13 @@ Using this definition of incompatibility the soundness theorem can be formulated
 If $\Gamma \vdash \Delta$, 
 %in the DPLL proof system 
 then $\Gamma$ and $\Delta$ are incompatible.
+
+The proof proceeds by structural induction on the given derivation of the sequent $\Gamma \vdash \Delta$ leading to 5 cases: \\
+%
+Case \textbf{Conflict}:
+$$\forall \Gamma, \Delta. \emptyset \in \Delta \to \incompatble{\Gamma}{\Delta}$$
+
+
 
 \end{mytheorem}
 The proof proceeds by structural induction on the given derivation 
