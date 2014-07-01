@@ -1,1 +1,264 @@
-\thesischapter{Extracting Verified Decision Procedures}
+\thesischapter{Soundness and Completeness of The DPLL and Resolution Proof Systems}
+In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see Chapter \ref{}).
+
+
+\section{Soundness of the DPLL Proof System}
+
+The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the soundness property in the Minlog system however since this has already been presented in \cite{SL08} we will only briefly describe it.
+In the following we will present some of the preliminary definitions needed for the soundness of the DPLL algorithm.
+
+Instead of proving soundness we formalized a stronger property of incompatibility in Minlog. We define a formula to be incompatible under a valuation if there does not exist a model which models the valuation and the formula. 
+
+Using this definition of incompatibility the soundness theorem can be formulated as follows.
+
+
+\begin{thm}[Soundness]
+If $\Gamma \vdash \Delta$, 
+%in the DPLL proof system 
+then $\Gamma$ and $\Delta$ are incompatible.
+
+\end{thm}
+The proof proceeds by structural induction on the given derivation 
+of the sequent $\Gamma \vdash \Delta$. We omit further details.
+
+\section{Completeness of the DPLL Proof System}
+
+We now turn our attention to the Completeness Theorem for the DPLL proof 
+system. The expected statement of completeness is:
+%%
+%  $$ \forall \Gamma,\Delta\, (\incompatible{\Gamma}{\Delta} \to \Gamma \vdash \%Delta). $$
+%%
+$$ \forall \Gamma\in\consvals, \forall \Delta\, 
+      (\incompatible{\Gamma}{\Delta} \to \Gamma \vdash \Delta). $$
+
+A constructive proof of this statement would yield a program that
+computes a DPLL proof for incompatible $\Gamma$, $\Delta$.
+We reformulate the statement by replacing the implication
+`$\incompatible{\Gamma}{\Delta} \to \Gamma \vdash\Delta$' with
+the classically equivalent but constructively
+stronger disjunction  
+`$\compatible{\Gamma}{\Delta} \vee \Gamma \vdash \Delta$'.
+%
+In this way, we obtain an enhanced program that still computes a DPLL
+proof for incompatible $\Gamma$, $\Delta$, but in addition produces a model
+if $\Gamma$ and $\Delta$ are compatible.
+
+\begin{comment}
+We reformulate this as the following classically equivalent but constructively
+stronger statement:
+   $$\forall \Gamma,\Delta ( \compatible{\Gamma}{\Delta} \vee \Gamma \vdash \Delta)$$
+While a proof of the former statement would only yield a program that
+computes a DPLL proof for unsatisfiable formulae, the latter statement
+yields in addition a model if $\Gamma$ and $\Delta$ are compatible.
+\end{comment}
+
+\begin{thm}[Completeness of DPLL] 
+\label{thm:dpllcompleteness}
+$$ \forall \Gamma\in\consvals, \forall \Delta\,
+     (\compatible{\Gamma}{\Delta}  \lor  \Gamma \vdash \Delta) $$
+
+\proof
+{\rm
+We aim to perform the proof in such a way that an efficient program 
+is extracted. Therefore, we adopt the following strategy:
+%
+\begin{enumerate}
+ \item Since performing a $\Split$ rule is the only computational expensive 
+    operation
+     -- it is the only rule forcing the proof search to branch -- we only
+    apply it when it is absolutely necessary.
+
+ \item  We perform an optimisation on the proof level by partitioning the clauses
+    into `clean' and `unclean' clauses, where a clause is called clean if we
+    cannot apply $\Elim$, $\Red$ or $\Unit$ to that clause.
+    This increases the efficiency of the algorithm by reducing the number
+    of comparisons needed.
+\end{enumerate}
+%
+To this end we show that for all valuations $\Gamma$, and formulae $\Delta$, $\Theta$,\\[1em]
+%
+\hspace*{3em}$\emptyset \notin \Theta \wedge 
+\Gamma\in\consvals \land \var(\Gamma) \cap \var(\Theta) = \emptyset\to$\\[.5em]
+\hspace*{12em}$(\Gamma \vdash  \Delta\cup\Theta) \lor 
+ \exists M(M \models \Gamma \land M \models \Delta\cup\Theta)$.\\[1em]
+%
+The proof is by main induction on the measure
+%
+$$\muu{\Gamma}{\Delta}{\Theta} := \measure{\Gamma}{(\Delta\cup\Theta)}+
+\weight{\Delta}+\weight{\Theta}$$
+%
+where
+%
+\begin{center}
+\begin{tabular}{lll}
+$|X|$             &$:=$& \hbox{the cardinality of a set}\,$X$\\
+$\Delta \setminus\!\!\setminus V $
+                &$:=$& $\{ l| \exists C\in \Delta(l \in C) \land \var (l) \notin V \}$\\
+$\weight{\Delta} $&$:=$&$ \sum_{C\in\Delta}|C|$ 
+\end{tabular}
+\end{center}
+%
+and a side induction on $|\Delta|$ (i.e.~the number of clauses in $\Delta$).
+%
+\par
+
+\bigskip
+
+Let $\Gamma$, $\Delta$, $\Theta$ be given such that
+$\Gamma\in\consvals$, $\emptyset \notin \Theta$, and 
+$\var(\Gamma) \cap \var(\Theta) = \emptyset$. \\[1em]
+%
+\noindent\emph{Case 1 $\Delta = \emptyset$.} \\[1em]
+%
+\noindent\emph{Case 1.1 $\Theta = \emptyset$.}\\ %%Extend Val to M.
+%
+We define a model $M$ by 
+$M(l) = \True \leftrightarrow l \in \Gamma$. Then 
+$M \models \Gamma \land M \models \emptyset$ holds.\\[1em]
+%
+\noindent\emph{Case 1.2 $\Theta \neq \emptyset$.}\\  
+%
+Let $C$ be a clause in $\Theta$ and let $l\in C$ ($C\neq\emptyset$, by the 
+assumption on $\Theta$). Then 
+%
+$\muu{(\Gamma,l)}{\Theta}{\emptyset} < \muu{\Gamma}{\emptyset}{\Theta}$
+%
+since $\measure{\Gamma,l}{\Theta} < \measure{\Gamma}{\Theta}$ and $\weight{\Theta} + \weight{\emptyset} = \weight{\emptyset} + \weight{\Theta}$. 
+Furthermore, for the values $(\Gamma,l)$, $\Theta$, $\emptyset$
+the hypotheses of the theorem are clearly satisfied.  
+Hence the induction hypothesis for these values yields
+%
+\begin{equation}\label{eq-split-left}
+(\Gamma,l \vdash  \Theta) \lor 
+ \exists M(M \models \Gamma,l \wedge M \models \Theta)
+\end{equation}
+%
+Similarly, we can apply the induction hypothesis to 
+$(\Gamma,\mybar{l})$, $\Theta$, and $\emptyset$ yielding
+%
+\begin{equation}\label{eq-split-right}
+(\Gamma,\mybar{l} \vdash  \Theta) \lor 
+ \exists M(M \models \Gamma,\mybar{l} \wedge M \models \Theta)
+\end{equation}
+%
+The disjunctions \eqref{eq-split-left} and \eqref{eq-split-right} result
+in 4 cases:
+%
+In the case that $\Gamma,l \vdash \Theta$ and $\Gamma, \mybar{l} \vdash \Theta$ hold 
+the $\Split$ rule is applied and we obtain $\Gamma \vdash \Theta$. 
+%
+In all of the other cases we use one of the models obtained from the 
+induction hypotheses. \\[1em]
+%
+\noindent\emph{Case 2 $\Delta = \Delta', C$.}\\
+%
+We perform a case distinction on whether the valuation $\Gamma$ has a 
+literal  in common with $C$.\\[1em]
+%
+\noindent\emph{Case 2.1  $ \Gamma \cap C = \emptyset$.}\\
+%
+We perform a further case distinction on the cardinality of the clause $C$.\\[1em]
+%
+\noindent\emph{Case 2.1.1  $C = \emptyset$.}\\
+% 
+It suffices to show $\Gamma \vdash (\Delta' , \emptyset) \cup \Theta$. 
+This follows from the $\Conflict$ rule.\\[1em]
+%
+\noindent\emph{Case 2.1.2 $C = \{ l \}$}.\\
+%
+If $\mybar{l}\in\Gamma$, then $\Gamma \vdash (\Delta' , \{ l \}) \cup \Theta$
+can be derived by applying (in backwards fashion) the $\Red$ rule followed
+by the $\Conflict$ rule.
+% 
+If $\mybar{l}\notin\Gamma$, then we use the induction
+hypothesis with $(\Gamma,l) $, $\Delta' \cup \Theta$, $\emptyset$.
+This is possible since $\muu{(\Gamma,l)}{\Delta' \cup \Theta}{\emptyset}
+<\muu{\Gamma}{(\Delta',\{l\})}{\Theta}$ because 
+$ \measure{\Gamma,l}{(\Delta'\cup \Theta)} < \measure{\Gamma}{(\Delta'\cup(\{l\},\Theta))}
+$ and 
+$\weight{\Delta'\cup\Theta} < \weight{\Delta',\{l\}}+\weight{\Theta}$.
+Since for the values $(\Gamma,l) $, $\Delta' \cup \Theta$, $\emptyset$
+the hypotheses of the theorem are satisfied (i.p.\ $\Gamma,l$ is consistent since
+$\mybar{l}\notin\Gamma$), we obtain the disjunction 
+%
+$(\Gamma, l \vdash \Delta' \cup
+\Theta) \vee \exists M(M \models \Gamma, l \wedge M \models
+(\Delta' \cup \Theta))$. 
+%
+In the case that $\Gamma,l \vdash \Delta'
+\cup \Theta$ holds we apply the $\Unit$ rule resulting in $\Gamma
+\vdash \Delta \cup \Theta$. 
+%
+In the other case we have a model of  $\Gamma, l$ and $\Delta' \cup \Theta$
+which clearly also models $\Gamma$ and $\Delta \cup \Theta$.\\[1em]
+%
+\noindent
+%
+\emph{Case 2.1.3 $|C| \geq 2$}.\\
+% 
+We perform a case distinction on $\exists
+l \,(l \in C \wedge \mybar{l} \in \Gamma) \lor \neg \exists l (l \in C
+\wedge \mybar{l} \in \Gamma)$. This disjunction can be proven constructively, 
+since the sets involved are finite.\\[.5em]
+%
+\noindent
+%
+\emph{Case 2.1.3.1 $\mybar{l} \in \Gamma$ for some $l\in C$}.\\
+Then we have $\muu{\Gamma}{(\Delta',C\setminus l)}{\Theta}
+<\muu{\Gamma}{(\Delta',C)}{\Theta}$ since 
+$\weight{\Delta',C\setminus l}<\weight{\Delta',C}$ and $\measure{\Gamma}{(\Delta',C\setminus l)} = \measure{\Gamma}{(\Delta',C)}$ .
+The hypotheses of the theorem are satisfied for the chosen values.
+Hence we obtain, by induction hypothesis,
+%
+$(\Gamma \vdash (\Delta', (C \setminus l)) \cup \Theta)\lor 
+\exists M(M\models\Gamma \land M\models(\Delta',(C\setminus l))\cup\Theta)$. 
+%
+In the case that $\Gamma \vdash (\Delta',(C \setminus l)) \cup \Theta$ holds, 
+we apply the $\Red$ rule. 
+%
+In the other case we have a model of $\Gamma$ and 
+$(\Delta', (C\setminus l)) \cup \Theta$ which also models the weaker formula
+$(\Delta',C) \cup \Theta$.\\[.5em]
+%
+\noindent
+%
+\emph{Case 2.1.3.2} $\neg \exists l\, (l \in C \wedge \mybar{l} \in
+\Gamma)$.\\
+In this case we may move $C$ from $\Delta$ to $\Theta$:
+Since $\muu{\Gamma}{\Delta'}{(\Theta,C)}
+\le\muu{\Gamma}{(\Delta',C)}{\Theta}$ we can apply the 
+side induction hypothesis
+to $\Gamma$, $\Delta'$, $(\Theta,C)$. Since for these values the hypotheses
+of the theorem are satisfied we obtain
+%
+$\Gamma \vdash \Delta' \cup (\Theta, C) \lor
+\exists M(M \models \Gamma \land M \models \Delta' \cup (\Theta,C))$
+%
+which is the same as the required disjunction
+%
+$\Gamma \vdash (\Delta',C) \cup \Theta \lor
+\exists M(M \models \Gamma \land M \models (\Delta',C) \cup \Theta)$. \\[1em]
+%
+\noindent\emph{Case 2.2  $\Gamma \cap C \neq \emptyset$.}\\
+% 
+We can prove constructively that in this case 
+$\Gamma$ and $C$ have some literal $l$ in common.
+%
+We apply the induction hypothesis to 
+$\Gamma$, $(\Delta' ,(C \setminus l))$, $\Theta$. Since clearly the measure 
+decreases, $\weight{\Delta',(C \setminus l)}<\weight{\Delta',C}$ and 
+$\measure{\Gamma}{(\Delta' ,(C \setminus l))} = \measure{\Gamma}{(\Delta',C)}$, 
+and the hypotheses of the theorem are satisfied, we obtain
+%
+$\Gamma \vdash (\Delta',(C \setminus l)) \cup \Theta$ or 
+$\exists M(M\models\Gamma \land M\models(\Delta',(C \setminus l))\cup\Theta)$. 
+%
+In the first case we apply the $\Elim$ rule, in the second case we use the model
+provided.
+%
+}
+\qed
+
+\end{thm}
+
+\section{Soundness and Completness of the Resolution Proof System}
