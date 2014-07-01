@@ -161,50 +161,57 @@ There are four possible combinations of trains and movement authorities.  The fi
 
 
 \subsection*{Defining "A Point Does Not Move"}
-We formalise the safety property "a point does not move when it is in a movement authority" as two safety conditions. The first states that it is globally true that if the point is in the movement authority of train1 then the point is set to normal. The second states that it is globally true that if the point is in the movement authority of train2 then the point is set to reverse. These two safety conditions were formalised using 3 Maude operations of type $\mathbf{Prop}$, $\mathbf{pointma}$ is used to compute whether the point is in the movement authority of a train, $\mathbf{pointnormal}$ and $\mathbf{pointreverse} cause the satisfaction relation to hold if the point is in the position corresponding to the property. 
+We formalise the safety property "a point does not move when it is in a movement authority" as two safety conditions. The first states that it is globally true that if the point is in the movement authority of train1 then the point is set to normal. The second states that it is globally true that if the point is in the movement authority of train2 then the point is set to reverse. These two safety conditions were formalised using 3 Maude operations of type $\mathbf{Prop}$, $\mathbf{pointma}$ is used to compute whether the point is in the movement authority of a train, $\mathbf{pointnormal}$ and $\mathbf{pointreverse}$ cause the satisfaction relation to hold if the point is in the position corresponding to the property. 
 
 \begin{lstlisting}
-
-
+  eq { REST  < O1 : Train |  dist : D1 , ma : M1 > } |= pointma(O1) 
+      =  ptma(D1, M1)  .
+  eq { REST   < O1 : Inter | p1n : B >  } |= pointnormal = B .
+  eq { REST   < O1 : Inter | p1r : B >  } |= pointreverse = B .
 \end{lstlisting}
 
 \subsection{Execution of The LTL Model Checker}
 \textbf{Note: do we want to describe and verify other safety conditions here?}
-We shall now describe the execution of the LTL model checker in Real Time Maude. This is done using the mc command with some initial state of type system, a satisfaction relation, the LTL formula to be checked and an optional time. The satisfaction relation can be either $\models_u$ for un-timed model checking for which time is not specified or $\models_t$ for which the optional time is specified.
+We shall now describe the execution of the Maude LTL model checker in Real Time Maude. This is done using the mc command with some initial state of type system, a satisfaction relation, the LTL formula to be checked and an optional time. The satisfaction relation can be either $\models_u$ for un-timed model checking for which time is not specified or $\models_t$ for which the optional time is specified.
 
-The Real Time Maude LTL model checker is then called using the following command:
+The Maude LTL model checker is then called using the following command:
 
 \begin{center}
 \texttt{(mc initialstate2 |=t [] nomaoverlap(train1,train2) in time <= 30 .)}
 \end{center}
 The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 30. This results in the following output from Real Time Maude which indicates that the property was succesfully verified in 3 minutes and 22 seconds taking the system approximately 140 million rewrites.
 \begin{lstlisting}[caption = No overlapping movement authorities model checking result]
-rewrites: 138889387 in 179663ms cpu 
-(202024ms real) (773054 rewrites/second)
+rewrites: 47841127 in 77724ms cpu 
+(77725ms real) (615525 rewrites/second)
 
-Model check initialstate2 |=t[]nomaoverlap(train1,train2)in 
-MODEL-CHECK-ERTMS8 in time <= 30 
-with mode deterministic time increase
+Model check initialstate2 |=t[]nomaoverlap1(train1,train2)
+in MODEL-CHECK-ERTMS8
+in time <= 30 with mode deterministic time increase
 
 Result Bool :
   true
 \end{lstlisting}
 
-Unfortunately the Real Time Maude LTL model checker can not detect the congruence between difference configurations of control system. Therefore the state space is infinite and it is impossible to do untimed model checking on the above model checking problem for the pentagon example. It is however possible to do timed model checking within a reasonable time limit that allows for all behaviours of the system to be verified. The junction example does not suffer from this problem as the state space is finite and in addition, it has additional mechanisms to remove non-determinism from the model which dramatically cuts down on the state space.
+Unfortunately the Maude LTL model checker can not detect the congruence between difference configurations of control system. Therefore the state space is infinite and it is impossible to do untimed model checking on the above model checking problem for the pentagon example. It is however possible to do timed model checking within a reasonable time limit that allows for all behaviours of the system to be verified. The junction example does not suffer from this problem as the state space is finite and in addition, it has additional mechanisms to remove non-determinism from the model which dramatically cuts down on the state space.
 
+The following command is used to model check the safety property P1 for the junction example.
+
+\begin{lstlisting}
+(mc initialstate1 |=u [] (pointma(train1) => pointnormal)  .)
+\end{lstlisting}
 
 \section{Results}
 The following table presents the times taken to verify the 4 safety properties MA1, MA2, MA3, P1 and P2:
-
+\begin{center}
 \begin{tabular}{c | c | c} 
-Safety Condition $ Time Steps Checked $ Time to Solve  
-MA1 & 30 &77.724s 
-MA2 & 30 &79.192s
-MA3 &  30 &79.380s
-P1 & untimed &7.488s
+Safety Condition & Time Steps Checked & Time to Solve  \\ \hline
+MA1 & 30 &77.724s  \\
+MA2 & 30 &79.192s \\ 
+MA3 &  30 &79.380s \\
+P1 & untimed &7.488s \\
 P2 & untimed & 6.636s
 \end{tabular}
-
+\end{center}
 The removal of the non-determinism and finite state space of the junction example has made a large improvement to the model checking of the safety properties.
 
 \section{Conclusion}
