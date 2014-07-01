@@ -12,12 +12,12 @@ Instead of proving soundness we formalized a stronger property of incompatibilit
 Using this definition of incompatibility the soundness theorem can be formulated as follows.
 
 
-\begin{thm}[Soundness]
+\begin{mytheorem}[Soundness]
 If $\Gamma \vdash \Delta$, 
 %in the DPLL proof system 
 then $\Gamma$ and $\Delta$ are incompatible.
 
-\end{thm}
+\end{mytheorem}
 The proof proceeds by structural induction on the given derivation 
 of the sequent $\Gamma \vdash \Delta$. We omit further details.
 
@@ -52,7 +52,7 @@ computes a DPLL proof for unsatisfiable formulae, the latter statement
 yields in addition a model if $\Gamma$ and $\Delta$ are compatible.
 \end{comment}
 
-\begin{thm}[Completeness of DPLL] 
+\begin{mytheorem}[Completeness of DPLL] 
 \label{thm:dpllcompleteness}
 $$ \forall \Gamma\in\consvals, \forall \Delta\,
      (\compatible{\Gamma}{\Delta}  \lor  \Gamma \vdash \Delta) $$
@@ -259,6 +259,6 @@ provided.
 }
 \qed
 
-\end{thm}
+\end{mytheorem}
 
 \section{Soundness and Completness of the Resolution Proof System}
