@@ -1,5 +1,5 @@
 \thesischapter{Soundness and Completeness of The DPLL and Resolution Proof Systems}
-In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see Chapter \ref{}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. A Minlog formalisation of these proofs is presented in chapter \ref{} whilst the performance of the extracted program is analysed in \ref{}.
+In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see Chapter \ref{}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. The completeness proof is performed in such a way as to take into account efficiency considerations. The branching rule $\Split$ is only applied when absolutely necessary as it is computationally the most expensive to perform. A Minlog formalisation of these proofs is presented in chapter \ref{} whilst the performance of the extracted program is analysed in \ref{}. Following this we present a proof of the soundness and completeness of the resolution proof system based on the completeness proof of the DPLL proof system. This completeness proof 
 
 We first reformulate the DPLL proof system as an inductive definition
 that can be immediately formalized in the Minlog system. The definition
@@ -44,8 +44,7 @@ The soundness property can be thought of as the following: If we can derive a re
 Instead of proving soundness we formalized a stronger property of incompatibility in Minlog. We define a formula to be incompatible under a valuation if there does not exist a model which models the valuation and the formula. 
 
 Using this definition of incompatibility the soundness theorem can be formulated as follows.
-
-
+\medskip
 \begin{mytheorem}[Soundness]
 If $\Gamma \vdash \Delta$, 
 %in the DPLL proof system 
@@ -59,7 +58,7 @@ The empty set is trivally unsatisfiable, therefore there does not exist a model 
 
 Case \textbf{Red}:
 $$l \in \Gamma \to \mybar{l} \in C \to C \in \Delta \to \incompatible{\Gamma}{\Delta \setminus C, (C \setminus \mybar{l})} \incompatible{\Gamma}{\Delta}$$
-Any model $M$ which models $\Gamma$ must model $l$ and can not model $\Delta \setminus C, (C \setminus \mybar{l})$ by the model property we know that $\mybar{l}$ can not hold in the model and therefore if $M \not\models C \setminus \mybar{l}$ then $M\notmodels C$.
+Any model $M$ which models $\Gamma$ must model $l$ and can not model $\Delta \setminus C, (C \setminus \mybar{l})$ by the model property we know that $\mybar{l}$ can not hold in the model and therefore if $M \not\models C \setminus \mybar{l}$ then $M\not\models C$.
 
 Case \textbf{Elim}:
 $$l \in \Gamma \to l \in C \to C \in \Delta \to \incompatible{\Gamma}{\Delta \setminus C} \to \incompatible{\Gamma}{\Delta}$$
@@ -72,7 +71,7 @@ There is no such model that models both $\Gamma,l$ and $\Delta \setminus \{ l \}
 
 Case \textbf{Split}:
 $$\incompatible{\Gamma, l}{\Delta} \to \incompatible{\Gamma, \mybar{l}}{\Delta} \to \incompatible{\Gamma}{\Delta}$$
-
+The proof for this case proceeds by fixing a model $M$ such that $M \models \Gamma$ and then performing a case distinction on whether $M l$ or $M \mybar{l}$ holds (it is possible to perform such a case distinction due to the model property). In the case that $M l$ holds $M \models \Gamma, l$ and therefore $M \not\models \Delta$ due to $\incompatible{\Gamma,l}{\Delta}$. In the case that $M \mybar{l}$ holds $M \models \Gamma, \mybar{l}$ and therefore $M \not\models \Delta$ due to $\incompatible{\Gamma, \mybar{l}}{\Delta}$
 
 \end{mytheorem}
 
@@ -107,7 +106,7 @@ While a proof of the former statement would only yield a program that
 computes a DPLL proof for unsatisfiable formulae, the latter statement
 yields in addition a model if $\Gamma$ and $\Delta$ are compatible.
 \end{comment}
-
+\medskip
 \begin{mytheorem}[Completeness of DPLL] 
 \label{thm:dpllcompleteness}
 $$ \forall \Gamma\in\consvals, \forall \Delta\,
@@ -318,3 +317,212 @@ provided.
 \end{mytheorem}
 
 \section{Soundness and Completness of the Resolution Proof System}
+
+The resolution proof system~\cite{AR65} is widely used in practical
+applications, for instance in tools for proof checking and debugging
+\cite{tracecheck} or interchange between different solvers
+\cite{CK13}. State-of-the-art SAT solvers such as MiniSAT
+\cite{miniSAT} and zChaff \cite{MM01} return (extended) resolution
+proofs for unsatisfiable problems.  By formalizing that every DPLL
+derivation has an equivalent resolution derivation, and combining this result
+with the completeness proof from the previous section, we can extract
+a SAT solver which produces resolution derivations. The equivalence of DPLL
+and Resolution was first shown by Robinson \cite{JR68} who translated
+between the two proof systems using semantic trees.
+
+%To make sure that the translation into the resolution proof system
+%does not increase the size of the proofs, we refine the systems to
+%contain size information as well, and show that the size of the
+%resulting proof is in the same order as the size of the original
+%proof.
+%% FRED: From Thm 3.7, it seems like we can say something better: "the
+%% same size or smaller"?
+
+By enriching the systems with size information we are able to 
+show that the size of the resulting resolution proof does not exceed
+the size of the original DPLL proof.
+
+% In the following we have formalised the equivalence between the DPLL proof system and the resolution proof system. We have done this in such a way that we obtain a bound on the size resolution proof so that it is in the order of the same size as the DPLL proof. This provides us with a completeness proof for the resolution proof system and allows us to extract a resolution solver based on the DPLL proof system.
+
+% We define a bar operation which computes a clause representing \emph{opposite}% of value of a valuation as follows; $ \overline{ \{ l_1, \ldots , l_k} \} = \{%\bar{l_1}, \ldots , \bar{l_k} \}$
+For every valuation $\Gamma$ we define a clause $\mybar{\Gamma}$
+representing its negation by $ \mybar{ \{l_1, \ldots , l_k\}} =
+\{\mybar{l_1}, \ldots ,\mybar{l_k} \}$.
+\medskip
+\begin{mydef}[Resolution Proof System] The derivable resolution sequents $\Gamma \modres{n} C$ with a derivation of size $n$ are conveniently defined by two rules: Subsumption (or axiom) and resolution.
+%
+\bigskip
+
+\label{def:resolutionps}
+\begin{center}
+\AxiomC{\phantom{$\Delta \modres{n} C \vee l$}}
+\RightLabel{($\Sub$)  $C \subseteq C'$ }
+\UnaryInfC{$\Delta,C \modres{0} C'$}
+\DisplayProof
+%
+\qquad
+%
+\AxiomC{$\Delta \modres{n} C \vee l$}
+\AxiomC{$ \Delta \modres{m} C' \vee \bar{l}$}
+\RightLabel{($\Res$)}
+\BinaryInfC{$\Delta \modres{n + m + 1} C \vee C'$}
+\DisplayProof 
+\end{center}
+\bigskip
+\end{mydef}
+\medskip
+We also need a version of the DPLL proof system with added bounds in order to speak about the sizes of the proofs.
+\medskip
+\begin{myremark}[Derivable refined DPLL sequents]
+  The derivable DPLL sequents $\Gamma \moddpll{n} \Delta$ with a
+  derivation of size $n$ are inductively defined by the following
+  clauses:
+\begin{center}
+\begin{tabular}{ll}
+$\Conflict$ &
+$\emptyset \in \Delta \to \Gamma \moddpll{0} \Delta$
+\\
+$\Unit$ &
+$\{ l \} \in \Delta \to \Gamma, l \moddpll{n} 
+\Delta \setminus \{l \} \to  \Gamma \moddpll{n + 1}  \Delta$
+\\
+$\Elim$ &
+$l \in \Gamma \to l \in  C \to  C \in \Delta \to  
+\Gamma \moddpll{n}  \Delta \setminus C  \to   \Gamma \moddpll{n + 1} \Delta $
+\\
+$\Red$ &
+$l \in \Gamma \to \mybar{l} \in C \to C \in \Delta \to \Gamma \moddpll{n}  
+(\Delta \setminus C) , (C \setminus \mybar{l}) \to   \Gamma \moddpll{n + 1} \Delta$
+\\
+$\Split$ &
+$\Gamma, l  \moddpll{n} \Delta 
+\to  \ \Gamma, \mybar{l} \moddpll{m}  \Delta \to \Gamma \moddpll{n + m + 1} \Delta$
+\end{tabular}
+\end{center}
+%
+\label{def:derivable-DPLL-refined}
+\end{myremark}
+\medskip
+\begin{myremark}
+  The resolution proof system from Definition \ref{def:resolutionps}
+  has been reformulated as follows for our theorem prover. The
+  derivable resolution sequents $\Gamma \modres{n} C$ with a
+  derivation of size $n$ are inductively defined by the following
+  clauses:
+\begin{center}
+\begin{tabular}{ll}
+$\Sub$ &
+$C_0 \in \Delta \to C_0 \subseteq C \to \Gamma \modres{0} C$
+\\
+$\Res$ &
+$\Delta \modres{n} (C' \vee \mybar{l}) 
+\to  \ \Delta \modres{m} (C \vee l)  \to \Delta \modres{n + m + 1} (C \vee C')$
+\end{tabular}
+\end{center}
+%
+\label{def:resolution}
+\end{myremark}
+\medskip
+%\begin{mytheorem}[Equivalence of DPLL and Resolution Proof Systems] The equivalence b%etween a DPLL proof and a Resolution proof is formalised as follows:
+
+%$$\forall \Gamma, \Delta, n. \, \Gamma \moddpll{n} \Delta \to \exists m. \, m \%leq n \wedge  \Delta \modres{m} \bar{\Gamma}$$
+
+
+%where for a partial model $\Gamma = (l_1 \wedge \ldots \wedge l_n)$,
+%$\bar{\Gamma} := (\bar{l_1} \vee \ldots \vee \bar{l_n})$ and $\Gamma \moddpll{n%} \Delta$ represents a sequent in the DPLL proof system of size $n$.
+\begin{mytheorem}[DPLL implies Resolution] 
+\label{thm:dpllresolution}
+%
+For all consistent valuations $\Gamma$, CNF formulae $\Delta$ and natural numbers $n$: If $\Gamma \moddpll{n} \Delta$, then $\Delta \modres{m} \bar{\Gamma}$
+for some $m\le n$.
+%
+%
+\proof
+The proof is an easy induction on DPLL derivations. 
+We only sketch the overall idea. 
+%Instead of performing the full proof we give a sketch of the overall idea. 
+%The proof is by induction on DPLL derivations. 
+The $\Conflict$ and $\Split$ rule translate into
+the $\Sub$ and $\Res$ rule respectively.
+Both of these rules have the same cost to perform them as the DPLL rules and so the size of the derivations are less or equal. 
+An application of the $\Unit$ rule is a special case of the $\Res$ rule in which one of the branches is obtained via a subsumption of a unit clause. The size of these two proofs is less or equal since the cost of performing the $\Sub$ rule and $\Res$ rule together is the same as that of the $\Unit$ rule. Finally, both the $\Elim$ and $\Red$ DPLL rules correspond to a form of weakening in the resolution proof which is done at no cost because the size of the resulting resolution proofs is less than the DPLL proofs. 
+\qed
+
+\end{mytheorem}
+\medskip
+%% In order to extract a decision procedure from our proof of completeness we need the following new definition of success.
+%% $$ \forall \Delta, \Gamma.   \Delta \vdash_{Res} (\bar{\Gamma})  \to 
+%%                                ResSuccess \, \Delta \, \Gamma   $$
+
+%% $$               \forall  \Delta,\Gamma,mod, l. \,( l \in \Gamma \to mod \, l) \to 
+%%                                               \forall C \, ( C \in \Delta \to  ( \exists l. \, l \in C \wedge \, mod \, l)) \to 
+%%                                         ResSuccess \, \Delta  \, \Gamma  $$
+
+%We will now perform a second proof of completeness for our resolution calculus.% This program extracted from this proof will produce either a resolution refuta%tion or a model satisfying the formula.
+%\begin{thm}[Completeness of the Resolution Proof System]
+%$$ \forall \Delta. \,  \exists M \, M \models \Delta \vee \exists n \, \Delta \%modres{n} \emptyset$$
+
+%he program extracted from the above theorem will translate a DPLL derivation into an equivalent resolution derivation. %We make use of this in the following.
+
+
+\begin{myremark}
+%
+One can also easily prove that Resolution implies DPLL, more precisely, if
+$\Delta \modres{} C$, then  $\bar{C} \moddpll{} \Delta$.
+However, as long as the sizes of derivations are measured only in terms of
+the number of applications of rules (as we do above), no size bound can be given.
+The reason is that the translation of one instance of the subsumption rule
+%
+\bigskip
+
+\begin{center}
+\AxiomC{$ $}
+\RightLabel{($Sub$)  $C \subseteq C'$ }
+\UnaryInfC{$\Delta,C \modres{0} C'$}
+\DisplayProof
+\end{center}
+%
+into DPLL requires $n$ applications of the $\mathbf{Red}$ rule where $n$ is the
+number of literals in $C$.
+%
+\end{myremark}
+\bigskip 
+The Completeness Theorem for DPLL (Theorem~\ref{thm:dpllcompleteness}), 
+adapted to the DPLL system with size information, and 
+Theorem~\ref{thm:dpllresolution}~(a) immediately imply:
+\medskip
+%
+\begin{mytheorem}[Completeness of the Resolution Proof System]
+\label{thm:resolutioncomplete}
+
+$$ \forall \Delta \,  ((\exists M \, M \models \Delta) \vee (\exists n \, \Delta \modres{n} \emptyset))$$
+
+%\proof
+%This requires the use of the completeness theorem for the DPLL proof system \ref{thm:dpllcompleteness} with added bounds.% We then  perform a case distinction on whether the formula and valuation yields either $\exists n \, \Gamma \moddpll{n} %\Delta$ or $\compatible{\Gamma}{\Delta}$. In the case that we have a DPLL derivation we apply our original completeness t%heorem yielding a resolution derivation $\Delta \modres{m} \bar{\Gamma}$. Otherwise we are in the case that a model $M$ h%as been found such that $M \models \Delta$.
+%\qed
+
+\end{mytheorem}
+
+The program extracted from Theorem~\ref{thm:dpllresolution} translates 
+DPLL derivations into equivalent resolution derivations.
+This translator and the SAT solver extracted from the Completeness Theorem for 
+DPLL (Theorem~\ref{thm:dpllcompleteness}) are combined in the
+program extracted from Theorem~\ref{thm:resolutioncomplete}
+to a SAT solver that yields resolution refutations for unsatisfiable formulae.
+Since the computationally hard and interesting part of this program is 
+entirely contained in the DPLL-based SAT solver, we will restrict
+our attention to the latter when we discuss the extracted programs in detail 
+in Sect.~\ref{sec:program}.
+
+
+
+%% The program extracted from the above completeness theorem takes as input a formula and produces either a resolution derivation or a model of that formula. The proof search is carried out by calling the DPLL SAT solving algorithm described in Section~\ref{sec:program}. If the result from running this algorithm is a DPLL derivation then the translation is called and an resolution derivation is obtained. Otherwise the execution of the DPLL SAT algorithm results in a model which is output by the program.
+
+
+%\begin{myremark}
+%The other direction of equivalence can be proven however there is a problem with finding a weighting on the rules which w%orks in both directions. This is due to the difference in proof systems with the $\Sub$ rule being far more powerful than% the $\Conflict$ rule.
+%\end{myremark}
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 
