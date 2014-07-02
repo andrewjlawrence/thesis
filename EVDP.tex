@@ -1,10 +1,43 @@
 \thesischapter{Soundness and Completeness of The DPLL and Resolution Proof Systems}
-In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see Chapter \ref{}).
+In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see Chapter \ref{}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. A Minlog formalisation of these proofs is presented in chapter \ref{} whilst the performance of the extracted program is analysed in \ref{}.
 
+We first reformulate the DPLL proof system as an inductive definition
+that can be immediately formalized in the Minlog system. The definition
+has a clause for each rule. We notationally identify a sequent
+$\Gamma \vdash \Delta$ with the statement `$\Gamma \vdash \Delta$ is derivable'.
+\medskip
+\begin{myremark}
+\label{def:derivable-DPLL}
+The proof system described in Definition \ref{def:proofsystem-DPLL} has been reformulated for our theorem prover. The set of sequents  $\Gamma \vdash \Delta$ is 
+defined inductively by the following (universally quantified) inductive clauses:
+%
+\begin{center}
+\begin{tabular}{ll}
+$\Conflict$ &
+$\emptyset \in \Delta \to \Gamma \vdash \Delta$
+\\
+$\Unit$ &
+$\{ l \} \in \Delta \to \Gamma, l \vdash 
+\Delta \setminus \{l \} \to  \Gamma \vdash  \Delta$
+\\
+$\Elim$ &
+$l \in \Gamma \to l \in  C \to  C \in \Delta \to  
+\Gamma \vdash  \Delta \setminus C  \to   \Gamma \vdash \Delta $
+\\
+$\Red$ &
+$l \in \Gamma \to \mybar{l} \in C \to C \in \Delta \to \Gamma \vdash  
+(\Delta \setminus C) , (C \setminus \mybar{l}) \to   \Gamma \vdash \Delta$
+\\
+$\Split$ &
+$\Gamma, l  \vdash \Delta 
+\to  \ \Gamma, \mybar{l} \vdash  \Delta \to \Gamma \vdash \Delta$
+\end{tabular}
+\end{center}
+\end{myremark}
 
 \section{Soundness of the DPLL Proof System}
 
-The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the incompatibility (\forall M. M \models \Gamma \to M \not\models \Delta)  of the DPLL proof system in Minlog following \cite{SL08}. 
+The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the incompatibility ($\forall M. M \models \Gamma \to M \not\models \Delta$)  of the DPLL proof system in Minlog following the approach found in \cite{SL08}. 
 
  In the following we will present some of the preliminary definitions needed for the soundness of the DPLL algorithm. (\textbf{Note to self: Add Coq paper reference.})
 
@@ -21,11 +54,12 @@ then $\Gamma$ and $\Delta$ are incompatible.
 The proof proceeds by structural induction on the given derivation of the sequent $\Gamma \vdash \Delta$ leading to 5 cases: \\
 %
 Case \textbf{Conflict}:
-$$\forall \Gamma, \Delta. \emptyset \in \Delta \to \incompatble{\Gamma}{\Delta}$$
+$$\forall \Gamma, \Delta. \emptyset \in \Delta \to \incompatible{\Gamma}{\Delta}$$
 The empty set is trivally unsatisfiable, therefore there does not exist a model that models both $\Gamma$ and $\Delta$.
 
-Case \textbf{Reduce}:
-$$ \incompatible{\Gamma}{\Delta}$$
+Case \textbf{Red}:
+$$l \in \Gamma \to \mybar{l} \in C \to C \in \Delta \to \incompatible{\Gamma}{\Delta \setminus C, (C \setminus \mybar{l})} \incompatible{\Gamma}{\Delta}$$
+Any model $M$ which models $\Gamma$ must model $l$ and can not model $\Delta \setminus C, (C \setminus \mybar{l})$ by the model property we know that $\mybar{l}$ can not hold in the model and therefore if $M \not\models C \setminus \mybar{l}$ then $M\notmodels C$.
 
 Case \textbf{Elim}:
 $$\incompatible{\Gamma}{\Delta}$$
