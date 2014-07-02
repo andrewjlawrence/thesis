@@ -62,16 +62,16 @@ $$l \in \Gamma \to \mybar{l} \in C \to C \in \Delta \to \incompatible{\Gamma}{\D
 Any model $M$ which models $\Gamma$ must model $l$ and can not model $\Delta \setminus C, (C \setminus \mybar{l})$ by the model property we know that $\mybar{l}$ can not hold in the model and therefore if $M \not\models C \setminus \mybar{l}$ then $M\notmodels C$.
 
 Case \textbf{Elim}:
-$$\incompatible{\Gamma}{\Delta}$$
+$$l \in \Gamma \to l \in C \to C \in \Delta \to \incompatible{\Gamma}{\Delta \setminus C} \to \incompatible{\Gamma}{\Delta}$$
+The formula $\Delta \setminus C$ is incompatible with the valuation $\Gamma$ meaning there must be some clause in $\Delta \setminus C$ which is not satisfied by $\Gamma$ and is also contained within $\Delta$, therefore $\Gamma$ and $\Delta$ are also incompatible.
+
 
 Case \textbf{Unit}:
 $$\forall \Gamma,\Delta,l. \{l\} \in \Delta \to \incompatible{\Gamma,l}{\Delta \setminus \{l \} } \to  \incompatible{\Gamma}{\Delta}$$
 There is no such model that models both $\Gamma,l$ and $\Delta \setminus \{ l \}$. In order for a model $M$ that models $\Gamma$ to model $\Delta$ it must be the case that $M l$, this means however that $M$ cannot model the set $\Delta \setminus \{l \}$ or any sets which contain it such as $\Delta$ . 
 
-
-
 Case \textbf{Split}:
-$$\incompatible{\Gamma}{\Delta}$$
+$$\incompatible{\Gamma, l}{\Delta} \to \incompatible{\Gamma, \mybar{l}}{\Delta} \to \incompatible{\Gamma}{\Delta}$$
 
 
 \end{mytheorem}
