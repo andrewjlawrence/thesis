@@ -2,13 +2,7 @@
 
 \thesischapter{The Modelling of the European Rail Traffic Management System Using Real Time Maude}
 
-
-
-
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe an approach using these tools to model the ERTMS system (See chapter \ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describing how each of the 3 subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in chapter \ref{chap:hybrid}. Each of these individual components are modelled using object orientated specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects from these classses behaviour. The  built-in message construct of the Real Time Maude system are used to define communication between the subsystems.
-
-
-
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe how they can be used model the ERTMS system (See chapter \ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describe how each of the 3 subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in chapter \ref{chap:hybrid}. Each of these individual components are modelled using object oriented specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects from these classses behaviour. The  built-in message construct of the Real Time Maude system are used to define communication between the subsystems.
 
 \subsection*{Related Work}
 The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. A distributed sensor network employing the OGDC algorithm has been modelled and verified using Real Time Maude \cite{PO07}. The modelling of the progression of time over the sensor network has inspired the distribution of in our ERTMS model. The Real Time Maude system can also be used for simulation and analysis of systems as seen in the work on the CASH Scheduling Algorithm \cite{PO06}. 
@@ -180,8 +174,8 @@ Result ClockedSystem :
 
 The ability to perform such simulations is useful as it allows for the liveness of a system to be checked. It also provides another way of validating the correctness of a model by perform many of these executions and checking the behaviour of the system over time.
 
-\subsection{Object Orientated Specification in Real Time Maude}
-Real Time Maude is based on Full Maude which contains message and object constructs for object orientated specification. Using these constructs its possible to model ERTMS as several synchronously communicating processes. A Real Time Maude specification consists of  \emph{timed object orientated modules} which start with \texttt{tomod} and end with \texttt{endtom}.
+\subsection{Object oriented Specification in Real Time Maude}
+Real Time Maude is based on Full Maude which contains message and object constructs for object oriented specification. Using these constructs its possible to model ERTMS as several synchronously communicating processes. A Real Time Maude specification consists of  \emph{timed object oriented modules} which start with \texttt{tomod} and end with \texttt{endtom}.
 \medskip
 We can define the following:
 \begin{align*}
@@ -199,7 +193,7 @@ To model communicating processes Real Time Maude uses a messages construct:
 The message construct acts as a container for data being pased between different communicating sub systems. Rewriting rules are used to capture the behaviour of sending and receiving messages between different objects.
 
 \subsubsection*{Configurations in Real Time Maude}
-Objects and messages in a specification are given a sort of \texttt{Configuration} which is a subsort of type \texttt{System}. The composition operation for configurations allows for a combination of objects and messages to form new configurations. This composition operation is also commutative meaning that the order of messages and objects in any configuration is ignored. This allows for more generalised rewriting rules in an object orientated specification that speak about specific objects and messages that are part of some bigger configuration as the order does not affect the firing of the rule.
+Objects and messages in a specification are given a sort of \texttt{Configuration} which is a subsort of type \texttt{System}. The composition operation for configurations allows for a combination of objects and messages to form new configurations. This composition operation is also commutative meaning that the order of messages and objects in any configuration is ignored. This allows for more generalised rewriting rules in an object oriented specification that speak about specific objects and messages that are part of some bigger configuration as the order does not affect the firing of the rule.
 
 \begin{lstlisting}[caption = The Maude Configuration module]
 mod CONFIGURATION is  
@@ -213,10 +207,10 @@ mod CONFIGURATION is
          [ctor config assoc comm id: none] .
 \end{lstlisting}
 
-\subsubsection*{Example Object Orientated Specification}
-The following is an example consisting of two classes of object which serves to demonstrate some of the advantages of object orientated specification as well as some of the pit falls. Firstly there is the class defining D objects which count modulo 500 and transmit a message containing the current count. Secondly there is class defining a object B that reads messages from a D object. 
+\subsubsection*{Example Object oriented Specification}
+The following is an example consisting of two classes of object which serves to demonstrate some of the advantages of object oriented specification as well as some of the pit falls. Firstly there is the class defining D objects which count modulo 500 and transmit a message containing the current count. Secondly there is class defining a object B that reads messages from a D object. 
 
-\begin{lstlisting}[caption = Example object orientated specification, label = code:rtmaudeexample]
+\begin{lstlisting}[caption = Example object oriented specification, label = code:rtmaudeexample]
 (tomod EXAMPLE1 is protecting NAT-TIME-DOMAIN .
   msgs msgD  : Nat -> Msg .  
   class  D | d : Nat .
@@ -274,7 +268,7 @@ The following are some states reachable in time 2.
 \end{lstlisting}
 
 \section{Modelling the European Rail Traffic Management System}
-In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object orientated fashion following the hybrid automata described in chapter \ref{chap:hybrid} to define one class for each of the 3 hybrid automata. Time has been modelled by the use of a function $\delta$ that distributes the transition of time over objects in the system. Rewriting rules are then applied to $\delta$ containing singleton objects to give each individual object its behaviour. We attempt to remove as much non-determinism from the model as possible by forcing the ERTMS system to read all messages by the end of each time step and by preventing trains from making more than one movement authority request to the radio block processor in a given timestep.
+In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object oriented fashion following the hybrid automata described in chapter \ref{chap:hybrid} to define one class for each of the 3 hybrid automata. Time has been modelled by the use of a function $\delta$ that distributes the transition of time over objects in the system. Rewriting rules are then applied to $\delta$ containing singleton objects to give each individual object its behaviour. We attempt to remove as much non-determinism from the model as possible by forcing the ERTMS system to read all messages by the end of each time step and by preventing trains from making more than one movement authority request to the radio block processor in a given timestep.
 
 
 \subsubsection*{Modelling the Transition of Time}

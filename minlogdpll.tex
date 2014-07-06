@@ -15,9 +15,9 @@ The literal is also defined as an algebra but has two constructors "Pos" and "Ne
          '("Neg" "variable => lit"))
 \end{lstlisting}
 
-We have defined an operation $\mathbf{opposite}$ which computes 
+We have defined an operation $\mathbf{opposite}$ which computes the opposite polarity of a literal. This is defined using
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = "Definition of the opposite operation in the Minlog System"]
 (add-program-constant "opposite" (mk-arrow (py "lit") (py "lit")) 1)
 (add-computation-rule (pt "opposite (Pos v)") (pt "Neg v"))
 (add-computation-rule (pt "opposite (Neg v)") (pt "Pos v"))
@@ -26,13 +26,47 @@ We have defined an operation $\mathbf{opposite}$ which computes
 \subsection*{Sets: Clauses, Valuations and Formulae}
 There is currently no built in data type for sets in the Minlog system. For our work we have implemented sets as lists in the Minlog system, while this is not the most mathematically pure way of implementing these data types it has enabled us to make further effciency improvements. The clauses have been implementated in such a way that the literals contained with in are partitioned into positive and negative literals and then ordered within each of these partitions by variable number. The positive literals occur first followed by the negative and the variables are sorted from low to high numbers. We do not place any partitionings or ordering on either the formulae or the valuations, they are built using unsorted lists.
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = "Definitions of clauses \, formulae and valulations in the Minlog system"]
 (add-alg "cla"  '( "CC" "list lit => cla"))
 (add-alg "for" '( "CF" "list cla => for"))
 (add-alg "valu" '( "ConsVal" "list lit => valu") )
 \end{lstlisting}
 
 
+\subsection*{The DPLL Proof System}
+The DPLL proof system has been formalised as an inductive definition in the Minlog system with 5 closure axioms corresponding to the 5 proof rules. The inductive definition is represented internally as an algebra with the names of the closure axioms being used as constructors.
+
+\begin{lstlisting}[caption = "The DPLL Proof System as an Inductive Definition in Minlog"]
+(add-ids (list (list "dpll" (make-arity (py "valu") (py "for")) "algdpll" ))
+         '("allnc val, f. (memcf (CC (Nil lit)) f -> dpll val f)"
+           "Conflict")
+
+         '("allnc val, f. all c, l. (memlv l val ->                                                                                                             
+                               memlc l c ->                                                                                                                     
+                               memcf c f ->                                                                                                                     
+                               dpll  val (remcf c f) ->                                                                                                         
+                               dpll  val f ) "
+           "Elim")
+
+         '("allnc  val, f. all l. (memcf (CC (l:)) f ->                                                                                                         
+                             dpll  (conclv l val) (remcf (CC (l:)) f) ->                                                                                        
+                             dpll val f)"
+           "Unit")
+
+         '( "allnc val,f. all c,l. ( memlv l val ->                                                                                                             
+                                memlc (opposite l) c ->                                                                                                         
+                                memcf c f ->                                                                                                                    
+                                dpll val (conccf (remlc (opposite l) c) (remcf c f)) ->                                                                         
+                                dpll val f)"
+            "Red")
+
+         '( "allnc val, f. all l. (                                                                                                                             
+                               dpll (conclv l val) f ->                                                                                                         
+                               dpll (conclv (opposite l) val) f ->                                                                                              
+                               dpll  val f )"
+            "Split")
+)
+\end{lstlisting}
 
 
 
