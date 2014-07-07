@@ -1,4 +1,4 @@
-\thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real Time Maude}\label{chapter:verifyertms}
+\thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real Time Maude}{SImulating and Verifying ERTMS Using Real Time Maude}\label{chapter:verifyertms}
 In the following we describe how the Real Time Maude tool can be used to analyse the performance and safety of the ERTMS system by both simulation and verification using the Maude LTL model checker.  We begin by presenting the simulation of the pentagon example which demonstrates a situation where a slow train is held up by a faster train. Secondly we look at applying model checking to both the pentagon example and the junction example. The safety properties verified for the pentagon example relate to the safety condition "The movement authorities of the two trains do not overlap" whilst the properties for the junction example relate to the safety condition "The point does not move when it is in a trains movement authority".
 
 
@@ -177,7 +177,7 @@ We shall now describe the execution of the Maude LTL model checker in Real Time 
 The Maude LTL model checker is then called using the following command:
 
 \begin{center}
-\texttt{(mc initialstate2 |=t [] nomaoverlap(train1,train2) in time <= 30 .)}
+\texttt{(mc initialstate2 |=t [] nomaoverlap1(train1,train2) in time <= 30 .)}
 \end{center}
 The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 30. This results in the following output from Real Time Maude which indicates that the property was succesfully verified in 3 minutes and 22 seconds taking the system approximately 140 million rewrites.
 \begin{lstlisting}[caption = No overlapping movement authorities model checking result]
