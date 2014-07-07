@@ -197,7 +197,7 @@ We have devised the following simple model of a train Real Time Maude that moves
          
 endtm)
 \end{lstlisting}
-There is a condition rewrite rule called travel which enables the train to move as long as its current distance is less than 500. There is a reset rule that instantaneously resets the trains distance back to zero when it reaches 500.
+There is a condition rewrite rule called travel which enables the train to move as long as its current distance is less than 500. The specification also contains a reset rule that instantaneously resets the trains distance back to zero when it reaches 500. This is implemented as a rewriting rule instead of an equation as there is no need for the term to be rewritten in both directions.
 
 
 \subsubsection*{Executing a Real Time Maude Specification}
