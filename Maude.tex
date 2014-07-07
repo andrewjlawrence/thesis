@@ -47,7 +47,7 @@ The data types of a Maude specification are defined using sorts with subtypes ex
 An equational theory is a 2 tuple $(\Sigma, E)$ where $\Sigma$ is a set of sorts, subsorts and operator declarations  and $E$ is the set of equations modulo $\Sigma$
 \end{mydef}
 
-Equational theories  form the signature of a Maude specification and provides one with a means to represent data types using various symbols. If we consider the natural numbers defined symbolically  as an equational theory, the set $\Sigma$ would consist of the sort $Nat$ and the operations $0$, $s$, and $+$, the set $E$ would consist of associativity and commutativity for $+$.
+Equational theories \cite{JM98} form the signature of a Maude specification and provides one with a means to represent data types using various symbols. If we consider the natural numbers defined symbolically  as an equational theory, the set $\Sigma$ would consist of the sort $Nat$ and the operations $0$, $s$, and $+$, the set $E$ would consist of associativity and commutativity for $+$.
 
 Formally a Maude specification is a \emph{rewrite theory} of the form $\mathfrak{R}=(\Sigma,E,L,R)$, where  $(\Sigma, E)$ is an equational theory, $L$ is a set of labels and $R$ is a set of labelled rewrite rules of the form:
 
@@ -79,7 +79,7 @@ endfm
 
 
 \section{Real Time Maude}
-One extension of Maude that can be used to model and verify hybrid systems is Real Time Maude. It contains specific support enabling the modelling and verification of real-timed and discrete timed systems. 
+Real Time Maude is an extension of Maude that can be used to model and verify hybrid systems. It contains specific support enabling the modelling and verification of real-timed and discrete timed systems. 
 The Real Time Maude system contains a general theory for time and several specifications of time, including discrete time based on the natural numbers and dense time based on the rationals, that implement that theory.
 
 \subsection{Real Time Maude Specifications}
@@ -134,9 +134,55 @@ there is an assigned term $\tau_l(x_1 \ldots x_n)$ of sort $\phi(Time)$ within $
 
 \end{itemize}
 \end{mydef}
+
+\subsection{Time Domains}
+The Real Time Maude system allows for the use of different concrete specifications of time which are all based on the TIME specification which abstractly defines addition, subtraction and inequality operations over a sort Time. 
+
+\begin{lstlisting}[caption = "The TIME specification in Real Time Maude"]
+fmod TIME is
+sorts Time NzTime .
+subsort NzTime < Time .
+op zero : -> Time .
+op _plus_ : Time Time -> Time [assoc comm prec 33 gather (E e)] .
+op _monus_ : Time Time -> Time [prec 33 gather (E e)] .
+ops _le_ _lt_ _ge_ _gt_ : Time Time -> Bool [prec 37] .
+eq zero plus R:Time = R:Time .
+eq R:Time le R’:Time = (R:Time lt R’:Time) or (R:Time == R’:Time) .
+eq R:Time ge R’:Time = R’:Time le R:Time .
+eq R:Time gt R’:Time = R’:Time lt R:Time .
+endfm
+\end{lstlisting}
+The  LTIME definition of linear time addtionally allows for the computation of a maximum and minimum of two times.
+\begin{lstlisting}[caption = "The LTIME specification in Real Time Maude"]
+fmod LTIME is
+including TIME .
+ops minimum maximum : Time Time -> Time [assoc comm] .
+vars R R’ : Time .
+ceq maximum(R, R’) = R if R’ le R .
+ceq minimum(R, R’) = R’ if R’ le R .
+endfm
+\end{lstlisting}
  
+The NAT-TIME-DOMAIN module provides a concrete instantiation of time based on the natural numbers. The sort Nat is defined to be a subsort of Time and the time operations are defined using the corresponding operations for the natural numbers.
+
+\begin{lstlisting}[caption = "The Natural Number Time Domain in Real Time Maude "]
+fmod NAT-TIME-DOMAIN is
+including LTIME .
+protecting NAT .
+subsort Nat < Time .
+subsort NzNat < NzTime .
+vars N N’ : Nat .
+eq zero = 0 .
+eq N plus N’ = N + N’ .
+eq N monus N’ = if N > N’ then sd(N, N’) else 0 fi .
+eq N lt N’ = N < N’ .
+endfm
+\end{lstlisting}
+
+The operation sd(N,N') computes the symmetric difference of N and N' i.e. it subtracts the smaller of the two operands from the larger.
+
 \subsubsection*{Example Real Time Maude Specification}
-The following a very simple model of a train Real Time Maude that moves one unit of distance in one time unit along a circular track of length 500. It defines a sort \texttt{TrainState} and a single state \texttt{move}. We have a constructor train of type \texttt{System} which consists of a train state and a natural number.  
+We have devised the following simple model of a train Real Time Maude that moves one unit of distance in one time unit along a circular track of length 500. It defines a sort \texttt{TrainState} and a single state \texttt{move}. We have a constructor train of type \texttt{System} which consists of a train state and a natural number.  
 
 \begin{lstlisting}
 (tmod DISCRETE-SINGLE-TRAIN is protecting NAT-TIME-DOMAIN .
