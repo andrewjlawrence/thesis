@@ -183,7 +183,7 @@ The operation sd(N,N') computes the symmetric difference of N and N' i.e. it sub
 
 \subsubsection*{Example Real Time Maude Specification}
 We have devised the following simple model of a train Real Time Maude that moves one unit of distance in one time unit along a circular track of length 500. It defines a sort \texttt{TrainState} and a single state \texttt{move}. We have a constructor train of type \texttt{System} which consists of a train state and a natural number.  
-
+\medskip
 \begin{lstlisting}
 (tmod DISCRETE-SINGLE-TRAIN is protecting NAT-TIME-DOMAIN .
   sort TrainState .
@@ -253,30 +253,30 @@ mod CONFIGURATION is
          [ctor config assoc comm id: none] .
 \end{lstlisting}
 
-\subsubsection*{Example Object oriented Specification}
-The following is an example consisting of two classes of object which serves to demonstrate some of the advantages of object oriented specification as well as some of the pit falls. Firstly there is the class defining D objects which count modulo 500 and transmit a message containing the current count. Secondly there is class defining a object B that reads messages from a D object. 
+\subsubsection*{Example Object Oriented Specification}
+The following is an example consisting of two classes of object which serves to demonstrate some of the advantages of object oriented specification as well as some of the pit falls. The first is the Counter class which defines objects that count modulo 500 and transmit a message containing the current count. The second is the Reader class defining objects that read the messages produced by the Counter class. 
 
 \begin{lstlisting}[caption = Example object oriented specification, label = code:rtmaudeexample]
 (tomod EXAMPLE1 is protecting NAT-TIME-DOMAIN .
-  msgs msgD  : Nat -> Msg .  
-  class  D | d : Nat .
-  class  B | b : Nat .
-  vars N: Nat .
+  msg msgCount  : Nat -> Msg .  
+  class  Counter | count : Nat .
+  class  Reader | count : Nat .
+  var N: Nat .
   var O : Oid .
   var REST : Configuration .
  
-  rl [makeD] : {< O : D | d : N > REST} => 
-  {msgD(N + 1 rem 500)  
-  < O : D | d : (N + 1) rem 500 > REST} in time 1 . 
+  rl [doCount] : {< O : Counter | count : N > REST} => 
+  {msgCount(N + 1 rem 500)  
+  < O : Counter | count : (N + 1) rem 500 > REST} in time 1 . 
 
-  rl [readB] : {msgD(N) < O : B | > REST} => 
-  {< O : B | b : N > REST}  . 
+  rl [readCount] : {msgCount(N) < O : Reader | > REST} => 
+  {< O : Reader | count : N > REST}  . 
 endtom)
 \end{lstlisting}
 
-We can execute a system consisting of a D  and a B object for 2 times steps using the following command:
+We can execute a system consisting of a Counter  and a Reader object for 2 times steps using the following command:
 \begin{center}
-\texttt{(trew {< myD : D | d : 0 > < myB : B | b : 0 >} in time <= 2 .)}
+\texttt{(trew {< myCounter : Counter |  count : 0 > < myReader : Reader | count : 0 >} in time <= 2 .)}
 \end{center}
 
 Resulting in the following output:
@@ -285,32 +285,32 @@ Resulting in the following output:
 rewrites: 6246 in 7ms cpu (7ms real) 
 (805000 rewrites/second)
 
-Timed rewrite  {< myD : D | d : 0 > < myB : B | b : 0 >} 
+Timed rewrite  {< myCounter : Counter | count : 0 > < myReader : Reader | count : 0 >} 
 in EXAMPLE1 with mode deterministic time 
 increase in time <= 2
 
 Result ClockedSystem :
-  {< myB : B | b : 2 > < myD : D | d : 2 >} in time 2
+  {< myReader : Reader | count : 2 > < myCounter : Counter | count : 2 >} in time 2
 \end{lstlisting}
 
 The Maude system rewrites the initial state of the system into the resulting state however that does not mean that this is the only reachable state. This set has some non-determinism in that we do not force the messages to be read immediately and the rewriting equations could be applied in any order. There is a reachable state in time 2 in which both of the messages have not been read meaning that either of them could be read in any order resulting in  . 
 The following are some states reachable in time 2.
 
 \begin{lstlisting}[caption = Some of the states reachable by rewriting EXAMPLE1 in two time steps, label = code:reachst ]
-{< myB : B | b : 1 > < myD : D | d : 2 >}
-{< myB : B | b : 2 > < myD : D | d : 2 >}
-{msgD(1)< myB : B | b : 2 > < myD : D | d : 2 >}
-{msgD(1)msgD(2)< myB : B | b : 0 > < myD : D | d : 2 >}
-{msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
+{< myReader : Reader | count : 1 > < myCounter : Counter | count : 2 >}
+{< myReader : Reader | count : 2 > < myCounter : Counter | count : 2 >}
+{msgCount(1)< myReader : Reader | count : 2 > < myCounter : Counter | count : 2 >}
+{msgCount(1)msgCount(2)< myReader : Reader | count : 0 > < myCounter : Counter | count : 2 >}
+{msgCount(2)< myReader : Reader | count : 1 > < myCounter : Counter | count : 2 >}
 \end{lstlisting}
 
-\emph{Non-determinism} should be avoided unless it is really is a property you want in a model. One way to remove some of these reachable states is to make the variable \texttt{REST} of sort \texttt{ObjectConfiguration}. This forces objects of the B class to read messages after each incrementation of time. If we make this modification to the specification then the following states, from code listing \ref{code:reachst}, are reachable in time 2.
+\emph{Non-determinism} should be avoided unless it is really is a property you want in a model. One way to remove some of these reachable states is to make the variable \texttt{REST} of sort \texttt{ObjectConfiguration}. This forces objects of the Reader class to read messages after each incrementation of time. If we make this modification to the specification then the following states, from code listing \ref{code:reachst}, are reachable in time 2.
 \medskip
 \begin{lstlisting}[caption = States reachable by the modified EXAMPLE1 in two time steps]
-{< myB : B | b : 2 > < myD : D | d : 2 >}
-{msgD(2)< myB : B | b : 1 > < myD : D | d : 2 >}
-(msgD(1)< myB : B | b : 0 > < myD : D | d : 1 >}
-(< myB : B | b : 1 > < myD : D | d : 1 >}
+{< myReader : Reader | count : 2 > < myCounter : Counter | count : 2 >}
+{msgCount(2)< myReader : Reader | count : 1 > < myCounter : Counter | count : 2 >}
+(msgCount(1)< myReader : Reader | count : 0 > < myCounter : Counter | count : 1 >}
+(< myReader : Reader | count : 1 > < myCounter : Counter | count : 1 >}
 \end{lstlisting}
 
 \section{Modelling the European Rail Traffic Management System}
