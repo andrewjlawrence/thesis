@@ -334,28 +334,37 @@ rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
 The operation $\mathrm{delta}$ is frozen meaning that the configuration contained within will not be evaluated by the Maude until the $\mathrm{delta}$ operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the delta operation over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own seperately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{PO07} where a delta operation is used to distribute time over a distributed sensor network. 
 
 \subsubsection*{Modelling Trains}
-We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and breaking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.
+We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and braking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.
 
 \begin{lstlisting}
 sort TrainState .
-ops  cons acc stop break :  -> TrainState [ctor] .
+ops  cons acc stop brake :  -> TrainState [ctor] .
 
-class Train | state : TrainState, dist : Nat, 
-      speed : Nat, ac : Nat, ma : Nat, 
-      tseg : Nat, maxspeed : Nat .
+class Train | state : TrainState, dist : Nat, speed : Nat, 
+     ac : Nat, ma : Nat, tseg : Nat, maxspeed : Nat .
 \end{lstlisting}
 
-We capture the behaviour of trains using a number of instantaneous and tick rewriting rules. The instantaneous rules are used to capture a change of state within a train. For example if the a train is in the cons state distance to the movement authority becomes less than the distance needed to break to zero in the next moment of time one of these rules will fire and cause a state transition. 
+We capture the behaviour of trains using a number of instantaneous rules. The rules that model some transition of time can only occur if the \texttt{delta} operation, which captures the global transition of time, has been applied to the train object. There are also several rules that are applied to non-delta terms and cause message passing and reading inbetween the application of the delta operation. The following is an example conditional rule which causes a jump from the constant speed to braking states in one unit of time:
 
-We compute the breaking distance as follows: 
+\begin{lstlisting}
+  crl [consbrake] : delta(< O : Train | state : cons, dist : DT, speed : S, ac : A, ma : MA >)   => 
+ reqma(O) pos(O,DT) 
+trackseg(< O : Train | state : brake, dist : (DT + S)  rem tlength, speed : S monus A >)    if  dma(DT + S, MA)  <  bd(S + A) .
+\end{lstlisting}
+
+The left hand side contains a train which has had a delta operation applied to it, meaning that there has been some global transition of time which the train must now follow. The Maude system will automatically apply this rule to terms which pattern match the left hand side of the rule and meets the condition that the distance to the movement authority becomes less than the braking distance in the next time step.  
+
+For example if the a train is in the cons state and the braking condition is met then the next moment of time one of these rules will fire and cause a state transition to the braking state. 
+
+We compute the braking distance as follows (See chapter \ref{sec:lawsofmotion}): 
 \begin{center}\texttt{eq bd(S) = (S * S) div 2 .}\end{center}
 
 
-The division operation is based on repeated subtraction and finally taking the floor or the resulting number. When we divide a number by two in the breaking function we add 1 to change this to the ceiling of the resulting number. This prevents a situation where we have a distance of 1 from our moment authority but the breaking distance is zero.
+The division operation is based on repeated subtraction and finally taking the floor or the resulting number. When we divide a number by two in the braking function we add 1 to change this to the ceiling of the resulting number. This prevents a situation where we have a distance of 1 from our moment authority but the braking distance is zero.
 The distance to the movement authority to the train is computed by:
 \begin{center}
-\texttt{} \\
-\texttt{}
+\texttt{ceq dma(DT,MA) = MA monus DT if DT <= MA .} \\
+\texttt{ceq dma(DT,MA) = (tlength monus DT) + MA if MA < DT .}
 \end{center}
 
 In this Maude specification the jumps from accelerating and full speed states to the braking state occur when the braking distance becomes less than the distance to the end of the movement authority in the next moment of time.  The transition of the train one from track segment to another is captured by applying an operation $\textbf{trackseg}$ to the train after every increment in time. The $\textbf{trackseg}$ operation computes whether a track segment transition has occured, if it has then a message is sent to the interlocking to update its track segment variables accordingly.

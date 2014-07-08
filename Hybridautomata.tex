@@ -142,13 +142,13 @@ Automata which contain states from which time cannot progress are called \emph{Z
 We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing of messages that include some data between automata.  We denote a multievent using an sequence of labels $e_n$ and data $x_n$ composed using a ".".  For each possible value of $x$, there is a corresponding edge, event and flow triple that captures the effect of receiving a message containing $x$.
 \end{myremark}
 
-\subsection*{Laws of Motion}
+\section{Laws of Motion}\label{sec:lawsofmotion}
 In the following we shall describe how to use the laws of motion to capture of motion of the train.
 The behaviour of the train is based on two of Newton's laws of motion $s = s_0 +at$ and  $s^2 = s_{0}^2 +2ad$, where $d$ = distance, $s_0$ = initial velocity, v = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current S and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the trains S decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to calculate the breaking distance with $u = 0$ and $a = 1$ it can be rewritten to allow for the calculation of the breaking distance.
 \medskip
 
-\begin{mydef}[Breaking Distance]
-We define the breaking distance for a train in terms of its speed S and acceleration A as: 
+\begin{mydef}[Braking Distance]
+We define the braking distance for a train in terms of its speed S and acceleration A as: 
 
 $$\BD{S,A} = \frac{S^2}{-2A} $$
 
