@@ -135,7 +135,7 @@ there is an assigned term $\tau_l(x_1 \ldots x_n)$ of sort $\phi(Time)$ within $
 \end{itemize}
 \end{mydef}
 
-\subsection{Time Domains}
+\subsection*{Time Domains}
 The Real Time Maude system allows for the use of different concrete specifications of time which are all based on the TIME specification which abstractly defines addition, subtraction and inequality operations over a sort Time. 
 
 \begin{lstlisting}[caption = "The TIME specification in Real Time Maude"]
@@ -147,7 +147,8 @@ op _plus_ : Time Time -> Time [assoc comm prec 33 gather (E e)] .
 op _monus_ : Time Time -> Time [prec 33 gather (E e)] .
 ops _le_ _lt_ _ge_ _gt_ : Time Time -> Bool [prec 37] .
 eq zero plus R:Time = R:Time .
-eq R:Time le R’:Time = (R:Time lt R’:Time) or (R:Time == R’:Time) .
+eq R:Time le R’:Time = (R:Time lt R’:Time) or 
+	(R:Time == R’:Time) .
 eq R:Time ge R’:Time = R’:Time le R:Time .
 eq R:Time gt R’:Time = R’:Time lt R:Time .
 endfm
@@ -286,12 +287,14 @@ Resulting in the following output:
 rewrites: 6246 in 7ms cpu (7ms real) 
 (805000 rewrites/second)
 
-Timed rewrite  {< myCounter : Counter | count : 0 > < myReader : Reader | count : 0 >} 
+Timed rewrite  {< myCounter : Counter | count : 0 > 
+     < myReader : Reader | count : 0 >} 
 in EXAMPLE1 with mode deterministic time 
 increase in time <= 2
 
 Result ClockedSystem :
-  {< myReader : Reader | count : 2 > < myCounter : Counter | count : 2 >} in time 2
+  {< myReader : Reader | count : 2 > 
+     < myCounter : Counter | count : 2 >} in time 2
 \end{lstlisting}
 
 The Maude system rewrites the initial state of the system into the resulting state however that does not mean that this is the only reachable state. This set has some non-determinism in that we do not force the messages to be read immediately and the rewriting equations could be applied in any order. There is a reachable state in time 2 in which both of the messages have not been read and following this either of them could be read in any order resulting in a possibly undesireable state. This also means that there are several states that are reachable depending on some non-deterministic choice causing state space explosion.
@@ -299,20 +302,29 @@ The Maude system rewrites the initial state of the system into the resulting sta
 The following are some states reachable in time 2.
 
 \begin{lstlisting}[caption = Some of the states reachable by rewriting EXAMPLE1 in two time steps, label = code:reachst ]
-{< myReader : Reader | count : 1 > < myCounter : Counter | count : 2 >}
-{< myReader : Reader | count : 2 > < myCounter : Counter | count : 2 >}
-{msgCount(1)< myReader : Reader | count : 2 > < myCounter : Counter | count : 2 >}
-{msgCount(1)msgCount(2)< myReader : Reader | count : 0 > < myCounter : Counter | count : 2 >}
-{msgCount(2)< myReader : Reader | count : 1 > < myCounter : Counter | count : 2 >}
+{< myReader : Reader | count : 1 >
+     < myCounter : Counter | count : 2 >}
+{< myReader : Reader | count : 2 > 
+     < myCounter : Counter | count : 2 >}
+{msgCount(1)< myReader : Reader | count : 2 > 
+     < myCounter : Counter | count : 2 >}
+{msgCount(1)msgCount(2)< myReader : Reader | count : 0 >
+     < myCounter : Counter | count : 2 >}
+{msgCount(2)< myReader : Reader | count : 1 >
+     < myCounter : Counter | count : 2 >}
 \end{lstlisting}
 
 \emph{Non-determinism} should be avoided unless it is really a property you want in a model. One way to remove some of these reachable states is to make the variable \texttt{REST} of sort \texttt{ObjectConfiguration}. This forces objects of the Reader class to read messages after each incrementation of time. If we make this modification to the specification then the following states, from code listing \ref{code:reachst}, are reachable in time 2. All of these states contain at most one message that has yet to be read and do not represent a situation where the counters have become out of sync.
 \medskip
 \begin{lstlisting}[caption = States reachable by the modified EXAMPLE1 in two time steps]
-{< myReader : Reader | count : 2 > < myCounter : Counter | count : 2 >}
-{msgCount(2)< myReader : Reader | count : 1 > < myCounter : Counter | count : 2 >}
-(msgCount(1)< myReader : Reader | count : 0 > < myCounter : Counter | count : 1 >}
-(< myReader : Reader | count : 1 > < myCounter : Counter | count : 1 >}
+{< myReader : Reader | count : 2 > 
+     < myCounter : Counter | count : 2 >}
+{msgCount(2)< myReader : Reader | count : 1 > 
+     < myCounter : Counter | count : 2 >}
+(msgCount(1)< myReader : Reader | count : 0 > 
+     < myCounter : Counter | count : 1 >}
+(< myReader : Reader | count : 1 > 
+     < myCounter : Counter | count : 1 >}
 \end{lstlisting}
 
 \section{Modelling the European Rail Traffic Management System}
@@ -347,12 +359,15 @@ class Train | state : TrainState, dist : Nat, speed : Nat,
 We capture the behaviour of trains using a number of instantaneous rules. The rules that model some transition of time can only occur if the \texttt{delta} operation, which captures the global transition of time, has been applied to the train object. There are also several rules that are applied to non-delta terms and cause message passing and reading inbetween the application of the delta operation. The following is an example conditional rule which causes a jump from the constant speed to braking states in one unit of time:
 
 \begin{lstlisting}
-  crl [consbrake] : delta(< O : Train | state : cons, dist : DT, speed : S, ac : A, ma : MA >)   => 
- reqma(O) pos(O,DT) 
-trackseg(< O : Train | state : brake, dist : (DT + S)  rem tlength, speed : S monus A >)    if  dma(DT + S, MA)  <  bd(S + A) .
+  crl [consbrake] : delta(< O : Train | state : cons, 
+     dist : DT, speed : S, ac : A, ma : MA >)   
+   => reqma(O) pos(O,DT) trackseg(
+   < O : Train | state : brake, 
+     dist : (DT + S)  rem tlength, speed : S monus A >)    
+   if  dma(DT + S, MA)  <  bd(S + A) .
 \end{lstlisting}
 
-The left hand side contains a train which has had a delta operation applied to it, meaning that there has been some global transition of time which the train must now follow. The Maude system will automatically apply this rule to terms which pattern match the left hand side of the rule and meets the condition that the distance to the movement authority becomes less than the braking distance in the next time step.  
+The left hand side contains a train which has had a delta operation applied to it, meaning that there has been some global transition of time which the train must now follow. The Maude system will automatically apply this rule to terms which pattern match the left hand side of the rule and meet the condition that the distance to the movement authority becomes less than the braking distance in the next time step. Once the rule has fired, the distance and speed of the train are incremented and two messages are added to the configuration. The message \texttt{reqma} is used to request a movement authority from the RBC and \texttt{pos} is used to update the trains position in the RBC. The \texttt{trackseg} operation is also applied to the train to compute if a track segment transition has occured or not. 
 
 For example if the a train is in the cons state and the braking condition is met then the next moment of time one of these rules will fire and cause a state transition to the braking state. 
 
@@ -369,8 +384,20 @@ The distance to the movement authority to the train is computed by:
 
 In this Maude specification the jumps from accelerating and full speed states to the braking state occur when the braking distance becomes less than the distance to the end of the movement authority in the next moment of time.  The transition of the train one from track segment to another is captured by applying an operation $\textbf{trackseg}$ to the train after every increment in time. The $\textbf{trackseg}$ operation computes whether a track segment transition has occured, if it has then a message is sent to the interlocking to update its track segment variables accordingly.
 
+\begin{lstlisting}[caption = "Rewriting rules for the trackseg operation"]
+crl [transn] : trackseg(< O : Train | dist : DT, tseg : N >) => 
+  < O : Train | dist : DT, tseg : N + 1 > trans(DT div tseglength) 
+  if N < (DT div tseglength) and N =/= 5 .
+crl [trans0] : trackseg(< O : Train | dist : DT, tseg : 4 >) => 
+  < O : Train | dist : DT, tseg : 0 > trans(0) 
+  if DT < (tlength monus tseglength) .
+crl [transn4] : trackseg(< O : Train | dist : DT, tseg : N >) => 
+  < O : Train | dist : DT, tseg : N >  
+  if (DT div tseglength) <= N  .
+\end{lstlisting}
+
 \subsubsection*{Sets and Maps in Maude}
-In order to have more general data types Maude allows for parametrised functional modules with the  syntax \texttt{fmod M{$X_1$ :: $T_1$ , $\ldots$ , $X_n$ :: $T_n$} is $\ldots$ endfm} where $n \geq 1$, $X_1$ is the \emph{parameter name} and $T_1$ is the \emph{theory name}.
+In order to have more general data types Maude allows for parametrised functional modules with the  syntax \texttt{fmod M\{$X_1$ :: $T_1$ , $\ldots$ , $X_n$ :: $T_n$\} is $\ldots$ endfm} where $n \geq 1$, $X_1$ is the \emph{parameter name} and $T_1$ is the \emph{theory name} and \texttt{M} is the module name.
 
 In the formalisation of the RBC we make use of the Map data type to store the position and movement authority of a given train and we use a Set to store trains that have made requests in the current time interval. 
 
@@ -485,7 +512,7 @@ rl [resreq1g] : {< O : Inter | state : res, t
 \end{lstlisting}
 
 \section{Extension to a Small Junction}
-The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main differences with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter \ref{} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
+The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main differences with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter \ref{chap:verifyertms} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
  
 \subsection*{Junction Example}
 The junction example consists of one point, two routes, seven track segments, a controller object to schedule trains, an RBC and an interlocking.

@@ -1,13 +1,13 @@
-\thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real Time Maude}{SImulating and Verifying ERTMS Using Real Time Maude}\label{chapter:verifyertms}
-In the following we describe how the Real Time Maude tool can be used to analyse the performance and safety of the ERTMS system by both simulation and verification using the Maude LTL model checker.  We begin by presenting the simulation of the pentagon example which demonstrates a situation where a slow train is held up by a faster train. Secondly we look at applying model checking to both the pentagon example and the junction example. The safety properties verified for the pentagon example relate to the safety condition "The movement authorities of the two trains do not overlap" whilst the properties for the junction example relate to the safety condition "The point does not move when it is in a trains movement authority".
+\thesischapter{Simulating and Verifying the European Rail Traffic Management System Using Real Time Maude}{SImulating and Verifying ERTMS Using Real Time Maude}\label{chapter:verifyertms}\label{chap:verifyertms}
+In the following we describe how the Real Time Maude tool can be used to analyse the performance and safety of the ERTMS system by both simulation and verification using the Maude LTL model checker (The modelling of ERTMS in Real Time Maude was describe in Chapter \ref{chap:modelertms}).  We begin by presenting the simulation of the pentagon example which demonstrates a situation where a slow train is held up by a faster train. Secondly we look at applying model checking to both the pentagon example and the junction example. The safety properties verified for the pentagon example relate to the safety condition "The movement authorities of the two trains do not overlap" whilst the properties for the junction example relate to the safety condition "The point does not move when it is in a trains movement authority".
 
 
-It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example \cite{PO07}, only model checked only a portion of the state space for the pentagon. This is however enough to have confidence in the correctness of the system with respect to a given safety condition. A larger portion of the state space could be model checked by removing non-determinism from the model making it more concrete. This has been done in the junction example where the radio block processor is forced to process movement authorities in one time step.
+It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example \cite{PO07}, only model checked a portion of the state space for the pentagon. This is however enough to have confidence in the correctness of the system with respect to a given safety condition. A larger portion of the state space could be model checked by removing non-determinism from the model making it more concrete. This has been done in the junction example where the radio block processor is modified in such a way that it processes movement authorities in one time step.
 
 
 \section{Simulating The Behaviour of ERTMS}
 
-We will now see how this executable specification can be used to simulate and analyse the perofrmanceof the modelled system. Simulation of the system up to a given time $n$ is achieved by rewriting the initial state of the system to each of the intermediate time steps $0 \ldots n$. A simple Haskell program has been written that can parse the output of each step, extract the relevant data and then plot a graph.
+We will now see how this executable specification can be used to simulate and analyse the perofrmance of the modelled system. Simulation of the system up to a given time $n$ is achieved by rewriting the initial state of the system to each of the intermediate time steps $0 \ldots n$. A simple Haskell program has been written that can parse the output of each step, extract the relevant data and then plot a graph.
 
 We use an initial state containing two trains one of which is slower (train1) than the other (train2), an interlocking and a radio block processor. The faster train will eventually catch up with the slow train and it waits for that train to clear all successive track segments before proceeding. The trains start at positions on opposing sides of the track with train1 starting at 0 and train2 starting at 150. The RBC and the interlocking are both initialised with the trains in these positions. In Maude this initial state is modelled as follows. Firstly, we define the initial states of the component objects individually:
 
@@ -30,33 +30,33 @@ The  interlocking is initially idle, the request variable is set to zero, the tr
 
 Like the interlocking, the RBC is also initially idle. Since the lasttrain variable has not effect in this state and will be set in any successive control flow we simply set it to be train1. The movement authorites  and positions of the trains are set within the ma and pos mapping respectively and the current request is empty.  
 
-\begin{lstlisting}[caption = The intital state of train2 in Maude]
+\begin{lstlisting}[caption = The intital state of train1 in Maude]
  eq initialtrainstate1 = < train1 : Train | state : acc,  dist : 0, 
                            speed : 0, ac : 1, ma : 49, 
                            tseg : 0, maxspeed : 4 > .
 \end{lstlisting}
-We set the train1 to be accellerating initally with a distance and speed of zero its movement authority is fourty nine , it is in the zero track segment and has a maxspeed of four. 
+We set the train1 to be accellerating initally with a distance and speed of 0 its movement authority is 49, it is in the 0 track segment and has a maxspeed of 4. 
 
 \begin{lstlisting}[caption = The intial state of train2 in Maude]
 eq initialtrainstate2  = < train2 : Train | state : acc, dist : 150, 
                            speed : 0, ac : 1, ma : 199,
                            tseg : 3, maxspeed : 7 > .
 \end{lstlisting}
-Like train1, train2 is also accellerating initially and has a speed of zero.  Unlike train1 it has a distance of one hundred and fifty, a movement authority of one hundred and ninty nine, it is in the fourth track segment number three and has a maxspeed of four. Both trains have an accelleration of one. 
+Like train1, train2 is also accellerating initially and has a speed of 0.  Unlike train1 it has a distance of 150, a movement authority of 199, it is in the 4th track segment number 3 and has a maxspeed of 4. Both trains have an accelleration of 1. 
 
 Using these initial states for the individual objects we can form the initial state for our pentagon example using the following command:
 \begin{lstlisting}
  eq initialstate2 = {initialtrainstate1 initialtrainstate2 
                          initialintstate2  initialrbcstate2} . 
 \end{lstlisting}
-The operation initial state 2 is of type System and contains a Configuration consisting of the initial states of train1, train2, the rbc and the interlocking. This initial state forms a model of ERTMS which we can simulate using Real Time Maude to rewrite it to a state after a set number of time steps. The model of ERTMS is executed using the following command:
+The operation \texttt{initialstate2} is of type \texttt{System} and contains a \texttt{Configuration} consisting of the initial states of train1, train2, the rbc and the interlocking. This initial state forms a model of ERTMS which we can simulate using Real Time Maude to rewrite it to a state after a set number of time steps. The model of ERTMS is executed using the following command:
 \begin{center}
 \texttt{(trew initialstate2 in time $\leq$ 50 .)}
 \end{center}
 
-In the resulting output at time 50 both of the trains have moved a considerable distance and have requested and received new movement authorities.
+In the resulting output at time 50 both of the trains have moved a considerable distance with train1 (See line 9 of Code Listing \ref{cl:initialstate2rewrite}.) moving to distance 184 and train2 moving to distance 128. Both trains have also requested and received new movement authorities.
  
-\begin{lstlisting}[caption = The result of rewriting initialstate2 for 50 time steps]
+\begin{lstlisting}[caption = The result of rewriting initialstate2 for 50 time steps, label = cl:initialstate2rewrite]
 Result ClockedSystem :
   {< inter1 : Inter | reqid : 3,state : idle,
      t0 : false,t1 : false,t2 : true,
@@ -72,6 +72,7 @@ Result ClockedSystem :
 \end{lstlisting}
 
 \begin{figure}
+\label{t1graph}
 \begin{center}
 \includegraphics[scale=0.5]{t1graph.png}
 \end{center}
@@ -79,8 +80,9 @@ Result ClockedSystem :
 \end{figure}
 
 \begin{figure}
+\label{t2graph}
 \begin{center}
-\includegraphics[scale=0.64]{t2graph.png}
+\includegraphics[scale=0.5]{t2graph.png}
 \end{center}
 \caption{A graph comparing the distance and speed of train2}
 \end{figure}
@@ -88,12 +90,13 @@ Result ClockedSystem :
 \begin{figure}
 \label{t1t2graph}
 \begin{center}
-\includegraphics[scale=0.64]{t1t2graph.png}
+\includegraphics[scale=0.5]{t1t2graph.png}
 \end{center}
 \caption{A graph comparing the distances of train1 and train2}
 \end{figure}
 
-In fig \ref{t1t2} we see that train2 never enters the same track segment as train1.
+The first graph (See fig \ref{t1graph}.) shows the speed and distance of train1 over time. The train spends the majority of its time at max speed however there is a slight decrease in speed when a movement authority is requested. The distance of the train increases in roughly a linear fashion. The second graph (See fig \ref{t2graph}.) shows the speed and distance of train2 over time. The train brakes repeatedly and at one position comes to a complete stop as it waits for the slower train to progress and exit its current track segment. The distance time graph shows this stop/start behaviour through a wavey appearence. The final graph (See fig \ref{t1t2graph}.) shows that there is a consistent distance between the two trains of at least one track segment.
+
 
 \section{The Maude Linear Temporal Logic Model Checker}
 The Real Time Maude system employs the Maude LTL Model Checker on-the-fly LTL model checker for \cite{ES00} verification purposes.  This is a useful automatic tool which allows for the verification and analysis of real time systems. In addition to the positive verification results in which a safety property holds,  the system produces, in the case of a negative verification result, a counter example trace which describes how the error occured from the initial state of the system.
