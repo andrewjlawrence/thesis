@@ -122,12 +122,20 @@ We shall now describe how to define the behaviour of the satisfaction relation f
 \medskip
 The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$. It is left to the user of the model checker to define the behaviour for their own purposes. The standard way to define predicates which refer to a given object is by matching object identifiers.
 
-We can check that a train is in a specific state as follows:
+\subsection*{Checking correctness of the specification}
+
+We have applied model checking to check several fundemental correctness properties of the pentagon examples behaviour. We begin by showing that it is not possible for a train to exceed its max speed. We formulate this as a model checking problem over the pentagon example. 
+
+
+
+We will now show that the train is always at the correct speed for the cons and stopped states. This is formulated using two properties. We can check that a train is in a specific state, in this case the cons state, as follows:
+
 \begin{lstlisting}[caption = The constant speed property]
 ops train-cons : Oid -> Prop [ctor] .
-eq {REST < O1 : Train | state : cons >} |= train-cons(O1') 
-   = (O1 == O1') . 
+eq {REST < O1 : Train | state : S >} |= train-cons(O1) 
+   =  S == cons . 
 \end{lstlisting}
+
 This predicate holds if there is a train in t he configuration with object identifier O1' and a state cons. 
 
 We can check that a train has a certain speed as follows:
@@ -137,7 +145,12 @@ eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') =
    (N1 == N1') and (O1 == O1') .
 \end{lstlisting}
 
-Here the natural number N1 in the train object is matched with N1' in the predicate train-s.
+Here the natural number N1 in the train object is matched with N1' in the predicate train-s. We can use these two properties for formulate model checkng properties to check the correctness of our modelling approach. We can define two properties, one that states "the train is in the cons state if and only it is at its max speed" and the other "the train is in the stopped state if and only if its speed is 0". 
+
+\begin{lstlisting}
+
+\end{lstlisting}
+
 
 \subsection*{Defining "No Overlapping Movement Authorities"}
 We verifying the safety condition "The movment authorities of two trains do not overlap" by model checking three safety properties MA1, MA2 and MA3 that correspond to checking the different possible safe positions over movement authorities and trains on the track. To do this we define a satisfaction relation for two Maude operations of type $\mathbf{Prop}$ which capture each of these safety properties. The first of which can be seen below:
@@ -174,7 +187,7 @@ We formalise the safety property "a point does not move when it is in a movement
 \end{lstlisting}
 
 \subsection{Execution of The LTL Model Checker}
-\textbf{Note: do we want to describe and verify other safety conditions here?}
+
 We shall now describe the execution of the Maude LTL model checker in Real Time Maude. This is done using the mc command with some initial state of type system, a satisfaction relation, the LTL formula to be checked and an optional time. The satisfaction relation can be either $\models_u$ for un-timed model checking for which time is not specified or $\models_t$ for which the optional time is specified.
 
 The Maude LTL model checker is then called using the following command:
@@ -208,11 +221,12 @@ The following table presents the times taken to verify the 4 safety properties M
 \begin{center}
 \begin{tabular}{c | c | c} 
 Safety Condition & Time Steps Checked & Time to Solve  \\ \hline
-MA1 & 30 &77.724s  \\
-MA2 & 30 &79.192s \\ 
-MA3 &  30 &79.380s \\
-P1 & untimed &7.488s \\
-P2 & untimed & 6.636s
+
+MA1 (Pentagon)& 30 &77.724s  \\
+MA2 (Pentagon)& 30 &79.192s \\ 
+MA3 (Pentagon)&  30 &79.380s \\
+P1 (Junction)& untimed &7.488s \\
+P2 (Junction)& untimed & 6.636s
 \end{tabular}
 \end{center}
 The removal of the non-determinism and finite state space of the junction example has made a large improvement to the model checking of the safety properties.
