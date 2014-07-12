@@ -17,10 +17,10 @@ The following is a simple example railway we shall use for the purposes of demon
 
 \node (A) [draw,regular polygon, regular polygon sides=5, minimum size=6 cm,outer sep=0pt] {};
 \foreach \n in {1,...,5} {
-
+    \pgfmathtruncatemacro{\valuem}{\n - 1};
     \pgfmathtruncatemacro{\value}{(\n - 1) * 50};
     \node at (A.corner \n) [anchor=360/5*(\n-1)+270] {D = \value};
-    \node at (A.side \n) [anchor = 360/5 *(\n-1) +270] {$l_{\n}$};
+    \node at (A.side \n) [anchor = 360/5 *(\n-1) +270] {$l_{\valuem}$};
 }
 
 \node (B) [draw, rectangle, rotate = 36] at (-1.9,2.6) {Train A};
@@ -127,7 +127,7 @@ The syntax of a hybrid automaton $H$ comprises of the following:
 \end{mydef}
 \medskip
  
-The $\mathrm{init}$ function is used to define initial states of the system. Later (see section \ref{sec:hyseman}) these initial states become initial states of a labelled transition system when we define the semantics of hybrid automata. The $\mathrm{inv}$ function is used to define regions in which the state of the hybrid automaton exists. If the invariant ceases to hold in one control mode then time can no longer progress in that mode and a jump must occur for time to progress. The $flow$ function describes the rate of change of variables in a particular state. The $\mathrm{jump}$ predicate describes the causes and effects of a discrete transition along a control switch using the un-primed and primed variables respectively.
+The $\mathrm{init}$ function is used to define initial states of the system. Later (see section \ref{sec:hyseman}) these initial states become initial states of a labelled transition system when we define the semantics of hybrid automata. The $\mathrm{inv}$ function is used to define regions in which the state of the hybrid automaton exists. If the invariant ceases to hold in one control mode then time can no longer progress in that mode and a jump must occur for time to progress. The $flow$ function describes the rate of change of variables in a particular state. The $\mathrm{jump}$ predicate describes the causes and effects of a discrete transition along a control switch using the un-primed and primed variables respectively.  Events are used to capture the passing of messages between different hybrid automata composed in paralell.
 
 \begin{comment}
 For example, when we define our train control system it is desired that the S of the train is $0$, initially and that remains invariant throughout execution of the automaton $init(Stopped) := invar(Stopped) := S = 0$ , which is captured by the initial predicate $init(Stopped) := S = 0$.  It is also desirable in the states Accelerating and Full Speed that the braking distance is less than or equal to the distance between the train and the end of movement authority $inv(Acc) := inv(Full Speed) := BD(S) \leq DMA(D, EoA)$. The invariant acts as a boundary condition which specifies the limits of the automatons behaviour. In the case of the Full Speed and Accelerating states it ensures that the train can always brake in time and it forces the automaton to perform a transition to the braking state when the boundary of the invariant is reached . If some some reason the system flows into one of these boundaries and no discrete change can occur then time is prevented from continuing.  \end{comment}
@@ -188,7 +188,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 \begin{description}
 \item[Variables] The state of the train automaton consists of $\underbrace{D, EoA}_\text{0, \ldots , 249}$, \newline $\underbrace{S, TrainID}_{\mathbb{N}}$. The variable D is computed modulo 250 from S.
 
-\item[Control Graph] The control graph of the interlocking automaton consists of four control modes $\{Stop \, (EoA), \, Braking, \, Accelerating, \, Full \,  Speed \}$ and control switches $Full \, Speed \to  Full \, Speed$, $Full \, Speed \to Full Speed \, (2)$, $Accelerating \to Accelerating$, $Accelerating \to Accelerating \, (2)$, $Braking \to Braking$, $Braking \to Braking \, (2)$,  $Full \, Speed \to Braking$, $Braking \to Accelerating$, $Accelerating \to Braking$  $Braking \to Stop \, (EoA)$, 
+\item[Control Graph] The control graph of the interlocking automaton consists of four control modes $\{Stop \, (EoA), \, Braking, \, Accelerating, \, Full \,  Speed \}$ and control switches $(Full \, Speed \to  Full \, Speed)\_1$, $(Full \, Speed \to Full Speed)\_(2)$, $(Accelerating \to Accelerating)\_1$, $(Accelerating \to Accelerating)\_(2)$, $(Braking \to Braking)\_1$, $(Braking \to Braking)\_(2)$,  $Full \, Speed \to Braking$, $Braking \to Accelerating$, $Accelerating \to Braking$  $Braking \to Stop \, (EoA)$, 
 
 \item[Initial conditions] \hspace*{0mm}
 \begin{itemize} 
@@ -230,17 +230,17 @@ We define a hybrid automaton $H_{T}$ as follows:
 	
 	\item $jump(Braking \to Stop \, (EoA)) := S = 0$
 
-	\item $jump(Braking \to Braking) := jump(Accelerating \to Accelerating) := jump(Full \, Speed \to Full \, Speed) := D \, mod \, 50 = 0$
+	\item $jump((Braking \to Braking)\_1) := jump((Accelerating \to Accelerating)\_1) := jump((Full \, Speed \to Full \, Speed)_1) := D \, mod \, 50 = 0$
 	\end{itemize}
 
 \item[Events] \hspace*{0mm}
 \begin{itemize}
 	\item $event (Stop \, (EoA) \to Accelerating) := MA.TrainID.y$
 	\item $event (Braking \to Accelerating) := MA.TrainID.y$
-	\item $event(Full \, Speed \to Full \, Speed) := event(Braking \to Braking)$ \\
-                  $:= event(Accelerating \to Accelerating)  := l_{D \, div \, 50}.l_{(D \, div \, 50) +1}$
-\item $event(Full \, Speed \to Full \, Speed (2)) := event(Braking \to Braking (2))$  \\
-        $:= event(Accelerating \to Accelerating(2)) := Train.TrainID.Pos.D$
+	\item $event((Full \, Speed \to Full \, Speed)\_1) := event((Braking \to Braking)\_1)$ \\
+                  $:= event((Accelerating \to Accelerating)\_1)  := l_{D \, div \, 50}.l_{(D \, div \, 50) +1}$
+\item $event((Full \, Speed \to Full \, Speed)\_2) := event((Braking \to Braking)\_2)$  \\
+        $:= event((Accelerating \to Accelerating)\_2) := Train.TrainID.Pos.D$
 	\item $event(Accelerating \to Braking) = MA.Req.TrainID$
 	\item $event(Full \, Speed \to Braking) = MA.Req.TrainID$
 \end{itemize}
@@ -289,7 +289,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 						};
 
 
-\draw [arrow] (B) -- node[right] {$S = MaxS$} (D);
+\draw [arrow] (B) -- node[right] {$S = MaxSpeed$} (D);
 \draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainId\\ \textbf{then} MA := y\end{center} } (B);
 \draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}DMA(D, EoA) =\\ BD(S)\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) -- node [left] {$S = 0$} (A);
@@ -458,49 +458,45 @@ Similarly to the train automaton the RBC automaton also has four control modes n
 
 We define a hybrid automaton $H_{RBC}$ as follows:
 \begin{description}
-\item[Variables] The state of the radio block controller automaton consists of $\underbrace{MA_1, Pos_1, MA_2, Pos_2}_\text{0, \ldots , 249}$, \newline $\underbrace{LastTrain}_{\mathbb{N}}$.
+\item[Variables] The state of the radio block controller automaton consists of $\underbrace{EoA_1, Pos_1, EoA_2, Pos_2}_\text{0, \ldots , 249}$, \newline $\underbrace{LastTrain}_{\mathbb{N}}$.
 
-\item[Control Graph] The control graph of the radio block controller automaton consists of four control modes $\{Idle, \, Ready \, to \, Request, \, Wait, \, Granted \}$.
+\item[Control Graph] The control graph of the radio block controller automaton consists of four control modes $\{Idle, \, Ready \, to \, Request, \, Wait, \, Granted \}$ and control switches $Ready \, to \, Request \to Ready \, to \, Request$, $Granted \to Granted$ $Wait \to Wait$, $Idle \to Idle$, $Idle \to Ready \, to \, Request$, $Ready \, to \, Request \to Wait$, $Wait \to Ready \, to \, Request$, $Wait \to Granted$ and $Granted \to Idle$.
 
 \item[Initial, invariant and flow conditions] \hspace*{0mm}
 	\begin{itemize}
-	\item $init(Idle) :=   MA_1 = 49, Pos_1 = 0, MA_2 = 199, Pos_2 = 150, LastTrain = 0 $
-
+	\item $init(Idle) :=   EoA_1 = 49, Pos_1 = 0, EoA_2 = 199, Pos_2 = 150, LastTrain = 0 $
 	\end{itemize}
 
 \item[Jump Conditions] \hspace*{0mm}
 
 	\begin{itemize}
-	\item $jump(Ready \, to \, Request \to Ready \, to \, Request) := Train.x.Pos.y \wedge MA.x = y$
-	\item $jump(Wait \to Wait) := Train.x.Pos.y \wedge MA.x = y$
-	\item $jump(Granted \to Granted) := Train.x.Pos.y \wedge MA.x = y$
-	\item $jump(Idle \to Idle) := Train.x.Pos.y \wedge MA.x = y$
-	\item $jump(Idle \to Ready \, to \, Request) := MA.Req.x \wedge LastTrain = x$
-	\item $jump(Ready \, to \, Request \to Wait) := Req.NextTrack(TrackSeg(Pos.LastTrain))$
-	\item $jump(Wait \to Ready \, to \, Request) := Deny.LastTrain$
-	\item $jump(Wait \to Granted) := Grant.LastTrain$
-	\item $jump(Granted \to Idle) := MA.x.EndOf(z)$
-
-
-
+	\item $jump(Ready \, to \, Request \to Ready \, to \, Request) :=  Pos_x = y$
+	\item $jump(Wait \to Wait) :=  Pos_x = y$
+	\item $jump(Granted \to Granted) :=  Pos_x = y$
+	\item $jump(Idle \to Idle) := Pos.x = y$
+	\item $jump(Idle \to Ready \, to \, Request) := LastTrain = x$
+	\item $jump(Granted \to Idle) := EoA_{LastTrain} = EndOf(NextTrack(Pos_{LastTrain}))$
 	\end{itemize}
 
 \item[Events] \hspace*{0mm}
 \begin{itemize}
-\item $jump(Ready \, to \, Request \to Ready \, to \, Request) := Train.x.Pos.y$
-	\item $jump(Wait \to Wait) := Train.x.Pos.y$
-	\item $jump(Granted \to Granted) := Train.x.Pos.y $
-         \item $jump(Idle \to Idle) := Train.x.Pos.y$
-	\item $jump(Idle \to Ready \, to \, Request) := MA.Req.x $
-	\item $jump(Ready \, to \, Request \to Wait) := Req.NextTrack(Pos.LastTrain)$
-	\item $jump(Wait \to Ready \, to \, Request) := Deny.x$
-	\item $jump(Wait \to Granted) := Grant.x$
-	\item $jump(Granted \to Idle) := MA.LastTrain.EndOf(NextTrack(Pos.LastTrain)))$
+\item $event(Ready \, to \, Request \to Ready \, to \, Request) := Train.x.Pos.y$
+	\item $event(Wait \to Wait) := Train.x.Pos.y$
+	\item $event(Granted \to Granted) := Train.x.Pos.y $
+         \item $event(Idle \to Idle) := Train.x.Pos.y$
+	\item $event(Idle \to Ready \, to \, Request) := MA.Req.x $
+	\item $event(Ready \, to \, Request \to Wait) := Req.NextTrack(Pos.LastTrain)$
+	\item $event(Wait \to Ready \, to \, Request) := Deny.x$
+	\item $event(Wait \to Granted) := Grant.x$
+	\item $event(Granted \to Idle) := MA.LastTrain.EndOf(NextTrack(Pos.LastTrain)))$
 \end{itemize}
 
 \end{description}
 
 \end{mydef}
+
+
+Safety conditions for the combined system can be separated into discrete and continuous parts.  If we want to specify a safety condition which states that it is not possible for two trains to collide in our current system this could have the following components. The continuous part would state that any movement authority issued by the radio block processor would respect the interlocking's separation policy. \textbf{(Note: I should up date this part at some point. In the current Maude implementation the interlocking will grant a track segment if it is not occupied)} The discrete part would basically state that there is at least two free track circuits in-between each train.
 
 \FloatBarrier
 
@@ -555,9 +551,6 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 \end{figure}
 
 
-Safety conditions for the combined system can be separated into discrete and continuous parts.  If we want to specify a safety condition which states that it is not possible for two trains to collide in our current system this could have the following components. 
-
-the continuous part would state that any movement authority issued by the radio block processor would respect the interlocking's separation policy. \textbf{(Note: I should up date this part at some point. In the current Maude implementation the interlocking will grant a track segment if it is not occupied)} The discrete part would basically state that there is at least two free track circuits in-between each train.
 
 \section{Semantics of Hybrid Automata} \label{sec:hyseman}
 

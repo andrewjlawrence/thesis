@@ -120,32 +120,58 @@ We shall now describe how to define the behaviour of the satisfaction relation f
   endfm
 \end{lstlisting}
 \medskip
-The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$. It is left to the user of the model checker to define the behaviour for their own purposes. The standard way to define predicates which refer to a given object is by matching object identifiers.
+The sorts \texttt{State} and \texttt{Prop} are undefined as is the behaviour of $\models$. It is left to the user of the model checker to define the behaviour for their own purposes. The standard way to define predicates which refer to a given object is by pattern matching object identifiers. We have added general rules to deal with terms containing the operations \texttt{delta} and \texttt{trackseg}. In both cases the operation is ignored and the property is checked on the term without the operations.
 
-\subsection*{Checking correctness of the specification}
+\begin{lstlisting}[caption = Rewriting rules to deal with delta and trackseg operations]
+var P : Prop .
+eq {delta(REST)REST2} |= P = {REST REST2} |= P .
+eq {trackseg(REST)REST2} |= P = {REST REST2} |= P .
+\end{lstlisting}
 
-We have applied model checking to check several fundemental correctness properties of the pentagon examples behaviour. We begin by showing that it is not possible for a train to exceed its max speed. We formulate this as a model checking problem over the pentagon example. 
+\subsection*{Checking the  Correctness of the Specification}
 
+We have applied model checking to check several fundemental correctness properties of the pentagon examples behaviour. We begin by showing that it is not possible for a train to exceed its max speed. We formulate this as a model checking problem over the pentagon example.  We can check that a train has a certain speed as follows:
 
+\begin{lstlisting}[caption = The speed property]
+op train-s : Oid Nat -> Prop [ctor] .
+eq {REST < O1 : Train | speed : N1 >} |= train-s(O1,N1') = 
+   (N1 == N1')  .
+\end{lstlisting}
+
+Here the natural number N1 in the train object is matched with N1' in the predicate train-s. This can be used to that train1 does not exceed its maximum speed in any state in the pentagon  example that is reachable in 30 time steps using the following command:
+
+\begin{center}
+\texttt{(mc initialstate2 |=t  ~(<> train-s(train1,5)) in time <= 30 .)}
+\end{center}
+
+The resulting output from the model checker shows that the property has been proven true in 67 seconds:
+
+\begin{lstlisting}
+rewrites: 41403871 in 67776ms cpu (67773ms real)
+(610892 rewrites/second)
+
+Model check initialstate2 |=t ~ <> train-s(train1,5) in 
+MODEL-CHECK-ERTMS8 in time <= 30 with mode
+deterministic time increase
+
+Result Bool :
+  true
+\end{lstlist}
 
 We will now show that the train is always at the correct speed for the cons and stopped states. This is formulated using two properties. We can check that a train is in a specific state, in this case the cons state, as follows:
 
-\begin{lstlisting}[caption = The constant speed property]
+\begin{lstlisting}[caption = The cons state property]
 ops train-cons : Oid -> Prop [ctor] .
 eq {REST < O1 : Train | state : S >} |= train-cons(O1) 
    =  S == cons . 
 \end{lstlisting}
 
-This predicate holds if there is a train in t he configuration with object identifier O1' and a state cons. 
 
-We can check that a train has a certain speed as follows:
-\begin{lstlisting}[caption = The speed property]
-op train-s : Oid Nat -> Prop [ctor] .
-eq {REST < O1 : Train | speed : N1 >} |= train-s(O1',N1') = 
-   (N1 == N1') and (O1 == O1') .
-\end{lstlisting}
+This predicate holds if there is a train in the configuration with object identifier O1 and a state cons. 
 
-Here the natural number N1 in the train object is matched with N1' in the predicate train-s. We can use these two properties for formulate model checkng properties to check the correctness of our modelling approach. We can define two properties, one that states "the train is in the cons state if and only it is at its max speed" and the other "the train is in the stopped state if and only if its speed is 0". 
+
+
+ We can use these two properties for formulate model checkng properties to check the correctness of our modelling approach. We can define two properties, one that states "the train is in the cons state if and only it is at its max speed" and the other "the train is in the stopped state if and only if its speed is 0". 
 
 \begin{lstlisting}
 
