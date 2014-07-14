@@ -622,7 +622,7 @@ All transitions of a timed transition system $S^t_H$ have an associated \emph{du
 The automaton is non-Zeno if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system.
 
 \section{Automaton Validation}
-In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since it does not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in white time cannot progress.
+In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since it does not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in white time cannot progress.
 \medskip
 
 \begin{mytheorem}[Train Automaton is Non-Zeno]
@@ -633,14 +633,14 @@ The proof proceeds by performing a case distinction on the state of $H_{T}$.
 \item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ can not be violated.
 
 
-\item[Case: Accelerating] The invariant $\BD{S} \leq \DMA{D}{EoA}$ bounds the increase of the variables for the distance and S which occur in this state. Eventually, the distance and S will increase enough for $\BD{S} = \DMA{D}{EoA}$ to hold and time will no longer be able to progress in this state, however a jump can occur to the Braking state in which the invariant $\BD{S} = \DMA{D}{EoA}$ holds. The invariant $S \leq MaxSpeed$ bounds the increase of the $S$ variable. In this state the $S$ will increase until the boundary of the invariant $S \leq MaxSpeed$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Speed$ state.
+\item[Case: Accelerating] The invariant $\BD{S} \leq \DMA{D}{EoA}$ bounds the increase of the variables for the distance and speed which occur in this state resulting in two cases. The automaton is either in the region in which the invariant holds and can progress in time, or the automaton is at the boundary of the region defined by the invariant and time can no longer progress. When the automaton is at the boundary of the region $\BD{S} = \DMA{D}{EoA}$ holds and time can no longer progress in this control mode however a jump can occur to the Braking state in which the invariant $\BD{S} = \DMA{D}{EoA}$ holds. The invariant $S \leq MaxSpeed$ bounds the increase of the $S$ variable. In this state the speed will increase until the boundary of the invariant $S \leq MaxSpeed$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Speed$ state.
 
 
 \item[Case: Full Speed] 
 The case for the $Full \, Speed$ state follows the same argument as the Accelerating state except for the part relating to the invariant $S \leq MaxSpeed$.
 
 \item[Case: Braking]
-The invariant $0 \leq S$ is the only invariant to bound the decrease of the S in the Braking state. When the S of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state.
+The invariant $0 \leq S$ is the only invariant to bound the decrease of the speed in the Braking state. When the speed of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state.
 \end{description}
 \end{proof}
 \end{mytheorem}
