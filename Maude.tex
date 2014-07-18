@@ -2,7 +2,7 @@
 
 \thesischapter{The Modelling of the European Rail Traffic Management System Using Real Time Maude}{The Modelling of ERTMS Using Real Time Maude}\label{chap:modelertms}
 
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe how they can be used model the ERTMS system (See chapter \ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describe how each of the 3 subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in chapter \ref{chap:hybrid}. Each of these individual components are modelled using object oriented specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects from these classses behaviour. The  built-in message construct of the Real Time Maude system are used to define communication between the subsystems.
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe how they can be used model the ERTMS system (See chapter \ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describe how each of the 3 subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in chapter \ref{chap:hybrid}. Each of these individual components are modelled using object oriented specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects from these classses behaviour. The  built-in message construct of the Real Time Maude system are used to define communication between the subsystems. 
 
 \subsection*{Related Work}
 The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. A distributed sensor network employing the OGDC algorithm has been modelled and verified using Real Time Maude \cite{PO07}. The modelling of the progression of time over the sensor network has inspired the distribution of in our ERTMS model. The Real Time Maude system can also be used for simulation and analysis of systems as seen in the work on the CASH Scheduling Algorithm \cite{PO06}. 
@@ -336,6 +336,7 @@ In our previous Real Time Maude specifications we have had a rewrite rules that 
 
 \begin{lstlisting}[caption = The delta time transition operation, label = code:delta]
 op delta : Configuration -> Configuration [frozen] . 
+op nondelta : Configuration -> Configuration .
 
 var OCREST : ObjectConfiguration .
 
@@ -343,7 +344,7 @@ rl [timetrans] : {OCREST} => {delta(OCREST)} in time 1 .
 rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
 \end{lstlisting}
 
-The operation $\mathrm{delta}$ is frozen meaning that the configuration contained within will not be evaluated by the Maude until the $\mathrm{delta}$ operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the delta operation over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own seperately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{PO07} where a delta operation is used to distribute time over a distributed sensor network. 
+The operation \texttt{nondelta} is frozen meaning that the configuration contained within will not be evaluated by the Maude until the $\mathrm{delta}$ operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the delta operation over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own seperately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{PO07} where a delta operation is used to distribute time over a distributed sensor network. The \texttt{nondelta} operation is applied to objects to prevent the elapse of time by causing the object to have the sort \texttt{Configuration} instead of \texttt{ObjectConfiguration}.
 
 \subsubsection*{Modelling Trains}
 We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and braking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.

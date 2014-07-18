@@ -31,14 +31,14 @@ Like the interlocking, the RBC is also initially idle. Since the lasttrain varia
 
 \begin{lstlisting}[caption = The intital state of train1 in Maude]
  eq initialtrainstate1 = < train1 : Train | state : acc,  dist : 0, 
-                           speed : 0, ac : 1, ma : 49, 
+                           speed : 1, ac : 1, ma : 49, 
                            tseg : 0, maxspeed : 4 > .
 \end{lstlisting}
 We set the train1 to be accellerating initally with a distance and speed of 0 its movement authority is 49, it is in the 0 track segment and has a maxspeed of 4. 
 
 \begin{lstlisting}[caption = The intial state of train2 in Maude]
 eq initialtrainstate2  = < train2 : Train | state : acc, dist : 150, 
-                           speed : 0, ac : 1, ma : 199,
+                           speed : 1, ac : 1, ma : 199,
                            tseg : 3, maxspeed : 7 > .
 \end{lstlisting}
 Like train1, train2 is also accellerating initially and has a speed of 0.  Unlike train1 it has a distance of 150, a movement authority of 199, it is in the 4th track segment number 3 and has a maxspeed of 4. Both trains have an accelleration of 1. 
@@ -168,14 +168,12 @@ eq {REST < O1 : Train | state : S >} |= train-cons(O1)
 
 This predicate holds if there is a train in the configuration with object identifier O1 and a state cons. 
 
-
-
- We can use these two properties for formulate model checkng properties to check the correctness of our modelling approach. We can define two properties, one that states "the train is in the cons state if and only it is at its max speed" and the other "the train is in the stopped state if and only if its speed is 0". 
+We can use these two properties for formulate model checkng properties to check the correctness of our modelling approach. We can define two properties, one that states "the train is in the cons state if and only it is at its max speed" and the other "the train is in the stopped state if and only if its speed is 0". 
 
 \begin{lstlisting}
-Correct1 := 
-Correct2 :=
-Correct3 :=
+Correct1 := (mc initialstate2 |=u  ~(<> train-s(train1,5))  .)
+Correct2 := (mc initialstate2 |=u [] (train-s(train1,4) => train-cons(train1)) /\ (train-cons(train1) => train-s(train1,4)) .)
+Correct3 := (mc initialstate2 |=t [] ((train-s(train1,0) => (train-stop(train1) \/ train-brake(train1))) /\ (train-stop(train1) => train-s(train1,0))) .)
 \end{lstlisting}
 
 
@@ -248,12 +246,12 @@ The following table presents the times taken to verify the 4 safety properties M
 \begin{center}
 \begin{tabular}{c | c | c} 
 Safety Condition & Time Steps Checked & Time to Solve  \\ \hline
-Correct1 & untimed & s\\
-Correct2 & untimed & s\\
+Correct1 & untimed & 123.778 s\\
+Correct2 & untimed & 260.384s\\
 Correct3 & untimed & s\\
-MA1 (Pentagon)& untimed &77.724s  \\
-MA2 (Pentagon)& untimed &79.192s \\ 
-MA3 (Pentagon)&  untimed &79.380s \\
+MA1 (Pentagon)& untimed &134.703s  \\
+MA2 (Pentagon)& untimed &330.288s \\ 
+MA3 (Pentagon)&  untimed &343.856s \\
 P1 (Junction)& untimed &7.488s \\
 P2 (Junction)& untimed & 6.636s \\
 \end{tabular}
@@ -268,16 +266,25 @@ The no overlapping movement authorities safety property was verified using time 
 Safety Condition & Time Steps Checked & Time to Solve  \\ \hline
 MA1 (Realistic Pentagon) & 30 & 21.265s \\
 MA1 (Realistic Pentagon) & 40 & 30.453s \\
-MA1 (Realistic Pentagon) & 50 & 40.825s
+MA1 (Realistic Pentagon) & 50 & 40.825s \\
+MA1 (Realistic Pentagon) & 60 & 52.492s \\
+MA1 (Realistic Pentagon) & 70 & 65.224s \\
 \end{tabular}
 \end{center}
 
+Even though the Real Time Maude system is unable to performed untimed model checking on this example it can still perform bounded model checking of a large enough portition of the state space for us to be
 
 \section{Conclusion}
  We have presented the first attempt at modelling and verifying the combined ERTMS and interlocking system.
 \subsection*{Future Work}
 There are numerous ways in which our model can be extended. One of the biggest problems facing engineers when developing the ERTMS system is time and how it affects the transition of messages with delays often occurring. This could be easily be modelled following the work \cite{PO07} where delays are modelled in the communications between nodes of a wireless sensor network. Currently our trains have a jerky behaviour in terms of speed, breaking and accelerating in rapid succession there are several other behaviours that trains exhibit in real life that we have not captured in our model. Trains have the ability to coast where the engine in not powering the train but the brakes are not active which is used for several purposes. To save energy coasting and accelerating are often combined to hold the train at max speed. The trains may also coast before breaking when reaching the end of a movement authority.
 
-Currently the track is closed and trains are capable of looping round the track giving it an infinite state space. Opening up the track with an entrance and exit would provide the opportunity to model the hand over part of the protocol where new trains must register with the RBC on entering the track and then de-register upon leaving. This opening of the track would also finitise the state space possibly allowing for un-timed model checking to take place. This example could then be extended by increasing the complexity of the track further and then modelling routes and points. This would allow for the checking of a further safety conditions that states no train has a movement authority over a point in locked in the wrong direction or a moving point.
+
+\begin{comment}
+Currently the track is closed and trains are capable of looping round the track giving it a very large state space due to number of possible combinations of train location and speed. Opening up the track with an entrance and exit would provide the opportunity to model the hand over part of the protocol where new trains must register with the RBC on entering the track and then de-register upon leaving. This would  This example could then be extended by increasing the complexity of the track further and then modelling routes and points. This would allow for the checking of a further safety conditions that states no train has a movement authority over a point in locked in the wrong direction or a moving point.
+\end{comment}
+
+This next challenge would be to verify to verify some real world track layouts as would be controlled by the ERTMS system on its implementation. \textbf{Note to self: write some paragraph here to replace the above. something about different track layouts that can be verified.}
+
 
 The RBC has the possibility to pre-emptively grant movement authorities to trains without them requesting it in the case that a train is on a route which contains free sections of track behind a movement authority.  The trains could also request movement authorities before the point at which we reach the braking point.
