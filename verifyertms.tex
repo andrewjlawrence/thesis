@@ -168,12 +168,16 @@ eq {REST < O1 : Train | state : S >} |= train-cons(O1)
 
 This predicate holds if there is a train in the configuration with object identifier O1 and a state cons. 
 
-We can use these two properties for formulate model checkng properties to check the correctness of our modelling approach. We can define two properties, one that states "the train is in the cons state if and only it is at its max speed" and the other "the train is in the stopped state if and only if its speed is 0". 
+We can use these two properties and others formulated in a similar fashion to formulate model checkng properties which can be used check the correctness of our modelling approach. We can define three safety conditions, one that states "train1 is in the cons state if and only it is at its max speed". The second states "if the speed of train1 is zero then it is either in the cons, stop or acc states and if the train is in the stop state then its speed is zero". The final states "it is not the case that there exists a state in which the speed of train1 is 5" (train1 has a max speed of 4). 
 
 \begin{lstlisting}
-Correct1 := (mc initialstate2 |=u  ~(<> train-s(train1,5))  .)
-Correct2 := (mc initialstate2 |=u [] (train-s(train1,4) => train-cons(train1)) /\ (train-cons(train1) => train-s(train1,4)) .)
-Correct3 := (mc initialstate2 |=t [] ((train-s(train1,0) => (train-stop(train1) \/ train-brake(train1))) /\ (train-stop(train1) => train-s(train1,0))) .)
+Correct1 := (mc initialstate2 |=t  ~(<> train-s(train1,5)) in time <= 80 .)
+Correct2 := (mc initialstate2 |=t [] (train-s(train1,4) => train-cons(train1)) /\ (train-cons(train1) => train-s(train1,4))  in time <= 80 .)
+Correct3 := (mc initialstate2 |=t [] ((train-s(train1,0) => 
+  (train-stop(train1) \/ train-brake(train1) \/ train-acc(train1))) /\ 
+     (train-stop(train1) => train-s(train1,0))) in time <= 80 .)
+
+
 \end{lstlisting}
 
 
@@ -246,12 +250,12 @@ The following table presents the times taken to verify the 4 safety properties M
 \begin{center}
 \begin{tabular}{c | c | c} 
 Safety Condition & Time Steps Checked & Time to Solve  \\ \hline
-Correct1 & untimed & 123.778 s\\
-Correct2 & untimed & 260.384s\\
-Correct3 & untimed & s\\
-MA1 (Pentagon)& untimed &134.703s  \\
-MA2 (Pentagon)& untimed &330.288s \\ 
-MA3 (Pentagon)&  untimed &343.856s \\
+Correct1 & 100 & 229.400 s\\
+Correct2 & 100 & 249.784s\\
+Correct3 & 100 & 225.556s\\
+MA1 (Pentagon)& 100 & 91.756s  \\
+MA2 (Pentagon)& 100 &129.335s \\ 
+MA3 (Pentagon)& 100 &148.032s \\
 P1 (Junction)& untimed &7.488s \\
 P2 (Junction)& untimed & 6.636s \\
 \end{tabular}
@@ -264,11 +268,11 @@ The no overlapping movement authorities safety property was verified using time 
 \begin{center}
 \begin{tabular}{c | c | c} 
 Safety Condition & Time Steps Checked & Time to Solve  \\ \hline
-MA1 (Realistic Pentagon) & 30 & 21.265s \\
-MA1 (Realistic Pentagon) & 40 & 30.453s \\
-MA1 (Realistic Pentagon) & 50 & 40.825s \\
-MA1 (Realistic Pentagon) & 60 & 52.492s \\
-MA1 (Realistic Pentagon) & 70 & 65.224s \\
+MA1 (Realistic Pentagon) & 30 & 25.265s \\
+MA1 (Realistic Pentagon) & 40 & 36.414s \\
+MA1 (Realistic Pentagon) & 50 & 49.201s \\
+MA1 (Realistic Pentagon) & 60 & 62.126s \\
+MA1 (Realistic Pentagon) & 70 & 79.948s \\
 \end{tabular}
 \end{center}
 
