@@ -12,13 +12,14 @@ We have tried to stay faithful to the definition of the fundemental data types d
 The literal is also defined as an algebra but has two constructors "Pos" and "Neg" which are used to construct positive and negative literals respectively from a variable.
 \begin{lstlisting}[caption = "Definition of a literal in Minlog"]
 (add-alg "lit" '("Pos" "variable => lit")
-         '("Neg" "variable => lit"))
+     '("Neg" "variable => lit"))
 \end{lstlisting}
 
 We have defined an operation $\mathbf{opposite}$ which computes the opposite polarity of a literal. This is defined using
 
 \begin{lstlisting}[caption = "Definition of the opposite operation in the Minlog System"]
-(add-program-constant "opposite" (mk-arrow (py "lit") (py "lit")) 1)
+(add-program-constant "opposite" 
+     (mk-arrow (py "lit") (py "lit")) 1)
 (add-computation-rule (pt "opposite (Pos v)") (pt "Neg v"))
 (add-computation-rule (pt "opposite (Neg v)") (pt "Pos v"))
 \end{lstlisting}
@@ -32,47 +33,137 @@ There is currently no built in data type for sets in the Minlog system. For our 
 (add-alg "valu" '( "ConsVal" "list lit => valu") )
 \end{lstlisting}
 
+\subsection*{Set Operations}
+
 
 \subsection*{The DPLL Proof System}
-The DPLL proof system has been formalised as an inductive definition in the Minlog system with 5 closure axioms corresponding to the 5 proof rules. The inductive definition is represented internally as an algebra with the names of the closure axioms being used as constructors.
+The DPLL proof/ system has been formalised as an inductive definition in the Minlog system with 5 closure axioms corresponding to the 5 proof rules. The inductive definition is represented internally as an algebra with the names of the closure axioms being used as constructors.
 
 \begin{lstlisting}[caption = "The DPLL Proof System as an Inductive Definition in Minlog"]
-(add-ids (list (list "dpll" (make-arity (py "valu") (py "for")) "algdpll" ))
-         '("allnc val, f. (memcf (CC (Nil lit)) f -> dpll val f)"
-           "Conflict")
+(add-ids (list 
+     (list "dpll" (make-arity (py "valu") (py "for")) "algdpll" ))
+     '("allnc val, f. (memcf (CC (Nil lit)) f -> dpll val f)"
+      "Conflict")
 
-         '("allnc val, f. all c, l. (memlv l val ->                                                                                                             
-                               memlc l c ->                                                                                                                     
-                               memcf c f ->                                                                                                                     
-                               dpll  val (remcf c f) ->                                                                                                         
-                               dpll  val f ) "
-           "Elim")
+     '("allnc val, f. all c, l. (memlv l val ->                                                                                                             
+         memlc l c ->                                                                                                                     
+         memcf c f ->                                                                                                                     
+         dpll  val (remcf c f) ->                                                                                                         
+         dpll  val f ) "
+        "Elim")
 
-         '("allnc  val, f. all l. (memcf (CC (l:)) f ->                                                                                                         
-                             dpll  (conclv l val) (remcf (CC (l:)) f) ->                                                                                        
-                             dpll val f)"
-           "Unit")
+     '("allnc  val, f. all l. (memcf (CC (l:)) f ->                                                                                                         
+        dpll  (conclv l val) (remcf (CC (l:)) f) ->                                                                                        
+        dpll val f)"
+        "Unit")
 
-         '( "allnc val,f. all c,l. ( memlv l val ->                                                                                                             
-                                memlc (opposite l) c ->                                                                                                         
-                                memcf c f ->                                                                                                                    
-                                dpll val (conccf (remlc (opposite l) c) (remcf c f)) ->                                                                         
-                                dpll val f)"
-            "Red")
+     '( "allnc val,f. all c,l. ( memlv l val ->                                                                                                             
+         memlc (opposite l) c ->                                                                                                         
+         memcf c f ->                                                                                                                    
+         dpll val (conccf (remlc (opposite l) c) (remcf c f)) ->                                                                         
+         dpll val f)"
+      "Red")
 
-         '( "allnc val, f. all l. (                                                                                                                             
-                               dpll (conclv l val) f ->                                                                                                         
-                               dpll (conclv (opposite l) val) f ->                                                                                              
-                               dpll  val f )"
-            "Split")
+     '( "allnc val, f. all l. (                                                                                                                             
+         dpll (conclv l val) f ->                                                                                                         
+         dpll (conclv (opposite l) val) f ->                                                                                              
+         dpll  val f )"
+      "Split")
 )
 \end{lstlisting}
 
+This inductive definition contains a number of \texttt{allnc} quantifiers which will remove redundant data from the data structure which is extracted from this inductive definition. The valuation \texttt{val} and formula \texttt{f} have this non-computational label in each of the closure axioms. If the valuation and formula were not labelled as non-computational then a copy of them would exist in every node of the proof tree which would make the extracted program extremely inefficient in terms of memory consumption. The only information that is needed in the derivation of unsatisfiability is how the empty clause is reached in each branch of the proof.
 
 
-\section{The Soundness of DPLL}
+\section{The Incompatibility of the DPLL Proof System in Minlog}
+We have formalised the soundness proof for the DPLL proof system following the proof found in chapter \ref{chapter:DPLL}. We shall now sketch some of the steps to carry out the proof using the Minlog System.
+The proof goal is set in the minlog system using the \texttt{set-goal} command:
 
-\section{The Completeness of DPLL}
+\begin{lstlisting}
+(set-goal (pf 
+   " all val,f.
+       dpll val f ->  
+       (all mod.( all l  (memlv l val -> mod l) ) -> 
+       (all c . memcf c f ->( ex l.  memlc l c & mod l )) ->  F)"))
+\end{lstlisting}
+
+Here the function \texttt{pf} parses the formula to be proven into the Minlog System. The \texttt{assume} command is applied to fix the valuation \texttt{val} and the formula \texttt{f} and the \texttt{elim} command is applied to perform structural induction on the build up of the DPLL derivation \texttt{dpll val f} resulting the 5 cases as described in the written description of the proof. Each of these cases require that a further valuation \texttt{val1} and formula \texttt{f1} are fixed before proceeding.
+
+\begin{lstlisting}[caption = "The Conflict Case in Minlog"]
+?_3:allnc val,f(
+     memcf(CC(Nil lit))f ->
+     all mod(
+      all l(memlv l val -> mod l) ->
+      all c(memcf c f -> ex l(memlc l c & mod l)) -> F))
+\end{lstlisting}
+
+The proof for this case is performed using the assumption that the empty clause is in the formula \texttt{memcf(CC(Nil lit)) f1} and the assumption that every clause has a literal which is true in the model \texttt{all c(memcf c f1 -> ex l(memlc l c \& mod l))} to show a contradiction. 
+
+
+\begin{lstlisting}[caption = "The Elim Case in Minlog"]
+?_4:allnc val,f
+     all c,l(
+      memlv l val ->
+      memlc l c ->
+      memcf c f ->
+      dpll val(remcf c f) ->
+      all mod(
+       all l0(memlv l0 val -> mod l0) ->
+       all c0(memcf c0(remcf c f) -> ex l0(memlc l0 c0 & mod l0)) -> F) ->
+      all mod(
+       all l0(memlv l0 val -> mod l0) ->
+       all c0(memcf c0 f -> ex l0(memlc l0 c0 & mod l0)) -> F))
+\end{lstlisting}
+
+The proof of this case requires a lemma named \
+
+\begin{lstlisting}
+?_5:allnc val,f
+     all l(
+      memcf(CC l:)f ->
+      dpll(conclv l val)(remcf(CC l:)f) ->
+      all mod(
+       all l0(memlv l0(conclv l val) -> mod l0) ->
+       all c(memcf c(remcf(CC l:)f) -> ex l0(memlc l0 c & mod l0)) -> F) ->
+      all mod(
+       all l0(memlv l0 val -> mod l0) ->
+       all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
+\end{lstlisting}
+
+\begin{lstlisting}
+?_6:allnc val,f
+     all c,l(
+      memlv l val ->
+      memlc(opposite l)c ->
+      memcf c f ->
+      dpll val(conccf(remlc(opposite l)c)(remcf c f)) ->
+      all mod(
+       all l0(memlv l0 val -> mod l0) ->
+       all c0(
+        memcf c0(conccf(remlc(opposite l)c)(remcf c f)) ->
+        ex l0(memlc l0 c0 & mod l0)) ->
+       F) ->
+      all mod(
+       all l0(memlv l0 val -> mod l0) ->
+       all c0(memcf c0 f -> ex l0(memlc l0 c0 & mod l0)) -> F))
+\end{lstlisting}
+
+\begin{lstlisting}
+?_7:allnc val,f
+     all l(
+      dpll(conclv l val)f ->
+      all mod(
+       all l0(memlv l0(conclv l val) -> mod l0) ->
+       all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F) ->
+      dpll(conclv(opposite l)val)f ->
+      all mod(
+       all l0(memlv l0(conclv(opposite l)val) -> mod l0) ->
+       all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F) ->
+      all mod(
+       all l0(memlv l0 val -> mod l0) ->
+       all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
+\end{lstlisting}
+\section{The Completeness of the DPLL in Minlog}
 
 \section{The Extracted DPLL Solver (XSAT)}
 
