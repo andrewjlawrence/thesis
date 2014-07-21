@@ -202,7 +202,7 @@ To show \texttt{opposite l0=l1 -> F} we assume \texttt{opposite l0 = l1} and the
        all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
 \end{lstlisting}
 
-The proof of the Split case proceeds by fixing a literal \texttt{l} and making several assumptions using the \texttt{assume} command.
+The proof of the Split case proceeds by fixing a literal \texttt{l} and a model \texttt{mod} and making several assumptions using the \texttt{assume} command. We assume that \texttt{f1} and the valuations \texttt{conclv l val1} and \texttt{conclv (opposite l) val1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under the model \texttt{mod}.
 
 \section{The Completeness of the DPLL in Minlog}
 
