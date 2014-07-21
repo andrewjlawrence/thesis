@@ -91,10 +91,10 @@ Here the function \texttt{pf} parses the formula to be proven into the Minlog Sy
 
 \begin{lstlisting}[caption = "The Conflict Case in Minlog"]
 ?_3:allnc val,f(
-     memcf(CC(Nil lit))f ->
-     all mod(
-      all l(memlv l val -> mod l) ->
-      all c(memcf c f -> ex l(memlc l c & mod l)) -> F))
+  memcf(CC(Nil lit))f ->
+  all mod(
+   all l(memlv l val -> mod l) ->
+   all c(memcf c f -> ex l(memlc l c & mod l)) -> F))
 \end{lstlisting}
 
 The proof for this case is performed using the assumption that the empty clause is in the formula \texttt{memcf(CC(Nil lit)) f1} and the assumption that every clause has a literal which is true in the model \texttt{all c(memcf c f1 -> ex l(memlc l c \& mod l))} to show a contradiction. 
@@ -102,22 +102,28 @@ The proof for this case is performed using the assumption that the empty clause 
 
 \begin{lstlisting}[caption = "The Elim Case in Minlog"]
 ?_4:allnc val,f
-     all c,l(
-      memlv l val ->
-      memlc l c ->
-      memcf c f ->
-      dpll val(remcf c f) ->
-      all mod(
-       all l0(memlv l0 val -> mod l0) ->
-       all c0(memcf c0(remcf c f) -> ex l0(memlc l0 c0 & mod l0)) -> F) ->
-      all mod(
-       all l0(memlv l0 val -> mod l0) ->
-       all c0(memcf c0 f -> ex l0(memlc l0 c0 & mod l0)) -> F))
+  all c,l(
+   memlv l val ->
+   memlc l c ->
+   memcf c f ->
+   dpll val(remcf c f) ->
+   all mod(
+    all l0(memlv l0 val -> mod l0) ->
+    all c0(memcf c0(remcf c f) -> ex l0(memlc l0 c0 & mod l0)) -> F) ->
+   all mod(
+    all l0(memlv l0 val -> mod l0) ->
+    all c0(memcf c0 f -> ex l0(memlc l0 c0 & mod l0)) -> F))
 \end{lstlisting}
+In addition to fixing a valuation and a formula using the \texttt{assume} command, in the Elim case we also use the command fix a clause \texttt{c} and a literal \texttt{l} and make several assumptions. We assume that a literal l is in both \texttt{c} and the valuation \texttt{val1}, that the clause \texttt{c} is in the formula \texttt{f1}, that f1 with the clause \texttt{c} removed is incompatible with the valuation \texttt{val1} and finally that \texttt{f1} and \texttt{val1} are compatible. At this point the goal in Minlog is to show \texttt{F}. We apply the assumption that \texttt{remcf c f1} and the valuation \texttt{val1} are incompatible using the \texttt{use} command resulting in a new goal to show that \texttt{remcf c f1} and \texttt{val1} are compatible. We then apply a lemma \texttt{foralllemma} using the \texttt{use-with} command that states that in order to prove compatibility for a formula and a valuation it suffices to show compatibility for any larger formula, of which the smaller formula is contained and that valuation.
 
-The proof of this case requires a lemma named \
+\begin{center}
+\texttt{all f,mod . all c( memcf c f -> ex l(memlc l c \& mod l)) -> all c,c1 (memcf c (remcf c1 f) -> ex l (memlc l c \&  mod l ))}
+\end{center}
 
-\begin{lstlisting}
+The resulting goal can then be proven using the \texttt{use} command with the assumption that the formula \texttt{f1} and the valuation {val1} are compatible.
+
+
+\begin{lstlisting}[caption = "The Unit Case in Minlog"]
 ?_5:allnc val,f
      all l(
       memcf(CC l:)f ->
