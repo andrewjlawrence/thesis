@@ -1,8 +1,5 @@
-\thesischapter{Extracting Verified Decision Procedures in the Minlog System}
-In the following chapter we describe how the completeness proofs from chapter \ref{} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in chapter \ref{ } and followed by the implementation of the completeness of the DPLL proof system in Minlog. The program extracted from the completeness is described along with a description of how a unique feature of the Minlog system, namely \emph{non-computational quantifiers} have been used to remove redundant data and computations and obtain a more efficient extracted program.
-
-
-a formalisation of the DPLL proof system, as well as its soundness and completeness in the Minlog proof assistant.
+\thesischapter{Extracting Verified Decision Procedures in the Minlog System}{Extracting Verified Decision Procedures in the Minlog System}
+In the following chapter we describe how the completeness proofs from chapter \ref{} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in chapter \ref{ } and followed by the implementation of the soundness and completeness of the DPLL proof system in Minlog. The program extracted from the completeness is described along with a description of how a unique feature of the Minlog system, namely \emph{non-computational quantifiers} have been used to remove redundant data and computations and obtain a more efficient extracted program. 
 
 \section{Formalising Preliminaries in the Minlog System}
 We have tried to stay faithful to the definition of the fundemental data types described in chapter \ref{} and to this end have defined a number of data types as algebras in Minlog, including the variable,literal, valuation, clause and formula. The variable is defined using the command $\mathbf{add-alg}$ which adds an algebra named "variable " with one constructor "Variable" which takes a natural number and returns a variable.
@@ -32,6 +29,8 @@ There is currently no built in data type for sets in the Minlog system. For our 
 (add-alg "for" '( "CF" "list cla => for"))
 (add-alg "valu" '( "ConsVal" "list lit => valu") )
 \end{lstlisting}
+
+\subsection*{Models}
 
 \subsection*{Set Operations}
 Due to there being no built in library for sets we have defined several operations on sets in Minlog. The  undecidabilty of equality and some limitations of polymorphism in Minlog have caused us to implement specific operations for each data type. While this has made the verification task hard, it has also given us a firmer grip on the extracted programming, allowing us to make such implementation decisons as the ordering of literals in the clause. One piece of future work which would be valuable to the Minlog community even if it is not scientifically valuable would be to come up with a implementation of sets that will allow for program extraction and contains proof tactics that make reasoning about these sets less time consuming. We shall now give a brief overview of some of the set operations we have implemented as part of this formalisation.
@@ -75,8 +74,8 @@ The DPLL proof/ system has been formalised as an inductive definition in the Min
 This inductive definition contains a number of \texttt{allnc} quantifiers which will remove redundant data from the data structure which is extracted from this inductive definition. The valuation \texttt{val} and formula \texttt{f} have this non-computational label in each of the closure axioms. If the valuation and formula were not labelled as non-computational then a copy of them would exist in every node of the proof tree which would make the extracted program extremely inefficient in terms of memory consumption. The only information that is needed in the derivation of unsatisfiability is how the empty clause is reached in each branch of the proof.
 
 
-\section{The Incompatibility of the DPLL Proof System in Minlog}
-We have formalised the incompatibility proof for the DPLL proof system following the proof found in chapter \ref{chapter:DPLL}. We shall now sketch some of the steps to carry out the proof using the Minlog System.
+\section{The Soundness (Incompatibility) of the DPLL Proof System in Minlog}
+We have formalised the incompatibility proof for the DPLL proof system following the proof found in chapter \ref{chapter:DPLL} that proof and this formalisation are both based on the Coq implementation \cite{}. We shall now sketch some of the steps to carry out the proof using the Minlog System.
 The proof goal is set in the minlog system using the \texttt{set-goal} command:
 
 \begin{lstlisting}
@@ -138,16 +137,18 @@ The resulting goal can then be proven using the \texttt{use} command with the as
        all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
 \end{lstlisting}
 
-In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \texttt{f1} and several assumptions are made using the \texttt{assume} command.  We assume that there is a unit clause containing a single literal \texttt{l}, which is itself contained within the formula \text{f1}. We also assume that the valuation \texttt{conclv l val1} and the formula \texttt{remcf (CC l:) f1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible. At this stage, the current goal to be proven is \texttt{F} to which we apply the assumption that \texttt{val1} and \texttt{remcf (CC l:) f1} are incompatible, leaving us to prove that they are compatible. To do this we first fix a model \texttt{mod} and assume that all literals in \texttt{val1} hold in \texttt{mod} and that every clause in \texttt{f1} contains a literial which is holds in \texttt{mod}.
+In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \texttt{f1} and several assumptions are made using the \texttt{assume} command.  We assume that there is a unit clause containing a single literal \texttt{l}, which is itself contained within the formula \text{f1}. We also assume that the valuation \texttt{conclv l val1} and the formula \texttt{remcf (CC l:) f1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under a fixed model \texttt{mod}. At this stage, the current goal to be proven is \texttt{F} to which we apply the assumption that \texttt{val1} and \texttt{remcf (CC l:) f1} are incompatible using the use command with \texttt{mod}, leaving us to prove that they are compatible under the model \texttt{mod}. The assumption  \texttt{all c(memcf c f1 -> ex l(memlc l c \& mod l))} instantiated with \texttt{CC l:} using the \texttt{inst-with} command and then the \texttt{ex-elim} command is applied to eliminated the existential quantifier and obtain \texttt{memlc l0(CC l:) \& mod l0}. The \texttt{ng} command normalises \texttt{memlc l0 (CC l:)} to \texttt{l0 = l} allowing us to use the following lemma to obtain \texttt{mod l}:
 
+\begin{center}
+\textbf{Model-m} := \texttt{all mod,l0,l1. l0 = l1 -> mod l0 -> mod l1} \\
+\end{center}
+
+The assumptions \texttt{mod l} and \texttt{all l (memlv l val -> mod l)}  are used with the following lemma to show part of the current goal \texttt{all l1. memlv l1 (conclv l val) -> mod l}:
 \begin{center}
 \textbf{SubModel-add} := \texttt{all mod, val,l1. all l (memlv l val  -> mod l) -> mod l1 -> all l. memlv l (conclv l1 val ) -> mod l"} \\
 \end{center}
 
-\begin{center}
-\textbf{Model-Full} := \texttt{all mod, l. (mod l -> F) -> mod (opposite l)} \\
-\end{center}
-
+The remaining part of the goal to be show is \texttt{all c(memcf c(remcf(CC l:)f1) -> ex l0(memlc l0 c \& mod l0))} which follows a similar approach to that used in the Elim case using the lemma \texttt{foralllemma}.
 
 \begin{lstlisting}[caption = "The Reduce Case in Minlog"]
 ?_6:allnc val,f
@@ -167,6 +168,24 @@ In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \t
        all c0(memcf c0 f -> ex l0(memlc l0 c0 & mod l0)) -> F))
 \end{lstlisting}
 
+The proof of the Reduce case begins by fixing a clause \texttt{c} and a literal \texttt{l} and making several assumptions using the \texttt{assume} command. We assume that the literal \texttt{l} is in \texttt{val1}, that \texttt{c} contains \texttt{opposite l}, that \texttt{c} is in \texttt{f}, that the formula \texttt{conccf(remlc(oppositel) c) (remcf c f1)} and \texttt{val1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under a fixed model \texttt{mod}. The assumption that \texttt{conccf(remlc(opposite l) c) (remcf c f1)} and \texttt{val1} are incompatible is applied, using the \texttt{(use 6 (pt "mod"))} command, to the current goal \texttt{F} leaving us to show that \texttt{conccf(remlc (opposite l) c) (remcf c f1)}  and \texttt{val1} are compatible under the model \texttt{mod}. We have as an assumption that the model \texttt{mod} models the valuation and this is applied to prove the first part of the compatibility goal. The second part involves us showing that \texttt{mod} models the formula \texttt{conccf(remlc (opposite l) c) (remcf c f1)} :
+\begin{center}
+\texttt{all c(
+      memcf c(conccf(remlc(opposite l0)c0)(remcf c0 f0)) ->
+      ex l(memlc l c \& mod l))}
+\end{center}
+
+To prove this we fix a clause \texttt{c1} using the assume command and then perform a case distinction using command (cases (pt "c1 = (remlc(opposite l0) c0)")).  In the first case the \texttt{ex-intro} command is applied with \texttt{l1} leaving us to show \texttt{memlc l1 c1 \& mod l}. The \texttt{split} command allows us to prove each side conjunction in the current goal individually. To show \texttt{memlc l1 c1} we first use the \texttt{simp} command with the assumption \texttt{c1 = remlc (opposite l0) c0} to simplify the goal. The following lemma is then applied:
+\begin{center}
+\texttt{all l0,l1,c.  (l0 = l1 -> F) -> memlc l1 c -> memlc l1 (remlc l0 c)}
+\end{center}
+
+To show \texttt{opposite l0=l1 -> F} we assume \texttt{opposite l0 = l1} and then apply the model property leaving us to show \texttt{mod l0} and \texttt{mod (opposite l0)}. Using assumptions that \texttt{l0} is in the valuation \texttt{val1} and that \text{mod} models the valuation \textbf{val1} we can obtain \texttt{mod l0}. We show \texttt{mod (opposite l0)} by simplifying the goal with \texttt{opposite l0 = l1} and then apply the assumption that \texttt{mod l1} holds using the \texttt{use} command.  In the case that \texttt{c1 = (remlc(opposite l0) c0) -> F} holds we apply the assumption that \texttt{mod} models \texttt{f1}, leaving the current goal as \texttt{memcf c1 f0}, and use the following lemma:
+
+\begin{center}
+\textbf{remove-lemma} := \texttt{all f1,c0,c1,l0. (c1=remlc(opposite l0) c0 -> F) -> memcf c1 (conccf(remlc(opposite l0) c0) (remcf c0 f1)) -> memcf c1 f1}  
+\end{center}
+
 \begin{lstlisting}[caption = "The Split Case in Minlog"]
 ?_7:allnc val,f
      all l(
@@ -182,6 +201,9 @@ In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \t
        all l0(memlv l0 val -> mod l0) ->
        all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
 \end{lstlisting}
+
+The proof of the Split case proceeds by fixing a literal \texttt{l} and making several assumptions using the \texttt{assume} command.
+
 \section{The Completeness of the DPLL in Minlog}
 
 \section{The Extracted DPLL Solver (XSAT)}
