@@ -76,7 +76,7 @@ This inductive definition contains a number of \texttt{allnc} quantifiers which 
 
 
 \section{The Incompatibility of the DPLL Proof System in Minlog}
-We have formalised the soundness proof for the DPLL proof system following the proof found in chapter \ref{chapter:DPLL}. We shall now sketch some of the steps to carry out the proof using the Minlog System.
+We have formalised the incompatibility proof for the DPLL proof system following the proof found in chapter \ref{chapter:DPLL}. We shall now sketch some of the steps to carry out the proof using the Minlog System.
 The proof goal is set in the minlog system using the \texttt{set-goal} command:
 
 \begin{lstlisting}
@@ -109,7 +109,8 @@ The proof for this case is performed using the assumption that the empty clause 
    dpll val(remcf c f) ->
    all mod(
     all l0(memlv l0 val -> mod l0) ->
-    all c0(memcf c0(remcf c f) -> ex l0(memlc l0 c0 & mod l0)) -> F) ->
+    all c0(memcf c0(remcf c f) -> ex l0(memlc l0 c0 & mod l0)) 
+            -> F) ->
    all mod(
     all l0(memlv l0 val -> mod l0) ->
     all c0(memcf c0 f -> ex l0(memlc l0 c0 & mod l0)) -> F))
@@ -117,7 +118,7 @@ The proof for this case is performed using the assumption that the empty clause 
 In addition to fixing a valuation and a formula using the \texttt{assume} command, in the Elim case we also use the command fix a clause \texttt{c} and a literal \texttt{l} and make several assumptions. We assume that a literal l is in both \texttt{c} and the valuation \texttt{val1}, that the clause \texttt{c} is in the formula \texttt{f1}, that f1 with the clause \texttt{c} removed is incompatible with the valuation \texttt{val1} and finally that \texttt{f1} and \texttt{val1} are compatible. At this point the goal in Minlog is to show \texttt{F}. We apply the assumption that \texttt{remcf c f1} and the valuation \texttt{val1} are incompatible using the \texttt{use} command resulting in a new goal to show that \texttt{remcf c f1} and \texttt{val1} are compatible. We then apply a lemma \texttt{foralllemma} using the \texttt{use-with} command that states that in order to prove compatibility for a formula and a valuation it suffices to show compatibility for any larger formula, of which the smaller formula is contained and that valuation.
 
 \begin{center}
-\texttt{all f,mod . all c( memcf c f -> ex l(memlc l c \& mod l)) -> all c,c1 (memcf c (remcf c1 f) -> ex l (memlc l c \&  mod l ))}
+\textbf{foralllemma} := \texttt{all f,mod . all c( memcf c f -> ex l(memlc l c \& mod l)) -> all c,c1 (memcf c (remcf c1 f) -> ex l (memlc l c \&  mod l ))} \\
 \end{center}
 
 The resulting goal can then be proven using the \texttt{use} command with the assumption that the formula \texttt{f1} and the valuation {val1} are compatible.
@@ -130,16 +131,25 @@ The resulting goal can then be proven using the \texttt{use} command with the as
       dpll(conclv l val)(remcf(CC l:)f) ->
       all mod(
        all l0(memlv l0(conclv l val) -> mod l0) ->
-       all c(memcf c(remcf(CC l:)f) -> ex l0(memlc l0 c & mod l0)) -> F) ->
+       all c(memcf c(remcf(CC l:)f) -> ex l0(memlc l0 c & mod l0)) 
+             -> F) ->
       all mod(
        all l0(memlv l0 val -> mod l0) ->
        all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
 \end{lstlisting}
 
-In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \texttt{f1} and several assumptions are made using the \texttt{assume} command.  
+In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \texttt{f1} and several assumptions are made using the \texttt{assume} command.  We assume that there is a unit clause containing a single literal \texttt{l}, which is itself contained within the formula \text{f1}. We also assume that the valuation \texttt{conclv l val1} and the formula \texttt{remcf (CC l:) f1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible. At this stage, the current goal to be proven is \texttt{F} to which we apply the assumption that \texttt{val1} and \texttt{remcf (CC l:) f1} are incompatible, leaving us to prove that they are compatible. To do this we first fix a model \texttt{mod} and assume that all literals in \texttt{val1} hold in \texttt{mod} and that every clause in \texttt{f1} contains a literial which is holds in \texttt{mod}.
+
+\begin{center}
+\textbf{SubModel-add} := \texttt{all mod, val,l1. all l (memlv l val  -> mod l) -> mod l1 -> all l. memlv l (conclv l1 val ) -> mod l"} \\
+\end{center}
+
+\begin{center}
+\textbf{Model-Full} := \texttt{all mod, l. (mod l -> F) -> mod (opposite l)} \\
+\end{center}
 
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = "The Reduce Case in Minlog"]
 ?_6:allnc val,f
      all c,l(
       memlv l val ->
@@ -150,14 +160,14 @@ In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \t
        all l0(memlv l0 val -> mod l0) ->
        all c0(
         memcf c0(conccf(remlc(opposite l)c)(remcf c f)) ->
-        ex l0(memlc l0 c0 & mod l0)) ->
-       F) ->
+        ex l0(memlc l0 c0 & mod l0)) 
+        -> F) ->
       all mod(
        all l0(memlv l0 val -> mod l0) ->
        all c0(memcf c0 f -> ex l0(memlc l0 c0 & mod l0)) -> F))
 \end{lstlisting}
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = "The Split Case in Minlog"]
 ?_7:allnc val,f
      all l(
       dpll(conclv l val)f ->
