@@ -34,7 +34,7 @@ There is currently no built in data type for sets in the Minlog system. For our 
 \end{lstlisting}
 
 \subsection*{Set Operations}
-
+Due to there being no built in library for sets we have defined several operations on sets in Minlog. The  undecidabilty of equality and some limitations of polymorphism in Minlog have caused us to implement specific operations for each data type. While this has made the verification task hard, it has also given us a firmer grip on the extracted programming, allowing us to make such implementation decisons as the ordering of literals in the clause. One piece of future work which would be valuable to the Minlog community even if it is not scientifically valuable would be to come up with a implementation of sets that will allow for program extraction and contains proof tactics that make reasoning about these sets less time consuming. We shall now give a brief overview of some of the set operations we have implemented as part of this formalisation.
 
 \subsection*{The DPLL Proof System}
 The DPLL proof/ system has been formalised as an inductive definition in the Minlog system with 5 closure axioms corresponding to the 5 proof rules. The inductive definition is represented internally as an algebra with the names of the closure axioms being used as constructors.
@@ -135,6 +135,9 @@ The resulting goal can then be proven using the \texttt{use} command with the as
        all l0(memlv l0 val -> mod l0) ->
        all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
 \end{lstlisting}
+
+In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \texttt{f1} and several assumptions are made using the \texttt{assume} command.  
+
 
 \begin{lstlisting}
 ?_6:allnc val,f
