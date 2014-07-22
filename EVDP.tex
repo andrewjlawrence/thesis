@@ -1,5 +1,25 @@
 \thesischapter{Soundness and Completeness of The DPLL and Resolution Proof Systems}{Soundness and Completeness of DPLL and Resolution} \label{chapter:dpll}
-In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see Chapter \ref{}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. The completeness proof is performed in such a way as to take into account efficiency considerations. The branching rule $\Split$ is only applied when absolutely necessary as it is computationally the most expensive to perform. A Minlog formalisation of these proofs is presented in chapter \ref{} whilst the performance of the extracted program is analysed in \ref{}. Following this we present a proof of the soundness and completeness of the resolution proof system based on the completeness proof of the DPLL proof system. The both the DPLL and the resolution proof systems are enriched to contain quantitative information about the size of the proof enabling us to prove that the Resolution proofs are in the same order of size as the DPLL proofs. This proof has been presented in \cite{}.
+In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see chapter \ref{}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. The completeness proof is performed in such a way as to take into account efficiency considerations. The branching rule $\Split$ is only applied when absolutely necessary as it is computationally the most expensive to perform. A Minlog formalisation of these proofs is presented in chapter \ref{chapter:dpllminlog} whilst the performance of the extracted program is analysed in \ref{chapter:dpllapp}. Following this we present a proof of the soundness and completeness of the resolution proof system based on the completeness proof of the DPLL proof system. The both the DPLL and the resolution proof systems are enriched to contain quantitative information about the size of the proof enabling us to prove that the Resolution proofs are in the same order of size as the DPLL proofs. 
+
+\section{Related Work}
+%Other examples of verification and extraction of SAT solvers
+Several attempts have been made to integrate an automatic theorem prover into Coq. Most of this work has made use of Coq's program extraction facilities to extract programs from proofs of decision procedures.
+ In \cite{SL08}, a SAT-solver based on the DPLL algorithm has been
+formalized, its soundness and completeness verified in Coq,
+and code extracted from the proof.
+Finally, the extracted system has been instantiated on the propositional fragment of Coq's logic creating a user friendly proof tactic.  Binary decision diagrams have been formalized in Coq \cite{KV00}. Then their correctness has been proven, and certified BDD algorithms have been extracted in Caml. The main reason for their formalization was to integrate symbolic model checking in Coq.
+%
+Significant work has also been performed in Isabelle with several decision procedures having been verified and integrated into the system. The DPLL algorithm has been formalized in \cite{FM10}. The automatic theorem prover Metis \cite{LP07} was formally verified inside Isabelle and is now used to reconstruct proofs from faster external procedures such as the ones used in Sledgehammer \cite{SB10}.
+
+%Differences to our approach
+The approaches \cite{SL08,FM10} to formalizing a DPLL SAT-solver in 
+both Coq and Isabelle
+involve explicitly stating the algorithm to be verified. In contrast, we
+prove a theorem that just states that each formula in CNF is either unsatisfiable
+or has a model, and synthesize the program from the proof.
+In the long run we would like to integrate automatic verification techniques into Minlog. Extracting a SAT-solver in Minlog is one step towards our end goal.
+
+\section{Reformulation of the DPLL Proof System}
 
 We first reformulate the DPLL proof system as an inductive definition
 that can be immediately formalized in the Minlog system. The definition
@@ -38,8 +58,6 @@ $\Gamma, l  \vdash \Delta
 \section{Soundness of the DPLL Proof System}
 
 The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the incompatibility ($\forall M. M \models \Gamma \to M \not\models \Delta$)  of the DPLL proof system in Minlog following the approach found in \cite{SL08}. 
-
- In the following we will present some of the preliminary definitions needed for the soundness of the DPLL algorithm. (\textbf{Note to self: Add Coq paper reference.})
 
 Instead of proving soundness we formalized a stronger property of incompatibility in Minlog. We define a formula to be incompatible under a valuation if there does not exist a model which models the valuation and the formula. 
 
