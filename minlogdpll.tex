@@ -202,9 +202,12 @@ To show \texttt{opposite l0=l1 -> F} we assume \texttt{opposite l0 = l1} and the
        all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
 \end{lstlisting}
 
-The proof of the Split case proceeds by fixing a literal \texttt{l} and a model \texttt{mod} and making several assumptions using the \texttt{assume} command. We assume that \texttt{f1} and the valuations \texttt{conclv l val1} and \texttt{conclv (opposite l) val1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under the model \texttt{mod}.
+The proof of the Split case proceeds by fixing a literal \texttt{l} and a model \texttt{mod} and making several assumptions using the \texttt{assume} command. We assume that \texttt{f1} and the valuations \texttt{conclv l val1} and \texttt{conclv (opposite l) val1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under the model \texttt{mod}. We then perform a case distinction on whether \texttt{mod l}  or \texttt{mod (opposite l)} using the \texttt{cases} command and the model property. In the case that \texttt{mod l} holds we apply the assume that \texttt{conclv l val1} and \texttt{f1} are incompatible  to the goal \texttt{F}, using the use  command with \texttt{mod} as an arguement, resulting in a new goal that is to show that they are compatible under \texttt{mod}. \texttt{all l1. memlv l1 (conclv l val1) -> mod l1} is proven by fixing a literal \texttt{l1} using the assumptions \texttt{all l2. memlv l2 val1 -> mod l2} and \texttt{mod l} and by performing a case distinction on whether \texttt{l1 = l}. The case the \texttt{mod (opposite l)} holds is proven in a similar fashion using the assumption that \texttt{conclv (opposite l) val1} and \texttt{f1} are incompatible.
 
 \section{The Completeness of the DPLL in Minlog}
+The proof of completeness in Minlog follows the proof of completeness described in Chapter \ref{chapter:dpll}. There are however some implementation details such as the use of non-computational quantifiers and implementation of logical disjunction that are not delt with in the paper proof and require some discussion.
+
+
 
 \section{The Extracted DPLL Solver (XSAT)}
 
