@@ -21,6 +21,10 @@ We have defined an operation $\mathbf{opposite}$ which computes the opposite pol
 (add-computation-rule (pt "opposite (Neg v)") (pt "Pos v"))
 \end{lstlisting}
 
+
+Functions in Minlog are defined using program constants which have a type and then giving these constants computational meaning with the introduction of computational rules. The \texttt{add-program-constant} command 
+
+
 \subsection*{Sets: Clauses, Valuations and Formulae}
 There is currently no built in data type for sets in the Minlog system. For our work we have implemented sets as lists in the Minlog system, while this is not the most mathematically pure way of implementing these data types it has enabled us to make further effciency improvements. The clauses have been implementated in such a way that the literals contained with in are partitioned into positive and negative literals and then ordered within each of these partitions by variable number. The positive literals occur first followed by the negative and the variables are sorted from low to high numbers. We do not place any partitionings or ordering on either the formulae or the valuations, they are built using unsorted lists.
 
@@ -31,6 +35,23 @@ There is currently no built in data type for sets in the Minlog system. For our 
 \end{lstlisting}
 
 \subsection*{Models}
+We implement models as a variable of type $literal \to boole$:
+\begin{center}
+\texttt{(add-var-name "mod" (mk-arrow (py "lit") (py "boole")))}
+\end{center}
+The behaviour of models is captured axiomatically by the addition of a global assumption in the Minlog system:
+\begin{center}
+\texttt{(aga "modelproperty" (pf "all mod, l . ( mod l  -> (mod (opposite l) -> F)) \& ( (mod (opposite l) -> F) -> mod l)"))}
+\end{center}
+We have implemented a model as a mapping from literals to booleans as during the proof search we construct a valuation which is a set of literals. In the case that a satisfying assignment is found we extend this set of literals to be a function. This is done using the following minlog code:
+
+\begin{lstlisting}[caption = "The ExtendVal function in Minlog"]
+(add-program-constant "ExtendVal" (py "valu => lit => boole") t-deg-one 'const 1)
+(add-computation-rule  (pt "ExtendVal val")  (pt "lambda l2 [if (memlv l2 val)                                                                                                       
+                                                          (T)                                                                                                                        
+                                                          (F)]") )
+\end{lstlisting}
+
 
 \subsection*{Set Operations}
 Due to there being no built in library for sets we have defined several operations on sets in Minlog. The  undecidabilty of equality and some limitations of polymorphism in Minlog have caused us to implement specific operations for each data type. While this has made the verification task hard, it has also given us a firmer grip on the extracted programming, allowing us to make such implementation decisons as the ordering of literals in the clause. One piece of future work which would be valuable to the Minlog community even if it is not scientifically valuable would be to come up with a implementation of sets that will allow for program extraction and contains proof tactics that make reasoning about these sets less time consuming. We shall now give a brief overview of some of the set operations we have implemented as part of this formalisation.
