@@ -34,6 +34,64 @@ There is currently no built in data type for sets in the Minlog system. For our 
 (add-alg "valu" '( "ConsVal" "list lit => valu") )
 \end{lstlisting}
 
+\subsection*{Variable Namings}
+In Minlog one defines variable names to have a particular type.  These variable names can then be used during a formalisation either as they are or with a suffix consisting of a natural number e.g. If we define \texttt{l} to be a variable name for literals then we can use the variable name \texttt{l1} to represent a literal in our formalisation.
+
+\begin{lstlisting}[caption = "Variable namings for the DPLL formalisation in Minlog"]
+(add-var-name "v" (py "variable"))
+(add-var-name "vs"(py "list variable"))
+(add-var-name "l"  (py "lit"))
+(add-var-name "ls" (py "list lit"))
+(add-var-name "c"  (py "cla"))
+(add-var-name "cs" (py "list cla"))
+(add-var-name "f"  (py "for"))
+(add-var-name "b" (py "boole"))
+\end{lstlisting}
+
+\subsection*{Set Operations}
+Due to there being no built in library for sets we have defined several operations on sets in Minlog. The  undecidabilty of equality and some limitations of polymorphism in Minlog have caused us to implement specific operations for each data type. While this has made the verification task hard, it has also given us a firmer grip on the extracted programming, allowing us to make such implementation decisons as the ordering of literals in the clause. One piece of future work which would be valuable to the Minlog community even if it is not scientifically valuable would be to come up with a implementation of sets that will allow for program extraction and contains proof tactics that make reasoning about these sets less time consuming. We shall now give a brief overview of some of the set operations we have implemented as part of this formalisation.
+
+
+The CNF formula has no predefined structure which makes the addition and removal of elements straight forward.
+
+\begin{lstlisting}[caption = "Code for the addition and removal of clauses from formulae"]
+(add-program-constant "conccf" (py "cla => for => for") 1)
+(add-computation-rule (pt  "conccf c (CF cs)")
+                      (pt  "(CF (c::cs)) "))
+\end{lstlisting}
+The function \texttt{conccf} is used to insert clauses into a formula
+
+
+
+
+\begin{lstlisting}[caption =  "Code used to insert a literal into a clause"]
+(add-program-constant "conclc" (py "lit => cla => cla") 1)
+(add-computation-rule (pt "conclc l (CC ls)") (pt "(CC (Conclitlitlist l ls))"))
+
+(add-program-constant "Conclitlitlist" (py "lit => list lit => list lit") 1)
+
+(add-computation-rule (pt "Conclitlitlist l (Nil lit)") (pt "l:"))
+
+(add-computation-rule (pt "Conclitlitlist (Pos v)  ((Pos v2)::ls)")
+                      (pt "([if (v =  v2)                                                                                                       
+                                           ((Pos v2)::ls)                                                                                       
+                                           ([if (Num v < Num v2 )                                                                               
+                                                ((Pos v)::(Pos v2)::ls)                                                                         
+                                                 ((Pos v2)::( Conclitlitlist (Pos v)  ls)) ])])"))
+
+(add-computation-rule (pt "Conclitlitlist (Pos v) ((Neg v2)::ls)")
+                      (pt " ((Pos v)::(Neg v2)::ls)"))
+
+(add-computation-rule (pt "Conclitlitlist (Neg v) ((Pos v2)::ls)")
+                      (pt "(Pos v2)::(Conclitlitlist (Neg v)  ls)"))
+(add-computation-rule (pt "Conclitlitlist (Neg v) ((Neg v2)::ls)")
+                      (pt "([if (v = v2)                                                                                                        
+                                            ((Neg v2)::ls)                                                                                      
+                                           ([if (Num v <  Num v2 )                                                                              
+                                                 ((Neg v)::(Neg v2)::ls)                                                                        
+                                                 ((Neg v2)::(Conclitlitlist (Neg v) ls))])])"))
+\end{lstlisting}
+
 \subsection*{Models}
 We implement models as a variable of type $literal \to boole$:
 \begin{center}
@@ -55,8 +113,7 @@ We have implemented a model as a mapping from literals to booleans as during the
 \end{lstlisting}
 
 
-\subsection*{Set Operations}
-Due to there being no built in library for sets we have defined several operations on sets in Minlog. The  undecidabilty of equality and some limitations of polymorphism in Minlog have caused us to implement specific operations for each data type. While this has made the verification task hard, it has also given us a firmer grip on the extracted programming, allowing us to make such implementation decisons as the ordering of literals in the clause. One piece of future work which would be valuable to the Minlog community even if it is not scientifically valuable would be to come up with a implementation of sets that will allow for program extraction and contains proof tactics that make reasoning about these sets less time consuming. We shall now give a brief overview of some of the set operations we have implemented as part of this formalisation.
+
 
 
 
