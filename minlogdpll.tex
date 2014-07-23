@@ -60,7 +60,7 @@ Due to there being no built in library for sets we have defined several operatio
 The function \texttt{conccf} is used to insert clauses into a formula, it has one computation rule which simply adds the clause to the from of the list of clauses contained within the formula. The insertion of literals into clauses is more complicated due to the structure we have decided to implement. Clauses are partitioned into positive and negative literals and then ordered by variable number.
 
 
-\begin{lstlisting}[caption =  "Code used to insert a literal into a clause"]
+\begin{lstlisting}[caption =  "Functions for the insertion of a literal into a clause"]
 (add-program-constant "conclc" (py "lit => cla => cla") 1)
 (add-computation-rule (pt "conclc l (CC ls)") (pt "(CC (Conclitlitlist l ls))"))
 
@@ -89,6 +89,24 @@ The function \texttt{conccf} is used to insert clauses into a formula, it has on
 \end{lstlisting}
 
 While the function \texttt{conclc}  is most commonly used in the formalisation, the work of adding a literal to the clause is carried out internally by the function \texttt{Conclitlitlist}. The \texttt{Conclitlitlist} function is defined by 5 computational rules that pattern match on both the literal to be added and the structure of the list to which the literal is to be added. In particular the first literal of the list is matched on if there is such a literal, otherwise there is a rule to deal with the empty list. The rules cause the function to recursively search through the list attempting to place the literal in the right partition and in the right place in the order. It also checks that such a literal does not already exist in the list which makes the addition of such a literal to the list redundant.
+
+\begin{lstlsting}
+(add-program-constant "remlc" (py "lit => cla => cla") 1)
+(add-computation-rule (pt "remlc l (CC (Nil lit))") (pt "CC(Nil lit) "))
+(add-computation-rule (pt "remlc l (CC (l2::ls)) ")
+                      (pt "([ if (l = l2)                                       
+                              (CC ls)                                           
+                              (conclc l2 (remlc l (CC ls)))])"))
+\end{lstlisting}
+
+The function for removing literals from clauses performs a recursive search through the list of literals in the clause until it finds a matching literal or the empty list in either case the function returns the remaining list.
+
+
+\begin{lstlisting}[caption = "The Function for the addition of a literal to a valuation"]
+
+\end{lstlisting}
+
+
 
 \subsection*{Models}
 We implement models as a variable of type $literal \to boole$:
