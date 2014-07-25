@@ -57,42 +57,55 @@ Due to there being no built in library for sets we have defined several operatio
                       (pt  "(CF (c::cs)) "))
 \end{lstlisting}
 
-The function \texttt{conccf} is used to insert clauses into a formula, it has one computation rule which simply adds the clause to the from of the list of clauses contained within the formula. The insertion of literals into clauses is more complicated due to the structure we have decided to implement. Clauses are partitioned into positive and negative literals and then ordered by variable number.
+The function \texttt{conccf} is used to insert clauses into a formula, it has one computation rule which simply adds the clause to the from of the list of clauses contained within the formula. Likewise, the insertion of literals into a valuation is achieved by adding the literal to the front of the list of literals contained within the clause.
+
+\begin{lstlisting}[caption = "The Function for the addition of a literal to a valuation"]
+(add-program-constant "conclv" (py "lit => valu => valu") 1)
+(add-computation-rule (pt "conclv l (ConsVal ls)")
+                      (pt "ConsVal (l::ls) "))
+\end{lstlisting}
+
+
+The insertion of literals into clauses is more complicated due to the structure we have decided to implement. Clauses are partitioned into positive and negative literals and then ordered by variable number.
 
 
 \begin{lstlisting}[caption =  "Functions for the insertion of a literal into a clause"]
 (add-program-constant "conclc" (py "lit => cla => cla") 1)
-(add-computation-rule (pt "conclc l (CC ls)") (pt "(CC (Conclitlitlist l ls))"))
+(add-computation-rule (pt "conclc l (CC ls)") 
+  (pt "(CC (Conclitlitlist l ls))"))
 
-(add-program-constant "Conclitlitlist" (py "lit => list lit => list lit") 1)
+(add-program-constant "Conclitlitlist" 
+  (py "lit => list lit => list lit") 1)
 
 (add-computation-rule (pt "Conclitlitlist l (Nil lit)") (pt "l:"))
 
 (add-computation-rule (pt "Conclitlitlist (Pos v)  ((Pos v2)::ls)")
-                      (pt "([if (v =  v2)                                                                                                       
-                                           ((Pos v2)::ls)                                                                                       
-                                           ([if (Num v < Num v2 )                                                                               
-                                                ((Pos v)::(Pos v2)::ls)                                                                         
-                                                 ((Pos v2)::( Conclitlitlist (Pos v)  ls)) ])])"))
+  (pt "([if (v =  v2)                                                                                                       
+              ((Pos v2)::ls)                                                                                       
+              ([if (Num v < Num v2 )                                                                               
+                   ((Pos v)::(Pos v2)::ls)                                                                         
+                   ((Pos v2)::( Conclitlitlist (Pos v)  ls)) ])])"))
 
 (add-computation-rule (pt "Conclitlitlist (Pos v) ((Neg v2)::ls)")
-                      (pt " ((Pos v)::(Neg v2)::ls)"))
+  (pt " ((Pos v)::(Neg v2)::ls)"))
 
 (add-computation-rule (pt "Conclitlitlist (Neg v) ((Pos v2)::ls)")
-                      (pt "(Pos v2)::(Conclitlitlist (Neg v)  ls)"))
+  (pt "(Pos v2)::(Conclitlitlist (Neg v)  ls)"))
+
 (add-computation-rule (pt "Conclitlitlist (Neg v) ((Neg v2)::ls)")
-                      (pt "([if (v = v2)                                                                                                        
-                                            ((Neg v2)::ls)                                                                                      
-                                           ([if (Num v <  Num v2 )                                                                              
-                                                 ((Neg v)::(Neg v2)::ls)                                                                        
-                                                 ((Neg v2)::(Conclitlitlist (Neg v) ls))])])"))
+  (pt "([if (v = v2)                                                                                                        
+              ((Neg v2)::ls)                                                                                      
+              ([if (Num v <  Num v2 )                                                                              
+                   ((Neg v)::(Neg v2)::ls)                                                                        
+                   ((Neg v2)::(Conclitlitlist (Neg v) ls))])])"))
 \end{lstlisting}
 
 While the function \texttt{conclc}  is most commonly used in the formalisation, the work of adding a literal to the clause is carried out internally by the function \texttt{Conclitlitlist}. The \texttt{Conclitlitlist} function is defined by 5 computational rules that pattern match on both the literal to be added and the structure of the list to which the literal is to be added. In particular the first literal of the list is matched on if there is such a literal, otherwise there is a rule to deal with the empty list. The rules cause the function to recursively search through the list attempting to place the literal in the right partition and in the right place in the order. It also checks that such a literal does not already exist in the list which makes the addition of such a literal to the list redundant.
 
-\begin{lstlsting}
+\begin{lstlisting}[caption = "The Function Which Removes a Literal From a Clause"]
 (add-program-constant "remlc" (py "lit => cla => cla") 1)
-(add-computation-rule (pt "remlc l (CC (Nil lit))") (pt "CC(Nil lit) "))
+(add-computation-rule (pt "remlc l (CC (Nil lit))") 
+                     (pt "CC(Nil lit) "))
 (add-computation-rule (pt "remlc l (CC (l2::ls)) ")
                       (pt "([ if (l = l2)                                       
                               (CC ls)                                           
@@ -102,9 +115,7 @@ While the function \texttt{conclc}  is most commonly used in the formalisation, 
 The function for removing literals from clauses performs a recursive search through the list of literals in the clause until it finds a matching literal or the empty list in either case the function returns the remaining list.
 
 
-\begin{lstlisting}[caption = "The Function for the addition of a literal to a valuation"]
 
-\end{lstlisting}
 
 
 
