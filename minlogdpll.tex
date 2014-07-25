@@ -338,7 +338,19 @@ In order to integrate such a heuristic into our proof one has to prove the follo
 \texttt{(set-goal (pf "allnc cs0.all c,cs ex l. cs0 = (c::cs) -> NoEmptycla(c::cs) -> Select (CF (c::cs)) = l \& memlitfor l (CF (c::cs))"))}
 \end{center}
 
+\subsection*{Defining Completeness}
+We use a predicate success to 
 
+\begin{lstlisting}[caption = "Inductive Definition of Completeness"]
+(add-ids (list (list "success" (make-arity (py "list cla") (py "list cla") (py "valu")) "algsuccess" ))
+ '("allnc cs1,cs2. allnc val.                                                                                                                
+      dpll val (CF (cs1 ++ cs2)) ->                                                                                        
+      success cs1 cs2 val "  )
+'("allnc  cs1,cs2, val. all mod. all l( memlv l val -> mod l) ->                                                                      
+      all c ( memcf c (CF (cs1 ++ cs2)) ->  ( clausesat mod c (g mod c) )) ->                                
+      success cs1 cs2 val  " )
+)
+\end{lstlisting}
 
 \section{The Extracted DPLL Solver (XSAT)}
 
