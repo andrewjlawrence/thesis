@@ -141,9 +141,6 @@ We have implemented a model as a mapping from literals to booleans as during the
 
 
 
-
-
-
 \subsection*{The DPLL Proof System}
 The DPLL proof/ system has been formalised as an inductive definition in the Minlog system with 5 closure axioms corresponding to the 5 proof rules. The inductive definition is represented internally as an algebra with the names of the closure axioms being used as constructors.
 
@@ -313,8 +310,33 @@ To show \texttt{opposite l0=l1 -> F} we assume \texttt{opposite l0 = l1} and the
 
 The proof of the Split case proceeds by fixing a literal \texttt{l} and a model \texttt{mod} and making several assumptions using the \texttt{assume} command. We assume that \texttt{f1} and the valuations \texttt{conclv l val1} and \texttt{conclv (opposite l) val1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under the model \texttt{mod}. We then perform a case distinction on whether \texttt{mod l}  or \texttt{mod (opposite l)} using the \texttt{cases} command and the model property. In the case that \texttt{mod l} holds we apply the assume that \texttt{conclv l val1} and \texttt{f1} are incompatible  to the goal \texttt{F}, using the use  command with \texttt{mod} as an arguement, resulting in a new goal that is to show that they are compatible under \texttt{mod}. \texttt{all l1. memlv l1 (conclv l val1) -> mod l1} is proven by fixing a literal \texttt{l1} using the assumptions \texttt{all l2. memlv l2 val1 -> mod l2} and \texttt{mod l} and by performing a case distinction on whether \texttt{l1 = l}. The case the \texttt{mod (opposite l)} holds is proven in a similar fashion using the assumption that \texttt{conclv (opposite l) val1} and \texttt{f1} are incompatible.
 
+
+
+
 \section{The Completeness of the DPLL in Minlog}
-The proof of completeness in Minlog follows the proof of completeness described in Chapter \ref{chapter:dpll}. There are however some implementation details such as the use of non-computational quantifiers and implementation of logical disjunction that are not delt with in the paper proof and require some discussion.
+The proof of completeness in Minlog follows the proof of completeness described in Chapter \ref{chapter:dpll}. There are however some implementation details such as the use of non-computational quantifiers and implementation of logical disjunction that are not delt with in the paper proof and require some discussion. We begin by describing how the search heuristic for our SAT solver is inplemented and integrated at the proof level.
+
+
+
+\subsection*{Selecting a Literal}
+There are a wide range of established SAT heuristics that have been studied in great detail. We have however chosen to use the simpliest heuristic available which selects the first literal. This is implemented using two program constants \texttt{Select} and \texttt{SelectLit} which pattern match on the first available clause to select the first available literal. In the case that the empty formula or an empty clause is searched for such a literal we return \texttt{(Pos (Variable 0))} which can be seen as a default variable as in either or those cases the search has terminated. 
+
+\begin{lstlisting}
+(add-program-constant "Select" (py "for => lit") 1)
+(add-program-constant "SelectLit" (py "cla => lit") 1)
+
+(add-computation-rule (pt "Select (CF (c::cs))") (pt "SelectLit c"))
+(add-computation-rule (pt "Select (CF (Nil cla))")  (pt "(Pos (Variable 0))")) ;;; Default Variable                                    
+
+(add-computation-rule (pt "SelectLit (CC (l::ls))") (pt "l"))
+(add-computation-rule (pt "SelectLit (CC (Nil lit))") (pt "(Pos (Variable 0))"))
+\end{lstlisting}
+
+In order to integrate such a heuristic into our proof one has to prove the following statement. It states that for all non-empty lists of clauses such that all clauses are non empty, the function select returns a literal \texttt{l} and that literal is in those clauses.
+
+\begin{center}
+\texttt{(set-goal (pf "allnc cs0.all c,cs ex l. cs0 = (c::cs) -> NoEmptycla(c::cs) -> Select (CF (c::cs)) = l \& memlitfor l (CF (c::cs))"))}
+\end{center}
 
 
 
