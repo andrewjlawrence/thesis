@@ -338,8 +338,31 @@ In order to integrate such a heuristic into our proof one has to prove the follo
 \texttt{(set-goal (pf "allnc cs0.all c,cs ex l. cs0 = (c::cs) -> NoEmptycla(c::cs) -> Select (CF (c::cs)) = l \& memlitfor l (CF (c::cs))"))}
 \end{center}
 
+
+\subsection{Defining a Measure Function}
+The measure function mu is defined in the Minlog system using a program constant \texttt{mu} and a computation rule.
+
+(add-computation-rule (pt "mu cs1 cs2 val") (pt " Lh(toLit cs1) + Lh( toLit cs2) + Lh (varMinusVal cs1 cs2 val )"))
+
+Where the \texttt{Lh} function computes the length of the list, the \texttt{toLit} function computes the set of literals contained within a clause list and varMinusVal computes the set minus of the set variables of the two lists of the clause and the set of variables contained within the valuation.
+
 \subsection*{Defining Completeness}
-We use a predicate success to 
+
+We use an inductively defined predicate, called \texttt{success}, to capture the disjunction in the proof of completeness statement. The existential quantifier used in the model case has been replaced with a selection function \texttt{g} and a program constant {clausesat} which is defined axiomatically:
+
+\begin{lstlisting}
+(add-program-constant "clausesat" (py "(lit => boole) => cla => lit => boole"))
+(aga "clausesatprop1" (pf "all mod,c,l. memlc l c & mod l -> clausesat mod c l"))
+(aga "clausesatprop2" (pf "all mod,c,l.  clausesat mod c l -> (memlc l c & mod l)"))
+
+(add-program-constant "g" (py "(lit => boole)  => cla => lit") 1)
+(add-computation-rule (pt "g mod (CC (l::ls))") (pt "[if (mod l)                                                                                       
+                                                                 l                                                                                     
+                                                                 (g mod (CC ls))]"))
+(add-computation-rule (pt "g mod (CC (Nil lit)) ") (pt "(Pos (Variable  0))"))
+\end{lstlisting}
+
+The inductive definition of \texttt{success} contains two closure axioms correspond to the cases that we either have a DPLL derivation of unsatisfiability or we have a model of the formula. 
 
 \begin{lstlisting}[caption = "Inductive Definition of Completeness"]
 (add-ids (list (list "success" (make-arity (py "list cla") (py "list cla") (py "valu")) "algsuccess" ))
@@ -351,6 +374,8 @@ We use a predicate success to
       success cs1 cs2 val  " )
 )
 \end{lstlisting}
+
+
 
 \section{The Extracted DPLL Solver (XSAT)}
 
