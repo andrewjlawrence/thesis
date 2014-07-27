@@ -377,7 +377,54 @@ The inductive definition of \texttt{success} contains two closure axioms corresp
 
 
 
+\subsection*{Proving Completeness}
+The proof of completeness, from which we extract a verified SAT solver, is carried out by proving the following statement:
+
+\begin{center}
+\texttt{(set-goal (pf "all cs1. success cs1 (Nil cla) (ConsVal (Nil lit))"))}
+\end{center}
+
+In the above statement the list of clauses \texttt{cs1} either has a DPLL derivation or a model. Since the empty valuation is consistent and the second clause list is empty and cannot contain the empty clause the following theorem can be applied:
+
+
+\begin{lstlisting}
+(set-goal (pf "all cs1, cs2, val.  consistent val & (varIntersection (varv val) (varSetClaList cs2) = (Nil variable)) -> NoEmptycla cs2 ->  success cs1 cs2 val "))
+(use "gRec")
+(ind)
+(use "base")
+(use "step")
+(save "DPLLSuccess")
+\end{lstlisting}
+
+The theorem \texttt{DPLLSucces} is partitioned into several sub theorems or lemmas which give the extracted program a more procedural structure. The theorem \texttt{gRec} contains the application of the guarded recursion.  The \texttt{base} theorem deals with the two cases in which \texttt{cs1} is empty, namely the \texttt{Mode}l and Split cases. The \texttt{step} theorem deals with all of the remaining cases in which the clause list \texttt{cs1} is non-empty, namely the \texttt{Conflict}, \texttt{Elim}, \texttt{Reduce} and \texttt{Unit} cases.
+
 \section{The Extracted DPLL Solver (XSAT)}
+The following section
+
+
+\begin{center}
+\texttt{(term-to-string (nt (mk-term-in-app-form program (pt "                                                                                                 (CC ((Pos (Variable11)):))::                                                    
+(CC ((Pos (Variable21)):))::                                                    
+(CC ((Neg (Variable11))::(Neg (Variable21)):)):                                                                                                                 
+") )))}
+\end{center}
+
+\begin{center}
+\texttt{"CsuccessZero(CdpllTwo(Pos(Variable 11))(CdpllTwo(Pos(Variable 21))(CdpllThree(CC(Neg(Variable 11)::(Neg(Variable 21)):))(Pos(Variable 11))(CdpllThree(CC(Neg(Variable 21)):)(Pos(Variable 21))CdpllZero))))"}
+\end{center}
+
+\begin{center}
+\texttt{(term-to-string (nt (mk-term-in-app-form program (pt "                          
+(CC ((Pos (Variable11))::(Pos (Variable12)):))::                                
+(CC ((Pos (Variable21))::(Pos (Variable22)):))::                                
+(CC ((Neg (Variable11))::(Neg (Variable21)):))::                                
+(CC ((Neg (Variable12))::(Neg (Variable22)):)):                                 
+") )))}
+\end{center}
+
+\begin{center}
+\texttt{"CsuccessOne([l0][if (l0=Pos(Variable 22)) True [if (l0=Neg(Variable 21)) True [if (l0=Pos(Variable 11)) True (l0=Neg(Variable 12))]]])"}
+\end{center}
 
 \section{The Resolution Proof System in Minlog}
 
