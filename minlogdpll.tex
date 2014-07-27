@@ -399,8 +399,9 @@ In the above statement the list of clauses \texttt{cs1} either has a DPLL deriva
 The theorem \texttt{DPLLSucces} is partitioned into several sub theorems or lemmas which give the extracted program a more procedural structure. The theorem \texttt{gRec} contains the application of the guarded recursion.  The \texttt{base} theorem deals with the two cases in which \texttt{cs1} is empty, namely the \texttt{Mode}l and Split cases. The \texttt{step} theorem deals with all of the remaining cases in which the clause list \texttt{cs1} is non-empty, namely the \texttt{Conflict}, \texttt{Elim}, \texttt{Reduce} and \texttt{Unit} cases.
 
 \section{The Extracted DPLL Solver (XSAT)}
-The following section
+The following section we shall look at the behaviour of the extracted SAT algorithm when run inside the Minlog system.
 
+The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm to a pigeon hole formula PHP(2,1), which represents the program of putting two pigeons into one hole, in CNF. The normalise term command \texttt{nt} command is then used to execute the algorithm via minlogs built in term rewriting system.
 
 \begin{center}
 \texttt{(term-to-string (nt (mk-term-in-app-form program (pt "                                                                                                 (CC ((Pos (Variable11)):))::                                                    
@@ -409,6 +410,7 @@ The following section
 ") )))}
 \end{center}
 
+The formula is unsatisfiable and our extracted solver produces a DPLL derivation which proves that the formula is unsatisfiable. The result 
 \begin{center}
 \texttt{"CsuccessZero(CdpllTwo(Pos(Variable 11))(CdpllTwo(Pos(Variable 21))(CdpllThree(CC(Neg(Variable 11)::(Neg(Variable 21)):))(Pos(Variable 11))(CdpllThree(CC(Neg(Variable 21)):)(Pos(Variable 21))CdpllZero))))"}
 \end{center}
@@ -422,10 +424,13 @@ The following section
 ") )))}
 \end{center}
 
+The result of running this satisfiable pigeon hole formula with our SAT algorithm is a function 
+
 \begin{center}
 \texttt{"CsuccessOne([l0][if (l0=Pos(Variable 22)) True [if (l0=Neg(Variable 21)) True [if (l0=Pos(Variable 11)) True (l0=Neg(Variable 12))]]])"}
 \end{center}
 
 \section{The Resolution Proof System in Minlog}
+
 
 \section{The Completeness of the Resolution Proof System in Minlog}
