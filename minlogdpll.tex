@@ -449,7 +449,7 @@ The DPLL and Resolution proof systems were modified in order to obtain a proof c
 \end{center}
 
 \begin{center}
-(set-goal (pf "all f,c. all c0,l0,n.  resolution f c n -> memcf c0 f -> ex m. m <= n +1 & resolution (conccf(inslc  l0 c0)   (remcf c0 f)) (inslc l0 c) m "))
+(set-goal (pf "all f,c. all c0,l0,n.  resolution f c n -> memcf c0 f -> ex m. m <= n +1 \& resolution (conccf(inslc  l0 c0)   (remcf c0 f)) (inslc l0 c) m "))
 \end{center}
 
 \begin{center}
@@ -458,7 +458,7 @@ The DPLL and Resolution proof systems were modified in order to obtain a proof c
 
 
 \begin{center}
-(set-goal (pf "all f,val,n. derivable val f n -> ex m. m <= n & resolution f (oppositeval val) m"))
+(set-goal (pf "all f,val,n. derivable val f n -> ex m. m <= n \& resolution f (oppositeval val) m"))
 \end{center}
 
 \begin{lstlisting}

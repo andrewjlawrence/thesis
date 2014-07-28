@@ -15,12 +15,11 @@
 
 
 \thesischapter{Extracting a Clause Learning SAT Algorithm}{Extracting a Clause Learning SAT Algorithm} \label{chapter:cdclproof}
-In the following chapter we shall describe how a clause learning SAT algorithm can be extracted from a modified DPLL proof system (see chapter \ref{chapter:dpll} in combination with a modified unit resolution proof system. The $\Conflict$ rule is modified such that a clause is learned and stored as part of the sequent. The $\Split$ rule allows for these learned clauses to be transfered up the first branch of the proof tree and then used in the proof search of the next branch. This has the implication that the $\Split$ rule is no longer symmetric and has a more imperative nature. The unit resolution proof system have been modified so that it captures the behaviour of the of the conflict graph (See chapter \ref{chapter:satbackground}.). 
+In the following chapter we shall describe how a clause learning SAT algorithm can be extracted from a modified DPLL proof system (see chapter \ref{chapter:dpll} in combination with a modified unit resolution proof system. The $\Conflict$ rule is modified such that a clause is learned and stored as part of the sequent. The $\Split$ rule allows for these learned clauses to be transfered up the first branch of the proof tree and then used in the proof search of the next branch. This has the implication that the $\Split$ rule is no longer symmetric and has a more imperative nature. The unit resolution proof system have been modified so that it captures the behaviour of the of the conflict graph (See chapter \ref{chapter:satbackground}.). Further more, to this end, the valuations used in this proof have a modification to store the rule and level at which a literal has been added. 
 
 
 \section{Preliminaries}
-%
-We begin with some basic definitions, following \cite{SL08,FM10}.
+The definitions of variables, literals , clauses, formulae and models remain the same as in chapter \ref{chapter:dpll}.
 %
 \hspace{1mm}
 %
