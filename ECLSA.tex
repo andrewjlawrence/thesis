@@ -12,6 +12,7 @@
 \newcommand{\splitdec}[2]{(S \, #1 \, #2)}
 \newcommand{\splitdecg}[1]{\splitdec{#1}{\delta(\Gamma)}}
 \newcommand{\splitdecgone}[1]{\splitdec{#1}{\delta(\Gamma) + 1}}
+\newcommand{\clmodres}[2]{\overset{#1;#2}{\underset{URes}{\vdash}}}
 
 
 \thesischapter{Extracting a Clause Learning SAT Algorithm}{Extracting a Clause Learning SAT Algorithm} \label{chapter:cdclproof}
@@ -107,7 +108,7 @@ of three rules:
 \bigskip
 %
 \AxiomC{$\Gamma' \subseteq \Gamma$}
-\AxiomC{$\Gamma' \modres{\Gamma}{\{ C_0 \}} \emptyset$}
+\AxiomC{$\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$}
 \AxiomC{$C_0 \in \Delta$}
 \RightLabel{$\Conflict$}
 \TrinaryInfC{$\Gamma \vdash_{\mybar{\Gamma'}} \Delta$}
@@ -115,7 +116,7 @@ of three rules:
 \medskip
 %
 \AxiomC{$\Gamma _1 \vdash_{\Delta'} \Delta$}
-\AxiomC{$\Gamma' \modres{\Gamma}{\Delta}\{ l \}$}
+\AxiomC{$\Gamma' \clmodres{\Gamma}{\Delta}\{ l \}$}
 \AxiomC{$\Gamma_1 \subseteq \Gamma, (l \, \delta(\Gamma)) $}
 \noLine
 \UnaryInfC{$\var{l} \notin \Gamma, \, C_0 \in \Delta$}
@@ -135,13 +136,13 @@ of three rules:
 \AxiomC{$S \, l \, n \in \Gamma$}
 %\RightLabel{$\Sub \ C \subset C'$}
 \RightLabel{$\SplitSub$}
-\UnaryInfC{$ \{S \, l \, n \} \modres{\Gamma}{\Delta} \{ l \}$}
+\UnaryInfC{$ \{S \, l \, n \} \clmodres{\Gamma}{\Delta} \{ l \}$}
 \DisplayProof \
 %
 \AxiomC{$U \, l \, n \in \Gamma$}
 %\RightLabel{$\Sub \ C \subset C'$}
 \RightLabel{$\UnitSub$}
-\UnaryInfC{$ \emptyset \modres{\Gamma}{\Delta} \{ l \}$}
+\UnaryInfC{$ \emptyset \clmodres{\Gamma}{\Delta} \{ l \}$}
 \DisplayProof \
 %
 \bigskip
@@ -149,13 +150,13 @@ of three rules:
 \AxiomC{$C' \in \Delta$}
 \AxiomC{$C' \subseteq C$}
 \RightLabel{$\Sub$}
-\BinaryInfC{$\emptyset  \modres{\Gamma}{\Delta} C$}
+\BinaryInfC{$\emptyset  \clmodres{\Gamma}{\Delta} C$}
 \DisplayProof \
 %
-\AxiomC{$\Gamma' \modres{\Gamma}{\Delta} C \vee l$}
-\AxiomC{$\Gamma'' \modres{\Gamma}{\Delta}  \{ \mybar{l} \}$}
+\AxiomC{$\Gamma' \clmodres{\Gamma}{\Delta} C \vee l$}
+\AxiomC{$\Gamma'' \clmodres{\Gamma}{\Delta}  \{ \mybar{l} \}$}
 \RightLabel{$\Res$}
-\BinaryInfC{$\Gamma' \cup \Gamma'' \modres{\Gamma}{\Delta}  C$}
+\BinaryInfC{$\Gamma' \cup \Gamma'' \clmodres{\Gamma}{\Delta}  C$}
 \DisplayProof \
 \end{center}
 \end{mydef}
@@ -184,13 +185,13 @@ of two rules:
 \end{mydef}
 
 
-We use the following abbreviation $\modres{\Gamma}{\Delta} := \exists \Gamma_0 \subseteq \Gamma (\Gamma_0 \modres{\Gamma}{\Delta} C)$ 
+We use the following abbreviation $\clmodres{\Gamma}{\Delta} := \exists \Gamma_0 \subseteq \Gamma (\Gamma_0 \clmodres{\Gamma}{\Delta} C)$ 
 
 \begin{mytheorem}[Equivalence of Unit Resolution Proof Systems]
 \begin{align*}
-\forall \Gamma,\Delta,C ( \Gamma,\Delta \vdash_{URes} C  \leftrightarrow   \modres{\Gamma}{\Delta} C )
+\forall \Gamma,\Delta,C ( \Gamma,\Delta \vdash_{URes} C  \leftrightarrow   \clmodres{\Gamma}{\Delta} C )
 \end{align*}
- We begin by proving $\Gamma,\Delta \vdash_{URes} C  \to   \modres{\Gamma}{\Delta} C$ by induction on the build up of $\Gamma, \Delta \vdash_{URes} C$.
+ We begin by proving $\Gamma,\Delta \vdash_{URes} C  \to   \clmodres{\Gamma}{\Delta} C$ by induction on the build up of $\Gamma, \Delta \vdash_{URes} C$.
 \begin{description}
 
 \item[Case: $\Sub$]
@@ -198,7 +199,7 @@ In the case that a subsumption was applied we perform a case distinction on whet
 \item[Case: $\Res$]
 The resolution rule is trivially equivalent to the other resolution rule by the two induction hypothesis.
 \end{description}
-Now we shall prove the opposite direction   $\modres{\Gamma}{\Delta} C \to \Gamma,\Delta \vdash_{URes} C $.
+Now we shall prove the opposite direction   $\clmodres{\Gamma}{\Delta} C \to \Gamma,\Delta \vdash_{URes} C $.
 \begin{description}
 \item[Case: $\Sub$]
 In this case we a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$ we apply the standard. $\Sub$ rule using $C_0$
@@ -217,10 +218,10 @@ The resolution rule is trivially equivalent to the other resolution rule by the 
 
 
 \begin{mytheorem}[Soundness of Unit Resolution]\label{thm:UResSoundness}
-If  $ \Gamma' \modres{\Gamma}{\Delta} C$ then $\Gamma', \Delta \models C$.
+If  $ \Gamma' \clmodres{\Gamma}{\Delta} C$ then $\Gamma', \Delta \models C$.
 %
 \begin{proof}
-We perform induction on the build up of  the derivation $\Gamma' \modres{\Gamma}{\Delta} C$.
+We perform induction on the build up of  the derivation $\Gamma' \clmodres{\Gamma}{\Delta} C$.
 \subsection*{Case: $\Sub$}
 %
 There is a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$. We fix a model $M$ such that $M \models \Gamma, \Delta $. There must be a literal $l \in C_0$ that $M l$ holds and since $C_0 \subseteq C$ this literal $l$ must also be contained in $C$ and therefore $\Delta \models C$.
@@ -239,12 +240,12 @@ If $\Gamma \vdash_{\Delta'} \Delta$  then  $\Delta \models \Delta'$.
 %
 \begin{proof}
 By induction on the build up of $\Gamma \vdash_{\Delta'} \Delta$. This leads to two  cases:
-\subsection*{Case 1: $\Conflict$, $\exists \Gamma' \subseteq \Gamma$ such that $\Delta' = \mybar{\Gamma'} \wedge \Gamma' \modres{\Gamma} {\Delta}\emptyset$}
+\subsection*{Case 1: $\Conflict$, $\exists \Gamma' \subseteq \Gamma$ such that $\Delta' = \mybar{\Gamma'} \wedge \Gamma' \clmodres{\Gamma} {\Delta}\emptyset$}
 We have to show the following statement holds:
 %
 \begin{align*}
 %%\Gamma'& \subseteq \Gamma \to \incompatible{\Gamma}{\mybar{\Gamma'}} \\
-\Gamma'&, \modres{\Gamma}{\Delta} \emptyset\to \Delta \models \mybar{\Gamma'}
+\Gamma'&, \clmodres{\Gamma}{\Delta} \emptyset\to \Delta \models \mybar{\Gamma'}
 \end{align*}
 %
 %%If we know that $\Gamma'$ is a subset of $\Gamma$ then all the literals in $\mybar{\Gamma'}$ have an opposing literal in $\Gamma$. If every literal in $\Gamma$ is true in a model $M$ then every literal in $\mybar{\Gamma'}$ must be false and therefore $\incompatible{\Gamma}{\mybar{\Gamma'}}$.
@@ -253,7 +254,7 @@ If we have a unit resolution derivation of the empty clause from $\Gamma'$ and $
 %
 
 \subsection*{Case 2: $\Unit$}
-This case is trivial since we have $\Gamma'\modres{\Gamma}{\Delta} \{l \}$ and $\Delta \models \Delta'$ which is exactly what we have to show.
+This case is trivial since we have $\Gamma'\clmodres{\Gamma}{\Delta} \{l \}$ and $\Delta \models \Delta'$ which is exactly what we have to show.
 \subsection*{Case 3: $\Split$}
 
 
@@ -301,10 +302,10 @@ If  $\Gamma \vdash_{\Delta'} \Delta$  then $\incompatible{\Gamma}{\Delta}$.
 We perform induction on the build up of the derivation $\Gamma \vdash_{\Delta'} \Delta$ leading to two cases:
 %
 \subsection*{Case 1: $\Conflict$}
-One has to show that if $\Gamma' \subseteq \Gamma$ and $\exists C_0 \in \Delta$ $\Gamma' \modres{\Gamma}{\{ C_0 \}} \emptyset$ then $\Gamma$ and $\Delta$ are incompatible. To do this we fix a model $M$ that causes $\Gamma$ and $\Delta$ to be compatible and then show a contradiction. Using $\Gamma' \modres{\Gamma}{C_0} \emptyset$ and theorem \ref{thm:UResSoundness} we obtain $\Gamma', C_0 \models \emptyset$ which implies that $\incompatible{\Gamma'}{\Delta}$ and since $\Gamma' \subseteq \Gamma$ also that $\incompatible{\Gamma}{\Delta}$. 
+One has to show that if $\Gamma' \subseteq \Gamma$ and $\exists C_0 \in \Delta$ $\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$ then $\Gamma$ and $\Delta$ are incompatible. To do this we fix a model $M$ that causes $\Gamma$ and $\Delta$ to be compatible and then show a contradiction. Using $\Gamma' \clmodres{\Gamma}{C_0} \emptyset$ and theorem \ref{thm:UResSoundness} we obtain $\Gamma', C_0 \models \emptyset$ which implies that $\incompatible{\Gamma'}{\Delta}$ and since $\Gamma' \subseteq \Gamma$ also that $\incompatible{\Gamma}{\Delta}$. 
 %
 \subsection*{Case 2: $\Unit$}
-One has to show that if $\Gamma, l \, \delta(\Gamma) \vdash_{\Delta'} \Delta$, $\incompatible{\Gamma,l \, \delta(\Gamma)}{\Delta}$ and there exists a $\Gamma'$ such that  $\Gamma' \modres{\Gamma}{\Delta} \{ l \}$ then $\incompatible{\Gamma}{\Delta}$. To do this we fix a model $M$ such that $\Gamma$ and $\Delta$ are compatible and show that $\Gamma, l \, \delta(\Gamma)$ and $\Delta$ are compatible. Using theorem 1 with $\Gamma' \modres{\Gamma}{\{ C_0\}} \{ l \}$ we obtain that $\Delta \models \{l\}$ from this and $\compatible{\Gamma}{\Delta}$ it follows that $\compatible{\Gamma, l \, \delta(\Gamma)}{\Delta}$.
+One has to show that if $\Gamma, l \, \delta(\Gamma) \vdash_{\Delta'} \Delta$, $\incompatible{\Gamma,l \, \delta(\Gamma)}{\Delta}$ and there exists a $\Gamma'$ such that  $\Gamma' \clmodres{\Gamma}{\Delta} \{ l \}$ then $\incompatible{\Gamma}{\Delta}$. To do this we fix a model $M$ such that $\Gamma$ and $\Delta$ are compatible and show that $\Gamma, l \, \delta(\Gamma)$ and $\Delta$ are compatible. Using theorem 1 with $\Gamma' \clmodres{\Gamma}{\{ C_0\}} \{ l \}$ we obtain that $\Delta \models \{l\}$ from this and $\compatible{\Gamma}{\Delta}$ it follows that $\compatible{\Gamma, l \, \delta(\Gamma)}{\Delta}$.
 
 
 \subsection*{Case 3: $\Split$}
@@ -321,7 +322,7 @@ One has two valuations $\Gamma_1 \subseteq \Gamma, (l \, \delta(\Gamma) \! + 1 \
 
 \begin{mylemma}\label{lemma:unitures}
 \begin{align*}
-\forall \Gamma, \Delta, \Gamma'.  \Gamma' \modres{\Gamma}{\Delta} \emptyset \to \consistent{\Gamma} \to \emptyset \notin \Delta \to \forall l \,(\{ l\} \notin \Delta) \to 1 < |\Gamma'|
+\forall \Gamma, \Delta, \Gamma'.  \Gamma' \clmodres{\Gamma}{\Delta} \emptyset \to \consistent{\Gamma} \to \emptyset \notin \Delta \to \forall l \,(\{ l\} \notin \Delta) \to 1 < |\Gamma'|
 \end{align*}
 \begin{description}
 \item{Case: $\Sub$}
@@ -343,7 +344,7 @@ We prove that at least two resolution steps have been made
 This is proven by induction on the build up of $\Gamma \vdash_{\Delta'} \Delta$ leading to 3 cases:
 
 \begin{description}
-\item[Case: $\Conflict$] In this case $\exists \Gamma' \subseteq \Gamma \, \Gamma' \modres{\Gamma}{\Delta} \emptyset$ we use lemma \ref{lemma:unitures} to obtain that there is at least two literals in $\Gamma'$ and therefore the learned clause $\mybar{\Gamma'}$ is non unit. 
+\item[Case: $\Conflict$] In this case $\exists \Gamma' \subseteq \Gamma \, \Gamma' \clmodres{\Gamma}{\Delta} \emptyset$ we use lemma \ref{lemma:unitures} to obtain that there is at least two literals in $\Gamma'$ and therefore the learned clause $\mybar{\Gamma'}$ is non unit. 
 \item[Case: $\Unit$] This is trivial since by the induction hypothesis we have that $\forall l( \{ l \} \notin \Delta')$
 \item[Case: $\Split$]
 We have two sets of learned clauses $\Delta'$ and $\Delta''$ which do not contain any unit clauses then their union $\Delta' \cup \Delta''$ will also not contain any unit clauses.
@@ -364,7 +365,7 @@ We now define what it means to have a complete set of clauses derived by unit re
 & \hspace{30pt}  (a) \ C_1 \in \Delta \\
 & \hspace{30pt}  (b) \ C_2 = C_1 \setminus \mybar{\Gamma} \\
 & \hspace{30pt}  (c) \ \var{C_2} \cap \var{\Gamma} = \emptyset \\
-& \hspace{30pt}  (d) \  \modres{\Gamma}{\{C_1 \}} C_2 \\
+& \hspace{30pt}  (d) \  \clmodres{\Gamma}{\{C_1 \}} C_2 \\
 &2. \ \forall C_1 \in \Delta \to \forall C_2. \, (C_1, C_2 ) \notin \DeltaVec \to \exists l \, (l \in C_1 \wedge l \in \lit{\Gamma})
 \end{align*}
 
@@ -398,16 +399,16 @@ We fix an $l$ and show $\complete{\emptyset}{\Gamma, \unitdecg{l}}{\Delta}$.  Th
 
 \begin{mylemma}
 \begin{align*}
-\forall \Gamma, C_1. \exists C_2. C_2 = C_1 \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \modres{\Gamma}{\{C_1 \}} C_2 \vee \exists l\, (l \in C_1 \wedge l \in \lit{\Gamma})
+\forall \Gamma, C_1. \exists C_2. C_2 = C_1 \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2 \vee \exists l\, (l \in C_1 \wedge l \in \lit{\Gamma})
 \end{align*}
 We perform induction on $\Gamma$.
 \begin{description}
-\item[$\Gamma = \emptyset$:] Then we use to prove the left side of the disjunction $C_1$. We have that $C_1 = C_1 \setminus \emptyset$ and $\emptyset \modres{\emptyset}{\{C_1 \}} C_1$ by the $\Sub$ rule.
+\item[$\Gamma = \emptyset$:] Then we use to prove the left side of the disjunction $C_1$. We have that $C_1 = C_1 \setminus \emptyset$ and $\emptyset \clmodres{\emptyset}{\{C_1 \}} C_1$ by the $\Sub$ rule.
 \item[$\Gamma = \Gamma'', d$ where $\lit{d} = l$:]
-We perform a case distinction on $l \in C_1$. In the case that $l \in C_1$ holds we have found a literal that satisfies the right hand of the disjunction $l \in C_1 \wedge l \in \lit{\Gamma}$. If $l \notin C_1$ then by the induction hypothesis we obtain $\exists C_2. C_2 = C_1 \setminus \mybar{\Gamma''} \wedge \exists \Gamma' . \Gamma' \modres{\Gamma}{\{C_1 \}} C_2$  or $\exists l\, (l \in C_1 \wedge l \in \lit{\Gamma''}$. In the case that we have a clause $C_2$ and a valuation $\Gamma'$ such that $C_2 = C_1 \setminus \mybar{\Gamma''} \wedge  \Gamma' \modres{\Gamma}{\{C_1 \}} C_2$ we perform a case distinction on whether $\mybar{l} \in C_2$. If $\mybar{l} \in C_2$ then $C_2\setminus \mybar{l} = C_1 \setminus \mybar{\Gamma'', d} \wedge \exists \Gamma' . \Gamma',d  \modres{\Gamma}{\{C_1 \}} (C_2 \setminus \mybar{l})$. The unit resolution derivation $ \Gamma' \modres{\Gamma}{\{C_1 \}} C_2$  is extended using the $\Res$ and $\UnitSub$ rules to form  $\Gamma',d  \modres{\Gamma}{\{C_1 \}} (C_2 \setminus \mybar{l}) $. If $\mybar{l} \notin C_2$ then $C_2$ satisfies the left hand of the disjunction. Finally in the case that $\exists l \in C_1 \wedge l \in \lit{\Gamma''}$  this $l$ is also in the extended valuation and therefore the right hand of the disjunction is proven.
+We perform a case distinction on $l \in C_1$. In the case that $l \in C_1$ holds we have found a literal that satisfies the right hand of the disjunction $l \in C_1 \wedge l \in \lit{\Gamma}$. If $l \notin C_1$ then by the induction hypothesis we obtain $\exists C_2. C_2 = C_1 \setminus \mybar{\Gamma''} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2$  or $\exists l\, (l \in C_1 \wedge l \in \lit{\Gamma''}$. In the case that we have a clause $C_2$ and a valuation $\Gamma'$ such that $C_2 = C_1 \setminus \mybar{\Gamma''} \wedge  \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2$ we perform a case distinction on whether $\mybar{l} \in C_2$. If $\mybar{l} \in C_2$ then $C_2\setminus \mybar{l} = C_1 \setminus \mybar{\Gamma'', d} \wedge \exists \Gamma' . \Gamma',d  \clmodres{\Gamma}{\{C_1 \}} (C_2 \setminus \mybar{l})$. The unit resolution derivation $ \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2$  is extended using the $\Res$ and $\UnitSub$ rules to form  $\Gamma',d  \clmodres{\Gamma}{\{C_1 \}} (C_2 \setminus \mybar{l}) $. If $\mybar{l} \notin C_2$ then $C_2$ satisfies the left hand of the disjunction. Finally in the case that $\exists l \in C_1 \wedge l \in \lit{\Gamma''}$  this $l$ is also in the extended valuation and therefore the right hand of the disjunction is proven.
 
 \begin{comment}
-We perform a case distinction on whether $l \in \lit(\Gamma)$ if it is then we have found a literal  such that $l \in C_1 \wedge l \in \lit(\Gamma)$. If $l \notin \lit{\Gamma}$ by the induction hypothesis we obtain $\exists C_4. C_4 = C_3 \setminus \mybar{\Gamma} \wedge \exists \Gamma'. \, \Gamma'  \modres{\Gamma}{\{ C_3 \}} C_4  \vee  \exists l \, (l \in C_3 \wedge l \in \lit{\Gamma})$. Leading to two further cases. In the case that  the left hand of the disjunction holds we then perform a case distinction on whether $\mybar{l} \in \Gamma$
+We perform a case distinction on whether $l \in \lit(\Gamma)$ if it is then we have found a literal  such that $l \in C_1 \wedge l \in \lit(\Gamma)$. If $l \notin \lit{\Gamma}$ by the induction hypothesis we obtain $\exists C_4. C_4 = C_3 \setminus \mybar{\Gamma} \wedge \exists \Gamma'. \, \Gamma'  \clmodres{\Gamma}{\{ C_3 \}} C_4  \vee  \exists l \, (l \in C_3 \wedge l \in \lit{\Gamma})$. Leading to two further cases. In the case that  the left hand of the disjunction holds we then perform a case distinction on whether $\mybar{l} \in \Gamma$
 \end{comment}
 
 \end{description}
@@ -426,7 +427,7 @@ We do a proof by induction on $\Delta$.
 \begin{description}
 
 \item[Case: $\Delta = \emptyset$] Then $\complete{\emptyset}{\Gamma}{\emptyset}$.
-\item[Case: $\Delta = C, \Delta'$] By the induction hypothesis with $\Delta'$ and $\Gamma$ we obtain a $\DeltaVec'$ such that $\complete{\DeltaVec'}{\Gamma}{\Delta}$. Then by lemma \ref{lemma:complete5} we have a two cases either there is a clause $C_2$ that can be derived from $C$ and $\Gamma$ using unit resolution and is equal to $C$ set minus $\Gamma$ or there is a literal in $C$ that is also in the literal set of $\Gamma$. In the case that   $\exists C_2. C_2 = C \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \modres{\Gamma}{\{C \}} C_2$  holds by the induction hypothesis with $\Gamma$ and we obtain a $\DeltaVec''$ such that $\complete{\DeltaVec''}{\Gamma}{\Delta'}$ and $\complete{(C, C_2) \DeltaVec''}{\Gamma}{\Delta}$. Finally we are in the case that the case $C$ has been satisfied by a literal in $\Gamma$ i.e. $\exists l (l \in C \wedge l \in \lit{\Gamma})$ . In this case we have shown the right side of the disjunction.
+\item[Case: $\Delta = C, \Delta'$] By the induction hypothesis with $\Delta'$ and $\Gamma$ we obtain a $\DeltaVec'$ such that $\complete{\DeltaVec'}{\Gamma}{\Delta}$. Then by lemma \ref{lemma:complete5} we have a two cases either there is a clause $C_2$ that can be derived from $C$ and $\Gamma$ using unit resolution and is equal to $C$ set minus $\Gamma$ or there is a literal in $C$ that is also in the literal set of $\Gamma$. In the case that   $\exists C_2. C_2 = C \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C \}} C_2$  holds by the induction hypothesis with $\Gamma$ and we obtain a $\DeltaVec''$ such that $\complete{\DeltaVec''}{\Gamma}{\Delta'}$ and $\complete{(C, C_2) \DeltaVec''}{\Gamma}{\Delta}$. Finally we are in the case that the case $C$ has been satisfied by a literal in $\Gamma$ i.e. $\exists l (l \in C \wedge l \in \lit{\Gamma})$ . In this case we have shown the right side of the disjunction.
 \end{description}
 
 \end{proof}
@@ -464,7 +465,7 @@ We have to show $\complete{\DeltaVec_2}{\Gamma}{\Delta_2}$ which we have as an a
 By lemma \ref{} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C_1}$ holds then by the induction hypothesis we obtain $\complete{\DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \setminus C_1 \cup \Delta_2}$. We now have to argue if we add $C_1$ to $\Delta_1 \setminus C_1 \cup \Delta_2$ then $\complete{(C_1, C_2), \DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \cup \Delta_2}$.
 \begin{description}
 \item[1. a)] Follows trivially since $\Delta_1$ contains $C_1$.
-\item[1. b), c), d)] From $\complete{(C_1,C_2), \DeltaVec_1'}$ we obtain $C_2 = C_1 \setminus \mybar{\Gamma}$, $\var{C_2} \cap \var{\Gamma} = \emptyset$ and $\modres{\Gamma}{\{C_1 \}} C_2$ .
+\item[1. b), c), d)] From $\complete{(C_1,C_2), \DeltaVec_1'}$ we obtain $C_2 = C_1 \setminus \mybar{\Gamma}$, $\var{C_2} \cap \var{\Gamma} = \emptyset$ and $\clmodres{\Gamma}{\{C_1 \}} C_2$ .
 \item[2.] Only removing and not adding pairs affects whether or not this part holds. Therefore if 2. holds for $\DeltaVec_1' \cup \DeltaVec_2$ then it also holds for $\DeltaVec_1 \cup \DeltaVec_2$.
 
 \end{description}  
@@ -496,7 +497,7 @@ We fix a formula $\Delta$ and a valuation $\Gamma$ such that $\consistent{\Gamma
 We show $\compatible{\Gamma}{\Delta}$. We fix a model $M$ such that $M \models \Gamma$ then we  deduce that $M \models \Delta$. By $\complete{\emptyset}{\Gamma}{\Delta}$ we obtain $\forall c_1. \, \in \Delta \to \exists l( l \in C_1 \wedge l \in \lit{\Gamma}$ since there are no pairs of clauses in $\DeltaVec$. Since $M \models \Gamma$ and $\Gamma \models \Delta$ then $M \models \Delta$.
 
 \subsection*{Case 2: $\exists C_1. (C_1, \emptyset) \in \DeltaVec$}
-By $\complete{\DeltaVec}{\Gamma}{\Delta}$ we obtain $\Gamma' \modres{\Gamma}{\{ C_1 \} } \emptyset$ and $C_1 \in \Delta$ . This derivation can then be used to apply the $\Conflict$ rule with $\mybar{\Gamma'}$ as the learned clause. 
+By $\complete{\DeltaVec}{\Gamma}{\Delta}$ we obtain $\Gamma' \clmodres{\Gamma}{\{ C_1 \} } \emptyset$ and $C_1 \in \Delta$ . This derivation can then be used to apply the $\Conflict$ rule with $\mybar{\Gamma'}$ as the learned clause. 
 %
 \subsection*{Case 3: $\DeltaVec \neq \emptyset, \forall C_1 ((C_1, \emptyset) \notin \DeltaVec), \exists l,C_1 (C_1 , \{ l \}) \in \DeltaVec $}
 In this case we have derived a unit clause $\{ l \}$ in our set of clauses derived by unit resolution.  We construct a new set of pairs of clauses $\DeltaVec'$ using $\ref{lemma:complete1}$ such that $\complete{\DeltaVec'}{\Gamma, \unitdecgone{l}}{\Delta}$. 
