@@ -111,13 +111,14 @@ of three rules:
 \AxiomC{$C_0 \in \Delta$}
 \RightLabel{$\Conflict$}
 \TrinaryInfC{$\Gamma \vdash_{\mybar{\Gamma'}} \Delta$}
-\DisplayProof \
+\DisplayProof \ \hspace{1mm} \\
+\medskip
 %
 \AxiomC{$\Gamma _1 \vdash_{\Delta'} \Delta$}
 \AxiomC{$\Gamma' \modres{\Gamma}{\Delta}\{ l \}$}
 \AxiomC{$\Gamma_1 \subseteq \Gamma, (l \, \delta(\Gamma)) $}
 \noLine
-\UnaryInfC{$\var \, l \notin \Gamma, \, C_0 \in \Delta$}
+\UnaryInfC{$\var{l} \notin \Gamma, \, C_0 \in \Delta$}
 \RightLabel{$\Unit$}
 \TrinaryInfC{$\Gamma \vdash_{\Delta'} \Delta$   }
 \DisplayProof \
@@ -362,7 +363,7 @@ We now define what it means to have a complete set of clauses derived by unit re
 & 1. \ \forall C_1,C_2.  \, (C_1, C_2) \in \DeltaVec \to \\
 & \hspace{30pt}  (a) \ C_1 \in \Delta \\
 & \hspace{30pt}  (b) \ C_2 = C_1 \setminus \mybar{\Gamma} \\
-& \hspace{30pt}  (c) \ \var(C_2) \cap \var(\Gamma) = \emptyset \\
+& \hspace{30pt}  (c) \ \var{C_2} \cap \var{\Gamma} = \emptyset \\
 & \hspace{30pt}  (d) \  \modres{\Gamma}{\{C_1 \}} C_2 \\
 &2. \ \forall C_1 \in \Delta \to \forall C_2. \, (C_1, C_2 ) \notin \DeltaVec \to \exists l \, (l \in C_1 \wedge l \in \lit{\Gamma})
 \end{align*}
@@ -463,7 +464,7 @@ We have to show $\complete{\DeltaVec_2}{\Gamma}{\Delta_2}$ which we have as an a
 By lemma \ref{} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C_1}$ holds then by the induction hypothesis we obtain $\complete{\DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \setminus C_1 \cup \Delta_2}$. We now have to argue if we add $C_1$ to $\Delta_1 \setminus C_1 \cup \Delta_2$ then $\complete{(C_1, C_2), \DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \cup \Delta_2}$.
 \begin{description}
 \item[1. a)] Follows trivially since $\Delta_1$ contains $C_1$.
-\item[1. b), c), d)] From $\complete{(C_1,C_2), \DeltaVec_1'}$ we obtain $C_2 = C_1 \setminus \mybar{\Gamma}$, $\var(C_2) \cap \var(\Gamma) = \emptyset$ and $\modres{\Gamma}{\{C_1 \}} C_2$ .
+\item[1. b), c), d)] From $\complete{(C_1,C_2), \DeltaVec_1'}$ we obtain $C_2 = C_1 \setminus \mybar{\Gamma}$, $\var{C_2} \cap \var{\Gamma} = \emptyset$ and $\modres{\Gamma}{\{C_1 \}} C_2$ .
 \item[2.] Only removing and not adding pairs affects whether or not this part holds. Therefore if 2. holds for $\DeltaVec_1' \cup \DeltaVec_2$ then it also holds for $\DeltaVec_1 \cup \DeltaVec_2$.
 
 \end{description}  
@@ -486,8 +487,8 @@ We call $n \leq \delta(\Gamma)$  the "witness". We used $\mathrm{complete}$ to r
 
 \begin{proof}
 We perform induction on  
-$$\mu(\Gamma) := N - |\var(\Gamma)|$$
-the number of unassigned variables where $\var(\Gamma) := \{\var(l)| (l \, n) \in \Gamma \}$
+$$\mu(\Gamma) := N - |\var{\Gamma}|$$
+the number of unassigned variables where $\var{\Gamma} := \{\var{l}| (l \, n) \in \Gamma \}$
 %
 We fix a formula $\Delta$ and a valuation $\Gamma$ such that $\consistent{\Gamma}$ and $\emptyset \notin \Delta$. By $\exists \DeltaVec \, \complete{\DeltaVec}{\Gamma}{\Delta} $ we obtain a complete set of derivations $\DeltaVec$ and we perform a case distinction on the most recently derived formulae:
 
@@ -500,7 +501,7 @@ By $\complete{\DeltaVec}{\Gamma}{\Delta}$ we obtain $\Gamma' \modres{\Gamma}{\{ 
 \subsection*{Case 3: $\DeltaVec \neq \emptyset, \forall C_1 ((C_1, \emptyset) \notin \DeltaVec), \exists l,C_1 (C_1 , \{ l \}) \in \DeltaVec $}
 In this case we have derived a unit clause $\{ l \}$ in our set of clauses derived by unit resolution.  We construct a new set of pairs of clauses $\DeltaVec'$ using $\ref{lemma:complete1}$ such that $\complete{\DeltaVec'}{\Gamma, \unitdecgone{l}}{\Delta}$. 
 %
-The induction hypothesis is instantiated with $\Delta$, $\Gamma, l \, \delta(\Gamma)$ and $\DeltaVec'$. The measure decreases since by $\complete{\DeltaVec}{\Gamma}{\Delta}$ we have assigned a new variable and the number of unassigned variables decreases: $ |\var(\Gamma, l \, \delta(\Gamma))| = |\var(\Gamma)| + 1$ and $N - (|\var(\Gamma)| + 1) <  N - |\var(\Gamma)|$.   We then have two cases 
+The induction hypothesis is instantiated with $\Delta$, $\Gamma, l \, \delta(\Gamma)$ and $\DeltaVec'$. The measure decreases since by $\complete{\DeltaVec}{\Gamma}{\Delta}$ we have assigned a new variable and the number of unassigned variables decreases: $ |\var{\Gamma, l \, \delta(\Gamma)}| = |\var{\Gamma}| + 1$ and $N - (|\var{\Gamma}| + 1) <  N - |\var{\Gamma}|$.   We then have two cases 
 %
 \subsection*{Subcase 3.1: $\compatible{\Gamma, l \, \delta(\Gamma)}{\Delta}$}
 There exists a model $M$ that models $\Gamma, l \, \delta(\Gamma)$ and $\Delta$ this model also models any smaller valuation and therefore $\compatible{\Gamma}{\Delta}$.
@@ -509,8 +510,8 @@ We fix an $n$ such that $n \leq \delta(\Gamma)$ then we have the following two c
 then our unit literal has not been used during the derivation $\Gamma_{\leq n} = (\Gamma, l \, \delta(\Gamma))_n$ and we have a derivation that $\Gamma$ restricted to $n$ and $\Delta$ are incompatible $\Gamma_{\leq n} \vdash_{\Delta'} \Delta$.
 %
 \subsection*{Case 4: $\DeltaVec \neq \emptyset, \emptyset \notin \DeltaVec,  \forall l,c1 \, ( (c_1 , \{ l \})  \notin \DeltaVec )$}
-Select a new literal $l$ from $\Delta$ such that $\var(l) \notin \Gamma$. Using lemma \ref{lemma:complete3} it is possible to construct a new set of pairs of clauses $\DeltaVec'$ such that $\complete{\DeltaVec'}{\Delta}{\Gamma, \splitdecgone{l}}$.
-The induction hypothesis is instantiated with $\Delta$ and $ \Gamma, l \, \delta(\Gamma) + 1$ and $\DeltaVec'$. The measure decreases since we have assigned a new variable and the number of unassigned variables decreases: $ |\var(\Gamma, l \, \delta(\Gamma) + 1)| = |\var(\Gamma)| + 1$ and $N - (|\var(\Gamma)| + 1) <  N - |\var(\Gamma)|$.  We then have two cases:
+Select a new literal $l$ from $\Delta$ such that $\var{l} \notin \Gamma$. Using lemma \ref{lemma:complete3} it is possible to construct a new set of pairs of clauses $\DeltaVec'$ such that $\complete{\DeltaVec'}{\Delta}{\Gamma, \splitdecgone{l}}$.
+The induction hypothesis is instantiated with $\Delta$ and $ \Gamma, l \, \delta(\Gamma) + 1$ and $\DeltaVec'$. The measure decreases since we have assigned a new variable and the number of unassigned variables decreases: $ |\var{\Gamma, l \, \delta(\Gamma) + 1}| = |\var{\Gamma}| + 1$ and $N - (|\var{\Gamma}| + 1) <  N - |\var{\Gamma}|$.  We then have two cases:
 %
 \subsection*{Subcase 4.1: $\compatible{\Gamma, l \, \delta(\Gamma) + 1}{\Delta}$}
 We have a model $M$ such that $M \models \Gamma$ and $M \models \Delta$ and therefore $\compatible{\Gamma}{\Delta}$ holds.
