@@ -326,10 +326,12 @@ There are a wide range of established SAT heuristics that have been studied in g
 (add-program-constant "SelectLit" (py "cla => lit") 1)
 
 (add-computation-rule (pt "Select (CF (c::cs))") (pt "SelectLit c"))
-(add-computation-rule (pt "Select (CF (Nil cla))")  (pt "(Pos (Variable 0))")) ;;; Default Variable                                    
+(add-computation-rule (pt "Select (CF (Nil cla))")  
+                         (pt "(Pos (Variable 0))")) 
 
 (add-computation-rule (pt "SelectLit (CC (l::ls))") (pt "l"))
-(add-computation-rule (pt "SelectLit (CC (Nil lit))") (pt "(Pos (Variable 0))"))
+(add-computation-rule (pt "SelectLit (CC (Nil lit))") 
+                         (pt "(Pos (Variable 0))"))
 \end{lstlisting}
 
 In order to integrate such a heuristic into our proof one has to prove the following statement. It states that for all non-empty lists of clauses such that all clauses are non empty, the function select returns a literal \texttt{l} and that literal is in those clauses.
@@ -351,27 +353,36 @@ Where the \texttt{Lh} function computes the length of the list, the \texttt{toLi
 We use an inductively defined predicate, called \texttt{success}, to capture the disjunction in the proof of completeness statement. The existential quantifier used in the model case has been replaced with a selection function \texttt{g} and a program constant {clausesat} which is defined axiomatically:
 
 \begin{lstlisting}
-(add-program-constant "clausesat" (py "(lit => boole) => cla => lit => boole"))
-(aga "clausesatprop1" (pf "all mod,c,l. memlc l c & mod l -> clausesat mod c l"))
-(aga "clausesatprop2" (pf "all mod,c,l.  clausesat mod c l -> (memlc l c & mod l)"))
+(add-program-constant "clausesat" 
+   (py "(lit => boole) => cla => lit => boole"))
+(aga "clausesatprop1" 
+   (pf "all mod,c,l. memlc l c & mod l -> clausesat mod c l"))
+(aga "clausesatprop2" 
+   (pf "all mod,c,l.  clausesat mod c l -> (memlc l c & mod l)"))
 
 (add-program-constant "g" (py "(lit => boole)  => cla => lit") 1)
-(add-computation-rule (pt "g mod (CC (l::ls))") (pt "[if (mod l)                                                                                       
-                                                                 l                                                                                     
-                                                                 (g mod (CC ls))]"))
-(add-computation-rule (pt "g mod (CC (Nil lit)) ") (pt "(Pos (Variable  0))"))
+(add-computation-rule (pt "g mod (CC (l::ls))") 
+   (pt "[if (mod l)                                                                                       
+            l                                                                                     
+            (g mod (CC ls))]"))
+(add-computation-rule (pt "g mod (CC (Nil lit)) ") 
+   (pt "(Pos (Variable  0))"))
 \end{lstlisting}
 
 The inductive definition of \texttt{success} contains two closure axioms correspond to the cases that we either have a DPLL derivation of unsatisfiability or we have a model of the formula. 
 
 \begin{lstlisting}[caption = "Inductive Definition of Completeness"]
-(add-ids (list (list "success" (make-arity (py "list cla") (py "list cla") (py "valu")) "algsuccess" ))
+(add-ids (list 
+ (list "success" 
+   (make-arity (py "list cla") (py "list cla") (py "valu"))
+   "algsuccess" ))
  '("allnc cs1,cs2. allnc val.                                                                                                                
-      dpll val (CF (cs1 ++ cs2)) ->                                                                                        
-      success cs1 cs2 val "  )
+    dpll val (CF (cs1 ++ cs2)) ->                                                                                        
+    success cs1 cs2 val "  )
 '("allnc  cs1,cs2, val. all mod. all l( memlv l val -> mod l) ->                                                                      
-      all c ( memcf c (CF (cs1 ++ cs2)) ->  ( clausesat mod c (g mod c) )) ->                                
-      success cs1 cs2 val  " )
+   all c ( memcf c (CF (cs1 ++ cs2)) ->  
+   ( clausesat mod c (g mod c) )) ->                                
+   success cs1 cs2 val  " )
 )
 \end{lstlisting}
 
