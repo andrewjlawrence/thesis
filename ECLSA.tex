@@ -19,45 +19,46 @@ In the following chapter we shall describe how a clause learning SAT algorithm c
 
 
 \section{Preliminaries}
-The definitions of variables, literals , clauses, formulae and models remain the same as in chapter \ref{chapter:dpll}.
+The definitions of variables, literals , clauses, formulae and models remain the same as in chapter \ref{chapter:dpll}. In the following we shall present prelimary definitions that subsequently been added or modified: \\
 %
-\hspace{1mm}
+%\hspace{3mm}
 %
 \begin{mydef}
 \hspace{3mm}
 \begin{enumerate}
-\item A \emph{literal} $l$ is either a positive variable $+v$ or a negative variable $-v$, i.e.\ a variable $v$ with a label $+$ or ${-}$ attached.
+
+%%\item A \emph{literal} $l$ is either a positive variable $+v$ or a negative variable $-v$, i.e.\ a variable %%$v$ with a label $+$ or ${-}$ attached.
 %
-\item We define a bar operation which computes the \emph{opposite} value of a literal as follows; $\mybar{+v}= -v$, $\mybar{-v} = +v$.
+%%\item We define a bar operation which computes the \emph{opposite} value of a literal as follows; %%$\mybar{+v}= -v$, $\mybar{-v} = +v$.
 %
-\item We set $\var(+v) = \var(-v) = v$, $\var(L) = \{\var(l) \mid l\in L\}$
-for a set of literals $L$, and 
-$\var(\Delta) = \bigcup\{\var(L)\mid L\in\Delta\}$ for a set of sets of 
-literals $\Delta$.
+%%\item We set $\var(+v) = \var(-v) = v$, $\var(L) = \{\var(l) \mid l\in L\}$
+%%for a set of literals $L$, and 
+%%$\var(\Delta) = \bigcup\{\var(L)\mid L\in\Delta\}$ for a set of sets of 
+%%literals $\Delta$.
 %
-\item We say a literal $x_1$ is \emph{complemented} by its opposing literal $\bar{x_1}$. 
+%%\item We say a literal $x_1$ is \emph{complemented} by its opposing literal $\bar{x_1}$. 
 %
-\item A \emph{clause} $C$ is a finite set of literals 
-$\{ l_1, \ldots , l_k \}$, to be viewed as the disjunction of the literals.
+%%\item A \emph{clause} $C$ is a finite set of literals 
+%%$\{ l_1, \ldots , l_k \}$, to be viewed as the disjunction of the literals.
 %
-\item A formula is in \emph{conjunctive normal form} (CNF) if it is a 
-finite conjunction of clauses. 
+%%\item A formula is in \emph{conjunctive normal form} (CNF) if it is a 
+%%finite conjunction of clauses. 
 %where a clause is a finite disjunction of propositional literals giving it the structure: 
 %%
 %$$\bigwedge^n_{i=1}(l_1 \vee l_2 \vee \ldots \vee l_{k_i})$$.
 %
-By a \emph{formula} $\Delta$ we will always mean a formula in CNF,
-and we will identify it with a finite set of clauses 
-$\{ C_1 , \ldots , C_k \}$, representing the conjunction of the $C_i$.
+%%%By a \emph{formula} $\Delta$ we will always mean a formula in CNF,
+%%and we will identify it with a finite set of clauses 
+%%%$\{ C_1 , \ldots , C_k \}$, representing the conjunction of the $C_i$.
 %
 \item A \emph{valuation} $\Gamma$ is a finite set of literals paired with a natural number and a label $D \in \{S, U\}$ indcating that they are either a split or unit literal. representing the decision level of that literal $\{ (D_1 \, l_1 \, n_1), \ldots , ( D_k \, l_k \, n_k) \}$. This set is to be viewed as the conjunction of the elements.
 %
 \item We define the literal set of valuation $\lit{\Gamma}$ as follows:
 	 $$ \lit{\Gamma} := \{l | (D \, l \, n) \in \Gamma\}$$
 %
-%\item A valuation $\Gamma$ is \emph{consistent} ($\consistent{\Gamma}$) if 
+%\item A valuation $\Gamma$ is \emph{consistent} ($\consistent{\Gamma}$) if \,
 %
-%$\forall l \,( l \in \Gamma \to \mybar{l} \notin \Gamma)$.
+% $\forall l \,( l \in \Gamma \to \mybar{l} \notin \Gamma)$.
 %
 \item We define the \emph{decision level} for a valuation $\Gamma$ to be $\delta (\Gamma) = n$ where n is the maximal decision level occurring in $\Gamma$.
 %
@@ -67,64 +68,27 @@ $\{ C_1 , \ldots , C_k \}$, representing the conjunction of the $C_i$.
 \item We define $\Gamma_{\leq n}$ to be the set of decisions assigned below or at the $n^{th}$ decision level, i.e. 
 	$$\Gamma_{\leq n} = \{( D \, l \, n') | n' \leq n \wedge (D \, l \, n') \in \Gamma \}$$
 %
-\item A valuation $\Gamma$ is \emph{consistent} ($\consistent{\Gamma}$) if 
+\item A valuation $\Gamma$ is \emph{consistent} ($\consistent{\Gamma}$) if \, 
 %
 $\forall l \,( l \in \lit{\Gamma} \to \mybar{l} \notin \lit{\Gamma})$
 %
-and
+ and 
 %
 $\forall D,l,n,n'( (D \, l \, n) \in \Gamma \wedge (D \, l \, n') \in \Gamma \to n = n')$
 %
-\item A \emph{model} is a total function $M$ which maps literals to Booleans and satisfies the property
+%%\item A \emph{model} is a total function $M$ which maps literals to Booleans and satisfies the property
 %
-$\forall l \, (M \ l \leftrightarrow \neg M \ \mybar{l})$.
+%%$\forall l \, (M \ l \leftrightarrow \neg M \ \mybar{l})$.
 %
 \item We define pair operations $\mathrm{First}$ and $\mathrm{Second}$ which return the first and second elements of a pair i.e. $\first{A,B} = A$ and $\second{A,B} = B$.
 %
-\item We define an operation $\mybar{\Gamma}$ that computes a clause from a valuation $\mybar{\Gamma} := \{ \mybar{l}\, | \, \exists i \, (l \, i) \in \Gamma \}$.
+\item We define an operation $\mybar{\Gamma}$ that computes a clause from a valuation $\mybar{\Gamma} := \{ \mybar{l}\, | \, \, (D \, l \, i) \in \Gamma \}$.
 %
-\item We define of a valuation $\Gamma$ to be another valuation $\Gamma'$ such that $\extends{\Gamma'}{\Gamma} :=  \exists l,n \, ( (l \, n) \in \Gamma' \wedge n  = \delta(\Gamma) + 1) \wedge \forall l,n ((l \, n) \in \Gamma' \to  \delta(\Gamma) < n)$.
+\item We define of a valuation $\Gamma$ to be another valuation $\Gamma'$ such that $\extends{\Gamma'}{\Gamma} :=  \exists l,n \, ( \forall D (D \, l \, n) \in \Gamma' \wedge n  = \delta(\Gamma) + 1) \wedge \forall l,n ( \forall D (D \, l \, n) \in \Gamma' \to  \delta(\Gamma) < n)$.
 
 \end{enumerate}
-%
-We shall use the abbreviations 
-%
-\begin{itemize}
-%
-\item $M \models \Gamma$, for $\forall l \in \lit{\Gamma} \, (M \ l)$ 
-(``$M$ is a model of $\Gamma$''),
-%
-\item $M \models \Delta$, for 
-$\forall C \in \Delta \, \exists l \in C \,(M \ l)$ 
-(``$M$ is a model of $\Delta$'').
-%
-\end{itemize}
-%
-We call a valuation $\Gamma$ and a formula $\Delta$ \emph{compatible} 
-($\compatible{\Gamma}{\Delta})$
-if there exists a model satisfying both, i.e. 
-$\exists M \, (M \models \Gamma \wedge M\models \Delta)$;
-otherwise $\Gamma$ and $\Delta$ are called \emph{incompatible} 
-($\incompatible{\Gamma}{\Delta}$).
 \end{mydef}
-%
-We write $\Gamma,\Delta$ to mean $\tilde{\Gamma} \cup \Delta$ where $\tilde{\Gamma} := \{ \{ l \}| \exists i \, (l \, i) \in \Gamma \}$.
-\begin{mydef}
-A \emph{sequent} $\Gamma \vdash \Delta$ is a pair consisting of a valuation and a formula.
-\end{mydef}
-%
-The intended meaning of a sequent $\Gamma \vdash \Delta$ is that $\Gamma$ and $\Delta$
-are incompatible. As a special case, when $\Gamma$ is empty, $\vdash \Delta$ means that $\Delta$ is unsatisfiable.  
-\begin{comment}
-\begin{mydef}
-We define an equivalence relation $\sim$ over the formulae $\Delta_1$ and $\Delta_2$ as follows
-$$\Delta_1 \sim \Delta_2 \leftrightarrow \forall C .( C \in \Delta_1 \leftrightarrow C \in \Delta_2) $$
-\end{mydef}
-\end{comment}
-%
-In the following we use the notations $X,a := \{x \mid x\in X \lor x = a\}$ 
-(adding $a$ to the set $X$) and 
-$X\setminus a := \{x \mid x\in X \land x \neq a\}$ (removing $a$ from $X$).
+\hspace{1mm} \\
 %
 \begin{mydef}[Modified DPLL Proof System] The DPLL proof system consists 
 of three rules:
@@ -160,8 +124,10 @@ of three rules:
 \end{center}
 %
 \end{mydef}
+\hspace{1mm}
+ \\
 %
-
+\medskip
 \begin{mydef}[Modified Unit Resolution Proof System] The modified Unit Resolution proof system consists of three rules:
 \begin{center}
 %
