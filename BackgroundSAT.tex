@@ -206,12 +206,12 @@ The CDCL SAT algorithms cut down on the possible search space for a satisfying a
 Any of these cuts can be used as learned clauses, however typically the smallest clauses perform better in practice. The majority of modern SAT algorithms try to exploit \emph{unit implication points} (UIP) which are bottlenecks in the conflict graph which form an alternative decision assignment that will cause a conflict in the same clause. Formally a UIP is a dominator in that all paths from original decision assignment to the conflict must pass through the UIP node in the graph. 
 \medskip
 \begin{myexample}
-The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$ is as follows.  The notation $x = 1@n$ means the variable $x$ is assigned to true at $n$ and  $x = 0@n$ means the variable x is assigned to false at level $n$. \textbf{Note: Check conflict graph for correctness.}
+The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$ is as follows.  The notation $x = 1@n$ means the variable $x$ is assigned to true at $n$ and  $x = 0@n$ means the variable x is assigned to false at level $n$. 
 %
 \begin{align*}
         \phi &=C_1 \wedge C_2 \wedge C_3 \wedge C_4 \wedge C_5 \wedge C_6 \wedge C_ 7 \wedge C_8\\
                &= (x_1 \vee x_2 \vee x_3) \wedge (\neg x_1 \vee x_4) \wedge (\neg x_2 \vee \neg x_4) \wedge (\neg x_4 \vee x_5) \, \wedge \\
-               &\hspace{16pt} (\neg x_3 \vee x_2 \vee  \neg x_5) \wedge (x_2 \vee x_7 \vee x_6) \wedge (\neg x_6 \vee  x_7 \vee x_3) \wedge (\neg x_6 \vee \neg x_7 \vee x_3)
+               &\hspace{16pt} (\neg x_3 \vee x_2 \vee  \neg x_5) \wedge (x_2 \vee \neg x_7 \vee x_6) \wedge (\neg x_6 \vee  x_7 \vee x_3) \wedge (\neg x_6 \vee \neg x_7 \vee x_3)
 \end{align*}
 
 %
