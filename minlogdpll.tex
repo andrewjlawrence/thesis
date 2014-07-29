@@ -399,7 +399,11 @@ In the above statement the list of clauses \texttt{cs1} either has a DPLL deriva
 
 
 \begin{lstlisting}
-(set-goal (pf "all cs1, cs2, val.  consistent val & (varIntersection (varv val) (varSetClaList cs2) = (Nil variable)) -> NoEmptycla cs2 ->  success cs1 cs2 val "))
+(set-goal (pf "all cs1, cs2, val.  
+ consistent val & 
+ varIntersection (varv val) (varSetClaList cs2) = (Nil variable) -> 
+ NoEmptycla cs2 ->  
+ success cs1 cs2 val "))
 (use "gRec")
 (ind)
 (use "base")
@@ -409,8 +413,9 @@ In the above statement the list of clauses \texttt{cs1} either has a DPLL deriva
 
 The theorem \texttt{DPLLSucces} is partitioned into several sub theorems or lemmas which give the extracted program a more procedural structure. The theorem \texttt{gRec} contains the application of the guarded recursion.  The \texttt{base} theorem deals with the two cases in which \texttt{cs1} is empty, namely the \texttt{Mode}l and Split cases. The \texttt{step} theorem deals with all of the remaining cases in which the clause list \texttt{cs1} is non-empty, namely the \texttt{Conflict}, \texttt{Elim}, \texttt{Reduce} and \texttt{Unit} cases.
 
+
 \section{The Extracted DPLL Solver (XSAT)}
-The following section we shall look at the behaviour of the extracted SAT algorithm when run inside the Minlog system.
+The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as XSAT, when run inside the Minlog system. In chapter \ref{} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{}.
 
 The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm to a pigeon hole formula PHP(2,1), which represents the program of putting two pigeons into one hole, in CNF. The normalise term command \texttt{nt} command is then used to execute the algorithm via minlogs built in term rewriting system.
 
@@ -445,52 +450,59 @@ The result of running this satisfiable pigeon hole formula with our SAT algorith
 The DPLL and Resolution proof systems were modified in order to obtain a proof complexity result during the proof of equivalence between the two systems.
 
 
-
 \begin{lstlisting}
-(add-ids (list (list "resolution" (make-arity (py "for" ) (py "cla") (py "nat")) "algresolution"))
-	'("all f,c2. all c1.  subseteq c1 c2 -> memcf c1 f -> resolution f c2 (sizec c1) " "Sub")
-        '("all f,c1,c2. all l,n,m.  resolution f (inslc l c1) n -> resolution f (inslc (opposite l) c2) m -> resolution f (ConcClause c1 c2) (n + m + 1)" "Res")
+(add-ids (list (list "resolution" 
+ (make-arity (py "for" ) (py "cla") (py "nat")) "algresolution"))
+ '("all f,c2. all c1.  subseteq c1 c2 -> memcf c1 f -> 
+    resolution f c2 (sizec c1) " "Sub")
+ '("all f,c1,c2. all l,n,m.  resolution f (inslc l c1) n -> 
+    resolution f (inslc (opposite l) c2) m -> 
+    resolution f (ConcClause c1 c2) (n + m + 1)" "Res")
 )
 \end{lstlisting}
 
 \section{The Completeness of the Resolution Proof System in Minlog}
-
+The proof of completeness of the resolution proof system is performed by proving equivalence between the resolution and DPLL proof systems as described in \ref{chapter:dpll}.  
+\begin{comment}
 \begin{center}
 \texttt{(set-goal  (pf "all f,c. all c0,n. resolution f c n  -> (memcf c0 f -> F) -> resolution (conccf c0 f) c n "))}
 \end{center}
 
 \begin{center}
-(set-goal (pf "all f,c. all c0,l0,n.  resolution f c n -> memcf c0 f -> ex m. m <= n +1 \& resolution (conccf(inslc  l0 c0)   (remcf c0 f)) (inslc l0 c) m "))
+\texttt{(set-goal (pf "all f,c. all c0,l0,n.  resolution f c n -> memcf c0 f -> ex m. m <= n +1 \& resolution (conccf(inslc  l0 c0)   (remcf c0 f)) (inslc l0 c) m "))}
 \end{center}
+\end{comment}
 
+The following theorems have been proven in Minlog in order to show equivalence between the DPLL and resolution proof systems. 
 \begin{center}
-(set-goal (pf "all f,c,n. resolution f c n -> all ls. c = (CC ls) -> ex m.  derivable (ConsVal (oppositeLiteral ls)) f m"))
+\texttt{(set-goal (pf "all f,c,n. resolution f c n -> all ls. c = (CC ls) -> ex m.  derivable (ConsVal (oppositeLiteral ls)) f m"))} \\
+\texttt{(set-goal (pf "all f,val,n. derivable val f n -> ex m. m <= n \& resolution f (oppositeval val) m"))}
 \end{center}
 
-
-\begin{center}
-(set-goal (pf "all f,val,n. derivable val f n -> ex m. m <= n \& resolution f (oppositeval val) m"))
-\end{center}
+We inductively define a predicate \texttt{ressuccess} that captures what it means to have a successful run of a reslution algorithm. This is used in our proof of completeness 
 
 \begin{lstlisting}
-(add-ids (list (list "ressuccess" (make-arity (py "for")) "algressuccess" ))
-
-         '("allnc f.all n.                                                                                                                                           
-                                resolution f (CC (Nil lit)) n  ->                                                                                                    
-                               ressuccess f "  )
-
-               '("allnc  f. all mod.                                                                                                                                 
-                                              all c ( memcf c f ->  ( clausesat mod c (g mod c) )) ->                                                                
-                                        ressuccess f  " )
+(add-ids (list 
+ (list "ressuccess" (make-arity (py "for")) "algressuccess" ))
+ '("allnc f.all n.                                                                                                                                           
+    resolution f (CC (Nil lit)) n  ->                                                                                                    
+    ressuccess f "  )
+ '("allnc  f. all mod.                                                                                                                                 
+    all c ( memcf c f ->  ( clausesat mod c (g mod c) )) ->                                                                
+    ressuccess f  " )
 )
 \end{lstlisting}
 
+
+The proof of completeness from which we extract a resolution solver proceeds as follows:
 
 \begin{lstlisting}[caption = "Beginning of the Resolution Completeness Proof"]
 (set-goal (pf "all f. WellFormedF f ->  ressuccess f "))
 (assume "f")
 (cases (pt "f"))
 (assume "cs" "csprop" "wellformedprop")
-(inst-with "DPLLSuccess" (pt "cs") (pt "(Nil cla)") (pt "(ConsVal (Nil lit))"))
+(inst-with "DPLLSuccess" (pt "cs") 
+ (pt "(Nil cla)") (pt "(ConsVal (Nil lit))"))
 \end{lstlisting}
 
+The instantiation of the DPLL completeness theorem with formula \texttt{f} is at the core of the proof. Following that a case distinction is made on whether the formula \texttt{f} has a DPLL derivation or a model. In the case that it has a DPLL derivation the equivalence theorem is applied to obtain a resolution derivation. In the case that the formula has a model, that model satisfies the second closure axiom of \texttt{ressucess}. 
