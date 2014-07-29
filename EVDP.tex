@@ -1,5 +1,5 @@
 \thesischapter{Soundness and Completeness of The DPLL and Resolution Proof Systems}{Soundness and Completeness of DPLL and Resolution} \label{chapter:dpll}
-In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see chapter \ref{}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. The completeness proof is performed in such a way as to take into account efficiency considerations. The branching rule $\Split$ is only applied when absolutely necessary as it is computationally the most expensive to perform. A Minlog formalisation of these proofs is presented in chapter \ref{chapter:dpllminlog} whilst the performance of the extracted program is analysed in \ref{chapter:dpllapp}. Following this we present a proof of the soundness and completeness of the resolution proof system based on the completeness proof of the DPLL proof system. The both the DPLL and the resolution proof systems are enriched to contain quantitative information about the size of the proof enabling us to prove that the Resolution proofs are in the same order of size as the DPLL proofs. 
+In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see chapter \ref{chapter:satbackground}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. The completeness proof is performed in such a way as to take into account efficiency considerations. The branching rule $\Split$ is only applied when absolutely necessary as it is computationally the most expensive to perform. A Minlog formalisation of these proofs is presented in chapter \ref{chapter:dpllminlog} whilst the performance of the extracted program is analysed in \ref{chapter:dpllapp}. Following this we present a proof of the soundness and completeness of the resolution proof system based on the completeness proof of the DPLL proof system. The both the DPLL and the resolution proof systems are enriched to contain quantitative information about the size of the proof enabling us to prove that the Resolution proofs are in the same order of size as the DPLL proofs. 
 
 \section{Related Work}
 %Other examples of verification and extraction of SAT solvers
@@ -151,7 +151,7 @@ is extracted. Therefore, we adopt the following strategy:
 To this end we show that for all valuations $\Gamma$, and formulae $\Delta$, $\Theta$,\\[1em]
 %
 \hspace*{3em}$\emptyset \notin \Theta \wedge 
-\Gamma\in\consvals \land \var(\Gamma) \cap \var(\Theta) = \emptyset\to$\\[.5em]
+\Gamma\in\consvals \land \var{\Gamma} \cap \var{\Theta} = \emptyset\to$\\[.5em]
 \hspace*{12em}$(\Gamma \vdash  \Delta\cup\Theta) \lor 
  \exists M(M \models \Gamma \land M \models \Delta\cup\Theta)$.\\[1em]
 %
@@ -166,7 +166,7 @@ where
 \begin{tabular}{lll}
 $|X|$             &$:=$& \hbox{the cardinality of a set}\,$X$\\
 $\Delta \setminus\!\!\setminus V $
-                &$:=$& $\{ l| \exists C\in \Delta(l \in C) \land \var (l) \notin V \}$\\
+                &$:=$& $\{ l| \exists C\in \Delta(l \in C) \land \var{l} \notin V \}$\\
 $\weight{\Delta} $&$:=$&$ \sum_{C\in\Delta}|C|$ 
 \end{tabular}
 \end{center}
@@ -179,7 +179,7 @@ and a side induction on $|\Delta|$ (i.e.~the number of clauses in $\Delta$).
 
 Let $\Gamma$, $\Delta$, $\Theta$ be given such that
 $\Gamma\in\consvals$, $\emptyset \notin \Theta$, and 
-$\var(\Gamma) \cap \var(\Theta) = \emptyset$. \\[1em]
+$\var{\Gamma} \cap \var{\Theta} = \emptyset$. \\[1em]
 %
 \noindent\emph{Case 1 $\Delta = \emptyset$.} \\[1em]
 %
