@@ -1,7 +1,6 @@
 
 
 \documentclass[11pt, a4paper, twoside, openright]{book}
-
 \usepackage{a4wide}
 \usepackage{amsmath,amssymb, amsthm} % AMS math
 \usepackage{color}
@@ -23,7 +22,7 @@
 \usepackage{float}
 \usepackage{subfig}
 \usepackage{subfloat}
-
+\usepackage{booktabs}
 \usepackage{makeidx}
 
 \pdfcompresslevel=9
@@ -252,10 +251,13 @@
 \newcommand{\muu}[3]{\mu(#1;#2;#3)}
 \newcommand{\measure}[2]{|#2 \setminus\!\!\setminus \var{#1}|}
 \newcommand{\weight}[1]{\#(#1)}
-
+\newcommand{\NC}{\mathrm{nc}}
+\newcommand{\forallnc}{\forall_{\NC}}
+\newcommand{\existsnc}{\exists_{\NC}}
 
 \newcommand{\BD}[1]{\mathrm{BD}(#1)}
 \newcommand{\DMA}[2]{\mathrm{DMA}(#1,#2)}
+
 
 \begin{document}
 
