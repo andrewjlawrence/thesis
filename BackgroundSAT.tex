@@ -1,6 +1,6 @@
 \chapter{Background: Resolution and the Satisfiability Problem}{Resolution and the Satisfiability Problem}
 \label{chapter:satbackground}
-In the following we shall present the satisfiability problem and  algorithms which solve this problem which are commonly known as SAT solvers. We are particularly interested in the Davis Putman Logemann Loveland algorithm \cite{DPLL} which is an improvement of the first SAT solving algorithm by Davis and Putnam \cite{MD60}. This solvers are geared towards solving formulas that are structured in CNF Moving on from these early SAT algorithms, we shall introduce some more recent SAT algorithms that are improvements on the original DPLL algorithm and include optimisations such as \emph{clause learning} and \emph{non-chronological back tracking}. Finally, we look at the resolution algorithm \cite{JR65}, which was directly inspired by the DPLL algorithm, and its associated proof system. The connection between these algorithms is so fundemental infact that the DPLL proof system is equivalent to a restricted form of resolution namely \emph{tree resolution} \cite{} and clause learning algorithms have been shown to implement \emph{general resolution} \cite{}. A general introduction to the satisfiability problem and SAT solvers can be found in The Handbook of Satisfiability \cite{AB09b}.
+In the following we shall present the satisfiability problem and  algorithms which solve this problem which are commonly known as SAT solvers. We are particularly interested in the Davis Putman Logemann Loveland algorithm \cite{DPLL} which is an improvement of the first SAT solving algorithm by Davis and Putnam \cite{MD60}. This solvers are geared towards solving formulas that are structured in CNF Moving on from these early SAT algorithms, we shall introduce some more recent SAT algorithms that are improvements on the original DPLL algorithm and include optimisations such as \emph{clause learning}~\cite{MS99} and \emph{non-chronological back tracking} \cite{MM01}. Finally, we look at the resolution algorithm \cite{JR65}, which was directly inspired by the DPLL algorithm, and its associated proof system. The connection between these algorithms is so fundemental infact that the DPLL proof system is equivalent to a restricted form of resolution namely \emph{tree resolution} \cite{} and clause learning algorithms have been shown to implement \emph{general resolution} \cite{}. A general introduction to the satisfiability problem and SAT solvers can be found in The Handbook of Satisfiability \cite{AB09b}.
 
 
 \section{The Satisfiability Problem}
@@ -14,9 +14,9 @@ We define the following preliminaries to use when refering to DPLL SAT algorithm
 
 \item For every literal $l$ we define the opposite literal $\mybar{l}$ by $\mybar{+v}= -v$, $\mybar{-v} = +v$. 
 
-\item We set $\var(+v) = \var(-v) = v$, $\var(L) = \{\var(l) \mid l\in L\}$
+\item We set $\var{+v} = \var{-v} = v$, $\var{L} = \{\var{l} \mid l\in L\}$
 for a set of literals $L$, and 
-$\var(\Delta) = \bigcup\{\var(L)\mid L\in\Delta\}$ for a set of sets of 
+$\var{\Delta} = \bigcup\{\var{L}\mid L\in\Delta\}$ for a set of sets of 
 literals $\Delta$.
 
 \item A \emph{clause} $C$ is a finite set of literals 
@@ -193,10 +193,13 @@ of five rules:
 \end{center}
 %
 \end{mydef}
+
+There are several variants of the DPLL proof system featured in the literature, the above definition is closest to the Coq formalisation \cite{SL08}, other formalisations such as \cite{FM10b} and \cite{JH09} combine the Unit, Red and Elim rules to form a single rule called the "1-literal rule" or "unit propagation".
+
 \section{Conflict Driven Clause Learning Algorithms}
 One major improvement to the standard DPLL algorithm is \emph{clause learning} which enables the solvers to learn about the structure of the problem during the proof search, cutting down on the search space in the process. In their most common variant , conflict driven clause learning algorithms, a clause is learned when a conflict is reached that contains the negation of some of the assigned literals that caused the conflict to occur. Typically these algorithms have decision heuristics that allow
 
-The first clause learning algorithm was GRASP \cite{MS99,MS96} which exploited the structure of coflicts and learned new clauses during back tracking search. This was greatly improved on by Chaff \cite{LZ01} which included the two watched literal data structure and a heuristic which received feedback from the clause learning process. MiniSAT
+The first clause learning algorithm was GRASP \cite{MS99,MS96} which exploited the structure of coflicts and learned new clauses during back tracking search. This was greatly improved on by Chaff \cite{LZ01} which included the two watched literal data structure and a heuristic which received feedback from the clause learning process. MiniSAT \cite{NE04} the minimalistic SAT solver takes the optimisations from Chaff and GRASP and trys to structure them in such a way that the SAT solver is easily extended and that one has access to the internal workings of the solver for customisation.
 
 Similarily to the DPLL algorithms, conflict driven clause learning algorithms take as input a formula $\Delta$ in Conjunctive Normal Form. 
 A valuation in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value. The depth at which a boolean variable $x$ is assigned a value \{0,1 \} in the search tree is called the decision level which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search. A mapping $\alpha(x)$ is created associating a boolean variable x with a clause $C$ if that variable is assigned by the unit rule applied to $C$ otherwise in the $\alpha(x) = NIL$.
