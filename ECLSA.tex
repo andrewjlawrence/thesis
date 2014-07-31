@@ -132,10 +132,34 @@ of three rules:
 \end{mydef}
 \hspace{1mm}
  \\
+The unit resolution proof system consists of two rules. In practice these rules are applied in the opposite direction to the DPLL rules. The subsumption or $\Sub$ rule allows us to assume that a clause has a unit resolution derivation and the unit resolution rule allows for the derivation of a new clause from two previously derived clauses, one of which must be a unit clause. 
+
+\begin{mydef}[Unit Resolution Proof System] The standard Unit Resolution proof system consists 
+of two rules:
 %
-The modified unit resolution proof system contains 
+\begin{center}
+%
+\AxiomC{$$}
+\RightLabel{$\Sub \ C \subseteq C'$}
+\UnaryInfC{$\Delta, C  \vdash_{URes} C'$}
+\DisplayProof
+%
+\bigskip
+%
+\AxiomC{$\Delta \vdash_{URes} C \vee l$}
+\AxiomC{$\Delta \vdash_{URes} \{ \mybar{l} \}$}
+\RightLabel{$\Res$}
+\BinaryInfC{$\Delta \vdash_{URes} C$}
+\DisplayProof \
+%
+\end{center}
+%
+\end{mydef}
+
+%
+The modified unit resolution proof system contains additional subsumption rules  and two additional arguements. Above the proof turnstyle the formula and valuation from which subsumptions can be made is stored. I
 \medskip
-\begin{mydef}[Modified Unit Resolution Proof System] The modified Unit Resolution proof system consists of four rules:
+\begin{mydef}[Modified Unit Resolution Proof System] The modified unit resolution proof system consists of four rules:
 \begin{center}
 %
 \AxiomC{$S \, l \, n \in \Gamma$}
@@ -167,27 +191,6 @@ The modified unit resolution proof system contains
 \end{mydef}
 
 
-\begin{mydef}[Unit Resolution Proof System] The standard Unit Resolution proof system consists 
-of two rules:
-%
-\begin{center}
-%
-\AxiomC{$$}
-\RightLabel{$\Sub \ C \subseteq C'$}
-\UnaryInfC{$\Delta, C  \vdash_{URes} C'$}
-\DisplayProof
-%
-\bigskip
-%
-\AxiomC{$\Delta \vdash_{URes} C \vee l$}
-\AxiomC{$\Delta \vdash_{URes} \{ \mybar{l} \}$}
-\RightLabel{$\Res$}
-\BinaryInfC{$\Delta \vdash_{URes} C$}
-\DisplayProof \
-%
-\end{center}
-%
-\end{mydef}
 
 
 We use the following abbreviation $\clmodres{\Gamma}{\Delta} := \exists \Gamma_0 \subseteq \Gamma (\Gamma_0 \clmodres{\Gamma}{\Delta} C)$ 
