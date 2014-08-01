@@ -189,12 +189,10 @@ The modified unit resolution proof system contains additional subsumption rules 
 \DisplayProof \
 \end{center}
 \end{mydef}
-
-
-
-
-We use the following abbreviation $\clmodres{\Gamma}{\Delta} := \exists \Gamma_0 \subseteq \Gamma (\Gamma_0 \clmodres{\Gamma}{\Delta} C)$ 
-
+\hspace{0mm} \\
+\medskip
+We use the following abbreviation $\clmodres{\Gamma}{\Delta} := \exists \Gamma_0 \subseteq \Gamma (\Gamma_0 \clmodres{\Gamma}{\Delta} C)$ in subsequent proofs where the the information regarding which decisions result resulted in the derivation of the clause $C$ is not needed. \\
+\medskip
 \begin{mytheorem}[Equivalence of Unit Resolution Proof Systems]
 \begin{align*}
 \forall \Gamma,\Delta,C ( \Gamma,\Delta \vdash_{URes} C  \leftrightarrow   \clmodres{\Gamma}{\Delta} C )
@@ -203,45 +201,52 @@ We use the following abbreviation $\clmodres{\Gamma}{\Delta} := \exists \Gamma_0
 \begin{description}
 
 \item[Case: $\Sub$]
-In the case that a subsumption was applied we perform a case distinction on whether the subsumed clause came from $\Gamma$ or $\Delta$. In the case that it came from $\Gamma$ we apply the $\UnitSub$ rule otherwise in the  case that the clause came from $\Delta$ we apply the $\Sub$ rule.
+In the case that a subsumption was applied we perform a case distinction on whether the subsumed clause came from $\Gamma$ or $\Delta$. In the case that it came from $\Gamma$ we apply either $\UnitSub$ or $\SplitSub$ rules depending on the type of decision, otherwise in the case that the clause came from $\Delta$ we apply the $\Sub$ rule.
 \item[Case: $\Res$]
 The resolution rule is trivially equivalent to the other resolution rule by the two induction hypothesis.
 \end{description}
 Now we shall prove the opposite direction   $\clmodres{\Gamma}{\Delta} C \to \Gamma,\Delta \vdash_{URes} C $.
 \begin{description}
 \item[Case: $\Sub$]
-In this case we a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$ we apply the standard. $\Sub$ rule using $C_0$
+In this case we a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$ we apply the standard $\Sub$ rule using $C_0$.
 \item[Case: $\UnitSub$]
-In this case we have derived a unit clause $\{ l \}$ such that $l \, n \in \Gamma$ this unit clause is also in $\Gamma,\Delta$ and therefore we can apply the  $\Sub$ rule.
+In this case we have derived a unit clause $\{ l \}$ such that $U \, l \, n \in \Gamma$ this unit clause is also in $\Gamma,\Delta$ and therefore we can apply the  $\Sub$ rule.
+\item[Case: $\SplitSub$] 
+Follows a similar argument to the $\UnitSub$ case, but $S \, l \, n \in \Gamma$.
 \item[Case $\Res$]
 The resolution rule is trivially equivalent to the other resolution rule by the two induction hypothesis.
 \end{description}
 
 \end{mytheorem}
-
-
+\medskip
 %%
 %% Do we want a theorem stating that the modifed resolution calculus derives the same clauses as the old resolution calculus?
 %%
-
-
+The soundness of the modified unit resolution proof system is proven by showing that if there is a derivation of a clause $C$ from a valuation $\Gamma$ and a formula $\Delta$ then $\Gamma$ and $\Delta$ model $C$. \\
+\medskip
 \begin{mytheorem}[Soundness of Unit Resolution]\label{thm:UResSoundness}
-If  $ \Gamma' \clmodres{\Gamma}{\Delta} C$ then $\Gamma', \Delta \models C$.
+If  $ \clmodres{\Gamma}{\Delta} C$ then $\Gamma, \Delta \models C$.
 %
 \begin{proof}
-We perform induction on the build up of  the derivation $\Gamma' \clmodres{\Gamma}{\Delta} C$.
+We perform induction on the build up of  the derivation $ \clmodres{\Gamma}{\Delta} C$.
 \subsection*{Case: $\Sub$}
 %
 There is a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$. We fix a model $M$ such that $M \models \Gamma, \Delta $. There must be a literal $l \in C_0$ that $M l$ holds and since $C_0 \subseteq C$ this literal $l$ must also be contained in $C$ and therefore $\Delta \models C$.
-
-\subsection*{Case: $\UnitSub$}
-There is a literal $l$ in $\Gamma$ and $\Gamma,\Delta$ trivially model the unit clause consisting of $l$. 
 %
+\subsection*{Case: $\UnitSub$}
+There is a decision $U \, l \, n$ in $\Gamma$ and $\Gamma,\Delta$ trivially model the unit clause consisting of $l$. 
+%
+\subsection*{Case: $\SplitSub$}
+Follows a similar argument to $\SplitSub$, however $S \, l \, n \in \Gamma$.
 \subsection*{Case: $\Res$}
 By induction hypothesis we know $ \Delta \models C \vee l$, $ \Delta \models \{ \mybar{l} \}$ and have to show $ \Delta \models C$. We fix a model $M$ such that $M \models \Delta$.  Since $ \Delta \models \{ \mybar{l} \}$ we know that $M \, \mybar{l}$ holds and therefore that $M \, l$ cannot be true. Since we know that $ \Delta \models C \vee l$ there must exist another literal in the clause $C$ that is true in the model $M$ and therefore $\Delta \models C$.
  %
 \end{proof}
-\end{mytheorem}
+\end{mytheorem} \\
+\medskip
+%
+Our modified DPLL proof system uses a set of learned clauses from the first branch of any proof along any subsequent branches. It is important that these clauses do not change the (un)satisfiability of the original formula $\Delta$ in anyway. Therefore, we prove that if there is a DPLL derivation of a formula $\Delta$ using set of learned clauses $\Delta'$ then $\Delta$ forms a model of $\Delta'$. \\
+\medskip
 %
 \begin{mytheorem}[Learned Clause Lemma]\label{thm:Incompatibility}
 If $\Gamma \vdash_{\Delta'} \Delta$  then  $\Delta \models \Delta'$.
