@@ -242,8 +242,8 @@ Follows a similar argument to $\SplitSub$, however $S \, l \, n \in \Gamma$.
 By induction hypothesis we know $ \Delta \models C \vee l$, $ \Delta \models \{ \mybar{l} \}$ and have to show $ \Delta \models C$. We fix a model $M$ such that $M \models \Delta$.  Since $ \Delta \models \{ \mybar{l} \}$ we know that $M \, \mybar{l}$ holds and therefore that $M \, l$ cannot be true. Since we know that $ \Delta \models C \vee l$ there must exist another literal in the clause $C$ that is true in the model $M$ and therefore $\Delta \models C$.
  %
 \end{proof}
-\end{mytheorem} \\
-\medskip
+\end{mytheorem} 
+
 %
 Our modified DPLL proof system uses a set of learned clauses from the first branch of any proof along any subsequent branches. It is important that these clauses do not change the (un)satisfiability of the original formula $\Delta$ in anyway. Therefore, we prove that if there is a DPLL derivation of a formula $\Delta$ using set of learned clauses $\Delta'$ then $\Delta$ forms a model of $\Delta'$. \\
 \medskip
