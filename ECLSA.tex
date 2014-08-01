@@ -132,8 +132,8 @@ of three rules:
 \end{mydef}
 \hspace{1mm}
  \\
-The unit resolution proof system consists of two rules. In practice these rules are applied in the opposite direction to the DPLL rules. The subsumption or $\Sub$ rule allows us to assume that a clause has a unit resolution derivation and the unit resolution rule allows for the derivation of a new clause from two previously derived clauses, one of which must be a unit clause. 
-
+The unit resolution proof system consists of two rules. In practice these rules are applied in the opposite direction to the DPLL rules. The subsumption or $\Sub$ rule allows us to assume that a clause has a unit resolution derivation and the unit resolution rule allows for the derivation of a new clause from two previously derived clauses, one of which must be a unit clause. \\
+\medskip
 \begin{mydef}[Unit Resolution Proof System] The standard Unit Resolution proof system consists 
 of two rules:
 %
@@ -157,7 +157,7 @@ of two rules:
 \end{mydef}
 
 %
-The modified unit resolution proof system contains additional subsumption rules  and two additional arguements. Above the proof turnstyle the formula and valuation from which subsumptions can be made is stored. I
+The modified unit resolution proof system contains additional subsumption rules  and arguments in order to implement a form of clause learning. When a conflict is reached a clause is learned representing the decision assignments which caused the conflict in that clause to occur similar to the GRASP algorithm \cite{MS99}.  Above the derivation turnstyle the formula and valuation from which subsumptions can be made is stored. The decision ($\Split$) assignments used to derive the clause are stored on the left hand side of the derivability sign. This are added during an application of the $\SplitSub$ rule which subsumes a decision assignment from the valuation to form a unit clause. Applications of the $\UnitSub$ and $\Sub$ rules do not cause decisions to be added to this valuation.   \\
 \medskip
 \begin{mydef}[Modified Unit Resolution Proof System] The modified unit resolution proof system consists of four rules:
 \begin{center}
