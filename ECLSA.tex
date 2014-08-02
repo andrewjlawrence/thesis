@@ -246,7 +246,7 @@ By induction hypothesis we know $ \Delta \models C \vee l$, $ \Delta \models \{ 
 Our modified DPLL proof system uses a set of learned clauses from the first branch of any proof along any subsequent branches. It is important that these clauses do not change the (un)satisfiability of the original formula $\Delta$ in anyway. Therefore, we prove that if there is a DPLL derivation of a formula $\Delta$ using set of learned clauses $\Delta'$ then $\Delta$ forms a model of $\Delta'$. \\
 \medskip
 %
-\begin{mytheorem}[Learned Clause Lemma]\label{thm:Incompatibility}
+\begin{mytheorem}[Learned Clause Lemma]\label{thm:learnedclause}
 If $\Gamma \vdash_{\Delta'} \Delta$  then  $\Delta \models \Delta'$.
 %
 \begin{proof}
@@ -256,27 +256,27 @@ We have to show the following statement holds:
 %
 \begin{align*}
 %%\Gamma'& \subseteq \Gamma \to \incompatible{\Gamma}{\mybar{\Gamma'}} \\
-\Gamma'&, \clmodres{\Gamma}{\Delta} \emptyset\to \Delta \models \mybar{\Gamma'}
+\Gamma'& \clmodres{\Gamma}{\Delta} \emptyset\to \Delta \models \mybar{\Gamma'}
 \end{align*}
 %
 %%If we know that $\Gamma'$ is a subset of $\Gamma$ then all the literals in $\mybar{\Gamma'}$ have an opposing literal in $\Gamma$. If every literal in $\Gamma$ is true in a model $M$ then every literal in $\mybar{\Gamma'}$ must be false and therefore $\incompatible{\Gamma}{\mybar{\Gamma'}}$.
 %
-If we have a unit resolution derivation of the empty clause from $\Gamma'$ and $\Delta$ then by the soundness of unit resolution we know  that $\Gamma'$ and $\Delta$ model the empty clause.  We fix a model $M$ such that $\forall C \in \Delta \exists l \in C \ M \, l$  leaving us to prove $\exists l \in \mybar{\Gamma'} \ M \, l$. To do this we perform a case distinction on $\forall l \in \Gamma' \ M \, l$ or $\neg \forall l \in \Gamma' \ M \, l$. In the case that $\forall l \in \Gamma' \ M \, l$ holds we use $\Gamma', \Delta \models \emptyset$ to obtain $\bot$ and we are done using Efq. If $\neg \forall l \in \Gamma' \ M \, l$ holds then we know that there must exist a literal $l$ in $\Gamma'$ such that its opposite is true in the model $M \, \mybar{l}$ and is in $\mybar{\Gamma'}$.
+If we have a unit resolution derivation of the empty clause from $\Gamma'$ and $\Delta$ then by the soundness of unit resolution (Theorem \ref{thm:UResSoundness}) we know  that $\Gamma'$ and $\Delta$ model the empty clause.  We fix a model $M$ such that $\forall C \in \Delta \exists l \in C \ M \, l$  leaving us to prove $\exists l \in \mybar{\Gamma'} \ M \, l$. To do this we perform a case distinction on $\forall l \in \Gamma' \ M \, l$ or $\neg \forall l \in \Gamma' \ M \, l$. In the case that $\forall l \in \Gamma' \ M \, l$ holds we use $\Gamma', \Delta \models \emptyset$ to obtain $\bot$ and we are done using Efq. If $\neg \forall l \in \Gamma' \ M \, l$ holds then we know that there must exist a literal $l$ in $\Gamma'$ such that its opposite is true in the model $M \, \mybar{l}$ and is in $\mybar{\Gamma'}$.
 %
 
 \subsection*{Case 2: $\Unit$}
-This case is trivial since we have $\Gamma'\clmodres{\Gamma}{\Delta} \{l \}$ and $\Delta \models \Delta'$ which is exactly what we have to show.
+This case is trivial since we have $\Gamma'\clmodres{\Gamma}{\Delta} \{l \}$ and  $\Delta \models \Delta'$ by induction hypothesis, which is exactly what we have to show.
 \subsection*{Case 3: $\Split$}
 
 
-We have to show $$ \Delta \models \Delta' \cup \Delta'' $$ using
+We have to show: $$ \Delta \models \Delta' \cup \Delta'' $$ or equivalently:
 \begin{align*}
 \Delta \models \Delta'  \wedge \Delta,\Delta' \models \Delta''
 \end{align*}
 
 %
 %
-%We have to prove $$ \incompatible{\Gamma}{\Delta' \cup \Delta''} \wedge \Delta \models \Delta' \cup \Delta''$$ 
+%or $$ \incompatible{\Gamma}{\Delta' \cup \Delta''} \wedge \Delta \models \Delta' \cup \Delta''$$ 
 %using 
 %\begin{align*}
 %\incompatible{\Gamma'}{\Delta'} &\wedge \Delta \models \Delta' \\
@@ -307,16 +307,18 @@ We fix a model $M$ such that $M \models \Delta$. $\Delta \models \Delta'$ is equ
 %
 \end{mytheorem}
 %
-\begin{mytheorem}[Soundness of Modified DPLL]
+We shall now perform a proof of soundness of our modified DPLL proof system by proving the stronger property of incompatibility. \\ \medskip
+%
+\begin{mytheorem}[Incompatibility (Soundness) of Modified DPLL]
 If  $\Gamma \vdash_{\Delta'} \Delta$  then $\incompatible{\Gamma}{\Delta}$.
 \begin{proof}
 We perform induction on the build up of the derivation $\Gamma \vdash_{\Delta'} \Delta$ leading to two cases:
 %
 \subsection*{Case 1: $\Conflict$}
-One has to show that if $\Gamma' \subseteq \Gamma$ and $\exists C_0 \in \Delta$ $\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$ then $\Gamma$ and $\Delta$ are incompatible. To do this we fix a model $M$ that causes $\Gamma$ and $\Delta$ to be compatible and then show a contradiction. Using $\Gamma' \clmodres{\Gamma}{C_0} \emptyset$ and theorem \ref{thm:UResSoundness} we obtain $\Gamma', C_0 \models \emptyset$ which implies that $\incompatible{\Gamma'}{\Delta}$ and since $\Gamma' \subseteq \Gamma$ also that $\incompatible{\Gamma}{\Delta}$. 
+One has to show that if $\Gamma' \subseteq \Gamma$ and $\exists C_0 \in \Delta$ $\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$ then $\Gamma$ and $\Delta$ are incompatible. To do this we fix a model $M$ that causes $\Gamma$ and $\Delta$ to be compatible and then show a contradiction. Using $\Gamma' \clmodres{\Gamma}{C_0} \emptyset$ and the soundness of unit resolution (Theorem \ref{thm:UResSoundness}) we obtain $\Gamma, C_0 \models \emptyset$ which implies that $\incompatible{\Gamma}{\Delta}$. 
 %
 \subsection*{Case 2: $\Unit$}
-One has to show that if $\Gamma, l \, \delta(\Gamma) \vdash_{\Delta'} \Delta$, $\incompatible{\Gamma,l \, \delta(\Gamma)}{\Delta}$ and there exists a $\Gamma'$ such that  $\Gamma' \clmodres{\Gamma}{\Delta} \{ l \}$ then $\incompatible{\Gamma}{\Delta}$. To do this we fix a model $M$ such that $\Gamma$ and $\Delta$ are compatible and show that $\Gamma, l \, \delta(\Gamma)$ and $\Delta$ are compatible. Using theorem 1 with $\Gamma' \clmodres{\Gamma}{\{ C_0\}} \{ l \}$ we obtain that $\Delta \models \{l\}$ from this and $\compatible{\Gamma}{\Delta}$ it follows that $\compatible{\Gamma, l \, \delta(\Gamma)}{\Delta}$.
+One has to show that if $\Gamma, l \, \delta(\Gamma) \vdash_{\Delta'} \Delta$, $\incompatible{\Gamma,l \, \delta(\Gamma)}{\Delta}$ and there exists a $\Gamma'$ such that  $\Gamma' \clmodres{\Gamma}{\Delta} \{ l \}$ then $\incompatible{\Gamma}{\Delta}$. To do this we fix a model $M$ such that $\Gamma$ and $\Delta$ are compatible and show that $\Gamma, l \, \delta(\Gamma)$ and $\Delta$ are compatible. Using the soundness of unit resolution (Theorem \ref{thm:UResSoundness}) with $\Gamma' \clmodres{\Gamma}{\{ C_0\}} \{ l \}$ we obtain that $\Delta \models \{l\}$ from this and $\compatible{\Gamma}{\Delta}$ it follows that $\compatible{\Gamma, l \, \delta(\Gamma)}{\Delta}$.
 
 
 \subsection*{Case 3: $\Split$}
@@ -331,6 +333,8 @@ One has two valuations $\Gamma_1 \subseteq \Gamma, (l \, \delta(\Gamma) \! + 1 \
 \end{mytheorem}
 
 
+\begin{comment}
+
 \begin{mylemma}\label{lemma:unitures}
 \begin{align*}
 \forall \Gamma, \Delta, \Gamma'.  \Gamma' \clmodres{\Gamma}{\Delta} \emptyset \to \consistent{\Gamma} \to \emptyset \notin \Delta \to \forall l \,(\{ l\} \notin \Delta) \to 1 < |\Gamma'|
@@ -344,7 +348,6 @@ In this case
 We prove that at least two resolution steps have been made
 \end{description}
 \end{mylemma}
-
 
 
 \begin{mylemma}\label{lemma:unitdpll}
@@ -366,7 +369,7 @@ We have two sets of learned clauses $\Delta'$ and $\Delta''$ which do not contai
 
 \end{mylemma}
 
-
+\end{comment}
 
 We now define what it means to have a complete set of clauses derived by unit resolution from a formula $\Delta$ and from the literals at each decision level of a valuation $\Gamma$.
 \begin{mydef}
