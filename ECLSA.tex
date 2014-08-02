@@ -429,7 +429,7 @@ We perform a case distinction on whether $l \in \lit(\Gamma)$ if it is then we h
 \end{comment}
 
 \end{description}
-\label{lemma:complete5}
+\label{lemma:compgen}
 \end{mylemma}
 Using the previously proven lemma, in the following lemma we prove that it is possible to construct a new set of complete clause pairs from a valuation and a formula.
 \begin{mylemma}
@@ -451,7 +451,7 @@ We do a proof by induction on $\Delta$.
 \end{mylemma}
 
 
-\begin{mylemma}
+\begin{mylemma}\label{lem:compsplit}
 \begin{align*}\forall \DeltaVec,\Delta,\Gamma.  \complete{\DeltaVec}{\Gamma}{\Delta} \to \forall l. \, \exists \DeltaVec' \complete{\DeltaVec'}{\Gamma, \splitdecgone{l}}{\Delta}
 \end{align*}
 \begin{proof}
@@ -467,7 +467,7 @@ By the definition of $\mathrm{complete}$ $(C_1, C_2)$ is the only pair in $\Delt
 
 \end{mylemma}
 
-\begin{mylemma}
+\begin{mylemma}\label{lem:compunion}
 \begin{align*}
 \forall  \DeltaVec_1, \DeltaVec_2, \Delta_1, \Delta_2, \Gamma. \, \complete{\DeltaVec_1}{\Gamma}{\Delta_1} \to \, &\complete{\DeltaVec_2}{\Gamma}{\Delta_2} \to \\
 &\complete{\DeltaVec_1 \cup \DeltaVec_2}{\Gamma}{\Delta_1 \cup \Delta_2}
@@ -527,8 +527,8 @@ There exists a model $M$ that models $\Gamma, l \, \delta(\Gamma)$ and $\Delta$ 
 We fix an $n$ such that $n \leq \delta(\Gamma)$ then we have the following two cases. If $n = \delta(\Gamma)$ then the unit literal has been used in the derivation we apply the $\Unit$ rule with $l$. Other wise if $n < \delta(\Gamma)$ 
 then our unit literal has not been used during the derivation $\Gamma_{\leq n} = (\Gamma, l \, \delta(\Gamma))_n$ and we have a derivation that $\Gamma$ restricted to $n$ and $\Delta$ are incompatible $\Gamma_{\leq n} \vdash_{\Delta'} \Delta$.
 %
-\subsection*{Case 4: $\DeltaVec \neq \emptyset, \emptyset \notin \DeltaVec,  \forall l,c1 \, ( (c_1 , \{ l \})  \notin \DeltaVec )$}
-Select a new literal $l$ from $\Delta$ such that $\var{l} \notin \Gamma$. Using lemma \ref{lemma:complete3} it is possible to construct a new set of pairs of clauses $\DeltaVec'$ such that $\complete{\DeltaVec'}{\Delta}{\Gamma, \splitdecgone{l}}$.
+\subsection*{Case 4: $\DeltaVec \neq \emptyset, \emptyset \notin \DeltaVec,  \forall l,C_1 \, ( (C_1 , \{ l \})  \notin \DeltaVec )$}
+Select a new literal $l$ from $\Delta$ such that $\var{l} \notin \Gamma$. Using Lemma \ref{lem:compsplit} it is possible to construct a new set of pairs of clauses $\DeltaVec'$ such that $\complete{\DeltaVec'}{\Delta}{\Gamma, \splitdecgone{l}}$.
 The induction hypothesis is instantiated with $\Delta$ and $ \Gamma, l \, \delta(\Gamma) + 1$ and $\DeltaVec'$. The measure decreases since we have assigned a new variable and the number of unassigned variables decreases: $ |\var{\Gamma, l \, \delta(\Gamma) + 1}| = |\var{\Gamma}| + 1$ and $N - (|\var{\Gamma}| + 1) <  N - |\var{\Gamma}|$.  We then have two cases:
 %
 \subsection*{Subcase 4.1: $\compatible{\Gamma, l \, \delta(\Gamma) + 1}{\Delta}$}
@@ -538,9 +538,8 @@ We have a model $M$ such that $M \models \Gamma$ and $M \models \Delta$ and ther
 We fix an $n'$ such that $n' \leq \delta(\Gamma$ then we perform a case distinction on the size of $n'$.
 %
 \subsubsection*{Subcase 4.2.1: $  n' = \delta(\Gamma) + 1 \, \wedge  \exists \Delta' ( (\Gamma, l \, \delta(\Gamma) + 1) _{\leq n'}  \vdash_{\Delta'} \Delta)$}
-The induction hypothesis is instantiated a second time with $\Delta, \Delta'$ and $\Gamma, \mybar{l} \, \delta(\Gamma) + 1$. 
-We construct a new $\DeltaVec''$ such that$\complete{\DeltaVec''}{\Gamma}{\Delta'}$ this is built from the learned clauses. Then we merge $\DeltaVec'$ $\DeltaVec''$ to create a new set $\Delta'''$ of paired clauses such that $\complete{\Delta'''}{\Gamma}{\Delta \cup \Delta'}$. Finally we can 
- This is done in two steps. Firstly we construct a new set of derivations using lemma \ref{lemma:complete4} and then we merge that set of derivations with our existing one using lemma \ref{lemma:complete2}.
+The induction hypothesis is instantiated a second time with $\Delta, \Delta'$ and $\Gamma, \mybar{l} \, \delta(\Gamma) + 1$. We construct a new $\DeltaVec''$ such that $\complete{\DeltaVec''}{\Gamma}{\Delta'}$ this is built from the learned clauses. Then we merge $\DeltaVec'$ $\DeltaVec''$ to create a new set $\Delta'''$ of paired clauses such that $\complete{\Delta'''}{\Gamma}{\Delta \cup \Delta'}$. Finally we can 
+ This is done in two steps. Firstly we construct a new set of derivations using Lemma \ref{lemma:compgen} and then we merge that set of derivations with our existing one using Lemma \ref{lemma:compunion}.
 
  Then $\Delta_{\delta(\Gamma) + 1}$ is constructed in the same fashion  as before but using $\Gamma, \mybar{l} \, \delta(\Gamma) + 1$  instead of $\Gamma, l \, \delta(\Gamma ) + 1$. This set of derivations is complete since all clauses at each level are derived from $\Gamma$, $\Delta$ and $\Delta'$ and at each level we have resolved the clauses with the corresponding literals for that level in $\Gamma$ and removed any clauses that have literals in common with $\Gamma$ at that level.  This then leads to two further cases. Either we have a model $M$ such that $M \models \Gamma, \mybar{l} \, \delta(\Gamma) + 1$ and $M \models \Delta, \Delta'$, in which case $\compatible{\Gamma}{\Delta}$ holds or we have a $n'' \leq \delta(\Gamma) + 1$ and $(\Gamma, \mybar{l} \, \delta(\Gamma) + 1)_{\leq n''} \vdash_{\Delta''} \Delta, \Delta'$ in which case we apply the $\Split$ rule.
 \begin{comment}
@@ -555,8 +554,11 @@ This case corresponds to the back tracking in our program. We have derived that 
 We prove the following corollary inorder to perform some preprocessing on the formula and run the main proof.
 \begin{mycorollary}
 \begin{align*}
-\forall \Delta. \emptyset \in \Delta \to \exists M( M \models \Delta) \vee \exists \Delta'(\emptyset \vdash_{\Delta'} \Delta)
+\forall \Delta. \exists M( M \models \Delta) \vee \exists \Delta'(\emptyset \vdash_{\Delta'} \Delta)
 \end{align*}
+\begin{proof}
+This is proven by using \ref{lem:compgen} to generate a complete set of clause pairs and then applying the completeness theorem for our modified DPLL proof system.
+\end{proof}
 \end{mycorollary}
 
 \section{Execution of Prototype Clause Learning Algorithm}
