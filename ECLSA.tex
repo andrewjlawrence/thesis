@@ -326,7 +326,7 @@ One has two valuations $\Gamma_1 \subseteq \Gamma, (l \, \delta(\Gamma) \! + 1 \
  \begin{description}
 	\item[$\mathit{Case} \, M l$:] We show that if $\Gamma$ and $\Delta$ are compatible then $\Gamma_1$ and $\Delta$ are compatible. Since $l$ is true in the model $M$ and $M$ models $\Gamma$ then $M$ must also model any subset of $\Gamma,(l \, \delta(\Gamma) \! + \!1)$.
 %	
-\item [$\mathit{Case}\, M  \mybar{l}$:] We show that if  $\Gamma$ and $\Delta$ are compatible then $\Gamma_2$ and $\Delta, \Delta'$ are compatible.  Showing that $M$ models $\Gamma_2$ is performed using the same argument as the case that $M l$ holds. Using the theorem \ref{thm:Incompatibility} we obtain $\Gamma,\Delta \models \Delta'$, we know that $M \models \Delta'$ and therefore $\Gamma_2$ and $\Delta, \Delta'$ are compatible.
+\item [$\mathit{Case}\, M  \mybar{l}$:] We show that if  $\Gamma$ and $\Delta$ are compatible then $\Gamma_2$ and $\Delta, \Delta'$ are compatible.  Showing that $M$ models $\Gamma_2$ is performed using the same argument as the case that $M l$ holds. Using Theorem \ref{thm:learnedclause} we obtain $\Gamma,\Delta \models \Delta'$, we know that $M \models \Delta'$ and therefore $\Gamma_2$ and $\Delta, \Delta'$ are compatible.
 \end{description}
 \end{proof}
 %
@@ -371,7 +371,8 @@ We have two sets of learned clauses $\Delta'$ and $\Delta''$ which do not contai
 
 \end{comment}
 
-We now define what it means to have a complete set of clauses derived by unit resolution from a formula $\Delta$ and from the literals at each decision level of a valuation $\Gamma$.
+We now define a complete set of clause pairs $\DeltaVec$ such the the first component in each pair is contained within $\Delta$ and the second component is derived by the first via unit resolution to such an extent that it no longer contains any variables in common with $\Gamma$. \\
+\medskip
 \begin{mydef}
 \begin{align*}
  &\complete{\DeltaVec}{\Gamma}{\Delta} :=  \\
@@ -385,10 +386,9 @@ We now define what it means to have a complete set of clauses derived by unit re
 
 \end{mydef}
 
-We use the following properties of $\mathrm{complete}$ during our main proof.
-
-
-\begin{mylemma}
+We shall now prove several properties about these complete sets of clause pairs that are used for their general manipulation i.e. construction, union and updating with respect to an extended valuation. Firstly, we prove that a removal of a clause pair from a complete set of clause pairs along with the first component of that pair from the their formula maintains the completeness property. \\
+\medskip
+\begin{mylemma}\label{lem:comprem}
 \begin{align*}
 \forall \DeltaVec,\Delta,\Gamma,C_1,C_2. \complete{(C_1, C_2), \DeltaVec}{\Gamma}{\Delta} \to \complete{\DeltaVec}{\Gamma}{\Delta \setminus C_1}
 \end{align*}
@@ -396,6 +396,8 @@ We use the following properties of $\mathrm{complete}$ during our main proof.
 By the definition of complete the pair $(C_1, C_2)$ is the only pair in $\DeltaVec$ that contains $C_1$.  Therefore if we remove $C_1$ from $\Delta$ the only pair that has to be removed from $(C_1, C_2), \DeltaVec$ to retain the completeness property is $(C_1,C_2)$ therefore $\complete{\DeltaVec}{\Gamma}{\Delta \setminus C_1}$ holds.
 \end{proof}
 \end{mylemma}
+
+The following lemma allows for a new set of clause pairs to be generated from an existing one in the case that the valuation is extended with a new unit decision.
 
 \begin{mylemma}
 \begin{align*}\forall \DeltaVec,\Delta,\Gamma.  \complete{\DeltaVec}{\Gamma}{\Delta} \to \forall l. \, \exists \DeltaVec' \complete{\DeltaVec'}{\Gamma, \unitdecg{l}}{\Delta}
@@ -405,11 +407,12 @@ The proof proceeds by induction on $\DeltaVec$
 \begin{description}
 \item[Case: $\DeltaVec = \emptyset$] 
 We fix an $l$ and show $\complete{\emptyset}{\Gamma, \unitdecg{l}}{\Delta}$.  There are no pairs of clauses in $\emptyset$ and therefore part 1 of the $\mathrm{complete}$ definition holds. We now have to show $\forall C_1 \in \Delta. \, \to \exists l (l \in C_1 \wedge l \in \lit{\Gamma, })$ $\complete{\emptyset}{\Gamma}{\DeltaVec}$
-\item[Case: $\DeltaVec = (C_1, C_2), \DeltaVec'''$] We fix an $l$ and then by lemma $\textbf{(add lemma number)}$ $\complete{\DeltaVec'''}{\Gamma}{\Delta \setminus C_1}$. Using the induction hypothesis we obtain $\complete{\DeltaVec''}{\Gamma, \unitdecg{l}}{\Delta \setminus C_1}$. A case distinction is performed on whether $l \in C_2$ if it is then $l \in C_1$. The clause $C_1$ has been satisfied and we can remove it as condition two of $\mathrm{complete}$ has been satisfied and $\complete{\DeltaVec''}{\Gamma, \unitdecg{l}}{\Delta}$. If $l \notin C_2$ then we perform a case distinction on whether $\mybar{l} \in C_2$ 
+\item[Case: $\DeltaVec = (C_1, C_2), \DeltaVec'''$] We fix an $l$ and then by Lemma \ref{lem:comprem} $\complete{\DeltaVec'''}{\Gamma}{\Delta \setminus C_1}$. Using the induction hypothesis we obtain $\complete{\DeltaVec''}{\Gamma, \unitdecg{l}}{\Delta \setminus C_1}$. A case distinction is performed on whether $l \in C_2$. If it is then $l \in C_1$, the clause $C_1$ has been satisfied and we can remove it as condition two of $\mathrm{complete}$ has been satisfied and $\complete{\DeltaVec''}{\Gamma, \unitdecg{l}}{\Delta}$. If $l \notin C_2$ then we perform a case distinction on whether $\mybar{l} \in C_2$.
 \end{description}
 \end{proof}
 \end{mylemma}
 
+We use the following lemma to construct a new clause pair along with the associated unit resolution proof from a clause an a valuation.
 
 \begin{mylemma}
 \begin{align*}
@@ -428,13 +431,13 @@ We perform a case distinction on whether $l \in \lit(\Gamma)$ if it is then we h
 \end{description}
 \label{lemma:complete5}
 \end{mylemma}
-
+Using the previously proven lemma, in the following lemma we prove that it is possible to construct a new set of complete clause pairs from a valuation and a formula.
 \begin{mylemma}
 \begin{align*}
 \forall \Delta,\Gamma. \, \exists \DeltaVec. \, \complete{\DeltaVec}{\Gamma}{\Delta}
 \end{align*}
 \begin{proof}
-\textbf{(note: The order in which these derivations are performed will effect the structure of the conflict graph. If we want to learn the 1UIP clause learning scheme this will have to be taken into  consideration.)}
+%%%\textbf{(note: The order in which these derivations are performed will effect the structure of the conflict graph. If we want to learn the 1UIP clause learning scheme this will have to be taken into  consideration.)}
 
 We do a proof by induction on $\Delta$.
 
