@@ -399,7 +399,7 @@ By the definition of complete the pair $(C_1, C_2)$ is the only pair in $\DeltaV
 
 The following lemma allows for a new set of clause pairs to be generated from an existing one in the case that the valuation is extended with a new unit decision.
 
-\begin{mylemma}
+\begin{mylemma}\label{lem:compunit}
 \begin{align*}\forall \DeltaVec,\Delta,\Gamma.  \complete{\DeltaVec}{\Gamma}{\Delta} \to \forall l. \, \exists \DeltaVec' \complete{\DeltaVec'}{\Gamma, \unitdecg{l}}{\Delta}
 \end{align*}
 \begin{proof}
@@ -458,7 +458,7 @@ We do a proof by induction on $\Delta$.
 The proof proceeds by induction on $\DeltaVec$
 \begin{description}
 \item[Case: $\DeltaVec = \emptyset$] 
-$\complete{\emptyset}{\Gamma, \splitdecgone}{\Delta}$ trivially follows from $\complete{\emptyset}{\Gamma}{\Delta}$.
+$\complete{\emptyset}{\Gamma, \splitdecgone{l}}{\Delta}$ trivially follows from $\complete{\emptyset}{\Gamma}{\Delta}$.
 \item[Case: $\DeltaVec = (C_1,C_2),\DeltaVec''$]
 By the definition of $\mathrm{complete}$ $(C_1, C_2)$ is the only pair in $\DeltaVec$ to contain $C_1$.  By using the induction hypothesis with $\Delta \setminus C_1$ and $\Gamma$ we obtain $\DeltaVec'''$ such that $\complete{\DeltaVec'''}{\Gamma, \splitdecgone{l}}{\Delta \setminus C_1}$.  If $l \in C_2$ then it is also in $C_1$ which means the pair $(C_1, C_2)$ will not be included in $\Delta'$. Finally since $\DeltaVec'''$ is complete $\Delta \setminus C_1$ and $C_1$ has been satisfied then $\complete{\DeltaVec'''}{\Gamma, \splitdecgone{l}}{\Delta}$.
 
@@ -479,10 +479,10 @@ Proof by induction on $\DeltaVec_1$ leading to two cases:
 We have to show $\complete{\DeltaVec_2}{\Gamma}{\Delta_2}$ which we have as an assumption.
 
 \item[$\DeltaVec_1 = (C_1, C_2), \DeltaVec_1'$]
-By lemma \ref{} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C_1}$ holds then by the induction hypothesis we obtain $\complete{\DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \setminus C_1 \cup \Delta_2}$. We now have to argue if we add $C_1$ to $\Delta_1 \setminus C_1 \cup \Delta_2$ then $\complete{(C_1, C_2), \DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \cup \Delta_2}$.
+By Lemma \ref{lem:comprem} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C_1}$ holds then by the induction hypothesis we obtain $\complete{\DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \setminus C_1 \cup \Delta_2}$. We now have to argue if we add $C_1$ to $\Delta_1 \setminus C_1 \cup \Delta_2$ then $\complete{(C_1, C_2), \DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \cup \Delta_2}$.
 \begin{description}
 \item[1. a)] Follows trivially since $\Delta_1$ contains $C_1$.
-\item[1. b), c), d)] From $\complete{(C_1,C_2), \DeltaVec_1'}$ we obtain $C_2 = C_1 \setminus \mybar{\Gamma}$, $\var{C_2} \cap \var{\Gamma} = \emptyset$ and $\clmodres{\Gamma}{\{C_1 \}} C_2$ .
+\item[1. b), c), d)] From $\complete{(C_1,C_2), \DeltaVec_1'}{\Gamma}{\Delta_1}$ we obtain $C_2 = C_1 \setminus \mybar{\Gamma}$, $\var{C_2} \cap \var{\Gamma} = \emptyset$ and $\clmodres{\Gamma}{\{C_1 \}} C_2$ .
 \item[2.] Only removing and not adding pairs affects whether or not this part holds. Therefore if 2. holds for $\DeltaVec_1' \cup \DeltaVec_2$ then it also holds for $\DeltaVec_1 \cup \DeltaVec_2$.
 
 \end{description}  
@@ -490,12 +490,12 @@ By lemma \ref{} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C_1}$ holds 
 
 \end{mylemma}
 
-
+We shall now prove the completeness of the modified DPLL proof system using the assumption that we have a complete set of clause pairs.\\
+\medskip
 \begin{mytheorem}[Completeness of Modified DPLL] 
 We can fix a finite set of variables $\{v_1, \ldots , v_N \}$ in advance and consider only $\Gamma$ and $\Delta$ built from these variables.
 \begin{align*}
  &\forall \Gamma, \Delta. \consistent{\Gamma} \to   \\ 
- &\emptyset \notin \Delta \to \\ 
 & (\exists \DeltaVec \, \complete{\DeltaVec}{\Gamma}{\Delta}) \to \\
 &\compatible{\Gamma}{\Delta} \vee  \exists n \leq \delta(\Gamma) \, \wedge  \exists \Delta' ( \Gamma_{\leq n}  \vdash_{\Delta'} \Delta)
 \end{align*}
@@ -508,16 +508,16 @@ We perform induction on
 $$\mu(\Gamma) := N - |\var{\Gamma}|$$
 the number of unassigned variables where $\var{\Gamma} := \{\var{l}| (l \, n) \in \Gamma \}$
 %
-We fix a formula $\Delta$ and a valuation $\Gamma$ such that $\consistent{\Gamma}$ and $\emptyset \notin \Delta$. By $\exists \DeltaVec \, \complete{\DeltaVec}{\Gamma}{\Delta} $ we obtain a complete set of derivations $\DeltaVec$ and we perform a case distinction on the most recently derived formulae:
+We fix a formula $\Delta$ and a valuation $\Gamma$ such that $\consistent{\Gamma}$. By $\exists \DeltaVec \, \complete{\DeltaVec}{\Gamma}{\Delta} $ we obtain a complete set of derivations $\DeltaVec$ and we perform a case distinction on the most recently derived formulae:
 
 \subsection*{Case 1: $\DeltaVec = \emptyset$}
-We show $\compatible{\Gamma}{\Delta}$. We fix a model $M$ such that $M \models \Gamma$ then we  deduce that $M \models \Delta$. By $\complete{\emptyset}{\Gamma}{\Delta}$ we obtain $\forall c_1. \, \in \Delta \to \exists l( l \in C_1 \wedge l \in \lit{\Gamma}$ since there are no pairs of clauses in $\DeltaVec$. Since $M \models \Gamma$ and $\Gamma \models \Delta$ then $M \models \Delta$.
+We show $\compatible{\Gamma}{\Delta}$. We fix a model $M$ such that $M \models \Gamma$ then we  deduce that $M \models \Delta$. By $\complete{\emptyset}{\Gamma}{\Delta}$ we obtain $\forall c_1. \, \in \Delta \to \exists l( l \in C_1 \wedge l \in \lit{\Gamma})$ since there are no pairs of clauses in $\DeltaVec$. Since $M \models \Gamma$ and $\Gamma \models \Delta$ then $M \models \Delta$.
 
 \subsection*{Case 2: $\exists C_1. (C_1, \emptyset) \in \DeltaVec$}
 By $\complete{\DeltaVec}{\Gamma}{\Delta}$ we obtain $\Gamma' \clmodres{\Gamma}{\{ C_1 \} } \emptyset$ and $C_1 \in \Delta$ . This derivation can then be used to apply the $\Conflict$ rule with $\mybar{\Gamma'}$ as the learned clause. 
 %
 \subsection*{Case 3: $\DeltaVec \neq \emptyset, \forall C_1 ((C_1, \emptyset) \notin \DeltaVec), \exists l,C_1 (C_1 , \{ l \}) \in \DeltaVec $}
-In this case we have derived a unit clause $\{ l \}$ in our set of clauses derived by unit resolution.  We construct a new set of pairs of clauses $\DeltaVec'$ using $\ref{lemma:complete1}$ such that $\complete{\DeltaVec'}{\Gamma, \unitdecgone{l}}{\Delta}$. 
+In this case we have derived a unit clause $\{ l \}$ in our set of clauses derived by unit resolution.  We construct a new set of pairs of clauses $\DeltaVec'$ using Lemma $\ref{lem:compunit}$ such that $\complete{\DeltaVec'}{\Gamma, \unitdecgone{l}}{\Delta}$. 
 %
 The induction hypothesis is instantiated with $\Delta$, $\Gamma, l \, \delta(\Gamma)$ and $\DeltaVec'$. The measure decreases since by $\complete{\DeltaVec}{\Gamma}{\Delta}$ we have assigned a new variable and the number of unassigned variables decreases: $ |\var{\Gamma, l \, \delta(\Gamma)}| = |\var{\Gamma}| + 1$ and $N - (|\var{\Gamma}| + 1) <  N - |\var{\Gamma}|$.   We then have two cases 
 %
