@@ -414,7 +414,7 @@ We fix an $l$ and show $\complete{\emptyset}{\Gamma, \unitdecg{l}}{\Delta}$.  Th
 
 We use the following lemma to construct a new clause pair along with the associated unit resolution proof from a clause an a valuation.
 
-\begin{mylemma}
+\begin{mylemma}\label{lem:compgen1}
 \begin{align*}
 \forall \Gamma, C_1. \exists C_2. C_2 = C_1 \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2 \vee \exists l\, (l \in C_1 \wedge l \in \lit{\Gamma})
 \end{align*}
@@ -429,10 +429,10 @@ We perform a case distinction on whether $l \in \lit(\Gamma)$ if it is then we h
 \end{comment}
 
 \end{description}
-\label{lemma:compgen}
+
 \end{mylemma}
-Using the previously proven lemma, in the following lemma we prove that it is possible to construct a new set of complete clause pairs from a valuation and a formula.
-\begin{mylemma}
+Using the previously proven Lemma \ref{lem:compgen1}, in the following lemma we prove that it is possible to construct a new set of complete clause pairs from a valuation and a formula.
+\begin{mylemma}\label{lem:compgen}
 \begin{align*}
 \forall \Delta,\Gamma. \, \exists \DeltaVec. \, \complete{\DeltaVec}{\Gamma}{\Delta}
 \end{align*}
@@ -444,7 +444,7 @@ We do a proof by induction on $\Delta$.
 \begin{description}
 
 \item[Case: $\Delta = \emptyset$] Then $\complete{\emptyset}{\Gamma}{\emptyset}$.
-\item[Case: $\Delta = C, \Delta'$] By the induction hypothesis with $\Delta'$ and $\Gamma$ we obtain a $\DeltaVec'$ such that $\complete{\DeltaVec'}{\Gamma}{\Delta}$. Then by lemma \ref{lemma:complete5} we have a two cases either there is a clause $C_2$ that can be derived from $C$ and $\Gamma$ using unit resolution and is equal to $C$ set minus $\Gamma$ or there is a literal in $C$ that is also in the literal set of $\Gamma$. In the case that   $\exists C_2. C_2 = C \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C \}} C_2$  holds by the induction hypothesis with $\Gamma$ and we obtain a $\DeltaVec''$ such that $\complete{\DeltaVec''}{\Gamma}{\Delta'}$ and $\complete{(C, C_2) \DeltaVec''}{\Gamma}{\Delta}$. Finally we are in the case that the case $C$ has been satisfied by a literal in $\Gamma$ i.e. $\exists l (l \in C \wedge l \in \lit{\Gamma})$ . In this case we have shown the right side of the disjunction.
+\item[Case: $\Delta = C, \Delta'$] By the induction hypothesis with $\Delta'$ and $\Gamma$ we obtain a $\DeltaVec'$ such that $\complete{\DeltaVec'}{\Gamma}{\Delta}$. Then by lemma \ref{lem:compgen1} we have a two cases either there is a clause $C_2$ that can be derived from $C$ and $\Gamma$ using unit resolution and is equal to $C$ set minus $\Gamma$ or there is a literal in $C$ that is also in the literal set of $\Gamma$. In the case that   $\exists C_2. C_2 = C \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C \}} C_2$  holds by the induction hypothesis with $\Gamma$ and we obtain a $\DeltaVec''$ such that $\complete{\DeltaVec''}{\Gamma}{\Delta'}$ and $\complete{(C, C_2) \DeltaVec''}{\Gamma}{\Delta}$. Finally we are in the case that the case $C$ has been satisfied by a literal in $\Gamma$ i.e. $\exists l (l \in C \wedge l \in \lit{\Gamma})$ . In this case we have shown the right side of the disjunction.
 \end{description}
 
 \end{proof}
@@ -538,10 +538,7 @@ We have a model $M$ such that $M \models \Gamma$ and $M \models \Delta$ and ther
 We fix an $n'$ such that $n' \leq \delta(\Gamma$ then we perform a case distinction on the size of $n'$.
 %
 \subsubsection*{Subcase 4.2.1: $  n' = \delta(\Gamma) + 1 \, \wedge  \exists \Delta' ( (\Gamma, l \, \delta(\Gamma) + 1) _{\leq n'}  \vdash_{\Delta'} \Delta)$}
-The induction hypothesis is instantiated a second time with $\Delta, \Delta'$ and $\Gamma, \mybar{l} \, \delta(\Gamma) + 1$. We construct a new $\DeltaVec''$ such that $\complete{\DeltaVec''}{\Gamma}{\Delta'}$ this is built from the learned clauses. Then we merge $\DeltaVec'$ $\DeltaVec''$ to create a new set $\Delta'''$ of paired clauses such that $\complete{\Delta'''}{\Gamma}{\Delta \cup \Delta'}$. Finally we can 
- This is done in two steps. Firstly we construct a new set of derivations using Lemma \ref{lemma:compgen} and then we merge that set of derivations with our existing one using Lemma \ref{lemma:compunion}.
-
- Then $\Delta_{\delta(\Gamma) + 1}$ is constructed in the same fashion  as before but using $\Gamma, \mybar{l} \, \delta(\Gamma) + 1$  instead of $\Gamma, l \, \delta(\Gamma ) + 1$. This set of derivations is complete since all clauses at each level are derived from $\Gamma$, $\Delta$ and $\Delta'$ and at each level we have resolved the clauses with the corresponding literals for that level in $\Gamma$ and removed any clauses that have literals in common with $\Gamma$ at that level.  This then leads to two further cases. Either we have a model $M$ such that $M \models \Gamma, \mybar{l} \, \delta(\Gamma) + 1$ and $M \models \Delta, \Delta'$, in which case $\compatible{\Gamma}{\Delta}$ holds or we have a $n'' \leq \delta(\Gamma) + 1$ and $(\Gamma, \mybar{l} \, \delta(\Gamma) + 1)_{\leq n''} \vdash_{\Delta''} \Delta, \Delta'$ in which case we apply the $\Split$ rule.
+The induction hypothesis is instantiated a second time with $\Delta, \Delta'$ and $\Gamma, \mybar{l} \, \delta(\Gamma) + 1$. We construct a new $\DeltaVec''$ such that $\complete{\DeltaVec''}{\Gamma}{\Delta'}$ this is built from the learned clauses. Then we merge $\DeltaVec'$ $\DeltaVec''$ to create a new set $\DeltaVec' \cup \DeltaVec''$ of paired clauses such that $\complete{\DeltaVec' \cup \DeltaVec''}{\Gamma}{\Delta \cup \Delta'}$. This is done in two steps. Firstly we construct a new set of derivations $\DeltaVec''$ using Lemma \ref{lem:compgen} and then we merge that set of derivations with our existing one using Lemma \ref{lem:compunion}. This composed set of clause pairs is then used  along with Lemma \ref{lem:compsplit} to construct a new set of clause pairs $\DeltaVec''$ that is complete with respect to the valuation $\Gamma, \mybar{l} \, \delta(\Gamma) + 1$ .  This induction hypothesis then leads to two further cases: Either we have a model $M$ such that $M \models \Gamma, \mybar{l} \, \delta(\Gamma) + 1$ and $M \models \Delta, \Delta'$, in which case $\compatible{\Gamma}{\Delta}$ holds or we have a $n'' \leq \delta(\Gamma) + 1$ and $(\Gamma, \mybar{l} \, \delta(\Gamma) + 1)_{\leq n''} \vdash_{\Delta''} \Delta, \Delta'$ in which case we apply the $\Split$ rule.
 \begin{comment}
 \textbf{We need to know that all of the learned clauses in $\Delta'$ are derivable from $\Gamma$ and $\Delta$ otherwise they are useless as the $\Conflict$ could not be applied to them. We know that they can be derived from some $\Gamma$ and $\Delta$ but how do we know that they are derivable from the current $\Gamma$ since it could be the case that backtracking has occured and there is now a smaller $\Gamma$.}
 \end{comment}
@@ -557,7 +554,7 @@ We prove the following corollary inorder to perform some preprocessing on the fo
 \forall \Delta. \exists M( M \models \Delta) \vee \exists \Delta'(\emptyset \vdash_{\Delta'} \Delta)
 \end{align*}
 \begin{proof}
-This is proven by using \ref{lem:compgen} to generate a complete set of clause pairs and then applying the completeness theorem for our modified DPLL proof system.
+This is proven by using Lemma \ref{lem:compgen} to generate a complete set of clause pairs and then applying the completeness theorem for our modified DPLL proof system.
 \end{proof}
 \end{mycorollary}
 

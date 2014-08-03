@@ -223,19 +223,14 @@ We shall now describe the execution of the Maude LTL model checker in Real Time 
 The Maude LTL model checker is then called using the following command:
 
 \begin{center}
-\texttt{(mc initialstate2 |=t [] nomaoverlap1(train1,train2) in time <= 30 .)}
+\texttt{(mc initialstate2 |=t [] nomaoverlap1(train1,train2) in time <= 100 .)}
 \end{center}
-The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 30. This results in the following output from Real Time Maude which indicates that the property was succesfully verified in 3 minutes and 22 seconds taking the system approximately 140 million rewrites.
+The command states that we are applying timed model checking to check that it is globally true that the movement authorities of the trains do not over lap at all moments in time less than or equal to 100. This results in the following output from Real Time Maude which indicates that the property was succesfully verified in 1 minutes and 32 seconds taking the system approximately 76 million rewrites.
 \begin{lstlisting}[caption = No overlapping movement authorities model checking result]
-rewrites: 47841127 in 77724ms cpu 
-(77725ms real) (615525 rewrites/second)
-
-Model check initialstate2 |=t[]nomaoverlap1(train1,train2)
-in MODEL-CHECK-ERTMS8
-in time <= 30 with mode deterministic time increase
-
-Result Bool :
-  true
+rewrites: 76099490 in 91776ms cpu (91776ms real) (829187 rewrites/second)
+Model check initialstate2 |=t[]nomaoverlap1(train1,train2)in MODEL-CHECK-ERTMS8
+    in time <= 100 with mode deterministic time increase
+Result Bool : true
 \end{lstlisting}
 
 Unfortunately the Maude LTL model checker can not detect the congruence between difference configurations of control system. Therefore the state space is infinite and it is impossible to do untimed model checking on the above model checking problem for the pentagon example. It is however possible to do timed model checking within a reasonable time limit that allows for all behaviours of the system to be verified. The junction example does not suffer from this problem as the state space is finite and in addition, it has additional mechanisms to remove non-determinism from the model which dramatically cuts down on the state space.
