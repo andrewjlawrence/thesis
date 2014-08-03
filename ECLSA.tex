@@ -559,23 +559,6 @@ This is proven by using Lemma \ref{lem:compgen} to generate a complete set of cl
 \end{proof}
 \end{mycorollary}
 
-\section{Execution of Prototype Clause Learning Algorithm}
-We have extracted a prototype clause learning algorithm from the above proof of completeness using the Minlog system. This algorithm has been run some small example problems and pigeon hole formulae inorder to test its performance and gain some insight into its behaviour.
-
-
-
-
-\begin{center}\texttt{(term-to-string (nt (make-term-in-app-form program (pt "(CF ((CC (Pos (Variable 11)):)::(CC (Pos (Variable 12)):):)) "))))}
-\end{center}
-
-\begin{center}
-\texttt{"(InL (lit=>boole)@@(cla=>lit) for@@algmodDPLL)(([l0][if (l0=Pos(Variable 12)) True (l0=Pos(Variable 11))])@([c0][if (c0=CC(Pos(Variable 12)):) (Pos(Variable 12)) [if (c0=CC(Pos(Variable 11)):) (Pos(Variable 11)) (Pos(Variabl\
-e 0))]]))"}                                                                      
-\end{center}
-
-
-
-
 
 
 

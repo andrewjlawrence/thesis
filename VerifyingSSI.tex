@@ -1,5 +1,70 @@
-\chapter{The Application and Comparison of X-SAT on Benchmark Problems}{The Application and Comparison of X-SAT on Benchmark Problems} \label{chapter:dpllapp}
+\chapter{The Application and Comparison of Extracted Solvers on Benchmark Problems}{The Application and Comparison of X-SAT on Benchmark Problems} \label{chapter:dpllapp}
+In the following we examine the rule time behaviour of the extracted DPLL solver X-SAT and our prototype clause learning solver. We shall describe how both algorithms behave when run using the term-rewriting 
 
+
+\section{Behaviour of X-SAT}
+The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}.
+
+The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm to a pigeon hole formula PHP(2,1), which represents the program of putting two pigeons into one hole, in CNF. The normalise term command \texttt{nt} command is then used to execute the algorithm via minlogs built in term rewriting system.
+
+\begin{center}
+\texttt{(term-to-string (nt (mk-term-in-app-form program (pt "                                                                                                 (CC ((Pos (Variable11)):))::                                                    
+(CC ((Pos (Variable21)):))::                                                    
+(CC ((Neg (Variable11))::(Neg (Variable21)):)):                                                                                                                 
+") )))}
+\end{center}
+
+The formula is unsatisfiable and our extracted solver produces a DPLL derivation which proves that the formula is unsatisfiable. The result 
+\begin{center}
+\texttt{"CsuccessZero(CdpllTwo(Pos(Variable 11))(CdpllTwo(Pos(Variable 21))(CdpllThree(CC(Neg(Variable 11)::(Neg(Variable 21)):))(Pos(Variable 11))(CdpllThree(CC(Neg(Variable 21)):)(Pos(Variable 21))CdpllZero))))"}
+\end{center}
+
+\begin{center}
+\texttt{(term-to-string (nt (mk-term-in-app-form program (pt "                          
+(CC ((Pos (Variable11))::(Pos (Variable12)):))::                                
+(CC ((Pos (Variable21))::(Pos (Variable22)):))::                                
+(CC ((Neg (Variable11))::(Neg (Variable21)):))::                                
+(CC ((Neg (Variable12))::(Neg (Variable22)):)):                                 
+") )))}
+\end{center}
+
+The result of running this satisfiable pigeon hole formula with our SAT algorithm is a function 
+
+\begin{center}
+\texttt{"CsuccessOne([l0][if (l0=Pos(Variable 22)) True [if (l0=Neg(Variable 21)) True [if (l0=Pos(Variable 11)) True (l0=Neg(Variable 12))]]])"}
+\end{center}
+
+
+\section{Behaviour of Prototype Clause Learning Algorithm}
+In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. We can apply the solver to a small example formula containing two unit clauses as follows:
+
+\begin{center}\texttt{(term-to-string (nt (make-term-in-app-form program (pt "(CF ((CC (Pos (Variable 11)):)::(CC (Pos (Variable 12)):):)) "))))}
+\end{center}
+
+The solver produces a model of the formula paired with a function which indicates which literal satisfies which individual clause:
+
+\begin{center}
+\texttt{"(InL (lit=>boole)@@(cla=>lit) for@@algmodDPLL)(([l0][if (l0=Pos(Variable 12)) True (l0=Pos(Variable 11))])@([c0][if (c0=CC(Pos(Variable 12)):) (Pos(Variable 12)) [if (c0=CC(Pos(Variable 11)):) (Pos(Variable 11)) (Pos(Variable 0))]]))"}                                                                      
+\end{center}
+
+We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(2,1) using the following command:
+
+\begin{center{
+\texttt{
+}
+\end{center}
+
+The output from running this command is a proof 
+
+\begin{lstlisting}
+
+
+\end{lstlisting}
+
+
+
+
+\section{Application of X-SAT to Benchmark problems}
 %
 %%%We have performed several comparisons between different implementations of our solver. 
 %% We compared the extracted  $\forall$ solver and the one optimised with $\forallnc$ quantifiers 
@@ -143,3 +208,9 @@ While we cannot expect to compete with an industrial tool on speed and functiona
   PHP(6,6) & 84.88s   &  0.54s   &  0.53s  &  0.012s  &  0.012s \\ \hline
 \end{tabular}
 \end{comment}
+
+
+\section{Application of Prototype Clause Learning Algorithm to Benchmark Problems}
+
+
+
