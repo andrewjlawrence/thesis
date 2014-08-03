@@ -14,10 +14,15 @@ The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm t
 ") )))}
 \end{center}
 
-The formula is unsatisfiable and our extracted solver produces a DPLL derivation which proves that the formula is unsatisfiable. The result 
+The formula is unsatisfiable and our extracted solver produces a DPLL derivation which proves that the formula is unsatisfiable. The resulting output is as follows:
+
 \begin{center}
 \texttt{"CsuccessZero(CdpllTwo(Pos(Variable 11))(CdpllTwo(Pos(Variable 21))(CdpllThree(CC(Neg(Variable 11)::(Neg(Variable 21)):))(Pos(Variable 11))(CdpllThree(CC(Neg(Variable 21)):)(Pos(Variable 21))CdpllZero))))"}
 \end{center}
+
+The above contains two data structures extracted from inductive definitions. The first is the success data structure which is the return type of the SAT function and in this case the \texttt{CsuccessZero} constructor has been used to return a DPLL derivation as a result. There other extracted data structure comes from the inductive definition of the dpll proof system, whose 5 closure axioms have been extracted into corresponding constructors.
+
+
 
 \begin{center}
 \texttt{(term-to-string (nt (mk-term-in-app-form program (pt "                          
@@ -28,7 +33,7 @@ The formula is unsatisfiable and our extracted solver produces a DPLL derivation
 ") )))}
 \end{center}
 
-The result of running this satisfiable pigeon hole formula with our SAT algorithm is a function 
+The result of running this satisfiable pigeon hole formula with our SAT algorithm is a function which forms a model of the formula.
 
 \begin{center}
 \texttt{"CsuccessOne([l0][if (l0=Pos(Variable 22)) True [if (l0=Neg(Variable 21)) True [if (l0=Pos(Variable 11)) True (l0=Neg(Variable 12))]]])"}
@@ -36,7 +41,7 @@ The result of running this satisfiable pigeon hole formula with our SAT algorith
 
 
 \section{Behaviour of Prototype Clause Learning Algorithm}
-In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. We can apply the solver to a small example formula containing two unit clauses as follows:
+In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. This prototype has had $\forallnc$ quanitifiers inserted to reduce the amount of redundant computational content and the overal size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
 
 \begin{center}\texttt{(term-to-string (nt (make-term-in-app-form program (pt "(CF ((CC (Pos (Variable 11)):)::(CC (Pos (Variable 12)):):)) "))))}
 \end{center}
@@ -49,7 +54,7 @@ The solver produces a model of the formula paired with a function which indicate
 
 We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(2,1) using the following command:
 
-\begin{center{
+\begin{center}
 \texttt{
 }
 \end{center}
@@ -57,8 +62,44 @@ We have also applied to solver to several unsatisfiable examples. The prototype 
 The output from running this command is a proof 
 
 \begin{lstlisting}
-
-
+(InR for@@algmodDPLL (lit=>boole)@@(cla=>lit))
+(CF(CC(Nil lit)::(CC(Neg(Variable 32)):):)@
+CmodDPLLTwo(Pos(Variable 32))
+(CmodDPLLOne(Neg(Variable 12))
+(CunitResThree(Neg(Variable 32))(CunitResTwo(Pos(Variable 32))1)
+(CunitResZero(CC(Neg(Variable 32)::(Neg(Variable 12)):))))
+(CmodDPLLOne(Pos(Variable 11))
+(CunitResThree(Pos(Variable 12))(CunitResOne(Neg(Variable 12))1)
+(CunitResZero(CC(Pos(Variable 11)::(Pos(Variable 12)):))))
+(CmodDPLLOne(Neg(Variable 21))
+(CunitResThree(Neg(Variable 11))(CunitResOne(Pos(Variable 11))1)
+(CunitResZero(CC(Neg(Variable 21)::(Neg(Variable 11)):))))
+(CmodDPLLOne(Pos(Variable 22))
+(CunitResThree(Pos(Variable 21))(CunitResOne(Neg(Variable 21))1)
+(CunitResZero(CC(Pos(Variable 21)::(Pos(Variable 22)):))))
+(CmodDPLLZero
+(CunitResThree(Neg(Variable 22))(CunitResOne(Pos(Variable 22))1)
+(CunitResThree(Neg(Variable 32))(CunitResTwo(Pos(Variable 32))1)
+(CunitResZero(CC(Neg(Variable 32)::(Neg(Variable 22)):))))))))))
+(CmodDPLLOne(Pos(Variable 31))
+(CunitResThree(Pos(Variable 32))(CunitResTwo(Neg(Variable 32))1)
+(CunitResZero(CC(Pos(Variable 31)::(Pos(Variable 32)):))))
+(CmodDPLLOne(Neg(Variable 11))
+(CunitResThree(Neg(Variable 31))(CunitResOne(Pos(Variable 31))1)
+(CunitResZero(CC(Neg(Variable 31)::(Neg(Variable 11)):))))
+(CmodDPLLOne(Pos(Variable 12))
+(CunitResThree(Pos(Variable 11))(CunitResOne(Neg(Variable 11))1)
+(CunitResZero(CC(Pos(Variable 11)::(Pos(Variable 12)):))))
+(CmodDPLLOne(Neg(Variable 21))
+(CunitResThree(Neg(Variable 31))(CunitResOne(Pos(Variable 31))1)
+(CunitResZero(CC(Neg(Variable 31)::(Neg(Variable 21)):))))
+(CmodDPLLOne(Pos(Variable 22))
+(CunitResThree(Pos(Variable 21))(CunitResOne(Neg(Variable 21))1)
+(CunitResZero(CC(Pos(Variable 21)::(Pos(Variable 22)):))))
+(CmodDPLLZero
+(CunitResThree(Neg(Variable 22))(CunitResOne(Pos(Variable 22))1)
+(CunitResThree(Neg(Variable 12))(CunitResOne(Pos(Variable 12))1)
+(CunitResZero(CC(Neg(Variable 22)::(Neg(Variable 12)):))))))))))))
 \end{lstlisting}
 
 
