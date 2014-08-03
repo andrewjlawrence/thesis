@@ -1,9 +1,19 @@
 \chapter{The Application and Comparison of Extracted Solvers on Benchmark Problems}{The Application and Comparison of X-SAT on Benchmark Problems} \label{chapter:dpllapp}
 In the following we examine the rule time behaviour of the extracted DPLL solver X-SAT and our prototype clause learning solver. We shall describe how both algorithms behave when run using the term-rewriting 
 
+One of the benchmarks used is the pigeon hole formulae \cite{}. 
+\begin{mydef}[Pigeon Hole Formulae]
+
+
+\end{mydef}
+
+
 
 \section{Behaviour of X-SAT}
-The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}.
+The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}. 
+
+
+
 
 The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm to a pigeon hole formula PHP(2,1), which represents the program of putting two pigeons into one hole, in CNF. The normalise term command \texttt{nt} command is then used to execute the algorithm via minlogs built in term rewriting system.
 
@@ -52,7 +62,7 @@ The solver produces a model of the formula paired with a function which indicate
 \texttt{"(InL (lit=>boole)@@(cla=>lit) for@@algmodDPLL)(([l0][if (l0=Pos(Variable 12)) True (l0=Pos(Variable 11))])@([c0][if (c0=CC(Pos(Variable 12)):) (Pos(Variable 12)) [if (c0=CC(Pos(Variable 11)):) (Pos(Variable 11)) (Pos(Variable 0))]]))"}                                                                      
 \end{center}
 
-We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(2,1) using the following command:
+We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
 
 \begin{center}
 \texttt{
@@ -252,6 +262,17 @@ While we cannot expect to compete with an industrial tool on speed and functiona
 
 
 \section{Application of Prototype Clause Learning Algorithm to Benchmark Problems}
+We have also applied the prototype clause learning
 
+
+
+\begin{center}
+    \begin{tabular}{ | l || l | l || l | l | l | }
+    \hline
+    Solver & $PHP(2,1)$ & $PHP(3,2)$ & $PHP(4,3)$ & $PHP(5,4)$ & $PHP(6,5)$ \\ \hline
+    $\forall$ & $< 1$ Sec & 1.17 &   33.62   & 13:54 & 5:35:41\\ \hline
+    $\forallnc$ & $< 1$ Sec & $< 1$ Sec &    11.61  & 2:41   & 37:25.27 \\ \hline
+    \end{tabular}
+\end{center}
 
 
