@@ -4,15 +4,18 @@ In the following we examine the rule time behaviour of the extracted DPLL solver
 One of the benchmarks used is the pigeon hole formulae \cite{}. 
 \begin{mydef}[Pigeon Hole Formulae]
 
+\begin{align*}
+PHP(n,m) := &\{l_{i,1} , \ldots , l_{i,m} | 1 \leq i \leq n  \}  \\
+  & \cup \{ \neg l_{i,k} , \neg l_{j,k} | 1 \leq i < j \leq n, 1 \leq k \leq m \} 
+\end{align*}
 
 \end{mydef}
 
 
+Intuitively, e.g. $PHP(n,n-1)$ states "it is not possible to put $n$ pigeons into $n-1$ holes and only have one pigeon in each hole"
 
 \section{Behaviour of X-SAT}
 The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}. 
-
-
 
 
 The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm to a pigeon hole formula PHP(2,1), which represents the program of putting two pigeons into one hole, in CNF. The normalise term command \texttt{nt} command is then used to execute the algorithm via minlogs built in term rewriting system.

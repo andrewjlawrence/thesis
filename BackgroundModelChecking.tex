@@ -165,7 +165,7 @@ from left to right until no further equivalence is applicable.
 \section{Model Checking Propositional Safety Properties Using a SAT Solver}
 
 
-In the following we shall introduce two general types of model checking  which are applied to check propositional safety properties over discrete systems using a SAT solver \cite{MS00,EC01}. The first is inductive verification, which is split into two steps consisting of a base case and a step case.   The second that we shall discuss is bounded model checking which attempts to verify a property of the system with an exhaustive search up to a particular depth. There are other types of model checking including temporal induction which has the benefits of both inductive verification and bounded model checking however suffers in terms of speed and the size of the resulting problem. All of these problems are formulated in propositional logic and then translated into CNF using the Tseitin Translation.
+In the following we shall introduce two general types of model checking  which are applied to check propositional safety properties over discrete systems using a SAT solver \cite{MS00,EC01}. The first is inductive verification, which is split into two steps consisting of a base case and a step case.   The second that we shall discuss is bounded model checking which attempts to verify a property of the system with an exhaustive search up to a particular depth. There are other types of model checking including temporal induction which has the benefits of both inductive verification and bounded model checking however suffers in terms of speed and the size of the resulting problem. All of these problems are formulated in propositional logic and then translated into CNF using the Tseitin Translation \cite{GT83}.
 
 
 
@@ -175,10 +175,10 @@ Inductive verification attempts to use induction over the transition relation in
 \medskip
 \begin{mydef}[Inductive Verification]
 Given a transition system $M$ and a safety property $\phi$ we define inductive verification as follows:
-
-$$indbase_M(\phi)  := \forall s_0. S_0(s_0)  \to s_0 \models \phi $$
-$$indstep_M(\phi) : \forall s,s' \in S \wedge R(s, s') \to s \models \phi  \to s' \models \phi$$
-
+\begin{align*}
+indbase_M(\phi)  &:= \forall s_0. S_0(s_0)  \to s_0 \models \phi \\
+indstep_M(\phi) &:= \forall s,s' \in S \wedge R(s, s') \to s \models \phi  \to s' \models \phi
+\end{align*}
 \end{mydef}
 \medskip
 \subsection*{Bounded Model Checking}
