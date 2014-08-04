@@ -65,14 +65,14 @@ The solver produces a model of the formula paired with a function which indicate
 \texttt{"(InL (lit=>boole)@@(cla=>lit) for@@algmodDPLL)(([l0][if (l0=Pos(Variable 12)) True (l0=Pos(Variable 11))])@([c0][if (c0=CC(Pos(Variable 12)):) (Pos(Variable 12)) [if (c0=CC(Pos(Variable 11)):) (Pos(Variable 11)) (Pos(Variable 0))]]))"}                                                                      
 \end{center}
 
-We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
+We modelled the completeness statement of this solver using Minlogs built in inductively defined disjunction \texttt{ori}. The constructors \texttt{InL} and \texttt{InR} capture the extracted computation content of the left and right hand of the disjunction respectively. We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
 
 \begin{center}
-\texttt{
-}
+\texttt{(pp (nt (mk-term-in-app-form program (pt "(CF ((CC ((Pos (Variable11))::(Pos (Variable12)):))::(CC ((Pos (Variable21))::(Pos (Variable22)):))::(CC ((Pos (Variable31))::(Pos (Variable32)):)):: (CC ((Neg (Variable21))::(Neg (Variable11)):))::(CC ((Neg (Variable31))::(Neg (Variable11)):)):: (CC ((Neg (Variable31))::(Neg (Variable21)):))::(CC ((Neg (Variable22))::(Neg (Variable12)):)):: (CC ((Neg (Variable32))::(Neg (Variable12)):))::(CC ((Neg (Variable32))::(Neg (Variable22)):)):) )                                                                                                      
+") )))}
 \end{center}
 
-The output from running this command is a proof 
+This resultsi n the following output:
 
 \begin{lstlisting}
 (InR for@@algmodDPLL (lit=>boole)@@(cla=>lit))
@@ -215,7 +215,7 @@ faster on the hardest pigeon hole formulae. This is because the clause learning 
 \end{center}
 \end{table}
 
-%%We have also applied our optimised solver to the verification of a real world railway control system. The verification problem was formulated following \cite{MS00} using a tool presented in \cite{KK08}. This is a non trivial example of an application of our SAT solver.
+%%We have also applied our optimised solver to the verification of a real world railway control system. The verification problem was formulated following \cite{MS00} using an approach presented in \cite{KK08,AL14a}. This is a non trivial example of an application of our SAT solver.
 
 %%$$SC1 := (\neg D \vee R) \vee UEC $$
 %% (Andy) I need to look in the safety condition book and come up with a good description of this condition.
