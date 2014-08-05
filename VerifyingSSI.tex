@@ -1,7 +1,7 @@
 \chapter{The Application and Comparison of Extracted Solvers on Benchmark Problems}{The Application and Comparison of X-SAT on Benchmark Problems} \label{chapter:dpllapp}
-In the following we examine the rule time behaviour of the extracted DPLL solver X-SAT and our prototype clause learning solver. We shall describe how both algorithms behave when run using the term-rewriting 
+In the following we examine the rule time behaviour of the extracted DPLL solver X-SAT and our prototype clause learning solver. We shall describe how both algorithms behave when run using the built-in term-rewriting of the Minlog System and how X-SAT runs in Haskell on pigeon hole formulae and to verify a real world solid state railway interlocking program.
 
-One of the benchmarks used is the pigeon hole formulae \cite{}. 
+One of the benchmarks used is the pigeon hole formulae \cite{SC79}. 
 \begin{mydef}[Pigeon Hole Formulae]
 
 \begin{align*}
@@ -68,8 +68,9 @@ The solver produces a model of the formula paired with a function which indicate
 We modelled the completeness statement of this solver using Minlogs built in inductively defined disjunction \texttt{ori}. The constructors \texttt{InL} and \texttt{InR} capture the extracted computation content of the left and right hand of the disjunction respectively. We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
 
 \begin{center}
-\texttt{(pp (nt (mk-term-in-app-form program (pt "(CF ((CC ((Pos (Variable11))::(Pos (Variable12)):))::(CC ((Pos (Variable21))::(Pos (Variable22)):))::(CC ((Pos (Variable31))::(Pos (Variable32)):)):: (CC ((Neg (Variable21))::(Neg (Variable11)):))::(CC ((Neg (Variable31))::(Neg (Variable11)):)):: (CC ((Neg (Variable31))::(Neg (Variable21)):))::(CC ((Neg (Variable22))::(Neg (Variable12)):)):: (CC ((Neg (Variable32))::(Neg (Variable12)):))::(CC ((Neg (Variable32))::(Neg (Variable22)):)):) )                                                                                                      
-") )))}
+\texttt{
+(pp (nt (mk-term-in-app-form program (pt "(CF (                                                                
+(CC ((Pos (Variable11))::(Pos (Variable12)):))::(CC ((Pos (Variable21))::(Pos (Variable22)):))::(CC ((Pos (Variable31))::(Pos (Variable32)):))::(CC ((Neg (Variable11))::(Neg (Variable21)):))::(CC ((Neg (Variable11))::(Neg (Variable31)):))::(CC ((Neg (Variable21))::(Neg (Variable31)):))::(CC ((Neg (Variable12))::(Neg (Variable22)):))::(CC ((Neg (Variable12))::(Neg (Variable32)):))::(CC ((Neg (Variable22))::(Neg (Variable32)):)):) )") )))}
 \end{center}
 
 This results in the following output:
@@ -79,39 +80,39 @@ This results in the following output:
 CmodDPLLTwo(Pos(Variable 32))
 (CmodDPLLOne(Neg(Variable 12))
 (CunitResThree(Neg(Variable 32))(CunitResTwo(Pos(Variable 32))1)
-(CunitResZero(CC(Neg(Variable 32)::(Neg(Variable 12)):))))
+(CunitResZero(CC(Neg(Variable 12)::(Neg(Variable 32)):))))
 (CmodDPLLOne(Pos(Variable 11))
 (CunitResThree(Pos(Variable 12))(CunitResOne(Neg(Variable 12))1)
 (CunitResZero(CC(Pos(Variable 11)::(Pos(Variable 12)):))))
 (CmodDPLLOne(Neg(Variable 21))
 (CunitResThree(Neg(Variable 11))(CunitResOne(Pos(Variable 11))1)
-(CunitResZero(CC(Neg(Variable 21)::(Neg(Variable 11)):))))
+(CunitResZero(CC(Neg(Variable 11)::(Neg(Variable 21)):))))
 (CmodDPLLOne(Pos(Variable 22))
 (CunitResThree(Pos(Variable 21))(CunitResOne(Neg(Variable 21))1)
 (CunitResZero(CC(Pos(Variable 21)::(Pos(Variable 22)):))))
 (CmodDPLLZero
 (CunitResThree(Neg(Variable 22))(CunitResOne(Pos(Variable 22))1)
 (CunitResThree(Neg(Variable 32))(CunitResTwo(Pos(Variable 32))1)
-(CunitResZero(CC(Neg(Variable 32)::(Neg(Variable 22)):))))))))))
+(CunitResZero(CC(Neg(Variable 22)::(Neg(Variable 32)):))))))))))
 (CmodDPLLOne(Pos(Variable 31))
 (CunitResThree(Pos(Variable 32))(CunitResTwo(Neg(Variable 32))1)
 (CunitResZero(CC(Pos(Variable 31)::(Pos(Variable 32)):))))
 (CmodDPLLOne(Neg(Variable 11))
 (CunitResThree(Neg(Variable 31))(CunitResOne(Pos(Variable 31))1)
-(CunitResZero(CC(Neg(Variable 31)::(Neg(Variable 11)):))))
+(CunitResZero(CC(Neg(Variable 11)::(Neg(Variable 31)):))))
 (CmodDPLLOne(Pos(Variable 12))
 (CunitResThree(Pos(Variable 11))(CunitResOne(Neg(Variable 11))1)
 (CunitResZero(CC(Pos(Variable 11)::(Pos(Variable 12)):))))
 (CmodDPLLOne(Neg(Variable 21))
 (CunitResThree(Neg(Variable 31))(CunitResOne(Pos(Variable 31))1)
-(CunitResZero(CC(Neg(Variable 31)::(Neg(Variable 21)):))))
+(CunitResZero(CC(Neg(Variable 21)::(Neg(Variable 31)):))))
 (CmodDPLLOne(Pos(Variable 22))
 (CunitResThree(Pos(Variable 21))(CunitResOne(Neg(Variable 21))1)
 (CunitResZero(CC(Pos(Variable 21)::(Pos(Variable 22)):))))
 (CmodDPLLZero
 (CunitResThree(Neg(Variable 22))(CunitResOne(Pos(Variable 22))1)
 (CunitResThree(Neg(Variable 12))(CunitResOne(Pos(Variable 12))1)
-(CunitResZero(CC(Neg(Variable 22)::(Neg(Variable 12)):))))))))))))
+(CunitResZero(CC(Neg(Variable 12)::(Neg(Variable 22)):))))))))))))
 \end{lstlisting}
 
 
