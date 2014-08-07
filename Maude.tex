@@ -2,7 +2,7 @@
 
 \thesischapter{The Modelling of the European Rail Traffic Management System Using Real Time Maude}{The Modelling of ERTMS Using Real Time Maude}\label{chap:modelertms}
 
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe how they can be used model the ERTMS system (See chapter \ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describe how each of the 3 subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in chapter \ref{chap:hybrid}. Each of these individual components are modelled using object oriented specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects from these classses behaviour. The  built-in message construct of the Real Time Maude system are used to define communication between the subsystems. 
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe how they can be used model the ERTMS system (See chapter \ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describe how each of the 3 subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in chapter \ref{chap:hybrid}. Each of these individual components are modelled using object oriented specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects from these classes behaviour. The  built-in message construct of the Real Time Maude system are used to define communication between the subsystems. 
 
 \subsection*{Related Work}
 The Maude System has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. A distributed sensor network employing the OGDC algorithm has been modelled and verified using Real Time Maude \cite{PO07}. The modelling of the progression of time over the sensor network has inspired the distribution of in our ERTMS model. The Real Time Maude system can also be used for simulation and analysis of systems as seen in the work on the CASH Scheduling Algorithm \cite{PO06}. 
@@ -12,9 +12,9 @@ On the front of hybrid automata, ETCS has been verified in the form of Hybrid Au
 
 There have been several attempts to model and verify parts of the ERTMS system. The scale of the system and differences in implementations from one country to another both make its formalisation challenging. A subset of the systems requirements specification of ERTMS in UML consisting of high level discrete modes and transitions was captured, formalised and verified using the SMV model checker \cite{MG14}. A variety of properties were checked including safety and liveness which were formalised using modes of the system. One safety condition  "the ETCS on-board never leaves the TRIP mode (TR) before the driver has acknowledged the trip and the train has stopped"\footnote{a train enters the TRIP mode after it has over run its stopping point.}, was formalised as an LTL formula with a boolean variable to represent that the train has stopped, it was then successfully verified using SMV. Our work attempts to capture the more concrete behaviour of the overall system including the physical behaviour of trains such as their speed and that of the highly safety critical interface between ERTMS and the interlocking. 
 
-There has been a large amount of work on the modelling and verification of ETCS using differential dynamic logic \cite{AP08} in the Keymaera tool \cite{AP08b}. The RBC handover where a train moves from the area governed by one RBC into another has been modelled in \cite{YL11}. The properties proven in this study include non-derailment and non collision of trains which follows from correct handover and new movement authority generation. ETCS \cite{AP09} itself has been modelled as a dynamical system with external disturbances and verified for safety in terms of collision avoidence, liveness, controlability and reactivity.
+There has been a large amount of work on the modelling and verification of ETCS using differential dynamic logic \cite{AP08} in the Keymaera tool \cite{AP08b}. The RBC handover where a train moves from the area governed by one RBC into another has been modelled in \cite{YL11}. The properties proven in this study include non-derailment and non collision of trains which follows from correct handover and new movement authority generation. ETCS \cite{AP09} itself has been modelled as a dynamical system with external disturbances and verified for safety in terms of collision avoidance, liveness, controllability and reactivity.
 
-There are also several model checkers specifically for the verification of hybrid systems, including HyTech \cite{AR96} and PHAVer \cite{GF05}, which perform an exhaustive search of the state space to check that a given property holds. In constrast to these we concentrate on a modelling approach that results in a specification that is executable and allows for the verification of performance and safety properties.
+There are also several model checkers specifically for the verification of hybrid systems, including HyTech \cite{AR96} and PHAVer \cite{GF05}, which perform an exhaustive search of the state space to check that a given property holds. In contrast to these we concentrate on a modelling approach that results in a specification that is executable and allows for the verification of performance and safety properties.
 
 \section{Maude}
 In the following section we shall describe the term rewriting system Maude. It is a multi-purpose tool containing support for executable-specification, simulation and verification of systems and software. We make use of all 3 of these capabilities and it is this wide range which draws us towards its use. In order to fully understand its use in the specification of a real time system we first present a formal and informal definition of a Maude specification followed by an example Maude specification to give insight into theses definitions.
@@ -153,7 +153,7 @@ eq R:Time ge R’:Time = R’:Time le R:Time .
 eq R:Time gt R’:Time = R’:Time lt R:Time .
 endfm
 \end{lstlisting}
-The  LTIME definition of linear time addtionally allows for the computation of a maximum and minimum of two times.
+The  LTIME definition of linear time additionally allows for the computation of a maximum and minimum of two times.
 \begin{lstlisting}[caption = "The LTIME specification in Real Time Maude"]
 fmod LTIME is
 including TIME .
@@ -297,7 +297,7 @@ Result ClockedSystem :
      < myCounter : Counter | count : 2 >} in time 2
 \end{lstlisting}
 
-The Maude system rewrites the initial state of the system into the resulting state however that does not mean that this is the only reachable state. This set has some non-determinism in that we do not force the messages to be read immediately and the rewriting equations could be applied in any order. There is a reachable state in time 2 in which both of the messages have not been read and following this either of them could be read in any order resulting in a possibly undesireable state. This also means that there are several states that are reachable depending on some non-deterministic choice causing state space explosion.
+The Maude system rewrites the initial state of the system into the resulting state however that does not mean that this is the only reachable state. This set has some non-determinism in that we do not force the messages to be read immediately and the rewriting equations could be applied in any order. There is a reachable state in time 2 in which both of the messages have not been read and following this either of them could be read in any order resulting in a possibly undesirable state. This also means that there are several states that are reachable depending on some non-deterministic choice causing state space explosion.
 
 The following are some states reachable in time 2.
 
@@ -344,7 +344,7 @@ rl [timetrans] : {OCREST} => {delta(OCREST)} in time 1 .
 rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
 \end{lstlisting}
 
-The operation \texttt{nondelta} is frozen meaning that the configuration contained within will not be evaluated by the Maude until the $\mathrm{delta}$ operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the delta operation over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own seperately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{PO07} where a delta operation is used to distribute time over a distributed sensor network. The \texttt{nondelta} operation is applied to objects to prevent the elapse of time by causing the object to have the sort \texttt{Configuration} instead of \texttt{ObjectConfiguration}.
+The operation \texttt{nondelta} is frozen meaning that the configuration contained within will not be evaluated by the Maude until the $\mathrm{delta}$ operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the delta operation over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own separately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{PO07} where a delta operation is used to distribute time over a distributed sensor network. The \texttt{nondelta} operation is applied to objects to prevent the elapse of time by causing the object to have the sort \texttt{Configuration} instead of \texttt{ObjectConfiguration}.
 
 \subsubsection*{Modelling Trains}
 We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automata can be in one of 4 possibilities, constant speed, accelerating, stopped and braking. As well as the state it also has 6 fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and max speed.
@@ -357,7 +357,7 @@ class Train | state : TrainState, dist : Nat, speed : Nat,
      ac : Nat, ma : Nat, tseg : Nat, maxspeed : Nat .
 \end{lstlisting}
 
-We capture the behaviour of trains using a number of instantaneous rules. The rules that model some transition of time can only occur if the \texttt{delta} operation, which captures the global transition of time, has been applied to the train object. There are also several rules that are applied to non-delta terms and cause message passing and reading inbetween the application of the delta operation. The following is an example conditional rule which causes a jump from the constant speed to braking states in one unit of time:
+We capture the behaviour of trains using a number of instantaneous rules. The rules that model some transition of time can only occur if the \texttt{delta} operation, which captures the global transition of time, has been applied to the train object. There are also several rules that are applied to non-delta terms and cause message passing and reading in-between the application of the delta operation. The following is an example conditional rule which causes a jump from the constant speed to braking states in one unit of time:
 
 \begin{lstlisting}
   crl [consbrake] : delta(< O : Train | state : cons, 
@@ -383,7 +383,7 @@ The distance to the movement authority to the train is computed by:
 \texttt{ceq dma(DT,MA) = (tlength monus DT) + MA if MA < DT .}
 \end{center}
 
-In this Maude specification the jumps from accelerating and full speed states to the braking state occur when the braking distance becomes less than the distance to the end of the movement authority in the next moment of time.  The transition of the train one from track segment to another is captured by applying an operation $\textbf{trackseg}$ to the train after every increment in time. The $\textbf{trackseg}$ operation computes whether a track segment transition has occured, if it has then a message is sent to the interlocking to update its track segment variables accordingly.
+In this Maude specification the jumps from accelerating and full speed states to the braking state occur when the braking distance becomes less than the distance to the end of the movement authority in the next moment of time.  The transition of the train one from track segment to another is captured by applying an operation $\textbf{trackseg}$ to the train after every increment in time. The $\textbf{trackseg}$ operation computes whether a track segment transition has occurred, if it has then a message is sent to the interlocking to update its track segment variables accordingly.
 
 \begin{lstlisting}[caption = "Rewriting rules for the trackseg operation"]
 crl [transn] : trackseg(< O : Train | dist : DT, tseg : N >) => 
@@ -421,7 +421,7 @@ fmod SET{X :: TRIV} is
 
 \end{lstlisting}
 
-The indivudal elements the set are themselves are a subsort of set, allowing for sets to be constructed using the union operater \texttt{\_,\_} and singleton sets. The in operation computes set membership and is based on the \texttt{otherwise}  meaning that false case will only be applied once the search for true case has been exhausted.
+The individual elements the set are themselves are a subsort of set, allowing for sets to be constructed using the union operator \texttt{\_,\_} and singleton sets. The in operation computes set membership and is based on the \texttt{otherwise}  meaning that false case will only be applied once the search for true case has been exhausted.
 
 \begin{lstlisting}[caption = The specification of the Map data type in Maude]
 fmod MAP{X :: TRIV, Y ::  TRIV} is
@@ -468,7 +468,7 @@ When we use a parametrised data type in a specification it is possible to assign
 
 
 \subsubsection*{Modelling the Radio Block Processor}
-The RBC is slightly differently from the hybrid automaton described previously. Instead of having four states the RBC has three states with the behaviour of the granted state being combined into the behaviour of a transition which causes the RBC to leave the wait state. The when the RBC receives a track segment grant fromt the interlocking it immediately grants the movement authority before going back to the idle state.
+The RBC is slightly differently from the hybrid automaton described previously. Instead of having four states the RBC has three states with the behaviour of the granted state being combined into the behaviour of a transition which causes the RBC to leave the wait state. The when the RBC receives a track segment grant from the interlocking it immediately grants the movement authority before going back to the idle state.
  
 \begin{lstlisting}[caption = The RBC state and class definition in Maude]
 sort RBCState .
@@ -477,7 +477,7 @@ class RBC | state : RBCState, lasttrain : Oid, ma : MapON,
       pos : MapON , curreq : SetO .
 \end{lstlisting}
 
-We use maps to store the current movement authorities and positions of the various trains. In order to prevent an infinite amount of requests being made to an interlocking we limit the rbc to make one request on behalf of each train to the interlocking.  To do this we use  \texttt{curreq}, a set of oids, to store which trains have had a request made for them at a given moment of time.
+We use maps to store the current movement authorities and positions of the various trains. In order to prevent an infinite amount of requests being made to an interlocking we limit the RBC to make one request on behalf of each train to the interlocking.  To do this we use  \texttt{curreq}, a set of oids, to store which trains have had a request made for them at a given moment of time.
 
 An example RBC transition is as follows:
 \begin{lstlisting}[caption = The state transition for the granting of a movement authority]
@@ -558,7 +558,7 @@ class Controller |
 
 The controller class contains 3 parameters which are used to store a list of trains that are going to enter the track. The first parameter \textbf{trainorder} stores a list of object identifiers that are used to name trains whilst the order of the list corresponds to the order in which the trains are added to the track. The other two parameters of the controller class are both mappings from object identifiers to natural numbers. These mappings \textbf{trainmax} and \textbf{trainroute} are used to store the two parameters needed to create the train class namely the trains maximum speed and its route.
 
-The controller object makes one join request, using a \textbf{reqjoin} message containing the object identifier of the first train in the trainorder list and its associated route, to the RBC per unit of time . If this request is granted then the first object identifier in the trainorder list is removed and a new train object is created with that object identifier with its maxspeed and route obtained from the mappings in the controller object. The speed and distance of the new train are both set to zero and a message is sent to the interlocking indicating that the initial tracksegment is now occupied. 
+The controller object makes one join request, using a \textbf{reqjoin} message containing the object identifier of the first train in the trainorder list and its associated route, to the RBC per unit of time . If this request is granted then the first object identifier in the trainorder list is removed and a new train object is created with that object identifier with its maxspeed and route obtained from the mappings in the controller object. The speed and distance of the new train are both set to zero and a message is sent to the interlocking indicating that the initial track segment is now occupied. 
 
 \subsection*{Modified Trains, Interlockings and Radio Block Processors}
 The component classes from the pentagon example have been modified to capture the behaviour of a junction.  The train class has seen the least modification, with only one additional parameter route which stores a natural number corresponding to the trains route. The RBC class has been modified to include a additional mapping from object identifiers to the natural numbers that contains the route of each train. The number of states of an RBC has increased from 3 to 4 with an extra state $\mathbf{waitjoin}$ capturing that a join request has been made. When a join request is made the RBC checks to see if the route requested is currently set. If the route requested is set and the initial track segment is clear then the join request is accepted. If the route is not set then the RBC checks with the interlocking that it can set the route. This requires that the first 3 track segments are clear in order to change the direction of the point. The interlocking class has been modified to capture both the behaviour of the point and the addition of join requests. The point is modelled in the interlocking as two boolean variables $\mathbf{p1n}$ which indicates that the point is driven normal and $\mathbf{p1r}$ which indicates that the point is driven in the reverse direction.
