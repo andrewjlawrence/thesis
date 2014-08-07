@@ -1,7 +1,10 @@
 \chapter{The Application and Comparison of Extracted Solvers on Benchmark Problems}{The Application and Comparison of X-SAT on Benchmark Problems} \label{chapter:dpllapp}
 In the following we examine the rule time behaviour of the extracted DPLL solver X-SAT and our prototype clause learning solver. We shall describe how both algorithms behave when run using the built-in term-rewriting of the Minlog System and how X-SAT runs in Haskell on pigeon hole formulae and to verify a real world solid state railway interlocking program.
 
-One of the benchmarks used is the pigeon hole formulae \cite{SC79}. 
+
+
+\section{Behaviour of X-SAT}
+The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}.  The benchmarks we have used to analyse the performance of our solvers are the pigeon hole formulae \cite{SC79}. 
 \begin{mydef}[Pigeon Hole Formulae]
 
 \begin{align*}
@@ -13,9 +16,6 @@ PHP(n,m) := &\{l_{i,1} , \ldots , l_{i,m} | 1 \leq i \leq n  \}  \\
 
 
 Intuitively, e.g. $PHP(n,n-1)$ states "it is not possible to put $n$ pigeons into $n-1$ holes and only have one pigeon in each hole"
-
-\section{Behaviour of X-SAT}
-The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}. 
 
 
 The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm to a pigeon hole formula PHP(2,1), which represents the program of putting two pigeons into one hole, in CNF. The normalise term command \texttt{nt} command is then used to execute the algorithm via minlogs built in term rewriting system.
@@ -263,18 +263,5 @@ While we cannot expect to compete with an industrial tool on speed and functiona
 \end{comment}
 
 
-\section{Application of Prototype Clause Learning Algorithm to Benchmark Problems}
-We have also applied the prototype clause learning
-
-
-
-\begin{center}
-    \begin{tabular}{ | l || l | l || l | l | l | }
-    \hline
-    Solver & $PHP(2,1)$ & $PHP(3,2)$ & $PHP(4,3)$ & $PHP(5,4)$ & $PHP(6,5)$ \\ \hline
-    $\forall$ & $< 1$ Sec & 1.17 &   33.62   & 13:54 & 5:35:41\\ \hline
-    $\forallnc$ & $< 1$ Sec & $< 1$ Sec &    11.61  & 2:41   & 37:25.27 \\ \hline
-    \end{tabular}
-\end{center}
 
 
