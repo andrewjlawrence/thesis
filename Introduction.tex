@@ -16,7 +16,7 @@ totality (or universality) of SAT solvers is an issue. For example, in the 2012 
 "Unknown" for certain inputs signifying that they could not deal with the given problem.  There are also numerous specialised model checking algorithms, each of which, is geared towards solving a specific type of problem and comes with their own unique optimisations.
 
 
-Another approach to formal verification is that of interactive theorem proving where a tool aids with the human driven construction of a formal proof of correctness for a system. These have the advantage that the machine can check the human produced proof and they typically include a number of built in tactics that in the construction of a proof. Some interactive theorem provers realise the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that constructive proofs performed using the natural deduction calculus can be viewed as programs in the lambda calculus.  The process of exploiting this correspondence to produce a program from a proof is called program extraction. This technique allows for the development of programs that are correct by construction as the program comes with a proof that certifies its correctness. The Minlog theorem prover comes with a number specialisations for the purpose of extracting programs from formal proofs.
+Another approach to formal verification is that of interactive theorem proving \cite{HG09,SSD06} where a tool aids with the human driven construction of a formal proof of correctness for a system. These have the advantage that the machine can check the human produced proof and they typically include a number of built in tactics that aid in the construction of a proof. Some interactive theorem provers realise the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that constructive proofs performed using the natural deduction calculus can be viewed as programs in the lambda calculus.  The process of exploiting this correspondence to produce a program from a proof is called program extraction. This technique allows for the development of programs that are correct by construction as the program comes with a proof that certifies its correctness. The Minlog theorem prover comes with a number specialisations for the purpose of extracting programs from formal proofs.
 \begin{comment}
 \textbf{Note: Add something about program extraction here.}
 Alternatively to automatic techniques for verification there are also interactive theorem provers which employ man-machine collaboration in order to prove properties over a system.
@@ -24,7 +24,7 @@ Program extraction is another verification technique which allows the production
 \end{comment}
 
 
-The Railway Verification Group at the Computer Science Department of Swansea University has been researching the development of formal methods for use in real world situations in particular for the development of train control systems. The majority of this work has been in the form of an industrial collaboration with our partner Siemens Rail Automation (UK). Siemens are continuously modernising and improving their development processes and as a part of this are looking to use formal methods for the development of their systems. The Westrace interlocking is one such system that is being considered for treatment by formal methods. These interlockings have the benefits of being large but relatively un-complex and every interlocking developed has to comply to the same range of safety requirements.  We have developed a Another product currently under development by Siemens Rail Automation is the European Rail Traffic Management System. This developed to a European  standard with each country or individual company producing their own implementation. Since the specification is loose and allows for a wide range for implementations this makes modelling of the system desirable to understand possible behaviours and to ensure safe integration with existing infrastructure. Furthermore, it is an open field  when it comes to substantiating the claim that the ERTMS approach offers a higher performance of the railway compared to the traditional control systems.
+The Railway Verification Group at the Computer Science Department of Swansea University has been researching the development of formal methods for use in real world situations in particular for the development of train control systems. The majority of this work has been in the form of an industrial collaboration with our partner Siemens Rail Automation (UK). Siemens are continuously modernising and improving their development processes and as a part of this are looking to use formal methods for the development of their systems. The Westrace interlocking is one such system that is being considered for treatment by formal methods. These interlockings have the benefits of being large but relatively un-complex and developed has to comply to the same range of safety requirements.  Another product currently under development by Siemens Rail Automation is the European Rail Traffic Management System. This system is developed to a European  standard with each country or individual company producing their own implementation. Since the specification is loose and allows for a wide range for implementations this makes modelling of the system desirable to understand possible behaviours and to ensure safe integration with existing infrastructure. Furthermore, it is an open field  when it comes to substantiating the claim that the ERTMS approach offers a higher performance of the railway compared to the traditional control systems.
 
 
 
@@ -48,14 +48,16 @@ The second result of this thesis is the modelling of the European Rail Traffic M
 \medskip \\
 \textbf{Chapter 3}: Provides an overview of SAT solving, including the DPLL algorithm and  proof system, clause learning and resolution. 
 \medskip \\
-\textbf{Chapter 4}: Describes an approach using program extraction to obtain a verified SAT solver XSAT.
+\textbf{Chapter 4}: Describes the proof of soundness and completeness for the DPLL and resolution proof systems.
 \medskip  \\
-\textbf{Chapter 5}: Describes an approach to extract a prototype conflict driven clause learning SAT algorithm by modifying the DPLL proof system.
+\textbf{Chapter 5}: Describes the formalisation of the DPLL and Resolution proof systems along with their soundness and completeness in the Minlog System. The proof of completeness for the DPLL proof system forms the basis of our extracted SAT solver X-SAT.
+\medskip \\ 
+\textbf{Chapter 6}: Describes an approach to extract a prototype conflict driven clause learning SAT algorithm by modifying the DPLL proof system.
 \medskip \\
 \textbf{Chapter 6}: Provides a general introduction to the traditional railway domain.
 \medskip \\
 \textbf{Chapter 7}: Provides an overview of the model checking techniques used in this thesis for verification. \medskip \\
-\textbf{Chapter 8}: Compares XSAT with another verified SAT algorithm and an industrial tool on pigeon hole formulae and on the real world application of verifying a solid state railway interlocking.
+\textbf{Chapter 8}: Compares X-SAT with another verified SAT algorithm and an industrial tool on pigeon hole formulae and on the real world application of verifying a solid state railway interlocking.
 \medskip \\
 \textbf{Chapter 9}: Provides a description of the European Rail Traffic Management System
 \medskip \\
