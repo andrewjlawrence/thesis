@@ -2,14 +2,14 @@
 \newcommand{\mathass}[1]{\mathrm{[}#1 {]}}
 \thesischapter{Background: Logic and Program Extraction}{Logic and Program Extraction}
 %%%We use logic to formally reason about the world around us in an abstract way. At the most basic level %%%we are creating abstract propositions, sentences from these propositions and then using formal rules %%%to deal with these propositions and to derive new information or insight. In the following we give a %%%general introduction to logic and describe some of the formalisms used in this thesis. This starts with %%%syntax and semantics of propositional and first order logic.
-This thesis is concerned with using formal methods to verify the correctness of programs. This chapter is concerned one technique in particular that is used to obtain verified programs, namely \emph{program extraction} from proofs as implemented by the interactive theorem prover Minlog. The theorem proven typically specifies the inputs of the system as assumptions and the output of the program as the statement to be proven. A constructive proof is given which describes how to transform the inputs into the required outputs. In the Minlog system the proof is stored as a proof term which can interpreted as a program in the lambda calculus. Once such a proof term has been obtained, it can be automatically translated by the Minlog system into a variety of different functional programming languages. This is due to the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that every constructive proof can also be seen as a program. It enables a proof system such as natural deduction  can be directly interpreted as a model of computation i.e. the lambda calculus.  A general introduction to program extraction from proofs can be found in \cite{SW11}. This thesis assumes a general background in logic, good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}. 
+This thesis is concerned with using formal methods to verify the correctness of programs. This chapter is concerned one technique in particular that is used to obtain verified programs, namely \emph{program extraction} from proofs as implemented by the interactive theorem prover Minlog. The theorem typically specifies the inputs of the system as assumptions and the output of the program as the statement to be proven. A constructive proof is given which describes how to transform the inputs into the required outputs. In the Minlog system the proof is stored as a proof term which can interpreted as a program in the lambda calculus. Once such a proof term has been obtained, it can be automatically translated by the Minlog system into a variety of different functional programming languages. This is due to the Curry-Howard correspondence \cite{HC34, HC58, WH80} which states that every constructive proof can also be seen as a program. It enables a proof system such as natural deduction to be directly interpreted as a model of computation i.e. the lambda calculus.  A general introduction to program extraction from proofs can be found in \cite{SW11}. This thesis assumes a general background in logic, a good general introduction to logic from a proof theoretic perspective is \cite{HandBookProof}. The following definitions for program extraction have been obtained from \cite{HS14}.
 
 \subsection*{Related Work in the Area of Program Extraction}
-The area number of case studies in the area of extracting programs from proofs. The Minlog system has been used extraction of a normalisation-by-evaluation algorithm for the lambda calculus \cite{UB06}. There is also considerable work in the area of exact real number computation \cite{UB08} which has made use of Coalgebras and Coinduction \cite{UB11}. 
+There are a number of case studies in the area of extracting programs from proofs. The Minlog system has been used extraction of a normalisation-by-evaluation algorithm for the lambda calculus \cite{UB06}. There is also considerable work in the area of exact real number computation \cite{UB08} which has made use of Coalgebras and Coinduction \cite{UB11}. 
 
 
 \subsection*{Other Theorem Provers with Program Extraction Capabilities}
-While Minlog is specifically geared towards extracting programs from proofs there are other examples of theorem provers with program extraction capabilities. An early example of work on a theorem prover with program extraction capabilities is the Nuprl system \cite{RC86}. There are also other mature theorem provers with program extraction capabilities such as Coq \cite{YB04}, which is based on the Calculus of Inductive Constructions and Isabelle  \cite{TN99,LP94} which is a generic theorem prover with extensions for many logics. More recently a number of theorem provers based on dependent types \cite{PM80} have emerged including Agda \cite{AB09} and IDRIS \cite{EB11}.
+While Minlog is specifically geared towards extracting programs from proofs there are other examples of theorem provers with program extraction capabilities. An early example of work on a theorem prover with program extraction capabilities is the Nuprl system \cite{RC86}. There are also other mature theorem provers with program extraction capabilities such as Coq \cite{YB04}, which is based on the Calculus of Inductive Constructions, and Isabelle  \cite{TN99,LP94}, which is a generic theorem prover with extensions for many logics. More recently a number of theorem provers based on dependent types \cite{PM80} have emerged including Agda \cite{AB09} and IDRIS \cite{EB11}.
 \begin{comment}
 \section{Propositional logic}
 One of the most fundamental forms of logic is propositional logic which contains operations called connectives that allows one to connect propositional variables to form sentences.
@@ -62,10 +62,10 @@ Blah
 
 \end{comment}
 \section{Formal Foundations of Minlog}
-In the following section we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manor designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is particularly suited for program extraction as its constituent proofs are constructive. This is then extended to classical logical in a constructive manner. In the following we pretend the natural deduction proof system together with the proof terms derived from each rule:  \medskip
+In the following section we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manner designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is suited for program extraction as its constituent proofs are constructive. This is then extended to classical logical in a constructive manner. In the following we present the natural deduction proof system together with the proof terms derived from each rule:  \medskip
 %
 \begin{mydef}[Natural Deduction for Minimal Logic] 
-The natural deduction proof system for minimal logic  consists of the following derivation terms for $\wedge$, $\to$ and $\forall$ : 
+The natural deduction proof system for minimal logic  consists of the following derivation terms for $\wedge$, $\to$ and $\forall$: 
 \begin{center}
 
 \begin{tabular}{| c | c |} \hline
@@ -217,8 +217,8 @@ derivation & term \\ \hline
 In the following section we shall give an overview of theoretical foundations of program extraction as it is implemented in the interactive theorem prover Minlog. We shall begin by defining the type of a formula such that if the formula is proven the type corresponds to the type of the extracted program from the proof. Secondly, we shall define the lambda calculus program that can be extracted from a proof term. These proof terms are generated in Minlog by applying the natural deduction calculus to a formula.  Finally we define what it means for a term to realize a formula.
 
 \subsection*{Type}
-Inorder to perform program extraction on a proof we must first deduce the
-type of the program to be extracted from a formula. To this end, every formula $A$ is assigned a type $\tau(A)$ which corresponds to the type of the program extracted from $A$. It is possible for a formula to have no computation content $\tau(A) = \epsilon$; such formulas are called \emph{Harrop formulas}.
+In order to perform program extraction on a proof we must first deduce the
+type of the program to be extracted from a formula. To this end, every formula $A$ is assigned a type $\tau(A)$ which corresponds to the type of the program extracted from $A$. It is possible for a formula to have no computation content i.e. $\tau(A) = \epsilon$; such formulas are called \emph{Harrop formulas}.
 
 
 We will now give a formal definition of $\tau (A)$ starting with the type of a
@@ -282,14 +282,9 @@ a type of $\tau (B)$.
 \]
 
 \subsection*{The Extracted Program}
-Given a proof term it is possible to extract a program in the lambda calculus from that depends on the type of the term. We shall now give a case by case definition of the program extracted from a formula.
+Given a proof term it is possible to extract a program in the lambda calculus  that depends on the type of the term. We shall now give a case by case definition of the program extracted from a formula $\llbracket M \rrbracket$ which has a type $\tau (A)$. Where, $M$ is a derivation of the formula $A$ with $A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.
 
- $\llbracket M \rrbracket$
-which has a type $\tau (A)$. Where $M$ is a derivation of the formula $A$ with
-$A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.
-
-\[ \llbracket u^A \rrbracket := x^{\tau (A)}_{u} \text{$x^{\tau (A)}_u$
-  uniquely associated with $u^A$}
+\[ \llbracket u^A \rrbracket := x^{\tau (A)}_{u} \text{uniquely associated with $u^A$}
 \]
 
 \[
@@ -320,24 +315,17 @@ $A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.
  \]
 
 
-
-
 $$\llbracket ( \lambda x^{\rho} M)^{\forall x A} \rrbracket := \lambda x^{\rho} \llbracket   M \rrbracket$$
 
-
-
-
-
 $$\llbracket M^{\forall x A} t \rrbracket := \llbracket M \rrbracket t$$
-
 
 
 The axioms for dealing with existential quantifiers produce slightly more
 complicated programs upon extraction. 
 
-$$ \exists^+_{x,A} : \forall x^{\rho}.A \to \exists x^{\rho} A    ex-intro$$
+$$ \exists^+_{x,A} : \forall x^{\rho}.A \to \exists x^{\rho} A  \ \mathbf{ex-intro}$$
 $$ \exists^-_{x,A,B} : \exists x^{\rho} A \to (\forall x^{\rho}. A \to B) \to
-B  ex-elim$$
+B  \ \mathbf{ex-elim}$$
 
 The following are the extracted programs for the above axioms.
 
@@ -373,9 +361,7 @@ f x1 x2 x3 False = Inhab
 \end{lstlisting}
 
 
-Similarly, the extracted program for non-measure induction is a recursion operation \texttt{Rec}.
-
- it is possible to write the operation \texttt{Rec list} $\rho$ $\implies$ $\tau$ using a function
+Similarly, the extracted program for non-measure induction is a recursion operation \texttt{Rec}. It is possible to write the operation \texttt{Rec list} $\rho$ $\implies$ $\tau$ using a function
 f : list $\rho \implies \tau$ which gives a more intuitive view of its behaviour.
 \begin{lstlisting}[mathescape]
 (Rec list $\rho \implies \tau$)ys z G = f ys where
@@ -385,12 +371,12 @@ f (x :: xs) = G x xs(f xs)
 
 \subsection*{Realizability}
 We need to have a notion of what it means for an extracted program to realize
-a formula. The notion that we define to do this is called realizability. Which takes shape as a formula $r \textbf{r} A$ this can be read as
+a formula. The notion that we define to do this is called realizability which takes shape as a formula $r \textbf{r} A$. This can be read as
 a term $r$ realizes a formula $A$. If $\tau(A) \neq \epsilon$ then $r$ is of type $\tau (A)$,
-otherwise $r$ is the symbol $\epsilon$. We also need to define relizability
+otherwise $r$ is the symbol $\epsilon$. We also need to define realizability
 for predicates. If we have a predicate P
-with an arity $\vec{\rho}$ then there are two possibilities here. One is that
-$P$ is a Predicate variable with an assigned $\alpha_P$ for this we create a new
+with an arity $\vec{s}$ then there are two possibilities here. One is that
+$P$ is a predicate variable with an assigned $\alpha_P$ for this we create a new
 predicate variable $P^{\textbf{r}}$ with an arity of $\alpha_P,\vec{\rho}$. 
 The other case is that $P$ is a predicate constant , if this is the case then
 we use the predicate constant.
