@@ -447,9 +447,9 @@ The following theorems have been proven in Minlog in order to show equivalence b
 \texttt{(set-goal (pf "all f,val,n. derivable val f n -> ex m. m <= n \& resolution f (oppositeval val) m"))}
 \end{center}
 
-We inductively define a predicate \texttt{ressuccess} that captures what it means to have a successful run of a reslution algorithm. This is used in our proof of completeness 
+We inductively define a predicate \texttt{ressuccess} that captures what it means to have a successful run of a resolution algorithm. This is used in our proof of completeness 
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = "The Inductive Definition of Resolution Completeness"]
 (add-ids (list 
  (list "ressuccess" (make-arity (py "for")) "algressuccess" ))
  '("allnc f.all n.                                                                                                                                           
@@ -473,4 +473,4 @@ The proof of completeness from which we extract a resolution solver proceeds as 
  (pt "(Nil cla)") (pt "(ConsVal (Nil lit))"))
 \end{lstlisting}
 
-The instantiation of the DPLL completeness theorem with formula \texttt{f} is at the core of the proof. Following that a case distinction is made on whether the formula \texttt{f} has a DPLL derivation or a model. In the case that it has a DPLL derivation the equivalence theorem is applied to obtain a resolution derivation. In the case that the formula has a model, that model satisfies the second closure axiom of \texttt{ressucess}. 
+The instantiation of the DPLL completeness theorem with the formula  \texttt{f} is at the core of the proof. Following that a case distinction is made on whether the formula \texttt{f} has a DPLL derivation or a model. In the case that it has a DPLL derivation the equivalence theorem is applied to obtain a resolution derivation. In the case that the formula has a model, that model satisfies the second closure axiom of \texttt{ressucess}. 
