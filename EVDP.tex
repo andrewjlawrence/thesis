@@ -76,7 +76,7 @@ The empty set is trivally unsatisfiable, therefore there does not exist a model 
 
 Case \textbf{Red}:
 $$l \in \Gamma \to \mybar{l} \in C \to C \in \Delta \to \incompatible{\Gamma}{\Delta \setminus C, (C \setminus \mybar{l})} \to \incompatible{\Gamma}{\Delta}$$
-Any model $M$ which models $\Gamma$ must model $l$ and can not model $\Delta \setminus C, (C \setminus \mybar{l})$ by the model property we know that $\mybar{l}$ can not hold in the model and therefore if $M \not\models C \setminus \mybar{l}$ then $M\not\models C$.
+Any model $M$ which models $\Gamma$ must model $l$ and cannot model $\Delta \setminus C, (C \setminus \mybar{l})$ by the model property we know that $\mybar{l}$ can not hold in the model and therefore if $M \not\models C \setminus \mybar{l}$ then $M\not\models C$.
 
 Case \textbf{Elim}:
 $$l \in \Gamma \to l \in C \to C \in \Delta \to \incompatible{\Gamma}{\Delta \setminus C} \to \incompatible{\Gamma}{\Delta}$$
@@ -85,7 +85,7 @@ The formula $\Delta \setminus C$ is incompatible with the valuation $\Gamma$ mea
 
 Case \textbf{Unit}:
 $$\forall \Gamma,\Delta,l. \{l\} \in \Delta \to \incompatible{\Gamma,l}{\Delta \setminus \{l \} } \to  \incompatible{\Gamma}{\Delta}$$
-There is no such model that models both $\Gamma,l$ and $\Delta \setminus \{ l \}$. In order for a model $M$ that models $\Gamma$ to model $\Delta$ it must be the case that $M l$, this means however that $M$ cannot model the set $\Delta \setminus \{l \}$ or any sets which contain it such as $\Delta$ . 
+There is no such model that models both $\Gamma,l$ and $\Delta \setminus \{ l \}$. In order for a model $M$ that models $\Gamma$ to model $\Delta$ it must be the case that $M l$. This means however that $M$ cannot model the set $\Delta \setminus \{l \}$ or any sets which contain it such as $\Delta$ . 
 
 Case \textbf{Split}:
 $$\incompatible{\Gamma, l}{\Delta} \to \incompatible{\Gamma, \mybar{l}}{\Delta} \to \incompatible{\Gamma}{\Delta}$$
@@ -136,7 +136,7 @@ We aim to perform the proof in such a way that an efficient program
 is extracted. Therefore, we adopt the following strategy:
 %
 \begin{enumerate}
- \item Since performing a $\Split$ rule is the only computational expensive 
+ \item Since performing a $\Split$ rule is the only computationally expensive 
     operation
      -- it is the only rule forcing the proof search to branch -- we only
     apply it when it is absolutely necessary.
@@ -462,7 +462,7 @@ We only sketch the overall idea.
 %The proof is by induction on DPLL derivations. 
 The $\Conflict$ and $\Split$ rule translate into
 the $\Sub$ and $\Res$ rule respectively.
-Both of these rules have the same cost to perform them as the DPLL rules and so the size of the derivations are less or equal. 
+Both of these rules have the same cost to perform them as the DPLL rules and so the size of the derivations is less or equal. 
 An application of the $\Unit$ rule is a special case of the $\Res$ rule in which one of the branches is obtained via a subsumption of a unit clause. The size of these two proofs is less or equal since the cost of performing the $\Sub$ rule and $\Res$ rule together is the same as that of the $\Unit$ rule. Finally, both the $\Elim$ and $\Red$ DPLL rules correspond to a form of weakening in the resolution proof which is done at no cost because the size of the resulting resolution proofs is less than the DPLL proofs. 
 \qed
 
@@ -526,7 +526,7 @@ DPLL derivations into equivalent resolution derivations.
 This translator and the SAT solver extracted from the Completeness Theorem for 
 DPLL (Theorem~\ref{thm:dpllcompleteness}) are combined in the
 program extracted from Theorem~\ref{thm:resolutioncomplete}
-to a SAT solver that yields resolution refutations for unsatisfiable formulae.
+to form a resolution solver that yields resolution refutations for unsatisfiable formulae.
 Since the computationally hard and interesting part of this program is 
 entirely contained in the DPLL-based SAT solver, we will restrict
 our attention to the latter when we discuss the extracted programs in detail 
