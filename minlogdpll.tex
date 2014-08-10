@@ -1,8 +1,8 @@
 \thesischapter{Extracting Verified Decision Procedures in the Minlog System}{Extracting Verified Decision Procedures in the Minlog System} \label{chapter:dpllminlog}
-In the following chapter we describe how the completeness proofs from chapter \ref{chapter:dpll} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in chapter \ref{chapter:dpll} and followed by the implementation of the soundness and completeness of the DPLL proof system in Minlog. The program extracted from the completeness is described along with a description of how a unique feature of the Minlog system, namely \emph{non-computational quantifiers} have been used to remove redundant data and computations and obtain a more efficient extracted program. The performance and behaviour of the extracted program is analysed in chapter \ref{chapter:dpllapp}. A detailed overview of the Minlog system can be found in the Minlog Reference Manual \cite{MinlogRef}.
+In the following chapter we describe how the completeness proofs from chapter \ref{chapter:dpll} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in chapter \ref{chapter:dpll} and is followed by the implementation of the soundness and completeness of the DPLL proof system in Minlog. A unique feature of the Minlog system, namely \emph{non-computational quantifiers}, have been used to remove redundant data and computations and obtain a more efficient extracted program. The performance and behaviour of the extracted program is analysed in chapter \ref{chapter:dpllapp}. A detailed overview of the Minlog system can be found in the Minlog Reference Manual \cite{MinlogRef}.
 
 \section{Formalising Preliminaries in the Minlog System}
-We have tried to stay faithful to the definition of the fundemental data types described in chapter \ref{} and to this end have defined a number of data types as algebras in Minlog, including the variable,literal, valuation, clause and formula. The variable is defined using the command $\mathbf{add-alg}$ which adds an algebra named "variable " with one constructor "Variable" which takes a natural number and returns a variable.
+We have tried to stay faithful to the definition of the fundamental data types described in chapter \ref{chapter:satbackground} and to this end have defined a number of data types as algebras in Minlog, including the variable, literal, valuation, clause and formula. The variable is defined using the command $\mathbf{add-alg}$ which adds an algebra named "variable " with one constructor "Variable" which takes a natural number and returns a variable.
 \begin{lstlisting}[caption = "Definition of a variable in Minlog"]
 (add-alg "variable" '("Variable" "nat => variable"))
 \end{lstlisting}
@@ -12,7 +12,7 @@ The literal is also defined as an algebra but has two constructors "Pos" and "Ne
      '("Neg" "variable => lit"))
 \end{lstlisting}
 
-We have defined an operation $\mathbf{opposite}$ which computes the opposite polarity of a literal. This is defined using
+We have defined an operation $\mathbf{opposite}$ which computes the opposite polarity of a literal. This is defined using \emph{program constants} and \emph{computational rules} as follows:
 
 \begin{lstlisting}[caption = "Definition of the opposite operation in the Minlog System"]
 (add-program-constant "opposite" 
@@ -22,20 +22,20 @@ We have defined an operation $\mathbf{opposite}$ which computes the opposite pol
 \end{lstlisting}
 
 
-Functions in Minlog are defined using program constants which have a type and then giving these constants computational meaning with the introduction of computational rules. The \texttt{add-program-constant} command takes as input the name, arity and totality of the program constant. The \texttt{mk-arrow} function returns the type computed by composing its arguments together with an arrow. The \texttt{add-computation-rule} command defines computation for a program constant by pattern matching on the 1st argument and transforming it into result of the second argument.
+Functions in Minlog are defined using program constants which have a type and then giving these constants computational meaning with the introduction of computational rules. The \texttt{add-program-constant} command takes as input the name, arity and totality of the program constant. The \texttt{mk-arrow} function returns the type computed by composing its arguments together with an arrow. The \texttt{add-computation-rule} command defines computation for a program constant by pattern matching on the first argument and transforming it into result of the second argument.
 
 
 \subsection*{Sets: Clauses, Valuations and Formulae}
-There is currently no built in data type for sets in the Minlog system. For our work we have implemented sets as lists in the Minlog system, while this is not the most mathematically pure way of implementing these data types it has enabled us to make further effciency improvements. The clauses have been implementated in such a way that the literals contained with in are partitioned into positive and negative literals and then ordered within each of these partitions by variable number. The positive literals occur first followed by the negative and the variables are sorted from low to high numbers. We do not place any partitionings or ordering on either the formulae or the valuations, they are built using unsorted lists.
+There is currently no built in data type for sets in the Minlog system. For our work we have implemented sets as lists in the Minlog system. While this is not the most mathematically pure way of implementing these data types it has enabled us to make further efficiency improvements. The clauses have been implemented in such a way that the literals contained within are partitioned into positive and negative literals and then ordered within each of these partitions by variable number. The positive literals occur first followed by the negative and the variables are sorted from low to high numbers. We do not place any partitioning or ordering on either the formulae or the valuations; they are built using unsorted lists.
 
-\begin{lstlisting}[caption = "Definitions of clauses\, formulae and valulations in the Minlog system"]
+\begin{lstlisting}[caption = "Definitions of clauses\, formulae and valuations in the Minlog system"]
 (add-alg "cla"  '( "CC" "list lit => cla"))
 (add-alg "for" '( "CF" "list cla => for"))
 (add-alg "valu" '( "ConsVal" "list lit => valu") )
 \end{lstlisting}
 
 \subsection*{Variable Namings}
-In Minlog one defines variable names to have a particular type.  These variable names can then be used during a formalisation either as they are or with a suffix consisting of a natural number e.g. If we define \texttt{l} to be a variable name for literals then we can use the variable name \texttt{l1} to represent a literal in our formalisation.
+In Minlog one defines variable names to have a particular type.  These variable names can then be used during a formalisation either as they are or with a suffix consisting of a natural number e.g. if we define \texttt{l} to be a variable name for literals then we can use the variable name \texttt{l1} to represent a literal in our formalisation.
 
 \begin{lstlisting}[caption = "Variable namings for the DPLL formalisation in Minlog"]
 (add-var-name "v" (py "variable"))
