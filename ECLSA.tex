@@ -91,7 +91,7 @@ $\forall D,l,n,n'( (D \, l \, n) \in \Gamma \wedge (D \, l \, n') \in \Gamma \to
 \end{mydef}
 \hspace{1mm} \\
 %
-The modified DPLL proof system retains the $\Split$, $\Conflict$ and $\Unit$ rules in a modified form, however the function of the $\Elim$ and $\Red$ rules have been replaced by a modified unit resolution proof system. The DPLL derivation relation has an additional argument which is place under the turnstyle $\vdash_{\Delta'}$ which is used to capture the transfer of learned clauses up through the proof tree towards the root. The manipulation of individual clauses in the formula to be solved is carried out using the unit resolution proof system. When a derivation of a unit clause or empty clause is discovered during the unit resolution proof search this proof is plugged into the appropriate DPLL rule. \\
+The modified DPLL proof system retains the $\Split$, $\Conflict$ and $\Unit$ rules in a modified form, however the $\Elim$ and $\Red$ rules have been replaced by a modified unit resolution proof system. The DPLL derivation relation has an additional argument placed under the turnstyle $\vdash_{\Delta'}$ which is used to capture the transfer of learned clauses up through the proof tree towards the root. The manipulation of individual clauses in the formula to be solved is carried out using the unit resolution proof system. When a derivation of a unit clause or empty clause is discovered during the unit resolution proof search this proof is plugged into the appropriate DPLL rule. \\
 \medskip
 \begin{mydef}[Modified DPLL Proof System] The DPLL proof system consists 
 of three rules:
@@ -201,18 +201,18 @@ We use the following abbreviation $\clmodres{\Gamma}{\Delta} := \exists \Gamma_0
 \item[Case: $\Sub$]
 In the case that a subsumption was applied we perform a case distinction on whether the subsumed clause came from $\Gamma$ or $\Delta$. In the case that it came from $\Gamma$ we apply either $\UnitSub$ or $\SplitSub$ rules depending on the type of decision, otherwise in the case that the clause came from $\Delta$ we apply the $\Sub$ rule.
 \item[Case: $\Res$]
-The resolution rule is trivially equivalent to the other resolution rule by the two induction hypothesis.
+The resolution rule is trivially equivalent to the other resolution rule by the two induction hypotheses.
 \end{description}
 Now we shall prove the opposite direction   $\clmodres{\Gamma}{\Delta} C \to \Gamma,\Delta \vdash_{URes} C $.
 \begin{description}
 \item[Case: $\Sub$]
-In this case we a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$ we apply the standard $\Sub$ rule using $C_0$.
+In this case we have a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$ we apply the standard $\Sub$ rule using $C_0$.
 \item[Case: $\UnitSub$]
-In this case we have derived a unit clause $\{ l \}$ such that $U \, l \, n \in \Gamma$ this unit clause is also in $\Gamma,\Delta$ and therefore we can apply the  $\Sub$ rule.
+In this case we have derived a unit clause $\{ l \}$ such that $U \, l \, n \in \Gamma$. This unit clause is also in $\Gamma,\Delta$ and therefore we can apply the  $\Sub$ rule.
 \item[Case: $\SplitSub$] 
 Follows a similar argument to the $\UnitSub$ case, but $S \, l \, n \in \Gamma$.
 \item[Case $\Res$]
-The resolution rule is trivially equivalent to the other resolution rule by the two induction hypothesis.
+The resolution rule is trivially equivalent to the other resolution rule by the two induction hypotheses.
 \end{description}
 
 \end{mytheorem}
@@ -229,7 +229,7 @@ If  $ \clmodres{\Gamma}{\Delta} C$ then $\Gamma, \Delta \models C$.
 We perform induction on the build up of  the derivation $ \clmodres{\Gamma}{\Delta} C$.
 \subsection*{Case: $\Sub$}
 %
-There is a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$. We fix a model $M$ such that $M \models \Gamma, \Delta $. There must be a literal $l \in C_0$ that $M l$ holds and since $C_0 \subseteq C$ this literal $l$ must also be contained in $C$ and therefore $\Delta \models C$.
+There is a clause $C_0 \in \Delta$ such that $C_0 \subseteq C$. We fix a model $M$ such that $M \models \Gamma, \Delta $. There must be a literal $l \in C_0$ such that $M l$ holds and since $C_0 \subseteq C$ this literal $l$ must also be contained in $C$ and therefore $\Delta \models C$.
 %
 \subsection*{Case: $\UnitSub$}
 There is a decision $U \, l \, n$ in $\Gamma$ and $\Gamma,\Delta$ trivially model the unit clause consisting of $l$. 
@@ -302,7 +302,7 @@ We have to show: $$ \Delta \models \Delta' \cup \Delta'' $$ or equivalently:
 %
 To do this we prove the following
 $$\forall M. M \models \Delta \to M \models \Delta' \cup \Delta''$$
-We fix a model $M$ such that $M \models \Delta$. $\Delta \models \Delta'$ is equivalent to $\forall M. M \models \Delta \to M \models \Delta'$ and from this we obtain $M \models \Delta'$. $$\Delta \cup \Delta' \models \Delta''$$ is equivalent to $\forall M. M \models \Delta \to M \models \Delta' \to M \models \Delta''$ from this we obtain $M \models \Delta''$.
+We fix a model $M$ such that $M \models \Delta$. $\Delta \models \Delta'$ is equivalent to $\forall M. M \models \Delta \to M \models \Delta'$ and from this we obtain $M \models \Delta'$. $$\Delta \cup \Delta' \models \Delta''$$ is equivalent to $\forall M. M \models \Delta \to M \models \Delta' \to M \models \Delta''$. From this we obtain $M \models \Delta''$.
 \end{proof}
 %
 \end{mytheorem}
@@ -312,7 +312,7 @@ We shall now perform a proof of soundness of our modified DPLL proof system by p
 \begin{mytheorem}[Incompatibility (Soundness) of Modified DPLL]
 If  $\Gamma \vdash_{\Delta'} \Delta$  then $\incompatible{\Gamma}{\Delta}$.
 \begin{proof}
-We perform induction on the build up of the derivation $\Gamma \vdash_{\Delta'} \Delta$ leading to two cases:
+We perform induction on the build up of the derivation $\Gamma \vdash_{\Delta'} \Delta$ leading to three cases:
 %
 \subsection*{Case 1: $\Conflict$}
 One has to show that if $\Gamma' \subseteq \Gamma$ and $\exists C_0 \in \Delta$ $\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$ then $\Gamma$ and $\Delta$ are incompatible. To do this we fix a model $M$ that causes $\Gamma$ and $\Delta$ to be compatible and then show a contradiction. Using $\Gamma' \clmodres{\Gamma}{C_0} \emptyset$ and the soundness of unit resolution (Theorem \ref{thm:UResSoundness}) we obtain $\Gamma, C_0 \models \emptyset$ which implies that $\incompatible{\Gamma}{\Delta}$. 
