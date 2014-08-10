@@ -49,7 +49,7 @@ In Minlog one defines variable names to have a particular type.  These variable 
 \end{lstlisting}
 
 \subsection*{Set Operations}
-Due to there being no built in library for sets we have defined several operations on sets in Minlog. The  undecidabilty of equality and some limitations of polymorphism in Minlog have caused us to implement specific operations for each data type. While this has made the verification task hard, it has also given us a firmer grip on the extracted programming, allowing us to make such implementation decisons as the ordering of literals in the clause. One piece of future work which would be valuable to the Minlog community even if it is not scientifically valuable would be to come up with a implementation of sets that will allow for program extraction and contains proof tactics that make reasoning about these sets less time consuming. We shall now give a brief overview of some of the set operations we have implemented as part of this formalisation. The CNF formula has no predefined structure which makes the addition and removal of elements straight forward.
+Due to there being no built in library for sets we have defined several operations on sets in Minlog. The  undecidability of equality and some limitations of polymorphism in Minlog have caused us to implement specific operations for each data type. While this has made the verification task hard, it has also given us a firmer grip on the extracted program, allowing us to make such implementation decisions as the ordering of literals in the clause. One piece of future work which would be valuable to the Minlog community even if it is not scientifically valuable would be to come up with a implementation of sets that will allow for program extraction and contains proof tactics that make reasoning about these sets less time consuming. We shall now give a brief overview of some of the set operations we have implemented as part of this formalisation. The CNF formula has no predefined structure which makes the addition and removal of elements straightforward.
 
 \begin{lstlisting}[caption = "Code for the addition and removal of clauses from formulae"]
 (add-program-constant "conccf" (py "cla => for => for") 1)
@@ -57,7 +57,7 @@ Due to there being no built in library for sets we have defined several operatio
                       (pt  "(CF (c::cs)) "))
 \end{lstlisting}
 
-The function \texttt{conccf} is used to insert clauses into a formula, it has one computation rule which simply adds the clause to the from of the list of clauses contained within the formula. Likewise, the insertion of literals into a valuation is achieved by adding the literal to the front of the list of literals contained within the clause.
+The function \texttt{conccf} is used to insert clauses into a formula; it has one computation rule which simply adds the clause to the list of clauses contained within the formula. Likewise, the insertion of literals into a valuation is achieved by adding the literal to the front of the list of literals contained within the clause.
 
 \begin{lstlisting}[caption = "The Function for the addition of a literal to a valuation"]
 (add-program-constant "conclv" (py "lit => valu => valu") 1)
@@ -100,7 +100,7 @@ The insertion of literals into clauses is more complicated due to the structure 
                    ((Neg v2)::(Conclitlitlist (Neg v) ls))])])"))
 \end{lstlisting}
 
-While the function \texttt{conclc}  is most commonly used in the formalisation, the work of adding a literal to the clause is carried out internally by the function \texttt{Conclitlitlist}. The \texttt{Conclitlitlist} function is defined by 5 computational rules that pattern match on both the literal to be added and the structure of the list to which the literal is to be added. In particular the first literal of the list is matched on if there is such a literal, otherwise there is a rule to deal with the empty list. The rules cause the function to recursively search through the list attempting to place the literal in the right partition and in the right place in the order. It also checks that such a literal does not already exist in the list which makes the addition of such a literal to the list redundant.
+While the function \texttt{conclc}  is most commonly used in the formalisation, the work of adding a literal to the clause is carried out internally by the function \texttt{Conclitlitlist}. The \texttt{\justify Conclitlitlist} function is defined by five computational rules that pattern match on both the literal to be added and the structure of the list to which the literal is to be added. In particular the first literal of the list is matched on if there is such a literal, otherwise there is a rule to deal with the empty list. The rules cause the function to recursively search through the list attempting to place the literal in the right partition and in the right place in the order. The function also checks that such a literal does not already exist in the list which makes the addition of such a literal to the list redundant.
 
 \begin{lstlisting}[caption = "The Function Which Removes a Literal From a Clause"]
 (add-program-constant "remlc" (py "lit => cla => cla") 1)
@@ -112,7 +112,7 @@ While the function \texttt{conclc}  is most commonly used in the formalisation, 
                               (conclc l2 (remlc l (CC ls)))])"))
 \end{lstlisting}
 
-The function for removing literals from clauses performs a recursive search through the list of literals in the clause until it finds a matching literal or the empty list in either case the function returns the remaining list.
+The function \texttt{remlc} for removing literals from clauses performs a recursive search through the list of literals in the clause until it finds a matching literal or the empty list. In either case the function returns the remaining list.
 
 
 
@@ -142,7 +142,7 @@ We have implemented a model as a mapping from literals to booleans as during the
 
 
 \subsection*{The DPLL Proof System}
-The DPLL proof/ system has been formalised as an inductive definition in the Minlog system with 5 closure axioms corresponding to the 5 proof rules. The inductive definition is represented internally as an algebra with the names of the closure axioms being used as constructors.
+The DPLL proof system has been formalised as an inductive definition in the Minlog system with five closure axioms corresponding to the five proof rules. The inductive definition is represented internally as an algebra with the names of the closure axioms being used as constructors.
 
 \begin{lstlisting}[caption = "The DPLL Proof System as an Inductive Definition in Minlog"]
 (add-ids (list 
@@ -181,8 +181,8 @@ This inductive definition contains a number of \texttt{allnc} quantifiers which 
 
 
 \section{The Soundness (Incompatibility) of the DPLL Proof System in Minlog}
-We have formalised the incompatibility proof for the DPLL proof system following the proof found in chapter \ref{chapter:DPLL} that proof and this formalisation are both based on the Coq implementation \cite{}. We shall now sketch some of the steps to carry out the proof using the Minlog System.
-The proof goal is set in the minlog system using the \texttt{set-goal} command:
+We have formalised the incompatibility proof for the DPLL proof system following the proof found in chapter \ref{chapter:DPLL} that proof and this formalisation are both based on the Coq implementation \cite{SL08}. We shall now sketch some of the steps to carry out the proof using the Minlog system.
+The proof goal is set in the Minlog system using the \texttt{set-goal} command:
 
 \begin{lstlisting}
 (set-goal (pf 
@@ -192,7 +192,7 @@ The proof goal is set in the minlog system using the \texttt{set-goal} command:
        (all c . memcf c f ->( ex l.  memlc l c & mod l )) ->  F)"))
 \end{lstlisting}
 
-Here the function \texttt{pf} parses the formula to be proven into the Minlog System. The \texttt{assume} command is applied to fix the valuation \texttt{val} and the formula \texttt{f} and the \texttt{elim} command is applied to perform structural induction on the build up of the DPLL derivation \texttt{dpll val f} resulting the 5 cases as described in the written description of the proof. Each of these cases require that a further valuation \texttt{val1} and formula \texttt{f1} are fixed before proceeding.
+Here the function \texttt{pf} parses the formula to be proven into the Minlog system. The \texttt{assume} command is applied to fix the valuation \texttt{val} and the formula \texttt{f} and the \texttt{elim} command is applied to perform structural induction on the build up of the DPLL derivation \texttt{dpll val f} resulting in the five cases as described in the written description of the proof. Each of these cases requires that a further valuation \texttt{val1} and formula \texttt{f1} are fixed before proceeding.
 
 \begin{lstlisting}[caption = "The Conflict Case in Minlog"]
 ?_3:allnc val,f(
@@ -202,7 +202,7 @@ Here the function \texttt{pf} parses the formula to be proven into the Minlog Sy
    all c(memcf c f -> ex l(memlc l c & mod l)) -> F))
 \end{lstlisting}
 
-The proof for this case is performed using the assumption that the empty clause is in the formula \texttt{memcf(CC(Nil lit)) f1} and the assumption that every clause has a literal which is true in the model \texttt{all c(memcf c f1 -> ex l(memlc l c \& mod l))} to show a contradiction. 
+The proof for the $\Conflict$ case is performed using the assumption that the empty clause is in the formula \texttt{memcf(CC(Nil lit)) f1} and the assumption that every clause has a literal which is true in the model -- \texttt{all c(memcf c f1 -> ex l(memlc l c \& mod l))} -- to show a contradiction. 
 
 
 \begin{lstlisting}[caption = "The Elim Case in Minlog"]
@@ -220,7 +220,7 @@ The proof for this case is performed using the assumption that the empty clause 
     all l0(memlv l0 val -> mod l0) ->
     all c0(memcf c0 f -> ex l0(memlc l0 c0 & mod l0)) -> F))
 \end{lstlisting}
-In addition to fixing a valuation and a formula using the \texttt{assume} command, in the Elim case we also use the command fix a clause \texttt{c} and a literal \texttt{l} and make several assumptions. We assume that a literal l is in both \texttt{c} and the valuation \texttt{val1}, that the clause \texttt{c} is in the formula \texttt{f1}, that f1 with the clause \texttt{c} removed is incompatible with the valuation \texttt{val1} and finally that \texttt{f1} and \texttt{val1} are compatible. At this point the goal in Minlog is to show \texttt{F}. We apply the assumption that \texttt{remcf c f1} and the valuation \texttt{val1} are incompatible using the \texttt{use} command resulting in a new goal to show that \texttt{remcf c f1} and \texttt{val1} are compatible. We then apply a lemma \texttt{foralllemma} using the \texttt{use-with} command that states that in order to prove compatibility for a formula and a valuation it suffices to show compatibility for any larger formula, of which the smaller formula is contained and that valuation.
+In addition to fixing a valuation and a formula using the \texttt{assume} command, in the Elim case we also use the \texttt{assume} command to fix a clause \texttt{c} and a literal \texttt{l} and make several assumptions. We assume that a literal l is in both \texttt{c} and the valuation \texttt{val1}, that the clause \texttt{c} is in the formula \texttt{f1}, that f1 with the clause \texttt{c} removed is incompatible with the valuation \texttt{val1} and finally that \texttt{f1} and \texttt{val1} are compatible. At this point the goal in Minlog is to show \texttt{F}. We apply the assumption that \texttt{remcf c f1} and the valuation \texttt{val1} are incompatible using the \texttt{use} command resulting in a new goal to show that \texttt{remcf c f1} and \texttt{val1} are compatible. We then apply a lemma \texttt{foralllemma} using the \texttt{use-with} command that states that in order to prove compatibility for a formula and a valuation it suffices to show compatibility for any larger formula, in which the smaller formula is contained, with that valuation.
 
 \begin{center}
 \textbf{foralllemma} := \texttt{all f,mod . all c( memcf c f -> ex l(memlc l c \& mod l)) -> all c,c1 (memcf c (remcf c1 f) -> ex l (memlc l c \&  mod l ))} \\
@@ -243,7 +243,7 @@ The resulting goal can then be proven using the \texttt{use} command with the as
        all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
 \end{lstlisting}
 
-In the Unit case literal \texttt{l} is fixed in addition to \texttt{val1} and \texttt{f1} and several assumptions are made using the \texttt{assume} command.  We assume that there is a unit clause containing a single literal \texttt{l}, which is itself contained within the formula \text{f1}. We also assume that the valuation \texttt{conclv l val1} and the formula \texttt{remcf (CC l:) f1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under a fixed model \texttt{mod}. At this stage, the current goal to be proven is \texttt{F} to which we apply the assumption that \texttt{val1} and \texttt{remcf (CC l:) f1} are incompatible using the use command with \texttt{mod}, leaving us to prove that they are compatible under the model \texttt{mod}. The assumption  \texttt{all c(memcf c f1 -> ex l(memlc l c \& mod l))} instantiated with \texttt{CC l:} using the \texttt{inst-with} command and then the \texttt{ex-elim} command is applied to eliminated the existential quantifier and obtain \texttt{memlc l0(CC l:) \& mod l0}. The \texttt{ng} command normalises \texttt{memlc l0 (CC l:)} to \texttt{l0 = l} allowing us to use the following lemma to obtain \texttt{mod l}:
+In the Unit case a literal \texttt{l} is fixed in addition to \texttt{val1} and \texttt{f1} and several assumptions are made using the \texttt{assume} command.  We assume that there is a unit clause containing a single literal \texttt{l}, which is itself contained within the formula \text{f1}. We also assume that the valuation \texttt{conclv l val1} and the formula \texttt{remcf (CC l:) f1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under a fixed model \texttt{mod}. At this stage, the current goal to be proven is \texttt{F} to which we apply the assumption that \texttt{val1} and \texttt{remcf (CC l:) f1} are incompatible using the \texttt{use} command with \texttt{mod}, leaving us to prove that they are compatible under the model \texttt{mod}. The assumption  \texttt{all c(memcf c f1 -> ex l(memlc l c \& mod l))} is instantiated with \texttt{CC l:} using the \texttt{inst-with} command and then the \texttt{ex-elim} command is applied to eliminate the existential quantifier and obtain \texttt{memlc l0(CC l:) \& mod l0}. The \texttt{ng} (normalise goal) command normalises \texttt{memlc l0 (CC l:)} to \texttt{l0 = l} allowing us to use the following lemma to obtain \texttt{mod l}:
 
 \begin{center}
 \textbf{Model-m} := \texttt{all mod,l0,l1. l0 = l1 -> mod l0 -> mod l1} \\
@@ -254,7 +254,7 @@ The assumptions \texttt{mod l} and \texttt{all l (memlv l val -> mod l)}  are us
 \textbf{SubModel-add} := \texttt{all mod, val,l1. all l (memlv l val  -> mod l) -> mod l1 -> all l. memlv l (conclv l1 val ) -> mod l"} \\
 \end{center}
 
-The remaining part of the goal to be show is \texttt{all c(memcf c(remcf(CC l:)f1) -> ex l0(memlc l0 c \& mod l0))} which follows a similar approach to that used in the Elim case using the lemma \texttt{foralllemma}.
+The remaining part of the goal to be shown is \texttt{\justify all c(memcf c(remcf(CC l:)f1) -> ex l0(memlc l0 c \& mod l0))}. The proof follows a similar approach to that used in the Elim case using the lemma \texttt{foralllemma}.
 
 \begin{lstlisting}[caption = "The Reduce Case in Minlog"]
 ?_6:allnc val,f
@@ -281,12 +281,12 @@ The proof of the Reduce case begins by fixing a clause \texttt{c} and a literal 
       ex l(memlc l c \& mod l))}
 \end{center}
 
-To prove this we fix a clause \texttt{c1} using the assume command and then perform a case distinction using command (cases (pt "c1 = (remlc(opposite l0) c0)")).  In the first case the \texttt{ex-intro} command is applied with \texttt{l1} leaving us to show \texttt{memlc l1 c1 \& mod l}. The \texttt{split} command allows us to prove each side conjunction in the current goal individually. To show \texttt{memlc l1 c1} we first use the \texttt{simp} command with the assumption \texttt{c1 = remlc (opposite l0) c0} to simplify the goal. The following lemma is then applied:
+To prove this we fix a clause \texttt{c1} using the \texttt{assume} command and then perform a case distinction using the command \texttt{(cases (pt "c1 = (remlc(opposite l0) c0)"))} (The (cases t) command results in two cases; one in which the term t holds and the other in which \texttt{t -> F} holds).  In the first case the \texttt{ex-intro} command is applied with \texttt{l1} leaving us to show \texttt{memlc l1 c1 \& mod l}. The \texttt{split} command allows us to prove each side of the conjunction in the current goal individually. To show \texttt{memlc l1 c1} we first use the \texttt{simp} command with the assumption \texttt{c1 = remlc (opposite l0) c0} to simplify the goal. The following lemma is then applied:
 \begin{center}
 \texttt{all l0,l1,c.  (l0 = l1 -> F) -> memlc l1 c -> memlc l1 (remlc l0 c)}
 \end{center}
 
-To show \texttt{opposite l0=l1 -> F} we assume \texttt{opposite l0 = l1} and then apply the model property leaving us to show \texttt{mod l0} and \texttt{mod (opposite l0)}. Using assumptions that \texttt{l0} is in the valuation \texttt{val1} and that \text{mod} models the valuation \textbf{val1} we can obtain \texttt{mod l0}. We show \texttt{mod (opposite l0)} by simplifying the goal with \texttt{opposite l0 = l1} and then apply the assumption that \texttt{mod l1} holds using the \texttt{use} command.  In the case that \texttt{c1 = (remlc(opposite l0) c0) -> F} holds we apply the assumption that \texttt{mod} models \texttt{f1}, leaving the current goal as \texttt{memcf c1 f0}, and use the following lemma:
+To show \texttt{opposite l0=l1 -> F} we assume \texttt{opposite l0 = l1} and then apply the model property leaving us to show \texttt{mod l0} and \texttt{mod (opposite l0)}. Using the assumptions that \texttt{l0} is in the valuation \texttt{val1} and that \texttt{mod} models the valuation \textbf{val1} we can obtain \texttt{mod l0}. We show \texttt{mod (opposite l0)} by simplifying the goal with \texttt{opposite l0 = l1} and then apply the assumption that \texttt{mod l1} holds using the \texttt{use} command.  In the case that \texttt{c1 = (remlc(opposite l0) c0) -> F} holds we apply the assumption that \texttt{mod} models \texttt{f1}, leaving the current goal as \texttt{memcf c1 f0}, and use the following lemma:
 
 \begin{center}
 \textbf{remove-lemma} := \texttt{all f1,c0,c1,l0. (c1=remlc(opposite l0) c0 -> F) -> memcf c1 (conccf(remlc(opposite l0) c0) (remcf c0 f1)) -> memcf c1 f1}  
@@ -308,20 +308,20 @@ To show \texttt{opposite l0=l1 -> F} we assume \texttt{opposite l0 = l1} and the
        all c(memcf c f -> ex l0(memlc l0 c & mod l0)) -> F))
 \end{lstlisting}
 
-The proof of the Split case proceeds by fixing a literal \texttt{l} and a model \texttt{mod} and making several assumptions using the \texttt{assume} command. We assume that \texttt{f1} and the valuations \texttt{conclv l val1} and \texttt{conclv (opposite l) val1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under the model \texttt{mod}. We then perform a case distinction on whether \texttt{mod l}  or \texttt{mod (opposite l)} using the \texttt{cases} command and the model property. In the case that \texttt{mod l} holds we apply the assume that \texttt{conclv l val1} and \texttt{f1} are incompatible  to the goal \texttt{F}, using the use  command with \texttt{mod} as an arguement, resulting in a new goal that is to show that they are compatible under \texttt{mod}. \texttt{all l1. memlv l1 (conclv l val1) -> mod l1} is proven by fixing a literal \texttt{l1} using the assumptions \texttt{all l2. memlv l2 val1 -> mod l2} and \texttt{mod l} and by performing a case distinction on whether \texttt{l1 = l}. The case the \texttt{mod (opposite l)} holds is proven in a similar fashion using the assumption that \texttt{conclv (opposite l) val1} and \texttt{f1} are incompatible.
+The proof of the Split case proceeds by fixing a literal \texttt{l} and a model \texttt{mod} and making several assumptions using the \texttt{assume} command. We assume that \texttt{f1} and the valuations \texttt{conclv l val1} and \texttt{conclv (opposite l) val1} are incompatible and that \texttt{f1} and \texttt{val1} are compatible under the model \texttt{mod}. We then perform a case distinction on whether \texttt{mod l}  or \texttt{mod (opposite l)} using the \texttt{cases} command and the model property. In the case that \texttt{mod l} holds we apply the assumption that \texttt{conclv l val1} and \texttt{f1} are incompatible  to the goal \texttt{F}, using the use  command with \texttt{mod} as an arguement, resulting in a new goal that is to show that they are compatible under \texttt{mod}. \texttt{all l1. memlv l1 (conclv l val1) -> mod l1} is proven by fixing a literal \texttt{l1} using the assumptions \texttt{all l2. memlv l2 val1 -> mod l2} and \texttt{mod l} and by performing a case distinction on whether \texttt{l1 = l}. The case where \texttt{mod (opposite l)} holds is proven in a similar fashion using the assumption that \texttt{conclv (opposite l) val1} and \texttt{f1} are incompatible.
 
 
 
 
 \section{The Completeness of the DPLL in Minlog}
-The proof of completeness in Minlog follows the proof of completeness described in Chapter \ref{chapter:dpll}. There are however some implementation details such as the use of non-computational quantifiers and implementation of logical disjunction that are not delt with in the paper proof and require some discussion. We begin by describing how the search heuristic for our SAT solver is inplemented and integrated at the proof level.
+The proof of completeness in Minlog follows the proof of completeness described in Chapter \ref{chapter:dpll}. There are however some implementation details such as the use of non-computational quantifiers and implementation of logical disjunction that are not dealt with in the paper proof and require some discussion. We begin by describing how the search heuristic for our SAT solver is inplemented and integrated at the proof level.
 
 
 
 \subsection*{Selecting a Literal}
-There are a wide range of established SAT heuristics that have been studied in great detail. We have however chosen to use the simpliest heuristic available which selects the first literal. This is implemented using two program constants \texttt{Select} and \texttt{SelectLit} which pattern match on the first available clause to select the first available literal. In the case that the empty formula or an empty clause is searched for such a literal we return \texttt{(Pos (Variable 0))} which can be seen as a default variable as in either or those cases the search has terminated. 
+There are a wide range of established SAT heuristics that have been studied in great detail. We have however chosen to use the simplest heuristic available which selects the first literal. This is implemented using two program constants \texttt{Select} and \texttt{SelectLit} which pattern match on the first available clause to select the first available literal. In the case that the empty formula or an empty clause is searched for such a literal we return \texttt{(Pos (Variable 0))} which can be seen as a default variable as in either of those cases the search has terminated. 
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = The Literal Selection Function]
 (add-program-constant "Select" (py "for => lit") 1)
 (add-program-constant "SelectLit" (py "cla => lit") 1)
 
@@ -334,7 +334,7 @@ There are a wide range of established SAT heuristics that have been studied in g
                          (pt "(Pos (Variable 0))"))
 \end{lstlisting}
 
-In order to integrate such a heuristic into our proof one has to prove the following statement. It states that for all non-empty lists of clauses such that all clauses are non empty, the function select returns a literal \texttt{l} and that literal is in those clauses.
+In order to integrate such a heuristic into our proof one has to prove the following statement. It states that for all non-empty lists of clauses such that all clauses are non empty, the function \texttt{Select} returns a literal \texttt{l} and that literal is in those clauses.
 
 \begin{center}
 \texttt{(set-goal (pf "allnc cs0.all c,cs ex l. cs0 = (c::cs) -> NoEmptycla(c::cs) -> Select (CF (c::cs)) = l \& memlitfor l (CF (c::cs))"))}
@@ -342,15 +342,15 @@ In order to integrate such a heuristic into our proof one has to prove the follo
 
 
 \subsection{Defining a Measure Function}
-The measure function mu is defined in the Minlog system using a program constant \texttt{mu} and a computation rule.
+The measure function $\mu$ is defined in the Minlog system using a program constant \texttt{mu} and a computation rule.
 
 (add-computation-rule (pt "mu cs1 cs2 val") (pt " Lh(toLit cs1) + Lh( toLit cs2) + Lh (varMinusVal cs1 cs2 val )"))
 
-Where the \texttt{Lh} function computes the length of the list, the \texttt{toLit} function computes the set of literals contained within a clause list and varMinusVal computes the set minus of the set variables of the two lists of the clause and the set of variables contained within the valuation.
+Where the \texttt{Lh} function computes the length of the list, the \texttt{toLit} function computes the set of literals contained within a clause list and \texttt{varMinusVal} computes the set minus of the set variables of the two lists of the clause and the set of variables contained within the valuation.
 
 \subsection*{Defining Completeness}
 
-We use an inductively defined predicate, called \texttt{success}, to capture the disjunction in the proof of completeness statement. The existential quantifier used in the model case has been replaced with a selection function \texttt{g} and a program constant {clausesat} which is defined axiomatically:
+We use an inductively defined predicate, called \texttt{success}, to capture the disjunction in the proof of completeness statement. The existential quantifier used in the model case has been replaced with a selection function \texttt{g} and a program constant \texttt{clausesat} which is defined axiomatically:
 
 \begin{lstlisting}
 (add-program-constant "clausesat" 
@@ -369,7 +369,7 @@ We use an inductively defined predicate, called \texttt{success}, to capture the
    (pt "(Pos (Variable  0))"))
 \end{lstlisting}
 
-The inductive definition of \texttt{success} contains two closure axioms correspond to the cases that we either have a DPLL derivation of unsatisfiability or we have a model of the formula. 
+The inductive definition of \texttt{success} contains two closure axioms corresponding to the cases that we either have a DPLL derivation of unsatisfiability or we have a model of the formula. 
 
 \begin{lstlisting}[caption = "Inductive Definition of Completeness"]
 (add-ids (list 
@@ -395,10 +395,10 @@ The proof of completeness, from which we extract a verified SAT solver, is carri
 \texttt{(set-goal (pf "all cs1. success cs1 (Nil cla) (ConsVal (Nil lit))"))}
 \end{center}
 
-In the above statement the list of clauses \texttt{cs1} either has a DPLL derivation or a model. Since the empty valuation is consistent and the second clause list is empty and cannot contain the empty clause the following theorem can be applied:
+In the above statement the list of clauses \texttt{cs1} has either a DPLL derivation or a model. Since the empty valuation is consistent and the second clause list is empty and cannot contain the empty clause the following theorem can be applied:
 
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = "Beginning of the Completeness Proof"]
 (set-goal (pf "all cs1, cs2, val.  
  consistent val & 
  varIntersection (varv val) (varSetClaList cs2) = (Nil variable) -> 
@@ -411,7 +411,7 @@ In the above statement the list of clauses \texttt{cs1} either has a DPLL deriva
 (save "DPLLSuccess")
 \end{lstlisting}
 
-The theorem \texttt{DPLLSucces} is partitioned into several sub theorems or lemmas which give the extracted program a more procedural structure. The theorem \texttt{gRec} contains the application of the guarded recursion.  The \texttt{base} theorem deals with the two cases in which \texttt{cs1} is empty, namely the \texttt{Mode}l and Split cases. The \texttt{step} theorem deals with all of the remaining cases in which the clause list \texttt{cs1} is non-empty, namely the \texttt{Conflict}, \texttt{Elim}, \texttt{Reduce} and \texttt{Unit} cases.
+The theorem \texttt{DPLLSucces} is partitioned into several sub theorems or lemmas which give the extracted program a more procedural structure. The theorem \texttt{gRec} contains the application of the guarded recursion.  The \texttt{base} theorem deals with the two cases in which \texttt{cs1} is empty, namely the \texttt{Model} and $\Split$ cases. The \texttt{step} theorem deals with all of the remaining cases in which the clause list \texttt{cs1} is non-empty, namely the \texttt{Conflict}, \texttt{Elim}, \texttt{Reduce} and \texttt{Unit} cases.
 
 
 \section{The Modified DPLL and  Resolution Proof Systems in Minlog}
