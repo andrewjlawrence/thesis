@@ -318,7 +318,7 @@ We perform induction on the build up of the derivation $\Gamma \vdash_{\Delta'} 
 One has to show that if $\Gamma' \subseteq \Gamma$ and $\exists C_0 \in \Delta$ $\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$ then $\Gamma$ and $\Delta$ are incompatible. To do this we fix a model $M$ that causes $\Gamma$ and $\Delta$ to be compatible and then show a contradiction. Using $\Gamma' \clmodres{\Gamma}{C_0} \emptyset$ and the soundness of unit resolution (Theorem \ref{thm:UResSoundness}) we obtain $\Gamma, C_0 \models \emptyset$ which implies that $\incompatible{\Gamma}{\Delta}$. 
 %
 \subsection*{Case 2: $\Unit$}
-One has to show that if $\Gamma, l \, \delta(\Gamma) \vdash_{\Delta'} \Delta$, $\incompatible{\Gamma,l \, \delta(\Gamma)}{\Delta}$ and there exists a $\Gamma'$ such that  $\Gamma' \clmodres{\Gamma}{\Delta} \{ l \}$ then $\incompatible{\Gamma}{\Delta}$. To do this we fix a model $M$ such that $\Gamma$ and $\Delta$ are compatible and show that $\Gamma, l \, \delta(\Gamma)$ and $\Delta$ are compatible. Using the soundness of unit resolution (Theorem \ref{thm:UResSoundness}) with $\Gamma' \clmodres{\Gamma}{\{ C_0\}} \{ l \}$ we obtain that $\Delta \models \{l\}$ from this and $\compatible{\Gamma}{\Delta}$ it follows that $\compatible{\Gamma, l \, \delta(\Gamma)}{\Delta}$.
+One has to show that if $\Gamma, l \, \delta(\Gamma) \vdash_{\Delta'} \Delta$, $\incompatible{\Gamma,l \, \delta(\Gamma)}{\Delta}$ and there exists a $\Gamma'$ such that  $\Gamma' \clmodres{\Gamma}{\Delta} \{ l \}$ then $\incompatible{\Gamma}{\Delta}$. To do this we fix a model $M$ such that $\Gamma$ and $\Delta$ are compatible and show that $\Gamma, l \, \delta(\Gamma)$ and $\Delta$ are compatible. Using the soundness of unit resolution (Theorem \ref{thm:UResSoundness}) with $\Gamma' \clmodres{\Gamma}{\{ C_0\}} \{ l \}$ we obtain that $\Delta \models \{l\}$. From this and $\compatible{\Gamma}{\Delta}$ it follows that $\compatible{\Gamma, l \, \delta(\Gamma)}{\Delta}$.
 
 
 \subsection*{Case 3: $\Split$}
@@ -418,11 +418,13 @@ We use the following lemma to construct a new clause pair along with the associa
 \begin{align*}
 \forall \Gamma, C_1. \exists C_2. C_2 = C_1 \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2 \vee \exists l\, (l \in C_1 \wedge l \in \lit{\Gamma})
 \end{align*}
+\begin{proof}
 We perform induction on $\Gamma$.
 \begin{description}
 \item[$\Gamma = \emptyset$:] Then we use to prove the left side of the disjunction $C_1$. We have that $C_1 = C_1 \setminus \emptyset$ and $\emptyset \clmodres{\emptyset}{\{C_1 \}} C_1$ by the $\Sub$ rule.
 \item[$\Gamma = \Gamma'', d$ where $\lit{d} = l$:]
 We perform a case distinction on $l \in C_1$. In the case that $l \in C_1$ holds we have found a literal that satisfies the right hand of the disjunction $l \in C_1 \wedge l \in \lit{\Gamma}$. If $l \notin C_1$ then by the induction hypothesis we obtain $\exists C_2. C_2 = C_1 \setminus \mybar{\Gamma''} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2$  or $\exists l\, (l \in C_1 \wedge l \in \lit{\Gamma''}$. In the case that we have a clause $C_2$ and a valuation $\Gamma'$ such that $C_2 = C_1 \setminus \mybar{\Gamma''} \wedge  \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2$ we perform a case distinction on whether $\mybar{l} \in C_2$. If $\mybar{l} \in C_2$ then $C_2\setminus \mybar{l} = C_1 \setminus \mybar{\Gamma'', d} \wedge \exists \Gamma' . \Gamma',d  \clmodres{\Gamma}{\{C_1 \}} (C_2 \setminus \mybar{l})$. The unit resolution derivation $ \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2$  is extended using the $\Res$ and $\UnitSub$ rules to form  $\Gamma',d  \clmodres{\Gamma}{\{C_1 \}} (C_2 \setminus \mybar{l}) $. If $\mybar{l} \notin C_2$ then $C_2$ satisfies the left hand of the disjunction. Finally in the case that $\exists l \in C_1 \wedge l \in \lit{\Gamma''}$  this $l$ is also in the extended valuation and therefore the right hand of the disjunction is proven.
+\end{proof}
 
 \begin{comment}
 We perform a case distinction on whether $l \in \lit(\Gamma)$ if it is then we have found a literal  such that $l \in C_1 \wedge l \in \lit(\Gamma)$. If $l \notin \lit{\Gamma}$ by the induction hypothesis we obtain $\exists C_4. C_4 = C_3 \setminus \mybar{\Gamma} \wedge \exists \Gamma'. \, \Gamma'  \clmodres{\Gamma}{\{ C_3 \}} C_4  \vee  \exists l \, (l \in C_3 \wedge l \in \lit{\Gamma})$. Leading to two further cases. In the case that  the left hand of the disjunction holds we then perform a case distinction on whether $\mybar{l} \in \Gamma$
