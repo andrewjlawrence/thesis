@@ -451,6 +451,7 @@ We do a proof by induction on $\Delta$.
 \end{proof}
 \end{mylemma}
 
+\medskip
 
 \begin{mylemma}\label{lem:compsplit}
 \begin{align*}\forall \DeltaVec,\Delta,\Gamma.  \complete{\DeltaVec}{\Gamma}{\Delta} \to \forall l. \, \exists \DeltaVec' \complete{\DeltaVec'}{\Gamma, \splitdecgone{l}}{\Delta}
@@ -476,22 +477,20 @@ By the definition of $\mathrm{complete}$ $(C_1, C_2)$ is the only pair in $\Delt
 Proof by induction on $\DeltaVec_1$ leading to two cases:
 
 \begin{description}
-\item[$\DeltaVec_1 = \emptyset$]
+\item[Case: $\DeltaVec_1 = \emptyset$]
 We have to show $\complete{\DeltaVec_2}{\Gamma}{\Delta_2}$ which we have as an assumption.
 
-\item[$\DeltaVec_1 = (C_1, C_2), \DeltaVec_1'$]
-By Lemma \ref{lem:comprem} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C_1}$ holds then by the induction hypothesis we obtain $\complete{\DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \setminus C_1 \cup \Delta_2}$. We now have to argue if we add $C_1$ to $\Delta_1 \setminus C_1 \cup \Delta_2$ then $\complete{(C_1, C_2), \DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \cup \Delta_2}$.
+\item[Case: $\DeltaVec_1 = (C_1, C_2), \DeltaVec_1'$]
+By Lemma \ref{lem:comprem} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C_1}$ holds then by the induction hypothesis we obtain $\complete{\DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \setminus C_1 \cup \Delta_2}$. We now have to argue if we add $C_1$ to $\Delta_1 \setminus C_1 \cup \Delta_2$ then $\complete{(C_1, C_2), \DeltaVec_1' \cup \DeltaVec_2}{\Gamma}{\Delta_1 \cup \Delta_2}$ for the individual parts of the completeness definition:
 \begin{description}
 \item[1. a)] Follows trivially since $\Delta_1$ contains $C_1$.
 \item[1. b), c), d)] From $\complete{(C_1,C_2), \DeltaVec_1'}{\Gamma}{\Delta_1}$ we obtain $C_2 = C_1 \setminus \mybar{\Gamma}$, $\var{C_2} \cap \var{\Gamma} = \emptyset$ and $\clmodres{\Gamma}{\{C_1 \}} C_2$ .
 \item[2.] Only removing and not adding pairs affects whether or not this part holds. Therefore if 2. holds for $\DeltaVec_1' \cup \DeltaVec_2$ then it also holds for $\DeltaVec_1 \cup \DeltaVec_2$.
-
 \end{description}  
 \end{description}
-
 \end{mylemma}
-
-We shall now prove the completeness of the modified DPLL proof system using the assumption that we have a complete set of clause pairs.\\
+\medskip
+We now proceed to the Main proof of completeness in which we maintain a complete set of clause pairs and unit resolution derivations with respect to the current valuation and formula. We call $n \leq \delta(\Gamma)$  the "witness", it provides us with a DPLL derivation of unsatisfiability using the valuation $\Gamma$ cropped to a decision level $n$.\\
 \medskip
 \begin{mytheorem}[Completeness of Modified DPLL] 
 We can fix a finite set of variables $\{v_1, \ldots , v_N \}$ in advance and consider only $\Gamma$ and $\Delta$ built from these variables.
@@ -500,10 +499,7 @@ We can fix a finite set of variables $\{v_1, \ldots , v_N \}$ in advance and con
 & (\exists \DeltaVec \, \complete{\DeltaVec}{\Gamma}{\Delta}) \to \\
 &\compatible{\Gamma}{\Delta} \vee  \exists n \leq \delta(\Gamma) \, \wedge  \exists \Delta' ( \Gamma_{\leq n}  \vdash_{\Delta'} \Delta)
 \end{align*}
-
-We call $n \leq \delta(\Gamma)$  the "witness". We used $\mathrm{complete}$ to represent a set of formulae indexed by the decision levels of the valuation where each formula  contains the set of clauses derived by unit resolution and weakening for that decision level from $\Gamma$ and $\Delta$.
 %
-
 \begin{proof}
 We perform induction on  
 $$\mu(\Gamma) := N - |\var{\Gamma}|$$
