@@ -453,7 +453,7 @@ We define a hybrid automaton $H_{IL}$ as follows:
 \end{comment}
 
 \subsection{Radio Block Processor Automaton}
-Similarly to the train automaton the RBC automaton also has four control modes namely Granted, Idle, Wait and Ready to Request. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the Ready to Request state.  From this state the train sends a request for the next track segment of the LastTrain. In the following definition we have defined the initial state of the RBC for the pentagon example with the initial positions of the trains A and B being $0$ and $150$ and their movement authorities being $49$ and $199$ respectively.
+Similarly to the train automaton the RBC automaton also has four control modes namely $Granted$, $Idle$, $Wait$ and $Ready \, to \, Request$. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the $Ready \, to \, Request$ state.  From this state the train sends a request for the next track segment of the $LastTrain$. In the following definition we have defined the initial state of the RBC for the pentagon example with the initial positions of the trains A and B being $0$ and $150$ and their movement authorities being $49$ and $199$ respectively.
 \medskip
 
 \begin{mydef}[Radio Block Controller Hybrid Automaton]
@@ -472,9 +472,9 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 \item[Jump Conditions] \hspace*{0mm}
 
 	\begin{itemize}
-	\item $jump(Ready \, to \, Request \to Ready \, to \, Request) :=  Pos_x = y$
-	\item $jump(Wait \to Wait) :=  Pos_x = y$
-	\item $jump(Granted \to Granted) :=  Pos_x = y$
+	\item $jump(Ready \, to \, Request \to Ready \, to \, Request) :=  Pos.x = y$
+	\item $jump(Wait \to Wait) :=  Pos.x = y$
+	\item $jump(Granted \to Granted) :=  Pos.x = y$
 	\item $jump(Idle \to Idle) := Pos.x = y$
 	\item $jump(Idle \to Ready \, to \, Request) := LastTrain = x$
 	\item $jump(Granted \to Idle) := EoA_{LastTrain} = EndOf(NextTrack(Pos_{LastTrain}))$
@@ -572,7 +572,7 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 \end{itemize}
 \end{mydef}
 \medskip
-When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continuous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of  timed transition systems which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automatons real numbered variables.
+When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continuous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of  timed transition systems which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automaton's real-numbered variables.
 
 \medskip
 \begin{mydef}[Transition Semantics of Hybrid Automata]
@@ -581,12 +581,12 @@ We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed tran
 
 \begin{itemize}
  
-\item The state space $S$ of the timed transition system is defined as, $S, S_0 \subseteq V \times R^n$. A state is in the state space $(v,x) \in S_0$ iff the closed predicate $inv(v)[X := x]$ holds. In addition to the previous condition a state is in the initial state space $(v,x) \in S_0$ iff the closed predicate $init(v)[X := x]]$ holds. We call a subset of the state space $S$ a \emph{H-region}.
+\item The state space $S$ of the timed transition system is defined as, $S, S_0 \subseteq V \times R^n$. A state is in the state space $(v,x) \in S_0$ iff the closed predicate $inv(v)[X := x]$ holds. In addition to the previous condition a state is in the initial state space $(v,x) \in S_0$ iff the closed predicate $init(v)[X := x]$ holds. We call a subset of the state space $S$ a \emph{H-region}.
 
 
 \item $L = \Sigma \cup R {\geq 0}$
 
-\item For all events $\sigma \in \Sigma$ such that there exists a control switch $e \in E$, define $(v,x) \xrightarrow{\sigma} (v',x')$ iif the following conditions are satisfied:
+\item For all events $\sigma \in \Sigma$ such that there exists a control switch $e \in E$, we define $(v,x) \xrightarrow{\sigma} (v',x')$ iff the following conditions are satisfied:
 \begin{enumerate}
 \item the source and target of $e$ are $v$ and $v'$ respectively
 \item the closed predicate $jump(e)[X, X' := x,x']$ holds
@@ -623,7 +623,7 @@ All transitions of a timed transition system $S^t_H$ have an associated \emph{du
 The automaton is non-Zeno if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system.
 
 \section{Automaton Validation}
-In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since it does not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in white time cannot progress.
+In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since they do not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in while time cannot progress.
 \medskip
 
 \begin{mytheorem}[Train Automaton is Non-Zeno]
@@ -631,7 +631,7 @@ The hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajecto
 \begin{proof}
 The proof proceeds by performing a case distinction on the state of $H_{T}$.
 \begin{description}
-\item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ can not be violated.
+\item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ cannot be violated.
 
 
 \item[Case: Accelerating] The invariant $\BD{S} \leq \DMA{D}{EoA}$ bounds the increase of the variables for the distance and speed which occur in this state resulting in two cases. The automaton is either in the region in which the invariant holds and can progress in time, or the automaton is at the boundary of the region defined by the invariant and time can no longer progress. When the automaton is at the boundary of the region $\BD{S} = \DMA{D}{EoA}$ holds and time can no longer progress in this control mode however a jump can occur to the Braking state in which the invariant $\BD{S} = \DMA{D}{EoA}$ holds. The invariant $S \leq MaxSpeed$ bounds the increase of the $S$ variable. In this state the speed will increase until the boundary of the invariant $S \leq MaxSpeed$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Speed$ state.
