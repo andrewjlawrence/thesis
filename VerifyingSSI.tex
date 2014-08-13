@@ -4,7 +4,7 @@ In the following we examine the rule time behaviour of the extracted DPLL solver
 
 
 \section{Behaviour of X-SAT}
-The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}.  The benchmarks we have used to analyse the performance of our solvers are the pigeon hole formulae \cite{SC79}. 
+The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{sec:xsatcomparison} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}.  The benchmarks we have used to analyse the performance of our solvers are the pigeon hole formulae \cite{SC79}. 
 \begin{mydef}[Pigeon Hole Formulae]
 
 \begin{align*}
@@ -33,7 +33,7 @@ The formula is unsatisfiable and our extracted solver produces a DPLL derivation
 \texttt{"CsuccessZero(CdpllTwo(Pos(Variable 11))(CdpllTwo(Pos(Variable 21))(CdpllThree(CC(Neg(Variable 11)::(Neg(Variable 21)):))(Pos(Variable 11))(CdpllThree(CC(Neg(Variable 21)):)(Pos(Variable 21))CdpllZero))))"}
 \end{center}
 
-The above contains two data structures extracted from inductive definitions. The first is the success data structure which is the return type of the SAT function and in this case the \texttt{CsuccessZero} constructor has been used to return a DPLL derivation as a result. There other extracted data structure comes from the inductive definition of the dpll proof system, whose 5 closure axioms have been extracted into corresponding constructors.
+The above contains two data structures extracted from inductive definitions. The first is the success data structure which is the return type of the SAT function and in this case the \texttt{CsuccessZero} constructor has been used to return a DPLL derivation as a result. There other extracted data structure comes from the inductive definition of the DPLL proof system, whose 5 closure axioms have been extracted into corresponding constructors.
 
 
 
@@ -54,7 +54,7 @@ The result of running this satisfiable pigeon hole formula with our SAT algorith
 
 
 \section{Behaviour of Prototype Clause Learning Algorithm}
-In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. This prototype has had $\forallnc$ quanitifiers inserted to reduce the amount of redundant computational content and the overal size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
+In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. This prototype has had $\forallnc$ quanitifiers inserted to reduce the amount of redundant computational content and the overall size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
 
 \begin{center}\texttt{(term-to-string (nt (make-term-in-app-form program (pt "(CF ((CC (Pos (Variable 11)):)::(CC (Pos (Variable 12)):):)) "))))}
 \end{center}
@@ -117,7 +117,7 @@ CmodDPLLTwo(Pos(Variable 32))
 
 
 \FloatBarrier
-\section{Application of X-SAT to Benchmark problems}
+\section{Application of X-SAT to Benchmark problems} \label{sec:xsatcomparison}
 %
 %%%We have performed several comparisons between different implementations of our solver. 
 %% We compared the extracted  $\forall$ solver and the one optimised with $\forallnc$ quantifiers 
@@ -189,7 +189,7 @@ The next two columns of Table \ref{tab:minlog-vs-haskell} present two versions o
 \end{table}
 %%% Question (Andy): Some of the optimisations in the LLVM toolkit have been verified themselves. Should this be mentioned?
 
-We also compared the performance of our $\forallnc$ solver, compiled using the LLVM backend of GHC, with that of Versat~\cite{DO12}. Our solver was run with the option of not computing a witness since Versat does generally not compute a proof. The results in Table \ref{tab:versat} show that our solver is comparable with Versat. It is slower on the easier formulae and
+We also compared the performance of our $\forallnc$ solver, compiled using the LLVM backend of GHC, with that of Versat~\cite{DO12}. Our solver was run with the option of not computing a witness since Versat does not generally compute a proof. The results in Table \ref{tab:versat} show that our solver is comparable with Versat. It is slower on the easier formulae and
 faster on the hardest pigeon hole formulae. This is because the clause learning optimisation of Versat has some overhead and does not increase the performance on pigeon hole formulae. The point of the learned clauses is to reduce the search space for the solver.  In this case, they instead take up more memory and take time to compute.
 %  
 \begin{table}%[b]
@@ -220,7 +220,7 @@ faster on the hardest pigeon hole formulae. This is because the clause learning 
 %% (Andy) I need to look in the safety condition book and come up with a good description of this condition.
 
 %
-The same version of our solver was also applied to the verification of a real world railway control system via falisfication checking and compared with a SAT solver within the industrial tool SCADE~\cite{SCADE} and Versat. The verification problem was formulated following \cite{MS00} using a tool presented in \cite{KK08}. This is a non trivial example of an application of our SAT solver. We check 5 safety conditions which related to checking that two conflicting routes, out of a set of four routes $R1, \ldots, R4$, can not be active in the railway at the same time. The SAT problem is formulated to perform falisfication checking of the system i.e. a satisfying assignment represents a counter example and an unsatisfiable result means the safety property can not be violated in the system. With each of the five safety conditions our solver produces a proof which certifies that the safety property holds. The SCADE suite can verify that each of the safety properties holds in less than one second with no greater degree of accuracy provided by the system.
+The same version of our solver was also applied to the verification of a real world railway control system via falsification checking and compared with a SAT solver within the industrial tool SCADE~\cite{SCADE} and Versat. The verification problem was formulated following \cite{MS00} using a tool presented in \cite{KK08}. This is a non trivial example of an application of our SAT solver. We check 5 safety conditions which related to checking that two conflicting routes, out of a set of four routes $R1, \ldots, R4$, can not be active in the railway at the same time. The SAT problem is formulated to perform falsification checking of the system i.e. a satisfying assignment represents a counterexample and an unsatisfiable result means the safety property can not be violated in the system. With each of the five safety conditions our solver produces a proof which certifies that the safety property holds. The SCADE suite can verify that each of the safety properties holds in less than one second with no greater degree of accuracy provided by the system.
 
 \begin{comment} 
 The safety condition SC1 results in a SAT problem containing 8166 variables and 14716 clauses. It is unsatisfiable due to under-specification of the railway interlocking program which does not include all physical invariants. Out of 100 safety conditions available for the interlocking program, SC1 is the hardest to verify; most of the safety conditions are easily satisfiable. Our solver produces a proof showing that the safety condition is unsatisfiable, whereas the SCADE suite produces a counter example trace showing a sequence of states and transitions that lead to the safety condition being falsified. The results can be found in Table~\ref{tab:scade}.
