@@ -1,12 +1,12 @@
 \chapter{Background: Model Checking}
 %%%There are many systems in the modern world that are built from communicating concurrent subsystems 
-Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science such as electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. In this thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two separate research teams  Clarke and Emerson~\cite{EM82} and Quielle and Sifakis~\cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver~\cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the state \emph{space explosion problem}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space. Examples of modern model checkers include SPIN~\cite{GH04} which performs on-the-fly model checking  based around the partial order reduction technique~\cite{DP94}  and the probabilistic model checker Prism~\cite{MK11}. The Maude LTL Model Checker~\cite{ES00} also performs on-the-fly model checking and the underlying principles behind this will be discusses later in this chapter.
+Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science, for example in electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. This thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two separate research teams:  Clarke and Emerson~\cite{EM82} and Quielle and Sifakis~\cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver~\cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the  \emph{state space explosion problem} \cite{EC01b,RP09}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space. Examples of modern model checkers include SPIN~\cite{GH04} which performs on-the-fly model checking  based around the partial order reduction technique~\cite{DP94}  and the probabilistic model checker Prism~\cite{MK11}. The Maude LTL Model Checker~\cite{ES00} also performs on-the-fly model checking and the underlying principles behind this will be discusses later in this chapter.
 
 \section{Model Checking Preliminaries}
-In the following we shall describe some logical fundamentals needed to understand model checking. Firstly we shall introduce a form of state transition system namely \emph{Kripke Structures}~\cite{SK63} which are used capture the behaviour of finite discrete systems. Following this we shall introduce a language \emph{Linear Temporal Logic} which will enable us to formulate properties over these systems.
+In the following we shall describe some logical fundamentals needed to understand model checking. Firstly we shall introduce a form of state transition system namely, \emph{Kripke structures}~\cite{SK63}, which are used capture the behaviour of finite discrete systems. Following this we shall introduce a language, \emph{Linear Temporal Logic}, which will enable us to formulate properties over these systems.
 \medskip
 \begin{mydef}[Kripke Structure]
-Given a set of atomic propositions $AP$. We define a Kripke Structure $M$ to be a four tuple $(S, S_0, R, L)$
+Given a set of atomic propositions $AP$, we define a Kripke structure $M$ to be a four tuple $(S, S_0, R, L)$
 where:
 \begin{itemize} 
 \item $S$ is a finite set of states
@@ -16,7 +16,7 @@ where:
 \end{itemize}
 \end{mydef}
 \medskip
-When we are formalising properties over a transition system such as a Kripke Structure it is useful from the point of view of safety to check which states a system can reach from a specific set of initial states. In practice it is rarely possible for a system to be safe for all states and therefore only states that are reachable from a set of safe initial states are considered. We define the set of reachable states inductively, all states in the initial set of states are reachable and a state is reachable if there is a transition to that state from a previous state that is also reachable.
+When we are formalising properties over a transition system such as a Kripke structure it is useful from the point of view of safety to check which states a system can reach from a specific set of initial states. In practice it is rarely possible for a system to be safe for all states and therefore only states that are reachable from a set of safe initial states are considered. We define the set of reachable states inductively: all states in the initial set of states are reachable and a state is reachable if there is a transition to that state from a previous state that is also reachable.
 \medskip
 \begin{mydef}[Reachability]
 Given a transition system $M = (S,S_0, R)$, we define $Reach_R(S, S_0)$ the set of states reachable from $S_0$ in $S$ via the transition relation $R$. Formally it is the least set of states such that the following holds: 
@@ -43,7 +43,7 @@ We also  abbreviate  a sequence of states $s_n \ldots s_m$ as $\sseq{n}{m}$
 
 \end{myremark}
 \medskip
-Knowing whether or not an unsafe state is reachable or not so useful from an engineering point of view as it does not provide any information as to how the unsafe state was reached. It is therefore desirable to be able to formulate a \emph{path} or sequence of states through a transition system. In the case that such an unsafe state is found, model checking techniques that check paths through the transition system will be able to provide a such a path as a \emph{counter example trace}.
+Knowing whether or not an unsafe state is reachable or is not useful from an engineering point of view as it does not provide any information as to how the unsafe state was reached. It is therefore desirable to be able to formulate a \emph{path} or sequence of states through a transition system. In the case that such an unsafe state is found, model checking techniques that check paths through the transition system will be able to provide a such path as a \emph{counter example trace}.
 \medskip
 \begin{mydef}[Path]
 Given a sequence of states $\sseq{0}{n}$ and a transition relation $R$ we define a path as follows:
@@ -72,7 +72,7 @@ Given a set of atomic propositions $AP$ we define an LTL path formula (pf) as fo
 
 \end{mydef}
 \medskip
-We shall now look at the semantics of LTL firstly using an informal description of the temporal operations from which LTL is constructed and secondly by giving a formal semantics for LTL. The following is a description of the 5 LTL operations over paths of a Kripke Structure.
+We shall now look at the semantics of LTL firstly using an informal description of the temporal operations from which LTL is constructed and secondly by giving a formal semantics for LTL. The following is a description of the five LTL operations over paths of a Kripke Structure.
 \begin{itemize}
 \item \textbf{X} $f$ : The property $f$ holds in the \emph{next} moment of time.
 \item \textbf{G} $f$ : The property $f$ is \emph{globally} true. i.e. it holds for all times on all paths. 
@@ -85,7 +85,7 @@ We shall now look at the semantics of LTL firstly using an informal description 
 %%% We need to formalise the following definition. Semantics of Linear Temporal Logic Formula?
 %%% 
 
-The semantics of LTL is defined inductively for all operations in the following, it is however possible to define the semantics just in terms of the $\mathbf{X}$ and $\mathbf{U}$ operations and to obtain the semantics for the other operations via equivalences.
+The semantics of LTL is defined inductively for all operations in the following; it is however possible to define the semantics just in terms of the $\mathbf{X}$ and $\mathbf{U}$ operations and to obtain the semantics for the other operations via equivalences.
 
  \medskip
 \begin{mydef}[Semantics of Linear Temporal Logic]
@@ -135,7 +135,7 @@ $$K,\pi \models_{LTL} \phi \vee \psi \leftrightarrow K,\pi \models_{LTL} \phi \ 
 7. & $M, \pi \models \phi \mathbf{U} \psi$ & $\Leftrightarrow$ & $\exists n \in \mathbb{N}. M,succ^n; \pi \models \psi \wedge \forall m \in \mathbb{N}. m < n \to succ^m; \pi \models \phi$ \\
 8. & $M,\pi \models \mathbf{F} \phi$ & $\Leftrightarrow$ & $\exists n \in \mathbb{N}. M,succ^n;\pi \models \phi$ \\
 9. & $M,\pi \models \mathbf{G} \phi$ & $\Leftrightarrow$ & $\forall n \in \mathbb{N}. M, succ^n;\pi \models \phi$ \\
-10. & $M,\pi \models \phi \mathbf{R} \psi$ &$\Leftrightarrow$&  $\forall n,m \in \mathbb{N}. i < j \to M,succ^i; \pi \not\models \phi \to  M,\succ^j \models \psi$ 
+10. & $M,\pi \models \phi \mathbf{R} \psi$ &$\Leftrightarrow$&  $\forall n,m \in \mathbb{N}. i < j \to M,succ^i; \pi \not\models \phi \to  M,succ^j; \pi \models \psi$ 
 \end{tabular}
 \end{center}
 
@@ -147,8 +147,8 @@ There are equivalences between the following formulas containing $\textbf{G}$ an
 $$\textbf{G} \phi \equiv False \, \mathbf{R} \, \phi $$
 $$\textbf{F} \phi \equiv   True \, \mathbf{U} \, \phi$$
 
-Combined  with the equivalences for obtaining negative normal form.
-
+Combined  with the equivalences for obtaining negative normal form we can obtain the semantics for all of the LTL formulae.
+\medskip
 \begin{mydef}[LTL Negative Normal Form]
 The negative normal form of an LTL formula can be obtained by applying the following equivalences:
 $$\neg True \equiv False$$
@@ -165,19 +165,19 @@ from left to right until no further equivalence is applicable.
 \section{Model Checking Propositional Safety Properties Using a SAT Solver}
 
 
-In the following we shall introduce two general types of model checking  which are applied to check propositional safety properties over discrete systems using a SAT solver~\cite{MS00,EC01}. The first is inductive verification, which is split into two steps consisting of a base case and a step case.   The second that we shall discuss is bounded model checking which attempts to verify a property of the system with an exhaustive search up to a particular depth. There are other types of model checking including temporal induction which has the benefits of both inductive verification and bounded model checking however suffers in terms of speed and the size of the resulting problem. All of these problems are formulated in propositional logic and then translated into CNF using the Tseitin Translation~\cite{GT83}.
+In the following we shall introduce two general types of model checking  which are applied to check propositional safety properties over discrete systems using a SAT solver~\cite{MS00,EC01}. The first is inductive verification, which is split into two steps consisting of a base case and a step case.  The second that we shall discuss is bounded model checking which attempts to verify a property of the system with an exhaustive search up to a particular depth. There are other types of model checking including temporal induction which has the benefits of both inductive verification and bounded model checking however suffers in terms of speed and the size of the resulting problem. All of these problems are formulated in propositional logic and then translated into CNF using the Tseitin Translation~\cite{GT83}.
 
 
 
 \subsection*{Inductive Verification}
 
-Inductive verification attempts to use induction over the transition relation in order to perform verification formulated in such a way that a SAT solver can be used to solve the problem~\cite{MS00}. The base case checks that the safety property holds in all intial states of the system. The step case checks that if the system is in a state in which the safety property holds and a transition occurs then the resulting state is also safe, for all possible safe states and transitions out of those states. This method has the advantage over other model checking techniques that it is fast and can verify then entire state space. The disadvantage is that if the safety property is violated then you obtain a pair of states as a counter example instead of a sequence of states that form a counter example trace.
+Inductive verification attempts to use induction over the transition relation in order to perform verification formulated in such a way that a SAT solver can be used to solve the problem~\cite{MS00}. The base case checks that the safety property holds in all initial states of the system. The step case checks that if the system is in a state in which the safety property holds and a transition occurs then the resulting state is also safe, for all possible safe states and transitions out of those states. This method has the advantage over other model checking techniques that it is fast and can verify the entire state space. The disadvantage is that if the safety property is violated then you obtain a pair of states as a counterexample instead of a sequence of states that form a counterexample trace. Having a counterexample trace is more useful as it allows engineers to determine how unsafe or erroneous states are reached from the root cause.
 \medskip
 \begin{mydef}[Inductive Verification]
 Given a transition system $M$ and a safety property $\phi$ we define inductive verification as follows:
 \begin{align*}
 indbase_M(\phi)  &:= \forall s_0. S_0(s_0)  \to s_0 \models \phi \\
-indstep_M(\phi) &:= \forall s,s' \in S \wedge R(s, s') \to s \models \phi  \to s' \models \phi
+indstep_M(\phi) &:= \forall s,s' \in S. R(s, s') \to s \models \phi  \to s' \models \phi
 \end{align*}
 \end{mydef}
 \medskip
