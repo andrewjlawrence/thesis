@@ -4,9 +4,9 @@ In the following we examine the rule time behaviour of the extracted DPLL solver
 
 
 \section{Behaviour of X-SAT}
-The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{sec:xsatcomparison} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}.  The benchmarks we have used to analyse the performance of our solvers are the pigeon hole formulae \cite{SC79}. 
+The following section we shall look at the behaviour of the extracted SAT algorithm, which we shall refer to as X-SAT, when run inside the Minlog system. In section \ref{sec:xsatcomparison} we compare various implementations of this SAT algorithm with another verified SAT algorithm Versat \cite{DO12}.  The benchmarks we have used to analyse the performance of our solvers are the pigeon hole formulae \cite{SC79}. \\
+\medskip
 \begin{mydef}[Pigeon Hole Formulae]
-
 \begin{align*}
 PHP(n,m) := &\{l_{i,1} , \ldots , l_{i,m} | 1 \leq i \leq n  \}  \\
   & \cup \{ \neg l_{i,k} , \neg l_{j,k} | 1 \leq i < j \leq n, 1 \leq k \leq m \} 
@@ -17,14 +17,10 @@ PHP(n,m) := &\{l_{i,1} , \ldots , l_{i,m} | 1 \leq i \leq n  \}  \\
 
 Intuitively, e.g. $PHP(n,n-1)$ states "it is not possible to put $n$ pigeons into $n-1$ holes and only have one pigeon in each hole"
 
-
-The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm to a pigeon hole formula PHP(2,1), which represents the program of putting two pigeons into one hole, in CNF. The normalise term command \texttt{nt} command is then used to execute the algorithm via minlogs built in term rewriting system.
+The \texttt{mk-term-in-app-form} command used to apply the extracted algorithm to a pigeon hole formula PHP(2,1), which represents the program of putting two pigeons into one hole, in CNF. The normalise term command \texttt{nt} command is then used to execute the algorithm via Minlog's built in term rewriting system.
 
 \begin{center}
-\texttt{(term-to-string (nt (mk-term-in-app-form program (pt "                                                                                                 (CC ((Pos (Variable11)):))::                                                    
-(CC ((Pos (Variable21)):))::                                                    
-(CC ((Neg (Variable11))::(Neg (Variable21)):)):                                                                                                                 
-") )))}
+\texttt{(term-to-string (nt (mk-term-in-app-form program (pt " (CC ((Pos (Variable11)):))::(CC ((Pos (Variable21)):))::(CC ((Neg (Variable11))::(Neg (Variable21)):)):") )))}
 \end{center}
 
 The formula is unsatisfiable and our extracted solver produces a DPLL derivation which proves that the formula is unsatisfiable. The resulting output is as follows:
@@ -33,7 +29,7 @@ The formula is unsatisfiable and our extracted solver produces a DPLL derivation
 \texttt{"CsuccessZero(CdpllTwo(Pos(Variable 11))(CdpllTwo(Pos(Variable 21))(CdpllThree(CC(Neg(Variable 11)::(Neg(Variable 21)):))(Pos(Variable 11))(CdpllThree(CC(Neg(Variable 21)):)(Pos(Variable 21))CdpllZero))))"}
 \end{center}
 
-The above contains two data structures extracted from inductive definitions. The first is the success data structure which is the return type of the SAT function and in this case the \texttt{CsuccessZero} constructor has been used to return a DPLL derivation as a result. There other extracted data structure comes from the inductive definition of the DPLL proof system, whose 5 closure axioms have been extracted into corresponding constructors.
+The above contains two data structures extracted from inductive definitions. The first is the success data structure which is the return type of the SAT function and in this case the \texttt{CsuccessZero} constructor has been used to return a DPLL derivation as a result. There other extracted data structure comes from the inductive definition of the DPLL proof system, whose five closure axioms have been extracted into corresponding constructors.
 
 
 
@@ -54,7 +50,7 @@ The result of running this satisfiable pigeon hole formula with our SAT algorith
 
 
 \section{Behaviour of Prototype Clause Learning Algorithm}
-In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. This prototype has had $\forallnc$ quanitifiers inserted to reduce the amount of redundant computational content and the overall size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
+In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. This prototype has had $\forallnc$ quantifiers inserted to reduce the amount of redundant computational content and the overall size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
 
 \begin{center}\texttt{(term-to-string (nt (make-term-in-app-form program (pt "(CF ((CC (Pos (Variable 11)):)::(CC (Pos (Variable 12)):):)) "))))}
 \end{center}
@@ -65,7 +61,7 @@ The solver produces a model of the formula paired with a function which indicate
 \texttt{"(InL (lit=>boole)@@(cla=>lit) for@@algmodDPLL)(([l0][if (l0=Pos(Variable 12)) True (l0=Pos(Variable 11))])@([c0][if (c0=CC(Pos(Variable 12)):) (Pos(Variable 12)) [if (c0=CC(Pos(Variable 11)):) (Pos(Variable 11)) (Pos(Variable 0))]]))"}                                                                      
 \end{center}
 
-We modelled the completeness statement of this solver using Minlogs built in inductively defined disjunction \texttt{ori}. The constructors \texttt{InL} and \texttt{InR} capture the extracted computation content of the left and right hand of the disjunction respectively. We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
+We modelled the completeness statement of this solver using Minlog's built in inductively defined disjunction \texttt{ori}. The constructors \texttt{InL} and \texttt{InR} capture the extracted computation content of the left and right hand of the disjunction respectively. We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
 
 \begin{center}
 \texttt{
@@ -115,7 +111,7 @@ CmodDPLLTwo(Pos(Variable 32))
 (CunitResZero(CC(Neg(Variable 12)::(Neg(Variable 22)):))))))))))))
 \end{lstlisting}
 
-
+Here we see that the solver has learned two clauses. The clause \texttt{(CC (Neg (Variable 32)):)} comes from the first branch of the proof where the literal \texttt{(Pos (Variable 32))} was used in an application of the $\Split$ rule. This learned unit clause was then used in subsequent unit resolution derivations of the second branch of the proof resulting in the empty clause \texttt{CC(Nil lit)} being learned.  This use of the unit clauses before assignments from the $\Splt$ rule results in shorter learned clauses which better aid the subsequent proof search.
 \FloatBarrier
 \section{Application of X-SAT to Benchmark problems} \label{sec:xsatcomparison}
 %
@@ -130,7 +126,7 @@ The $\forall$ solver and $\forallnc$ solver were compared using both unsatisfiab
 %
 This difficulty can be seen -- compare column 2 and 3 in Table 
 \ref{tab:minlog-vs-haskell} % below 
--- when both the $\forall$ and $\forallnc$ solver are applied to the unsatisfiable pigeon hole formulae. The solver without the optimisation takes considerably longer to construct a derivation of unsatisfiability. This is due to computationally irrevelevant data being stored in the unoptimised derivations. \medskip \\ 
+-- when both the $\forall$ and $\forallnc$ solver are applied to the unsatisfiable pigeon hole formulae. The solver without the optimisation takes considerably longer to construct a derivation of unsatisfiability. This is due to computationally irrelevant data being stored in the unoptimised derivations. \medskip \\ 
 %
 %%The following two versions of the solver extracted from the proof containing the $\forallnc$ quantifiers 
 %
