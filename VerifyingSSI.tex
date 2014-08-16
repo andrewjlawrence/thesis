@@ -111,7 +111,7 @@ CmodDPLLTwo(Pos(Variable 32))
 (CunitResZero(CC(Neg(Variable 12)::(Neg(Variable 22)):))))))))))))
 \end{lstlisting}
 
-Here we see that the solver has learned two clauses. The clause \texttt{(CC (Neg (Variable 32)):)} comes from the first branch of the proof where the literal \texttt{(Pos (Variable 32))} was used in an application of the $\Split$ rule. This learned unit clause was then used in subsequent unit resolution derivations of the second branch of the proof resulting in the empty clause \texttt{CC(Nil lit)} being learned.  This use of the unit clauses before assignments from the $\Splt$ rule results in shorter learned clauses which better aid the subsequent proof search.
+Here we see that the solver has learned two clauses. The clause \texttt{(CC (Neg (Variable 32)):)} comes from the first branch of the proof where the literal \texttt{(Pos (Variable 32))} was used in an application of the $\Split$ rule. This learned unit clause was then used in subsequent unit resolution derivations of the second branch of the proof resulting in the empty clause \texttt{CC(Nil lit)} being learned.  This use of the unit clauses before assignments from the $\Split$ rule results in shorter learned clauses which better aid the subsequent proof search.
 \FloatBarrier
 \section{Application of X-SAT to Benchmark problems} \label{sec:xsatcomparison}
 %

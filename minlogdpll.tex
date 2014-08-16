@@ -1,4 +1,7 @@
-\thesischapter{Extracting Verified Decision Procedures in the Minlog System}{Extracting Verified Decision Procedures in the Minlog System} \label{chapter:dpllminlog}
+\thesischapter{Extracting Verified Decision Procedures in the Minlog System}{Extracting Verified Decision Procedures in the Minlog System} 
+\chaptermark{Extracting Decision Procedures in Minlog}
+
+\label{chapter:dpllminlog}
 In the following chapter we describe how the completeness proofs from chapter \ref{chapter:dpll} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in chapter \ref{chapter:dpll} and is followed by the implementation of the soundness and completeness of the DPLL proof system in Minlog. A unique feature of the Minlog system, namely \emph{non-computational quantifiers}, have been used to remove redundant data and computations and obtain a more efficient extracted program. The performance and behaviour of the extracted program is analysed in chapter \ref{chapter:dpllapp}. A detailed overview of the Minlog system can be found in the Minlog Reference Manual \cite{MinlogRef}.
 
 \section{Formalising Preliminaries in the Minlog System}
@@ -462,6 +465,8 @@ We inductively define a predicate \texttt{ressuccess} that captures what it mean
 \end{lstlisting}
 
 
+
+
 The proof of completeness from which we extract a resolution solver proceeds as follows:
 
 \begin{lstlisting}[caption = "Beginning of the Resolution Completeness Proof"]
@@ -474,3 +479,73 @@ The proof of completeness from which we extract a resolution solver proceeds as 
 \end{lstlisting}
 
 The instantiation of the DPLL completeness theorem with the formula  \texttt{f} is at the core of the proof. Following that a case distinction is made on whether the formula \texttt{f} has a DPLL derivation or a model. In the case that it has a DPLL derivation the equivalence theorem is applied to obtain a resolution derivation. In the case that the formula has a model, that model satisfies the second closure axiom of \texttt{ressucess}. 
+
+\section{The Extracted SAT Solver X-SAT}
+
+In the following we will see how both $\forall$ and $\forallnc$ solvers 
+behave when they are applied to a number of SAT problems. The extracted 
+decision procedure was run on several instances of the pigeon hole 
+principle \cite{SC79} in both Minlog and as Haskell programs. The pigeon hole principle states that there is 
+no injective function that maps 
+
+
+\begin{mydef}[Pigeon Hole Formula]
+$\mathbf{PHP}(n,m) := \{\{l_{i,1},\ldots,l_{i,m}\} | 1 \leq i \leq n  \} \cup \{ \{\mybar {l_{i,k}},\mybar{ l_{j,k}}\} | 1 \leq i < j \leq n, 1 \leq k \leq m \}  $
+ \end{mydef}
+
+Here $l_{i,k}$ represents the statement ``pigeon $i$ sits in hole $k$''.
+The whole formula $\mathbf{PHP}(n,m)$ states that $n$ pigeons sit in $m$ holes such that no two pigeons are in the same hole.
+Hence, $\mathbf{PHP}(n,m)$ is satisfiable iff $n \leq m$. 
+For example, if we run our DPLL solver with the formula
+$\mathbf{PHP}(2,1) = \{\{l_{11} \}, \{l_{21}\} , \{\mybar{ l_{11}}, \mybar{ l_{21}}\}\}$,  the following derivation is produced: 
+\vspace*{3mm}
+\begin{center}
+\AxiomC{$ $}
+\RightLabel{$\Conflict$}
+\UnaryInfC{$l_{11}, l_{21} \vdash \emptyset$}
+\RightLabel{$\Red$}
+\UnaryInfC{$ l_{11}, l_{21} \vdash  \{ \mybar{ l_{21}} \}$}
+\RightLabel{$\Red$}
+\UnaryInfC{$ l_{11}, l_{21} \vdash  \{ \mybar{ l_{11}} , \mybar {l_{21}} \}$ }
+\RightLabel{$\Unit$}
+\UnaryInfC{$ l_{11} \vdash  \{l_{21} \}, \{ \mybar{ l_{11}} , \mybar{l_{21}} \} $}
+\RightLabel{$\Unit$}
+\UnaryInfC{$ \vdash \{ l_{11} \}, \{l_{21} \}, \{ \mybar{ l_{11}} , \mybar{ l_{21}} \} $}
+\DisplayProof
+\end{center}
+\vspace*{3mm}
+The following is the Minlog output for the pigeon hole formulae $\mathbf{PHP}(2,1)$. There is a constructor \verb|CsuccessZero| of the algebra \verb|success| which represents the disjunction in the main proof statement. The data type extracted from this algebra can be seen as a union type that contains either a DPLL derivation or a model of the formula. In this case it contains a DPLL derivation showing that the formula is unsatisfiable. The arguments to \verb|CsuccessZero| store how the $\Conflict$ is derived. The literal $l_{11}$ is represented as \verb|(Pos(Variable 11))| in the Minlog formalization and the clause $\{ \mybar{ l_{11}} , \mybar{l_{21}} \}$ is represented as \verb|CC(Neg(Variable 21)::(Neg(Variable 11)):)|.
+
+\begin{verbatim}
+CsuccessZero
+ (CUnit
+  (Pos(Variable 11))
+  (CUnit
+   (Pos(Variable 21))
+   (CRed
+    (CC(Neg(Variable 21)::(Neg(Variable 11)):))
+    (Pos(Variable 21))
+    (CRed
+     (CC(Neg(Variable 11)):)
+     (Pos(Variable 11))
+     CConflict))))
+\end{verbatim}
+
+Running the DPLL solver on a satisfiable formula results in a function which 
+maps literals to booleans. For example running the solver with 
+$\mathbf{PHP}(2,2)$ results in the function  
+	 $\mathrm{M}: \mathrm{literals} \to \mathbb{B}$  where  
+$\mathrm{M}(l) = \True$ iff  $l \in \{ l_{12}, \mybar{ l_{11}}, l_{21}, \mybar{ l_{22}}  \}$.
+%all val,c.  (valclaIntersection val c = (Nil lit) -> F) ->  ex l. (memlitcla l c & memlitval l val)
+The Minlog output for the satisfiable formula $\mathbf{PHP}(2,2)$ is as follows. Here the square brackets represent a lambda abstraction for the literal $l_0$. The model $M$ is written as $\lambda l_0 . l_0 \in \{ l_{12}, \mybar{l_{11}},l_{21}, \mybar{l_{22}} \}$.
+\begin{verbatim}
+CsuccessOne
+ ([l0]
+  [if (l0=Pos(Variable 12))
+      True 
+      [if (l0=Neg(Variable 11)) 
+          True 
+          [if (l0=Pos(Variable 21)) 
+              True 
+              (l0=Neg(Variable 22))]]])
+\end{verbatim}

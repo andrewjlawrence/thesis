@@ -1,4 +1,5 @@
-\chapter{Background: Model Checking}\label{chapter:modelchecking}
+\chapter{Background: Model Checking}{Background: Model Checking}\label{chapter:modelchecking}
+\chaptermark{Model Checking}
 %%%There are many systems in the modern world that are built from communicating concurrent subsystems 
 Model checking is a formal method that is typically used to reason about the correctness of finite systems with a discrete state space. Due to the nature of modern computers, such systems occur often in the area of computer science, for example in electronics or processes on a computer. It attempts to perform an exhaustive search of the state space to check that each state has a particular property. This thesis is concerned with two types of model checking. One encodes the object being modelled as some form of state transition system before checking properties over that system specified in some temporal logic. This is called temporal logic model checking and was invented in the 1980s by two separate research teams:  Clarke and Emerson~\cite{EM82} and Quielle and Sifakis~\cite{JQ82}. The other encodes the system and the model checking problem over it as a SAT problem which is then decided using a SAT solver~\cite{MS00}. The very nature of this formal method in that it is essentially an exhaustive search is also its downfall. A small increase in the complexity of the computer system can lead to a large increase in the state space. This exponential increase in the complexity of model checking a particular system is called the  \emph{state space explosion problem} \cite{EC01b,RP09}. Most improvements to the standard model checking algorithms are designed to reduce the impact of this problem. These optimisations typically exploit the structure of the system or properties such as symmetry to cut down the state space. Examples of modern model checkers include SPIN~\cite{GH04} which performs on-the-fly model checking  based around the partial order reduction technique~\cite{DP94}  and the probabilistic model checker Prism~\cite{MK11}. The Maude LTL Model Checker~\cite{ES00} also performs on-the-fly model checking and the underlying principles behind this will be discusses later in this chapter.
 
@@ -219,7 +220,12 @@ The translation of the LTL property into a \Buchi automaton takes three steps fo
 
 At every step the automaton is simplified by removing unreachable states and subsumed transitions and combining equivalent states. In order to perform model checking we need to be able to find accepting runs of the automaton. Since these accepting runs are infinite they must contain a loop through the automaton. Therefore the model checking algorithm partitions the \Buchi automaton into its strongly connected components. A set of states in a \Buchi automaton is a \emph{strongly connected component} (SCC) if and only if every state in that set is reachable from every other state in that set. 
 
-The model checking algorithm performs a search for strongly connected components and tests to see whether the the acceptance condition is empty.
+The model checking algorithm performs a search, using the double depth first search algorithm, for strongly connected components and tests to see whether the the acceptance condition is empty. The following is the double depth first search algorithm as formulated in \cite{EMC99}:
+
+\begin{lstlisting}
+
+
+\end{lstlisting}
 
 \textbf{Note to self: Define double depth first search and possibly fairly strongly connected components}
 
