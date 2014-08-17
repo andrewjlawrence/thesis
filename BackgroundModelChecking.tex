@@ -224,33 +224,32 @@ The model checking algorithm performs a search, using the double depth first sea
 
 \begin{lstlisting}[caption = The double depth first search algorithm, mathescape]
 Emptiness(A)
-
 $\forall s_0 \in S_0$ do
 	dfs1(s_0,A,HT)
 terminate(False);
 
-dfs1(s, A,HT)
+dfs1(s, A)
 Stack Stack1 := empty
 Hashtable HT1 := empty
 push(s,Stack1)
 insert(s,HT`)
 $\forall s' \in S. T(s,s')$ do
 	if $s' \notin HT$ then dfs1(s')
-if accept(s) then dfs2(s)
+if accept(s,A) then dfs2(s)
 pop(Stack1)
 
-dfs2(s)
+dfs2(s,A)
 Stack Stack2 := empty
 Hashtable HT2 := empty
 push(s,Stack2)
 $\forall s' \in S.T(s,s')$ do
 	if $s' \in Stack1$ return(True)
 	else if(s' \nottin Table1 then dfs2(s')
- pop(Stack2)
-
-insert
-
+pop(Stack2)
 \end{lstlisting}
+
+The algorithm uses a combination of hash tables and stacks for efficiency reasons. It is more computationally expensive to check that an element does not occur in a stack than in a hash table. The first procedure \texttt{dfs1} searchs for a state that is part of an accepting run and  is reachable from an initial state. The second depth first search procedure attempts to form a loop by looking for successor states that are already on the state stack. 
+
 
 \textbf{Note to self: Do we need hash tables in this and possibly fairly strongly connected components}
 
