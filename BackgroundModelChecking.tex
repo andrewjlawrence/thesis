@@ -220,7 +220,7 @@ The translation of the LTL property into a \Buchi automaton takes three steps fo
 
 At every step the automaton is simplified by removing unreachable states and subsumed transitions and combining equivalent states. In order to perform model checking we need to be able to find accepting runs of the automaton. Since these accepting runs are infinite they must contain a loop through the automaton. Therefore the model checking algorithm partitions the \Buchi automaton into its strongly connected components. A set of states in a \Buchi automaton is a \emph{strongly connected component} (SCC) if and only if every state in that set is reachable from every other state in that set. 
 
-The model checking algorithm performs a search, using the double depth first search algorithm, for strongly connected components in a \Buchi automataon $A = (L,S,T, S_0, F)$ and tests to see whether the the acceptance condition is empty. Let $\rho$ be an accepting run of the automaton i.e. it contains infinitely many accepting states from $A$.  There must exist some $\rho'$, which is a suffix of $\rho$, such that every state within $\rho'$ occurs infinitely often in $\rho'$. These states of $\rho'$ form a strongly connected component as every state must be reachable from every other state. The converse also holds meaning that a search algorithm for strongly connected components also checks for accepting runs of the automata.The following is the double depth first search algorithm as formulated in \cite{EMC99}:
+The model checking algorithm performs a search, using the double depth first search algorithm, for strongly connected components in a \Buchi automataon $A = (L,S,T, S_0, F)$ and tests to see whether the the acceptance condition is empty. Let $\rho$ be an accepting run of the automaton i.e. it contains infinitely many accepting states from $A$.  There must exist some $\rho'$, which is a suffix of $\rho$, such that every state within $\rho'$ occurs infinitely often in $\rho'$. These states of $\rho'$ form a strongly connected component as every state must be reachable from every other state. The converse also holds meaning that a search algorithm for strongly connected components also checks for accepting runs of the automata.The following is the double depth first search algorithm \cite{CC91,GH96}:
 
 \begin{lstlisting}[caption = The double depth first search algorithm, mathescape]
 Emptiness(A)
@@ -232,9 +232,9 @@ dfs1(s, A)
 Stack Stack1 := empty
 Hashtable HT1 := empty
 push(s,Stack1)
-insert(s,HT`)
+insert(s,HT1)
 $\forall s' \in S. T(s,s')$ do
-	if $s' \notin HT$ then dfs1(s')
+	if $s' \notin HT1$ then dfs1(s')
 if accept(s,A) then dfs2(s)
 pop(Stack1)
 
@@ -242,18 +242,17 @@ dfs2(s,A)
 Stack Stack2 := empty
 Hashtable HT2 := empty
 push(s,Stack2)
+insert(s,HT2)
 $\forall s' \in S.T(s,s')$ do
-	if $s' \in Stack1$ return(True)
-	else if(s' \nottin Table1 then dfs2(s')
+	if $s' \in \mathrm{Stack1}$ return(True)
+	else if $s' \nottin \mathrm{HT2}$ then dfs2(s')
 pop(Stack2)
 \end{lstlisting}
 
 The algorithm uses a combination of hash tables and stacks for efficiency reasons. It is more computationally expensive to check that an element does not occur in a stack than in a hash table. The first procedure \texttt{dfs1} searchs for a state that is part of an accepting run and  is reachable from an initial state. The second depth first search procedure attempts to form a loop by looking for successor states that are already on the state stack. 
 
 
-\textbf{Note to self: Do we need hash tables in this and possibly fairly strongly connected components}
+\textbf{Note to self: Do I need to describe fairly strongly connected components???}
 
 
 
-
-\textbf{Note to self: Do I need to describe the differences between SAT based model checker and other approaches?}
