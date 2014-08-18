@@ -422,14 +422,12 @@ r1 \ \textbf{r} \ A[x:= r0] & \quad \text{otherwise} \\
 
 
 
-
-\begin{comment}
-
-\begin{theorem}
+\begin{mytheorem}
 \emph{(Soundness Theorem)}
 
 If $M$ is a proof of a formula $B$, then we can derive  $ \llbracket M \rrbracket \ \textbf{r} \ B$.
-\end{theorem}
+
+\begin{proof}
 
 We begin the proof by performing induction on the proof term M.
 
@@ -443,7 +441,7 @@ We begin the proof by performing induction on the proof term M.
        program from M realises B $$\llbracket \lambda u M \rrbracket
        \textbf{r} (A \to B) = \epsilon \textbf{r} A \to \llbracket M
        \rrbracket \textbf{r} B$$
-     \item[Subcase] $\tau(A) \neq \epsilon \eq \tau (B)$ In this case the
+     \item[Subcase] $\tau(A) \neq \epsilon = \tau (B)$ In this case the
        extracted program is empty $ \llbracket \lambda u M \rrbracket = \epsilon$.
 
        $$\llbracket \lambda u M \rrbracket \textbf{r} (A \to B) = \forall
@@ -464,15 +462,15 @@ We begin the proof by performing induction on the proof term M.
 
   \begin{description}
    
-   \item[Subcase] $\tau (A) \eq epsilon$ If the type of A is empty then the
+   \item[Subcase] $\tau (A) = epsilon$ If the type of A is empty then the
      extracted program is $\lambda x x$ which realises the formula
      corresponding to the existential introduction axiom.
 
-     $$(\lamba x x) \textbf{r}  \forall^{nc} \vec{\rho} \forall x. A \to
+     $$(\lambda x x) \textbf{r}  \forall^{nc} \vec{\rho} \forall x. A \to
   \exists x A  \eq  \forall^{nc} \vec{\rho} \forall x.x \textbf{r} (A \to
   \exists x A) $$
 
-  Since $\tau (A) \eq \epsilon$ the empty program realises A.
+  Since $\tau (A) = \epsilon$ the empty program realises A.
   $$\forall^{nc} \vec{\rho} \forall x.x \textbf{r} (A \to
   \exists x A )  \eq \forall^{nc} \vec{\rho} \forall x.\epsilon \textbf{r} A \to
   x \textbf{r} \exists x A $$
@@ -486,7 +484,7 @@ We begin the proof by performing induction on the proof term M.
      realises the formula corresponding to the existential introduction axiom.
 
      $$ \lambda x \lambda f \langle x ,f \rangle \textbf{r}  \forall^{nc} \vec{\rho} \forall x. A \to
-  \exists x A  \eq  \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
+  \exists x A    \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
    \langle x ,f \rangle \textbf{r} \exists x A $$
 
        $$ \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
@@ -516,20 +514,20 @@ We begin the proof by performing induction on the proof term M.
       (\forall x. \epsilon \textbf{r} A \to \epsilon \textbf{r} B) \to
       \epsilon \textbf{r} B$$
 
-    \item[Subcase] $\tau (A) \neq \epsilon \eq \tau(B)$ Once again the
+    \item[Subcase] $\tau (A) \neq \epsilon = \tau(B)$ Once again the
       extracted program in this case is the empty program that is $ \llbracket \exists^-_{x,A,B}
       \rrbracket = \epsilon $
 
 
 
 
-    \item[Subcase] $\tau (A) \eq \epsilon \neq \tau(B)$
+    \item[Subcase] $\tau (A) = \epsilon \neq \tau(B)$
     \item[Subcase] $\tau (A) \neq \epsilon \neq \tau(B)$
 
 
-
-
-
-
 \end{description}
+\end{proof}
+
+\end{mytheorem}
+
 \end{comment}
