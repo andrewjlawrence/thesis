@@ -568,6 +568,56 @@ This is proven by using Lemma \ref{lem:compgen} to generate a complete set of cl
 We shall now describe how the soundness and completeness for the modified DPLL and resolutions proof systems, along with their soundness and complete, are formalised in the Minlog system. The formalisation is based on the Minlog formalisation for the DPLL proof system describe in \ref{chapter:dpllminlog}; the basic operations such as those on sets have been reused where possible.
 
 
+\begin{lstlisting}[caption = The Inductive Definition for the Modified Resolution Proof System in Minlog]
+(add-ids (list (list "unitRes" (make-arity (py "valu")  (py "for" ) (py "valu") (py "cla")) "algunitRes"))
+	 '("allnc f,val0,val1. all c1.  memcf c1 f  -> val1 = (ConsVal (Nil dec)) -> unitRes val1 f val0 c1")
+         '( "allnc c0. allnc f,val0. all l,n. allnc val1.  memdunit l n val0 -> val1 = (ConsVal (Nil dec)) -> c0 = (CC l:)  -> unitRes val1 f val0 c0")
+         '( "allnc c0. allnc f,val0. all l,n. allnc val1.  memdsplit l n val0 -> val1 = (ConsVal ((Split l n):)) -> c0 = (CC l:)  -> unitRes val1 f val0 c0")
+	 '( "allnc c. allnc f,val1,val2,val0. all l. unitRes val1 f val0 (CC (opposite l):) ->  unitRes val2 f val0 (conclc l c) -> unitRes (ConcVal val1 val2) f val0 c")
+)
+\end{lstlisting}
+
+\begin{lstlisting}[caption = The Inductive Definition for the Modified DPLL Proof System in Minlog]
+(add-ids (list (list "modDPLL" (make-arity (py "valu") (py "for") (py "for")) "algmodDPLL" ))
+	 '("allnc val1, val0. allnc f. allnc c0. subsetval val0 val1 -> memcf c0 f -> unitRes val0 (CF c0:)  val1 (CC (Nil lit)) ->  modDPLL val1 f (oppval val0)" )
+         '("allnc c0. allnc val0,f. allnc val1,val2. all l. allnc f1. consistent val2 -> (memVar (var l) (varv val1) -> F) ->  memcf c0 f -> unitRes val0 (CF c0:) val1 (CC l:)   -> subsetval val2 (conclvu l  (delta val1) val1) -> modDPLL val2 f f1 -> modDPLL val1 f f1  ")
+
+	 '( "allnc val,val1,val2. allnc f. allnc f1,f2,f3. all l. ( f3 =(unionfor f1 f2) -> memVar (var l) (varSetFor f) -> consistent val1 -> consistent val2 -> (memVar (var l) (varv val) -> F) ->  subsetval val1 (conclvs l ((delta val) + 1)val ) -> subsetval val2 (conclvs  (opposite l) ((delta val) + 1) val) ->
+                               modDPLL  val1 f f1 ->
+                               modDPLL  val2 (unionfor f f1) f2 ->
+                               modDPLL  val f f3  )")
+)
+\end{lstlisting}
+
+
+
+\begin{lstlisting}
+
+(set-goal (pf "all val,f.  consistent val ->  
+                          (
+ex    vs(
+      all v(
+       memVar v vs -> (memVar v(varv val) -> F) & memVar v (varSetFor f)) & 
+      all v(
+       memVar v(varSetFor f) -> 
+       (memVar v(varv val) -> F) -> memVar v vs) & 
+      allunique vs & all v( memVar v (varv val) -> memVar v (varSetFor f))))
+ -> WellFormedF f -> funique f ->
+                          ( ex fvec(
+                all c,c0(
+                 memffvec(CCP c c0)fvec -> 
+                 memcf c f & 
+                 c0=clasetminus c(oppvalc val) & 
+                 varIntersection(varv val)(varSetCla c0)=(Nil variable) & 
+                 ex val0(subsetval val0 val & unitRes val0(CF c:)val c0)) & 
+                fvecunique fvec &
+                 all c(
+                 memcf c f -> 
+                 all c0(memffvec(CCP c c0)fvec -> F) -> 
+                 ex l(memlc l c & memlv l val)))) ->
+ 
+                          (ex mod. (all l. memlv l val -> mod l) & (all c. memcf c f -> ex l. memlc l c & mod l)) ori (ex n.  n <= delta val & ex f1 modDPLL (valrest val n) f f1) "))
+\end{lstlisting}
 
 \section{Behaviour of Prototype Clause Learning Algorithm}
 In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. This prototype has had $\forallnc$ quantifiers inserted to reduce the amount of redundant computational content and the overall size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
