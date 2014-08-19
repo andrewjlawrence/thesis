@@ -548,3 +548,152 @@ CsuccessOne
               True 
               (l0=Neg(Variable 22))]]])
 \end{verbatim}
+%
+%%%We have performed several comparisons between different implementations of our solver. 
+%% We compared the extracted  $\forall$ solver and the one optimised with $\forallnc$ quantifiers 
+%% when run with the pigeon formulae in Minlog. The result is shown in the first two columns of the table below.
+%% Wilst generally slow, as the execution is based on term rewriting in Minlog, it nevertheless
+%% demonstrates  the difference between the two solvers, the $\forallnc$ solver being 
+%% considerably faster in the unsatisfiable case. {(\bf !!! not final yet)}
+%
+The $\forall$ solver and $\forallnc$ solver were compared using both unsatisfiable  $\mathbf{PHP}(n+1, n)$ and satisfiable $\mathbf{PHP}(n,n)$ pigeon hole formulae. The unsatisfiable pigeon hole formulae are harder than the satisfiable formulae as they have a large search space that must be traversed entirely by the solver in order to construct a derivation.
+%
+This difficulty can be seen -- compare column 2 and 3 in Table 
+\ref{tab:minlog-vs-haskell} % below 
+-- when both the $\forall$ and $\forallnc$ solver are applied to the unsatisfiable pigeon hole formulae. The solver without the optimisation takes considerably longer to construct a derivation of unsatisfiability. This is due to computationally irrevelevant data being stored in the unoptimised derivations. \medskip \\ 
+%
+%%The following two versions of the solver extracted from the proof containing the $\forallnc$ quantifiers 
+%
+The next two columns of Table \ref{tab:minlog-vs-haskell} present two versions of the $\forallnc$ solver when extracted to Haskell and compiled by the Glasgow Haskell Compiler (GHC). The first was compiled with a Main function that returns a witness of the result i.e.\ either a model which satisfies the formula or a derivation of its unsatisfiability. The second has a Main function that runs the algorithm and returns only a yes or no answer as to whether a formula is satisfiable or not. Due to the inherent laziness of Haskell using GHC to compile the same SAT algorithm with two different Main functions yields two programs that differ quite dramatically in their behaviour. The solver that returns a yes/no answer performs considerably faster compared to the solver which produces the witness in addition. By using the Low Level Virtual Machine (LLVM) backend~\cite{CL04} for GHC%\footnote{GHC was invoked as follows: \texttt{ghc -O2 -pgmlo opt -pgmlc llc -fllvm}.}
+, a further speed up was achieved, which can be seen in the last two columns of Table \ref{tab:minlog-vs-haskell}.
+
+%% The first comparison is on unsatisfiable pigeon hole formulae $\mathbf{PHP}(n+1, n)$ which will demonstrate the relative efficiency of the solvers in constructing a derivation. The second comparison is on satisfiable formulae $\mathbf{PHP}(n,n)$. The programs have been run on the term level in the Minlog system using the built in term rewriting system.  Therefore, the running times can not be expected to be competitive, but it is interesting to observe the relative difference between the two solvers.
+%
+%% These results demonstrate that the solver extracted from the proof containing the $\forallnc$ quantifiers is significantly faster on unsatisfiable formulae than the solver extracted from the original proof. This is due to the number of non-computational quantifiers added to the definition of derivable. When applied to the pigeon hole formula $\mathbf{PHP}(6,5)$ the $\forall$ solver takes 5 and a half hours where as the $\forallnc$ solvers takes only 37 minutes. 
+\begin{comment}
+\begin{center}
+    \begin{tabular}{ | l || l | l || l | l | l | }
+    \hline
+    Solver & $PHP(2,1)$ & $PHP(3,2)$ & $PHP(4,3)$ & $PHP(5,4)$ & $PHP(6,5)$ \\ \hline
+    $\forall$ & $< 1$ Sec & 1.17 &   33.62   & 13:54 & 5:35:41\\ \hline
+    $\forallnc$ & $< 1$ Sec & $< 1$ Sec &    11.61  & 2:41   & 37:25.27 \\ \hline
+    \end{tabular}
+\end{center}
+%
+%
+\begin{center}
+    \begin{tabular}{ | l | l | l | l | l | l | }
+    \hline
+    Solver & $PHP(2,2)$ & $PHP(3,3)$ & $PHP(4,4)$ & $PHP(5,5)$ & $PHP(6,6)$ \\ \hline
+    $\forall$ & $< 1$ Sec &  $< 1$ Sec &   5.45   & 26.09 & 1:34.11 \\ \hline
+    $\forallnc$ & $< 1$ Sec & $< 1$ Sec &  5.25  &   25.03  & 1:24.88 \\ \hline
+    \end{tabular}
+\end{center}
+\end{comment}
+%
+%% We have also translated the extracted programs from a term in the Minlog System into the functional programming language Haskell. Unlike Minlog terms Haskell code can be compiled and optimised by tools such as the Glasgow Haskell Compiler.
+%
+%
+\begin{table}
+\caption{Performance in Minlog versus Haskell}
+\label{tab:minlog-vs-haskell}
+\begin{center}
+{\small
+\begin{tabular}{ccccccc}
+  \toprule
+  \text{Formula} & \text{Minlog $\forall$}  & \text{Minlog $\forallnc$} & \multicolumn{2}{c}{\text{Compiled (\texttt{ghc -O2})}} & \multicolumn{2}{c}{\text{Compiled (\texttt{ghc -O2 -fllvm})}} \\ \cmidrule(r){4-5} \cmidrule(l){6-7}
+  & \text{Witness} & \text{Witness} &  \text{Witness} & \text{Yes/No} & \text{Witness} & \text{Yes/No} \\ \midrule
+  PHP(4,3) & 33.62s & 11.61s    & 0.019s   & 0.006s  & 0.015s & 0.004s  \\
+  PHP(4,4) &  5.45s  &   5.25s      &  0.019s   & 0.010s & 0.014s & 0.007s   \\ 
+  PHP(5,4) &  13m54s      &  2m41s   & 0.055s   &  0.020s & 0.036s & 0.012s  \\
+  PHP(5,5) & 26.09s &  25.03s    &  0.024s   &  0.015s & 0.020s & 0.010s \\
+  PHP(6,5) & 5h35m41s & 37m25s  &  0.367s  & 0.066s & 0.279s & 0.039s \\
+  PHP(6,6) &    1m34.11s    &  1m24.88s    &  0.035s  & 0.025 & 0.025s & 0.015s    \\ \addlinespace
+  PHP(8,8) &   - & - & 0.054s & 0.029s & 0.040s & 0.025s \\
+  PHP(9,8) &   - & - & -  & 1m21.915s & - & 32.062s  \\ 
+  PHP(9,9) &   - & - &  0.064s & 0.042s & 0.052s & 0.030s \\
+  PHP(10,9) &   - & - & - & 102m 16s  & - & 15m 5s \\ \bottomrule
+\end{tabular}
+}
+\end{center}
+\end{table}
+%%% Question (Andy): Some of the optimisations in the LLVM toolkit have been verified themselves. Should this be mentioned?
+
+We also compared the performance of our $\forallnc$ solver, compiled using the LLVM backend of GHC, with that of Versat~\cite{DO12}. Our solver was run with the option of not computing a witness since Versat does generally not compute a proof. The results in Table \ref{tab:versat} show that our solver is comparable with Versat. It is slower on the easier formulae and
+faster on the hardest pigeon hole formulae. This is because the clause learning optimisation of Versat has some overhead and does not increase the performance on pigeon hole formulae. The point of the learned clauses is to reduce the search space for the solver.  In this case, they instead take up more memory and take time to compute.
+%  
+\begin{table}%[b]
+\caption{Performance compared to Versat}
+\label{tab:versat}
+\begin{center}
+{\small
+\begin{tabular}{ccc}
+  \toprule
+  \text{Formula} & \text{$\forallnc$ compiled (Yes/No)}  & \text{Versat} \\ \midrule
+  PHP(7,6) &   0.226s & 0.089s \\
+  PHP(8,7) &   2.42s & 0.794s \\ 
+  PHP(9,8) &   32.062s & 17.217s \\ 
+  PHP(10,9) &  15m 5s & 15m 46s \\ \hline
+  $\neg R1 \vee \neg R3$ & 7.028s & 0.050s \\
+  $\neg R1 \vee \neg R4$ & 6.961s & 0.040s \\
+  $\neg R2 \vee \neg R3$ & 7.105s & 0.053s \\
+  $\neg R2 \vee \neg R4$ & 7.059s & 0.044s \\
+  $\neg R3 \vee \neg R4$ & 7.015s & 0.047s \\
+\end{tabular}
+}
+\end{center}
+\end{table}
+
+%%We have also applied our optimised solver to the verification of a real world railway control system. The verification problem was formulated following \cite{MS00} using a tool presented in \cite{KK08}. This is a non trivial example of an application of our SAT solver.
+
+%%$$SC1 := (\neg D \vee R) \vee UEC $$
+%% (Andy) I need to look in the safety condition book and come up with a good description of this condition.
+
+%
+The same version of our solver was also applied to the verification of a real world railway control system via falisfication checking and compared with a SAT solver within the industrial tool SCADE~\cite{SCADE} and Versat. The verification problem was formulated following \cite{MS00} using a tool presented in \cite{KK08}. This is a non trivial example of an application of our SAT solver. We check 5 safety conditions which related to checking that two conflicting routes, out of a set of four routes $R1, \ldots, R4$, can not be active in the railway at the same time. The SAT problem is formulated to perform falisfication checking of the system i.e. a satisfying assignment represents a counter example and an unsatisfiable result means the safety property can not be violated in the system. With each of the five safety conditions our solver produces a proof which certifies that the safety property holds. The SCADE suite can verify that each of the safety properties holds in less than one second with no greater degree of accuracy provided by the system.
+
+\begin{comment} 
+The safety condition SC1 results in a SAT problem containing 8166 variables and 14716 clauses. It is unsatisfiable due to under-specification of the railway interlocking program which does not include all physical invariants. Out of 100 safety conditions available for the interlocking program, SC1 is the hardest to verify; most of the safety conditions are easily satisfiable. Our solver produces a proof showing that the safety condition is unsatisfiable, whereas the SCADE suite produces a counter example trace showing a sequence of states and transitions that lead to the safety condition being falsified. The results can be found in Table~\ref{tab:scade}.
+\end{comment}
+%
+%%\begin{align*}
+%%& SC1 =  (\neg D \vee R) \vee UEC \\
+%%\end{align*}
+\begin{comment}
+\begin{table}%[t]
+\caption{Performance compared to SCADE}
+\label{tab:scade}
+\begin{center}
+{\small
+\begin{tabular}{cccc}
+  \toprule
+  \text{Formula} & \multicolumn{2}{c}{\text{$\forallnc$ compiled}}  & \text{SCADE} \\ \cmidrule{2-3}
+  &  \text{Yes/No} & \text{Witness} & \text{SAT/Counter Example}  \\ \midrule
+  SC1 & 8s & 12s &  $<$1s \\ \bottomrule
+\end{tabular}
+}
+\end{center}
+\end{table}
+\end{comment}
+%
+While we cannot expect to compete with an industrial tool on speed and functionality, we have been able to solve a large practical problem in a reasonable amount of time. It is important to note that the solver inside the SCADE suite has not been formally verified whereas our solver has. Both of these solvers use efficient data structures that enable them to identify (un-)satisfiability of a formula with far less work.   
+
+ \begin{comment}
+\begin{tabular}{|c|c|c|c|c|c|}
+  \hline
+  \textbf{Formula}  & \textbf{Minlog} &  \multicolumn{2}{|c|}{\textbf{Interpreted (\texttt{ghci})}} & \multicolumn{2}{|c|}{\textbf{Compiled (\texttt{ghc -O2})}}  \\ \hline
+  & \textbf{Witness} & \textbf{Witness} & \textbf{Yes/No} & \textbf{Witness} & \textbf{Yes/No} \\ \hline
+  PHP(4,3) & 15.32s   &  0.17s   &  0.12s  &  0.008s  &  0.004s \\ \hline
+  PHP(4,4) & 6.87s    &  0.08s   &  0.07s  &  0.000s  &  0.000s \\ \hline
+  PHP(5,4) & 219.78s  &  1.52s   &  1.08s  &  0.032s  &  0.020s \\ \hline
+  PHP(5,5) & 33.15s   &  0.18s   &  0.19s  &  0.004s  &  0.004s \\ \hline
+  PHP(6,5) & 2245.27s &  16.68s  &  11.71s &  0.340s  &  0.124s \\ \hline
+  PHP(6,6) & 84.88s   &  0.54s   &  0.53s  &  0.012s  &  0.012s \\ \hline
+\end{tabular}
+\end{comment}
+%
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 
