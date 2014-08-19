@@ -129,7 +129,7 @@ The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Del
 
 \begin{lstlisting}[caption = Example DPLL Algorithm,mathescape]
 DPLL($\Delta, \Gamma$)
-$(\Delta, \Gamma) = \mathrm{Unit-Resolution}(\Delta, \Gamma)$
+$(\Delta, \Gamma) = \mathrm{UnitResolution}(\Delta, \Gamma)$
 if $\Delta$ = {} then
 	return $\Gamma$
 else if {} $\in \Delta$ then
@@ -280,7 +280,7 @@ $(\Delta,\Gamma) = \mathrm{UnitResolution}(\Delta,\Gamma)$
 if $\{ \} \in \Delta$
 	then return UNSAT
 $dl \leftarrow 0$
-while($\neg \mathrm{All-Var-Assigned}(\Delta,\Gamma$)) do
+while($\neg \mathrm{AllVarAssigned}(\Delta,\Gamma$)) do
 	do $(x,v) = \mathrm{Select}(\Delta,\Gamma)$
  	     $dl \leftarrow dl + 1$
  	     $\Gamma \leftarrow  \Gamma \cup \{ (x,v)\}$

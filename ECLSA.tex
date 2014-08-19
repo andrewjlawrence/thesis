@@ -564,11 +564,11 @@ This is proven by using Lemma \ref{lem:compgen} to generate a complete set of cl
 \end{proof}
 \end{mycorollary}
 
-\section{Formalising a Soudness and Completeness of the Modified DPLL and Resolution Proof Systems in Minlog}
-We shall now describe how the soundness and completeness for the modified DPLL and resolutions proof systems, along with their soundness and complete, are formalised in the Minlog system. The formalisation is based on the Minlog formalisation for the DPLL proof system describe in \ref{chapter:dpllminlog}; the basic operations such as those on sets have been reused where possible.
+\section{Formalising a Soundness and Completeness of the Modified DPLL and Unit Resolution Proof Systems in Minlog}
+We shall now describe how the soundness and completeness for the modified DPLL and  unit resolutions proof systems, along with their soundness and complete, are formalised in the Minlog system. The formalisation is based on the Minlog formalisation for the DPLL proof system describe in \ref{chapter:dpllminlog}; the basic operations such as those on sets have been reused where possible.
 
 
-\begin{lstlisting}[caption = The Inductive Definition for the Modified Resolution Proof System in Minlog]
+\begin{lstlisting}[caption = The Inductive Definition for the Modified Unit Resolution Proof System in Minlog]
 (add-ids (list (list "unitRes" (make-arity (py "valu")  (py "for" ) (py "valu") (py "cla")) "algunitRes"))
 	 '("allnc f,val0,val1. all c1.  memcf c1 f  -> val1 = (ConsVal (Nil dec)) -> unitRes val1 f val0 c1")
          '( "allnc c0. allnc f,val0. all l,n. allnc val1.  memdunit l n val0 -> val1 = (ConsVal (Nil dec)) -> c0 = (CC l:)  -> unitRes val1 f val0 c0")
@@ -576,6 +576,8 @@ We shall now describe how the soundness and completeness for the modified DPLL a
 	 '( "allnc c. allnc f,val1,val2,val0. all l. unitRes val1 f val0 (CC (opposite l):) ->  unitRes val2 f val0 (conclc l c) -> unitRes (ConcVal val1 val2) f val0 c")
 )
 \end{lstlisting}
+The inductive definitions for both modified proof systems have been optimised using a number of non-computational quantifiers. The formula and valuations have been removed from both proof systems as their inclusion in the derivation would increase  the size of the proofs by an order of magnitude. The only variable to have a computational quantifier is that of a literal $l$ in the $\Unit$ and $\Split$ rules of the modified DPLL proof system.  There are several computation quantifiers in the modified resolution proof system: there is the subsumed clause in the $\Sub$ rule, the subsumed literal and its decision level in the $\UnitSub$ and $\SplitSub$ rules and the resolved literal in the $\Res$ rule.
+
 
 \begin{lstlisting}[caption = The Inductive Definition for the Modified DPLL Proof System in Minlog]
 (add-ids (list (list "modDPLL" (make-arity (py "valu") (py "for") (py "for")) "algmodDPLL" ))
@@ -593,9 +595,8 @@ We shall now describe how the soundness and completeness for the modified DPLL a
 
 \begin{lstlisting}
 
-(set-goal (pf "all val,f.  consistent val ->  
-                          (
-ex    vs(
+(set-goal (pf "all val,f.  consistent val -> 
+ (ex    vs(
       all v(
        memVar v vs -> (memVar v(varv val) -> F) & memVar v (varSetFor f)) & 
       all v(
@@ -603,20 +604,20 @@ ex    vs(
        (memVar v(varv val) -> F) -> memVar v vs) & 
       allunique vs & all v( memVar v (varv val) -> memVar v (varSetFor f))))
  -> WellFormedF f -> funique f ->
-                          ( ex fvec(
-                all c,c0(
-                 memffvec(CCP c c0)fvec -> 
-                 memcf c f & 
-                 c0=clasetminus c(oppvalc val) & 
-                 varIntersection(varv val)(varSetCla c0)=(Nil variable) & 
-                 ex val0(subsetval val0 val & unitRes val0(CF c:)val c0)) & 
-                fvecunique fvec &
-                 all c(
-                 memcf c f -> 
-                 all c0(memffvec(CCP c c0)fvec -> F) -> 
-                 ex l(memlc l c & memlv l val)))) ->
- 
-                          (ex mod. (all l. memlv l val -> mod l) & (all c. memcf c f -> ex l. memlc l c & mod l)) ori (ex n.  n <= delta val & ex f1 modDPLL (valrest val n) f f1) "))
+( ex fvec(
+      all c,c0(
+            memffvec(CCP c c0)fvec -> 
+            memcf c f & 
+            c0=clasetminus c(oppvalc val) & 
+            varIntersection(varv val)(varSetCla c0)=(Nil variable) & 
+            ex val0(subsetval val0 val & unitRes val0(CF c:)val c0)) & 
+            fvecunique fvec &
+            all c(
+            memcf c f -> 
+            all c0(memffvec(CCP c c0)fvec -> F) -> 
+            ex l(memlc l c & memlv l val)))) ->
+(ex mod. (all l. memlv l val -> mod l) & (all c. memcf c f -> ex l. memlc l c & mod l)) ori 
+  (ex n.  n <= delta val & ex f1 modDPLL (valrest val n) f f1) "))
 \end{lstlisting}
 
 \section{Behaviour of Prototype Clause Learning Algorithm}
