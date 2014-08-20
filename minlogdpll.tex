@@ -346,16 +346,16 @@ In order to integrate such a heuristic into our proof one has to prove the follo
 
 \subsection{Defining a Measure Function}
 The measure function $\mu$ is defined in the Minlog system using a program constant \texttt{mu} and a computation rule.
-
-(add-computation-rule (pt "mu cs1 cs2 val") (pt " Lh(toLit cs1) + Lh( toLit cs2) + Lh (varMinusVal cs1 cs2 val )"))
-
+\begin{center}
+\texttt{(add-computation-rule (pt "mu cs1 cs2 val") (pt " Lh(toLit cs1) + Lh( toLit cs2) + Lh (varMinusVal cs1 cs2 val )"))}
+\end{center}
 Where the \texttt{Lh} function computes the length of the list, the \texttt{toLit} function computes the set of literals contained within a clause list and \texttt{varMinusVal} computes the set minus of the set variables of the two lists of the clause and the set of variables contained within the valuation.
 
 \subsection*{Defining Completeness}
 
 We use an inductively defined predicate, called \texttt{success}, to capture the disjunction in the proof of completeness statement. The existential quantifier used in the model case has been replaced with a selection function \texttt{g} and a program constant \texttt{clausesat} which is defined axiomatically:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption = The clause satisfaction property and satisfying literal selection function]
 (add-program-constant "clausesat" 
    (py "(lit => boole) => cla => lit => boole"))
 (aga "clausesatprop1" 
@@ -372,7 +372,9 @@ We use an inductively defined predicate, called \texttt{success}, to capture the
    (pt "(Pos (Variable  0))"))
 \end{lstlisting}
 
-The inductive definition of \texttt{success} contains two closure axioms corresponding to the cases that we either have a DPLL derivation of unsatisfiability or we have a model of the formula. 
+The clause satisfaction property \texttt{clausesat} holds for a model, clause and literal iff the literal is true in the model and is a member of the clause. The selection function \texttt{g} performs a linear search through the clause testing each literal to see if it holds in the model. If a literal is found that holds in the model then the selection function will return that literal, otherwise it will return a dummy variable. 
+
+The inductive definition of \texttt{success} contains two closure axioms corresponding to the cases that we either have a DPLL derivation of unsatisfiability (lines 5-7) or we have a model of the formula (lines 8-11). 
 
 \begin{lstlisting}[caption = "Inductive Definition of Completeness"]
 (add-ids (list 
@@ -388,7 +390,6 @@ The inductive definition of \texttt{success} contains two closure axioms corresp
    success cs1 cs2 val  " )
 )
 \end{lstlisting}
-
 
 
 \subsection*{Proving Completeness}
