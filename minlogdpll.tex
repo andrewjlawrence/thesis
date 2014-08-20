@@ -2,7 +2,7 @@
 \chaptermark{Extracting Decision Procedures in Minlog}
 
 \label{chapter:dpllminlog}
-In the following chapter we describe how the completeness proofs from chapter \ref{chapter:dpll} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in chapter \ref{chapter:dpll} and is followed by the implementation of the soundness and completeness of the DPLL proof system in Minlog. A unique feature of the Minlog system, namely \emph{non-computational quantifiers}, have been used to remove redundant data and computations and obtain a more efficient extracted program. The performance and behaviour of the extracted program is analysed in chapter \ref{chapter:dpllapp}. A detailed overview of the Minlog system can be found in the Minlog Reference Manual \cite{MinlogRef}.
+In the following chapter we describe how the completeness proofs from chapter \ref{chapter:dpll} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in Chapter \ref{chapter:dpll} and is followed by the implementation of the soundness and completeness of the DPLL proof system in Minlog. A unique feature of the Minlog system, namely \emph{non-computational quantifiers}, have been used to remove redundant data and computations and obtain a more efficient extracted program. The performance and behaviour of the extracted program is analysed in Section \ref{section:dpllapp}. A detailed overview of the Minlog system can be found in the Minlog Reference Manual \cite{MinlogRef}.
 
 \section{Formalising Preliminaries in the Minlog System}
 We have tried to stay faithful to the definition of the fundamental data types described in chapter \ref{chapter:satbackground} and to this end have defined a number of data types as algebras in Minlog, including the variable, literal, valuation, clause and formula. The variable is defined using the command $\mathbf{add-alg}$ which adds an algebra named "variable " with one constructor "Variable" which takes a natural number and returns a variable.
@@ -480,9 +480,9 @@ The proof of completeness from which we extract a resolution solver proceeds as 
 
 The instantiation of the DPLL completeness theorem with the formula  \texttt{f} is at the core of the proof. Following that a case distinction is made on whether the formula \texttt{f} has a DPLL derivation or a model. In the case that it has a DPLL derivation the equivalence theorem is applied to obtain a resolution derivation. In the case that the formula has a model, that model satisfies the second closure axiom of \texttt{ressucess}. 
 
-\section{The Extracted SAT Solver X-SAT}\label{chapter:dpllprogram}
-
-In the following we will see how both $\forall$ and $\forallnc$ solvers 
+\section{The Extracted SAT Solver X-SAT}\label{chapter:dpllprogram} \label{section:dpllapp}
+We used the program extraction facilities of the Minlog system to extract different versions X-SAT; one based on the formalisation optimised with $\forallnc$ quantifiers and the other based on an unoptimised formalisation containing only $\forall$ quantifiers.
+In the following we will see how both $\forall$ and $\forallnc$  variants of the X-SAT solver 
 behave when they are applied to a number of SAT problems. The extracted 
 decision procedure was run on several instances of the pigeon hole 
 principle \cite{SC79} in both Minlog and as Haskell programs. The pigeon hole principle states that there is 
@@ -513,7 +513,7 @@ $\mathbf{PHP}(2,1) = \{\{l_{11} \}, \{l_{21}\} , \{\mybar{ l_{11}}, \mybar{ l_{2
 \DisplayProof
 \end{center}
 \vspace*{3mm}
-The following is the Minlog output for the pigeon hole formulae $\mathbf{PHP}(2,1)$. There is a constructor \verb|CsuccessZero| of the algebra \verb|success| which represents the disjunction in the main proof statement. The data type extracted from this algebra can be seen as a union type that contains either a DPLL derivation or a model of the formula. In this case it contains a DPLL derivation showing that the formula is unsatisfiable. The arguments to \verb|CsuccessZero| store how the $\Conflict$ is derived. The literal $l_{11}$ is represented as \verb|(Pos(Variable 11))| in the Minlog formalization and the clause $\{ \mybar{ l_{11}} , \mybar{l_{21}} \}$ is represented as \verb|CC(Neg(Variable 21)::(Neg(Variable 11)):)|.
+The following is the Minlog output for the pigeon hole formulae $\mathbf{PHP}(2,1)$. There is a constructor \verb|CsuccessZero| of the algebra \verb|success| which represents the disjunction in the main proof statement. The data type extracted from this algebra can be seen as a union type that contains either a DPLL derivation or a model of the formula. In this case it contains a DPLL derivation showing that the formula is unsatisfiable. The arguments to \verb|CsuccessZero| store how the $\Conflict$ is derived. The literal $l_{11}$ is represented as \verb|(Pos(Variable 11))| in the Minlog formalisation and the clause $\{ \mybar{ l_{11}} , \mybar{l_{21}} \}$ is represented as \verb|CC(Neg(Variable 21)::(Neg(Variable 11)):)|.
 
 \begin{verbatim}
 CsuccessZero

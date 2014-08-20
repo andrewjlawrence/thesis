@@ -148,7 +148,7 @@ There are equivalences between the following formulas containing $\textbf{G}$ an
 $$\textbf{G} \phi \equiv False \, \mathbf{R} \, \phi $$
 $$\textbf{F} \phi \equiv   True \, \mathbf{U} \, \phi$$
 
-Combined  with the equivalences for obtaining negative normal form we can obtain the semantics for all of the LTL formulae.
+Combined  with the equivalences for obtaining negative normal form we can obtain the semantics for all of the LTL formulae.\\
 \medskip
 \begin{mydef}[LTL Negative Normal Form]
 The negative normal form of an LTL formula can be obtained by applying the following equivalences:
@@ -191,8 +191,9 @@ Given a transition system $M$, a safety property $\phi$ and a bound $k$ we defin
 $$bmc_M(\phi,k):= \forall \sseq{0}{k} \subseteq S \to  path_R(\sseq{0}{k}) \to S_0(s_0) \to \sseq{0}{k} \models \phi$$
 \end{mydef}
 \medskip
+\begin{comment}
 \textbf{Note to self: I need to add something on loop freedom and inclusion checking for sat based model checking, I also need to describe the LTL model checker in Maude which uses Buchi automaton.}  
-
+\end{comment}
 \section{On-the-fly Model Checking of Linear Temporal Logic Properties}
 The Maude LTL model checker performs on-the-fly model checking~\cite{CC91} of an LTL property $\phi$.
 This process of model checking linear temporal logic involves first  negating the linear temporal  logic property, placing it in negation normal form and then constructing a B{\"u}chi automaton for that property that accepts the language of counterexamples $\neg \phi$. The product of the B{\"u}chi automata and the state transition system is constructed and a double depth first search is applied to search for strongly connected components with a state in which $\neg \phi$ holds.
@@ -228,13 +229,13 @@ $\forall s_0 \in S_0$ do
 	dfs1(s_0,A,HT)
 terminate(False);
 
-dfs1(s, A)
+dfs1(s,A)
 Stack Stack1 := empty
 Hashtable HT1 := empty
 push(s,Stack1)
 insert(s,HT1)
 $\forall s' \in S. T(s,s')$ do
-	if $s' \notin HT1$ then dfs1(s')
+	if $s' \notin \mathrm{HT1}$ then dfs1(s')
 if accept(s,A) then dfs2(s)
 pop(Stack1)
 
