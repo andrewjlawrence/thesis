@@ -135,7 +135,7 @@ of three rules:
  \\
 The unit resolution proof system consists of two rules. In practice these rules are applied in the opposite direction to the DPLL rules. The subsumption or $\Sub$ rule allows us to assume that a clause has a unit resolution derivation and the unit resolution rule allows for the derivation of a new clause from two previously derived clauses, one of which must be a unit clause. \\
 \medskip
-\begin{mydef}[Unit Resolution Proof System] The standard Unit Resolution proof system consists 
+\begin{mydef}[Unit Resolution Proof System]\label{def:modures} The standard Unit Resolution proof system consists 
 of two rules:
 %
 \begin{center}
@@ -566,12 +566,13 @@ This is proven by using Lemma \ref{lem:compgen} to generate a complete set of cl
 \end{mycorollary}
 
 \section{Formalising a Soundness and Completeness of the Modified DPLL and Unit Resolution Proof Systems in Minlog}
-We shall now describe how the soundness and completeness for the modified DPLL and  unit resolutions proof systems, along with their soundness and complete, are formalised in the Minlog system. The formalisation is based on the Minlog formalisation for the DPLL proof system describe in \ref{chapter:dpllminlog}; the basic operations such as those on sets have been reused where possible.
+We shall now describe how the soundness and completeness for the modified DPLL and  unit resolutions proof systems, along with their soundness and complete, are formalised in the Minlog system. The formalisation is based on the Minlog formalisation for the DPLL proof system describe in Chapter \ref{chapter:dpllminlog}; the basic operations such as those on sets have been reused where possible. The inductive definition for the modified unit resolution proof system contains four closure axioms corresponding to the four rules in the proof system (See Definition \ref{def:modures} .). These axioms inductively define a predicate \texttt{unitRes} that captures a unit resolution derivation.
 
 
 \begin{lstlisting}[caption = The Inductive Definition for the Modified Unit Resolution Proof System in Minlog]
 (add-ids (list (list "unitRes" 
-(make-arity (py "valu")  (py "for" ) (py "valu") (py "cla")) "algunitRes"))
+(make-arity (py "valu")  (py "for" ) (py "valu") (py "cla")) 
+ "algunitRes"))
 
  '("allnc f,val0,val1. all c1.  memcf c1 f  -> 
     val1 = (ConsVal (Nil dec)) -> unitRes val1 f val0 c1")
@@ -590,35 +591,53 @@ We shall now describe how the soundness and completeness for the modified DPLL a
      unitRes (ConcVal val1 val2) f val0 c")
 )
 \end{lstlisting}
-The inductive definitions for both modified proof systems have been optimised using a number of non-computational quantifiers. The formula and valuations have been removed from both proof systems as their inclusion in the derivation would increase  the size of the proofs by an order of magnitude. The only variable to have a computational quantifier is that of a literal $l$ in the $\Unit$ and $\Split$ rules of the modified DPLL proof system.  There are several computation quantifiers in the modified resolution proof system: there is the subsumed clause in the $\Sub$ rule, the subsumed literal and its decision level in the $\UnitSub$ and $\SplitSub$ rules and the resolved literal in the $\Res$ rule.
+The inductive definitions for both modified proof systems have been optimised using a number of non-computational quantifiers. The formula and valuations have been removed from both proof systems as their inclusion in the derivation would increase  the size of the proofs by an order of magnitude. The only variable to have a computational quantifier is that of a literal $l$ in the $\Unit$ and $\Split$ rules of the modified DPLL proof system.  There are several computation quantifiers in the modified unit resolution proof system: there is the subsumed clause in the $\Sub$ rule, the subsumed literal and its decision level in the $\UnitSub$ and $\SplitSub$ rules and the resolved literal in the $\Res$ rule.
 
 
 \begin{lstlisting}[caption = The Inductive Definition for the Modified DPLL Proof System in Minlog]
 (add-ids (list (list "modDPLL" 
 (make-arity (py "valu") (py "for") (py "for")) "algmodDPLL" ))
-	 '("allnc val1, val0. allnc f. allnc c0. subsetval val0 val1 -> memcf c0 f -> unitRes val0 (CF c0:)  val1 (CC (Nil lit)) ->  modDPLL val1 f (oppval val0)" )
-         '("allnc c0. allnc val0,f. allnc val1,val2. all l. allnc f1. consistent val2 -> (memVar (var l) (varv val1) -> F) ->  memcf c0 f -> unitRes val0 (CF c0:) val1 (CC l:)   -> subsetval val2 (conclvu l  (delta val1) val1) -> modDPLL val2 f f1 -> modDPLL val1 f f1  ")
+ '("allnc val1, val0. allnc f. allnc c0. 
+    subsetval val0 val1 -> memcf c0 f -> 
+   unitRes val0 (CF c0:)  val1 (CC (Nil lit)) ->  
+   modDPLL val1 f (oppval val0)" )
+        
+ '("allnc c0. allnc val0,f. allnc val1,val2. all l. allnc f1. 
+    consistent val2 -> (memVar (var l) (varv val1) -> F) ->  
+    memcf c0 f -> unitRes val0 (CF c0:) val1 (CC l:)   -> 
+    subsetval val2 (conclvu l  (delta val1) val1) -> 
+    modDPLL val2 f f1 -> modDPLL val1 f f1  ")
 
-	 '( "allnc val,val1,val2. allnc f. allnc f1,f2,f3. all l. ( f3 =(unionfor f1 f2) -> memVar (var l) (varSetFor f) -> consistent val1 -> consistent val2 -> (memVar (var l) (varv val) -> F) ->  subsetval val1 (conclvs l ((delta val) + 1)val ) -> subsetval val2 (conclvs  (opposite l) ((delta val) + 1) val) ->
-                               modDPLL  val1 f f1 ->
-                               modDPLL  val2 (unionfor f f1) f2 ->
-                               modDPLL  val f f3  )")
+ '( "allnc val,val1,val2. allnc f. allnc f1,f2,f3. all l. ( 
+    f3 =(unionfor f1 f2) -> memVar (var l) (varSetFor f) -> 
+    consistent val1 -> consistent val2 -> (
+    memVar (var l) (varv val) -> F) ->  
+    subsetval val1 (conclvs l ((delta val) + 1)val ) -> 
+    subsetval val2 (conclvs  (opposite l) ((delta val) + 1) val) ->
+    modDPLL  val1 f f1 ->
+    modDPLL  val2 (unionfor f f1) f2 ->
+    modDPLL  val f f3  )")
 )
 \end{lstlisting}
 
 
 
-\begin{lstlisting}
-
-(set-goal (pf "all val,f.  consistent val -> 
- (ex    vs(
-      all v(
-       memVar v vs -> (memVar v(varv val) -> F) & memVar v (varSetFor f)) & 
-      all v(
-       memVar v(varSetFor f) -> 
-       (memVar v(varv val) -> F) -> memVar v vs) & 
-      allunique vs & all v( memVar v (varv val) -> memVar v (varSetFor f))))
+\begin{lstlisting}[]
+(set-goal (pf "all val,f.  
+ consistent val -> 
+ 
+(ex vs(
+   all v(
+     memVar v vs -> (memVar v(varv val) -> F) & 
+     memVar v (varSetFor f)) & 
+     all v(
+     memVar v(varSetFor f) -> 
+     (memVar v(varv val) -> F) -> memVar v vs) & 
+     allunique vs & 
+     all v( memVar v (varv val) -> memVar v (varSetFor f))))
+    
  -> WellFormedF f -> funique f ->
+
 ( ex fvec(
       all c,c0(
             memffvec(CCP c c0)fvec -> 
@@ -631,7 +650,10 @@ The inductive definitions for both modified proof systems have been optimised us
             memcf c f -> 
             all c0(memffvec(CCP c c0)fvec -> F) -> 
             ex l(memlc l c & memlv l val)))) ->
-(ex mod. (all l. memlv l val -> mod l) & (all c. memcf c f -> ex l. memlc l c & mod l)) ori 
+
+(ex mod. (all l. memlv l val -> mod l) & 
+        (all c. memcf c f -> ex l. memlc l c & mod l)) ori 
+
   (ex n.  n <= delta val & ex f1 modDPLL (valrest val n) f f1) "))
 \end{lstlisting}
 

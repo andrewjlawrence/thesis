@@ -206,7 +206,7 @@ Similarly to the DPLL algorithms, conflict driven clause learning algorithms tak
 A valuation in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value. The depth at which a boolean variable $x$ is assigned a value $\{0,1\}$ in the search tree is called the decision level, which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search. A mapping $\alpha(x)$ is created associating a boolean variable x with a clause $C$ if that variable is assigned by the unit rule applied to $C$. If a variable $x$ does not have such an antecedent then $\alpha(x) = NIL$.
 
 \subsection*{Conflict Analysis}
-The CDCL SAT algorithms cut down on the possible search space for a satisfying assignment by analysing and learning new clauses from conflicts. The causes of the conflict are analysed to see which decision assignments led to the conflict arising. The learned clause contains a negation of these literals such that if it was already in the formula it would have caused the conflict to arise earlier. The decisions and implications that led to the conflict can be seen as forming a graph called a \emph{conflict graph}. The literals which are negated to form the learned clause can be seen as forming a bar or cut across the conflict graph. Any of these cuts can be used as learned clauses, however typically the smallest clauses perform better in practice. The majority of modern SAT algorithms try to exploit \emph{unit implication points} (UIP) which are bottlenecks in the conflict graph which form an alternative decision assignment that will cause a conflict in the same clause. Formally a UIP is a dominator in that all paths from the  original decision assignment to the conflict must pass through the UIP node in the graph. 
+The CDCL SAT algorithms cut down on the possible search space for a satisfying assignment by analysing and learning new clauses from conflicts. The causes of the conflict are analysed to see which decision assignments led to the conflict arising. The learned clause contains a negation of these literals such that if it was already in the formula it would have caused the conflict to arise earlier. The decisions and implications that led to the conflict can be seen as forming a graph called a \emph{conflict graph} an example of which can be see in Fig. \ref{fig:conflictgraph}. The literals which are negated to form the learned clause can be seen as forming a bar or cut across the conflict graph. Any of these cuts can be used as learned clauses, however typically the smallest clauses perform better in practice. The majority of modern SAT algorithms try to exploit \emph{unit implication points} (UIP) which are bottlenecks in the conflict graph which form an alternative decision assignment that will cause a conflict in the same clause. Formally a UIP is a dominator in that all paths from the  original decision assignment to the conflict must pass through the UIP node in the graph. 
 \medskip
 \begin{myexample}
 The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$ is as follows.  The notation $x = 1@n$ means the variable $x$ is assigned to true at $n$ and  $x = 0@n$ means the variable x is assigned to false at level $n$. 
@@ -242,8 +242,8 @@ The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$
 \draw [arrow] (D) -- node[left] {$C_8$} (F);
 \end{tikzpicture} 
 \end{center}
-\caption{Conflict Graph for Example \ref{example1}}
-\label{fig:ContactOrders}
+\caption{Conflict Graph for the Formula $\phi$}
+\label{fig:conflictgraph}
 
 \end{figure}
 \end{myexample}
