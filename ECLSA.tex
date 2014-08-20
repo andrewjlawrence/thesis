@@ -570,18 +570,32 @@ We shall now describe how the soundness and completeness for the modified DPLL a
 
 
 \begin{lstlisting}[caption = The Inductive Definition for the Modified Unit Resolution Proof System in Minlog]
-(add-ids (list (list "unitRes" (make-arity (py "valu")  (py "for" ) (py "valu") (py "cla")) "algunitRes"))
-	 '("allnc f,val0,val1. all c1.  memcf c1 f  -> val1 = (ConsVal (Nil dec)) -> unitRes val1 f val0 c1")
-         '( "allnc c0. allnc f,val0. all l,n. allnc val1.  memdunit l n val0 -> val1 = (ConsVal (Nil dec)) -> c0 = (CC l:)  -> unitRes val1 f val0 c0")
-         '( "allnc c0. allnc f,val0. all l,n. allnc val1.  memdsplit l n val0 -> val1 = (ConsVal ((Split l n):)) -> c0 = (CC l:)  -> unitRes val1 f val0 c0")
-	 '( "allnc c. allnc f,val1,val2,val0. all l. unitRes val1 f val0 (CC (opposite l):) ->  unitRes val2 f val0 (conclc l c) -> unitRes (ConcVal val1 val2) f val0 c")
+(add-ids (list (list "unitRes" 
+(make-arity (py "valu")  (py "for" ) (py "valu") (py "cla")) "algunitRes"))
+
+ '("allnc f,val0,val1. all c1.  memcf c1 f  -> 
+    val1 = (ConsVal (Nil dec)) -> unitRes val1 f val0 c1")
+
+ '( "allnc c0. allnc f,val0. all l,n. allnc val1. 
+     memdunit l n val0 -> val1 = (ConsVal (Nil dec)) -> 
+     c0 = (CC l:)  -> unitRes val1 f val0 c0")
+
+ '( "allnc c0. allnc f,val0. all l,n. allnc val1. 
+     memdsplit l n val0 -> val1 = (ConsVal ((Split l n):)) -> 
+     c0 = (CC l:)  -> unitRes val1 f val0 c0")
+ 
+ '( "allnc c. allnc f,val1,val2,val0. all l. 
+     unitRes val1 f val0 (CC (opposite l):) ->  
+     unitRes val2 f val0 (conclc l c) -> 
+     unitRes (ConcVal val1 val2) f val0 c")
 )
 \end{lstlisting}
 The inductive definitions for both modified proof systems have been optimised using a number of non-computational quantifiers. The formula and valuations have been removed from both proof systems as their inclusion in the derivation would increase  the size of the proofs by an order of magnitude. The only variable to have a computational quantifier is that of a literal $l$ in the $\Unit$ and $\Split$ rules of the modified DPLL proof system.  There are several computation quantifiers in the modified resolution proof system: there is the subsumed clause in the $\Sub$ rule, the subsumed literal and its decision level in the $\UnitSub$ and $\SplitSub$ rules and the resolved literal in the $\Res$ rule.
 
 
 \begin{lstlisting}[caption = The Inductive Definition for the Modified DPLL Proof System in Minlog]
-(add-ids (list (list "modDPLL" (make-arity (py "valu") (py "for") (py "for")) "algmodDPLL" ))
+(add-ids (list (list "modDPLL" 
+(make-arity (py "valu") (py "for") (py "for")) "algmodDPLL" ))
 	 '("allnc val1, val0. allnc f. allnc c0. subsetval val0 val1 -> memcf c0 f -> unitRes val0 (CF c0:)  val1 (CC (Nil lit)) ->  modDPLL val1 f (oppval val0)" )
          '("allnc c0. allnc val0,f. allnc val1,val2. all l. allnc f1. consistent val2 -> (memVar (var l) (varv val1) -> F) ->  memcf c0 f -> unitRes val0 (CF c0:) val1 (CC l:)   -> subsetval val2 (conclvu l  (delta val1) val1) -> modDPLL val2 f f1 -> modDPLL val1 f f1  ")
 

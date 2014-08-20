@@ -515,7 +515,7 @@ $\mathbf{PHP}(2,1) = \{\{l_{11} \}, \{l_{21}\} , \{\mybar{ l_{11}}, \mybar{ l_{2
 \vspace*{3mm}
 The following is the Minlog output for the pigeon hole formulae $\mathbf{PHP}(2,1)$. There is a constructor \verb|CsuccessZero| of the algebra \verb|success| which represents the disjunction in the main proof statement. The data type extracted from this algebra can be seen as a union type that contains either a DPLL derivation or a model of the formula. In this case it contains a DPLL derivation showing that the formula is unsatisfiable. The arguments to \verb|CsuccessZero| store how the $\Conflict$ is derived. The literal $l_{11}$ is represented as \verb|(Pos(Variable 11))| in the Minlog formalisation and the clause $\{ \mybar{ l_{11}} , \mybar{l_{21}} \}$ is represented as \verb|CC(Neg(Variable 21)::(Neg(Variable 11)):)|.
 
-\begin{verbatim}
+\begin{lstlisting}[caption = "The derivation produce by X-SAT for PHP(2\,1)"]
 CsuccessZero
  (CUnit
   (Pos(Variable 11))
@@ -528,7 +528,7 @@ CsuccessZero
      (CC(Neg(Variable 11)):)
      (Pos(Variable 11))
      CConflict))))
-\end{verbatim}
+\end{lstlisting}
 
 Running the DPLL solver on a satisfiable formula results in a function which 
 maps literals to booleans. For example running the solver with 
@@ -537,7 +537,7 @@ $\mathbf{PHP}(2,2)$ results in the function
 $\mathrm{M}(l) = \True$ iff  $l \in \{ l_{12}, \mybar{ l_{11}}, l_{21}, \mybar{ l_{22}}  \}$.
 %all val,c.  (valclaIntersection val c = (Nil lit) -> F) ->  ex l. (memlitcla l c & memlitval l val)
 The Minlog output for the satisfiable formula $\mathbf{PHP}(2,2)$ is as follows. Here the square brackets represent a lambda abstraction for the literal $l_0$. The model $M$ is written as $\lambda l_0 . l_0 \in \{ l_{12}, \mybar{l_{11}},l_{21}, \mybar{l_{22}} \}$.
-\begin{verbatim}
+\begin{lstlisting}[caption = "The model produced by X-SAT for PHP(2,2)"]
 CsuccessOne
  ([l0]
   [if (l0=Pos(Variable 12))
@@ -547,7 +547,7 @@ CsuccessOne
           [if (l0=Pos(Variable 21)) 
               True 
               (l0=Neg(Variable 22))]]])
-\end{verbatim}
+\end{lstlisting}
 %
 %%%We have performed several comparisons between different implementations of our solver. 
 %% We compared the extracted  $\forall$ solver and the one optimised with $\forallnc$ quantifiers 

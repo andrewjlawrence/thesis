@@ -202,15 +202,17 @@ derivation & term \\ \hline
 \end{tabular}
 \end{center}
 
+
+\end{mydef}
+
+Minlog also allows for the use of the ex-falso q rule in order to perform proofs by contradiction. Such proof do not contain any computational content and it is typically used to prove properties about computations that never executed by the program.
+\begin{mydef}[The EFQ rule]
 \begin{center}
 \AxiomC{$\bot$}
 \LeftLabel{efq}
 \UnaryInfC{$A$}
 \DisplayProof 
 \end{center}
-
-
-
 \end{mydef}
 
 \section{Program Extraction}
