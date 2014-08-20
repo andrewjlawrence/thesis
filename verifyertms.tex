@@ -168,7 +168,7 @@ eq {REST < O1 : Train | state : S >} |= train-cons(O1)
 
 This predicate holds if there is a train in the configuration with object identifier O1 and a state cons. 
 
-We can use these two properties and others formulated in a similar fashion to formulate model checking properties which can be used to check the correctness of our modelling approach. We can define three safety conditions, one that states "train1 is in the cons state if and only it is at its max speed". The second states "if the speed of train1 is zero then it is either in the cons, stop or acc states and if the train is in the stop state then its speed is zero". The final states "it is not the case that there exists a state in which the speed of train1 is 5" (train1 has a maximum speed of 4). 
+We can use these two properties and others formulated in a similar fashion to formulate model checking properties which can be used to check the correctness of our modelling approach. We can define three safety conditions, one that states "train1 is in the cons state if and only it is at it's maximum speed". The second states "if the speed of train1 is zero then it is either in the cons, stop or acc states and if the train is in the stop state then it's speed is zero". The final states "it is not the case that there exists a state in which the speed of train1 is 5" (train1 has a maximum speed of 4). 
 
 \begin{lstlisting}[caption = The model checking commands for the correctness properties ]
 Correct1 := (mc initialstate2 |=t  

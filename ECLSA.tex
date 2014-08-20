@@ -566,10 +566,10 @@ This is proven by using Lemma \ref{lem:compgen} to generate a complete set of cl
 \end{mycorollary}
 
 \section{Formalising a Soundness and Completeness of the Modified DPLL and Unit Resolution Proof Systems in Minlog}
-We shall now describe how the soundness and completeness for the modified DPLL and  unit resolutions proof systems, along with their soundness and complete, are formalised in the Minlog system. The formalisation is based on the Minlog formalisation for the DPLL proof system describe in Chapter \ref{chapter:dpllminlog}; the basic operations such as those on sets have been reused where possible. The inductive definition for the modified unit resolution proof system contains four closure axioms corresponding to the four rules in the proof system (See Definition \ref{def:modures} .). These axioms inductively define a predicate \texttt{unitRes} that captures a unit resolution derivation.
+We shall now describe how the soundness and completeness for the modified DPLL and  unit resolutions proof systems, along with their soundness and complete, are formalised in the Minlog system. The formalisation is based on the Minlog formalisation for the DPLL proof system describe in Chapter \ref{chapter:dpllminlog}; the basic operations such as those on sets have been reused where possible. The inductive definition for the modified unit resolution proof system (See Code Listing \ref{def:moduresminlog}.) contains four closure axioms corresponding to the four rules in the proof system (See Definition \ref{def:modures} .). These axioms inductively define a predicate \texttt{unitRes} that captures a unit resolution derivation.
 
 
-\begin{lstlisting}[caption = The Inductive Definition for the Modified Unit Resolution Proof System in Minlog]
+\begin{lstlisting}[caption = The Inductive Definition for the Modified Unit Resolution Proof System in Minlog, label = def:moduresminlog]
 (add-ids (list (list "unitRes" 
 (make-arity (py "valu")  (py "for" ) (py "valu") (py "cla")) 
  "algunitRes"))
@@ -593,8 +593,9 @@ We shall now describe how the soundness and completeness for the modified DPLL a
 \end{lstlisting}
 The inductive definitions for both modified proof systems have been optimised using a number of non-computational quantifiers. The formula and valuations have been removed from both proof systems as their inclusion in the derivation would increase  the size of the proofs by an order of magnitude. The only variable to have a computational quantifier is that of a literal $l$ in the $\Unit$ and $\Split$ rules of the modified DPLL proof system.  There are several computation quantifiers in the modified unit resolution proof system: there is the subsumed clause in the $\Sub$ rule, the subsumed literal and its decision level in the $\UnitSub$ and $\SplitSub$ rules and the resolved literal in the $\Res$ rule.
 
+The inductive definition for the modified DPLL proof system inductively defines a predicate \texttt{modDPLL}, which captures the
 
-\begin{lstlisting}[caption = The Inductive Definition for the Modified DPLL Proof System in Minlog]
+\begin{lstlisting}[caption = The Inductive Definition for the Modified DPLL Proof System in Minlog, label = def:moddpllminlog]
 (add-ids (list (list "modDPLL" 
 (make-arity (py "valu") (py "for") (py "for")) "algmodDPLL" ))
  '("allnc val1, val0. allnc f. allnc c0. 
@@ -620,9 +621,9 @@ The inductive definitions for both modified proof systems have been optimised us
 )
 \end{lstlisting}
 
+The statement of completeness for the DPLL proof system has been modified from the one described in Chapter \ref{}. It additionally contains an assumption to allow for the inclusion of a more complicated branching heuristic, which computes a variable ordering at the start of the program and then 
 
-
-\begin{lstlisting}[]
+\begin{lstlisting}[caption = The Completeness Theorem for the Modified DPLL Proof System in Minlog]
 (set-goal (pf "all val,f.  
  consistent val -> 
  
