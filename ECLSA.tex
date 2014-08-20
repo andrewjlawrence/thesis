@@ -417,8 +417,8 @@ We fix an $l$ and show $\complete{\emptyset}{\Gamma, \unitdecg{l}}{\Delta}$.  Th
 \end{proof}
 \end{mylemma}
 
-We use the following lemma to construct a new clause pair along with the associated unit resolution proof from a clause an a valuation.
-
+We use the following lemma to construct a new clause pair along with the associated unit resolution proof from a clause an a valuation. \\
+\medskip
 \begin{mylemma}\label{lem:compgen1}
 \begin{align*}
 \forall \Gamma, C_1. \exists C_2( C_2 = C_1 \setminus \mybar{\Gamma} \wedge \exists \Gamma' . \Gamma' \clmodres{\Gamma}{\{C_1 \}} C_2) \vee \exists l\, (l \in C_1 \wedge l \in \lit{\Gamma})
@@ -437,7 +437,8 @@ We perform a case distinction on whether $l \in \lit(\Gamma)$ if it is then we h
 \end{description}
 \end{proof}
 \end{mylemma}
-Using the previously proven Lemma \ref{lem:compgen1}, in the following lemma we prove that it is possible to construct a new set of complete clause pairs from a valuation and a formula.
+Using the previously proven Lemma \ref{lem:compgen1}, in the following lemma we prove that it is possible to construct a new set of complete clause pairs from a valuation and a formula.\\
+\medskip
 \begin{mylemma}\label{lem:compgen}
 \begin{align*}
 \forall \Delta,\Gamma. \, \exists \DeltaVec. \, \complete{\DeltaVec}{\Gamma}{\Delta}

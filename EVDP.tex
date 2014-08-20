@@ -1,7 +1,7 @@
 \thesischapter{Soundness and Completeness of The DPLL and Resolution Proof Systems}{Soundness and Completeness of DPLL and Resolution Proof Systems}
 \chaptermark{Soundness and Completeness of DPLL and Resolution}
  \label{chapter:dpll}
-In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see chapter \ref{chapter:satbackground}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. The completeness proof is performed in such a way as to take into account efficiency considerations. The branching rule $\Split$ is only applied when absolutely necessary as it is computationally the most expensive to perform. A Minlog formalisation of these proofs is presented in chapter \ref{chapter:dpllminlog} whilst the performance of the extracted program is analysed in \ref{chapter:dpllapp}. Following this we present a proof of the soundness and completeness of the resolution proof system based on the completeness proof of the DPLL proof system. Then both the DPLL and the resolution proof systems are enriched to contain quantitative information about the size of the proof enabling us to prove that the resolution proofs are in the same order of size as the DPLL proofs. The completeness proof was presented in \cite{AL12} and an improved version in \cite{AL14b}.
+In the following chapter we present a proof of soundness and completeness for the DPLL proof system (see Chapter \ref{chapter:satbackground}). The soundness proof guarantees the correctness of any extracted SAT algorithm based on the proof system while the completeness proof contains the computational content needed to extract a program. The completeness proof is performed in such a way as to take into account efficiency considerations. The branching rule $\Split$ is only applied when absolutely necessary as it is computationally the most expensive to perform. A Minlog formalisation of these proofs and an analysis of the performance of the extracted program is presented in Chapter \ref{chapter:dpllminlog}. Following this we present a proof of the soundness and completeness of the resolution proof system based on the completeness proof of the DPLL proof system. Then both the DPLL and the resolution proof systems are enriched to contain quantitative information about the size of the proof enabling us to prove that the resolution proofs are in the same order of size as the DPLL proofs. The completeness proof was presented in \cite{AL12} and an improved version in \cite{AL14b}.
 
 \section{Related Work}
 %Other examples of verification and extraction of SAT solvers
@@ -534,11 +534,11 @@ to form a resolution solver that yields resolution refutations for unsatisfiable
 Since the computationally hard and interesting part of this program is 
 entirely contained in the DPLL-based SAT solver, we will restrict
 our attention to the latter when we discuss the extracted programs in detail 
-in Sect.~\ref{sec:program}.
+in Sect.~\ref{chapter:dpllprogram}.
 
 
 
-%% The program extracted from the above completeness theorem takes as input a formula and produces either a resolution derivation or a model of that formula. The proof search is carried out by calling the DPLL SAT solving algorithm described in Section~\ref{sec:program}. If the result from running this algorithm is a DPLL derivation then the translation is called and an resolution derivation is obtained. Otherwise the execution of the DPLL SAT algorithm results in a model which is output by the program.
+%% The program extracted from the above completeness theorem takes as input a formula and produces either a resolution derivation or a model of that formula. The proof search is carried out by calling the DPLL SAT solving algorithm described in Chapter~\ref{chapter:dpllprogram}. If the result from running this algorithm is a DPLL derivation then the translation is called and an resolution derivation is obtained. Otherwise the execution of the DPLL SAT algorithm results in a model which is output by the program.
 
 
 %\begin{myremark}

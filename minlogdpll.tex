@@ -433,7 +433,7 @@ The DPLL and Resolution proof systems were modified in order to obtain a proof c
 \end{lstlisting}
 
 \section{The Completeness of the Resolution Proof System in Minlog}
-The proof of completeness of the resolution proof system is performed by proving equivalence between the resolution and DPLL proof systems as described in \ref{chapter:dpll}.  
+The proof of completeness of the resolution proof system is performed by proving equivalence between the resolution and DPLL proof systems as described in Chapter \ref{chapter:dpll}.  
 \begin{comment}
 \begin{center}
 \texttt{(set-goal  (pf "all f,c. all c0,n. resolution f c n  -> (memcf c0 f -> F) -> resolution (conccf c0 f) c n "))}
@@ -480,7 +480,7 @@ The proof of completeness from which we extract a resolution solver proceeds as 
 
 The instantiation of the DPLL completeness theorem with the formula  \texttt{f} is at the core of the proof. Following that a case distinction is made on whether the formula \texttt{f} has a DPLL derivation or a model. In the case that it has a DPLL derivation the equivalence theorem is applied to obtain a resolution derivation. In the case that the formula has a model, that model satisfies the second closure axiom of \texttt{ressucess}. 
 
-\section{The Extracted SAT Solver X-SAT}
+\section{The Extracted SAT Solver X-SAT}\label{chapter:dpllprogram}
 
 In the following we will see how both $\forall$ and $\forallnc$ solvers 
 behave when they are applied to a number of SAT problems. The extracted 
@@ -697,3 +697,4 @@ While we cannot expect to compete with an industrial tool on speed and functiona
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End: 
+
