@@ -501,7 +501,7 @@ By Lemma \ref{lem:comprem} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C
 
 We now proceed to the Main proof of completeness in which we maintain a complete set of clause pairs and unit resolution derivations with respect to the current valuation and formula. We call $n \leq \delta(\Gamma)$  the "witness", it provides us with a DPLL derivation of unsatisfiability using the valuation $\Gamma$ cropped to a decision level $n$.\\
 \medskip
-\begin{mytheorem}[Completeness of Modified DPLL] 
+\begin{mytheorem}[Completeness of Modified DPLL]\label{thm:moddpllcompleteness} 
 We can fix a finite set of variables $\{v_1, \ldots , v_N \}$ in advance and consider only $\Gamma$ and $\Delta$ built from these variables.
 \begin{align*}
  &\forall \Gamma, \Delta. \consistent{\Gamma} \to   \\ 
@@ -621,9 +621,9 @@ The inductive definition for the modified DPLL proof system inductively defines 
 )
 \end{lstlisting}
 
-The statement of completeness for the DPLL proof system has been modified from the one described in Chapter \ref{}. It additionally contains an assumption to allow for the inclusion of a more complicated branching heuristic, which computes a variable ordering at the start of the program and then 
+The statement of completeness for the DPLL proof system has been modified from the one described in Theorem \ref{thm:moddpllcompleteness}. It additionally contains an assumption to allow for the inclusion of a more complicated branching heuristic (See lines 4-12 of Code Listing \ref{cl:moddpllcompleteness}.), which computes a variable ordering at the start of the program that is used throughout the proof search.  The assumption states that their exists a variable list \texttt{vs} that satisfies three properties in relation to the formula and the valuation during the proof search.  The first property (lines 5-7) states that every variable in the variable list which is not in the valuation must be contained in the variable set of the formula; we want to only select variables from the formula. The second property (lines 8-10) states that every variable in the formula but is not in the valuation must be in the variable list; our heuristic must compute an ordering containing every variable from the variable set of the formula.
 
-\begin{lstlisting}[caption = The Completeness Theorem for the Modified DPLL Proof System in Minlog]
+\begin{lstlisting}[caption = The Completeness Theorem for the Modified DPLL Proof System in Minlog, label = cl:moddpllcompleteness]
 (set-goal (pf "all val,f.  
  consistent val -> 
  
@@ -639,18 +639,18 @@ The statement of completeness for the DPLL proof system has been modified from t
     
  -> WellFormedF f -> funique f ->
 
-( ex fvec(
-      all c,c0(
-            memffvec(CCP c c0)fvec -> 
-            memcf c f & 
-            c0=clasetminus c(oppvalc val) & 
-            varIntersection(varv val)(varSetCla c0)=(Nil variable) & 
-            ex val0(subsetval val0 val & unitRes val0(CF c:)val c0)) & 
-            fvecunique fvec &
-            all c(
-            memcf c f -> 
-            all c0(memffvec(CCP c c0)fvec -> F) -> 
-            ex l(memlc l c & memlv l val)))) ->
+(ex fvec(
+   all c,c0(
+        memffvec(CCP c c0)fvec -> 
+        memcf c f & 
+        c0=clasetminus c(oppvalc val) & 
+        varIntersection(varv val)(varSetCla c0)=(Nil variable) & 
+        ex val0(subsetval val0 val & unitRes val0(CF c:)val c0)) & 
+        fvecunique fvec &
+        all c(
+        memcf c f -> 
+        all c0(memffvec(CCP c c0)fvec -> F) -> 
+        ex l(memlc l c & memlv l val)))) ->
 
 (ex mod. (all l. memlv l val -> mod l) & 
         (all c. memcf c f -> ex l. memlc l c & mod l)) ori 
