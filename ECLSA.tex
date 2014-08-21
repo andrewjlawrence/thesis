@@ -225,8 +225,10 @@ The resolution rule is trivially equivalent to the other resolution rule by the 
 %%
 The soundness of the modified unit resolution proof system is proven by showing that if there is a derivation of a clause $C$ from a valuation $\Gamma$ and a formula $\Delta$ then $\Gamma$ and $\Delta$ model $C$. \\
 \medskip
-\begin{mytheorem}[Soundness of Unit Resolution]\label{thm:UResSoundness}
+\begin{mytheorem}[Soundness of Unit Resolution]\label{thm:UResSoundness} \hspace*{0pt} \\
+\begin{center}
 If  $ \clmodres{\Gamma}{\Delta} C$ then $\Gamma, \Delta \models C$.
+\end{center}
 %
 \begin{proof}
 We perform induction on the build up of  the derivation $ \clmodres{\Gamma}{\Delta} C$.
@@ -249,8 +251,8 @@ By induction hypothesis we know $ \Delta \models C \vee l$, $ \Delta \models \{ 
 Our modified DPLL proof system uses a set of learned clauses from the first branch of any proof along any subsequent branches. It is important that these clauses do not change the (un)satisfiability of the original formula $\Delta$ in anyway. Therefore, we prove that if there is a DPLL derivation of a formula $\Delta$ using set of learned clauses $\Delta'$ then $\Delta$ forms a model of $\Delta'$. \\
 \medskip
 %
-\begin{mytheorem}[Learned Clause Lemma]\label{thm:learnedclause}
-If $\Gamma \vdash_{\Delta'} \Delta$  then  $\Delta \models \Delta'$.
+\begin{mytheorem}[Learned Clause Lemma]\label{thm:learnedclause} \hspace*{0pt} \\
+\begin{center}If $\Gamma \vdash_{\Delta'} \Delta$  then  $\Delta \models \Delta'$.\end{center}
 %
 \begin{proof}
 By induction on the build up of $\Gamma \vdash_{\Delta'} \Delta$. This leads to two  cases:
@@ -312,8 +314,8 @@ We fix a model $M$ such that $M \models \Delta$. $\Delta \models \Delta'$ is equ
 %
 We shall now perform a proof of soundness of our modified DPLL proof system by proving the stronger property of incompatibility. \\ \medskip
 %
-\begin{mytheorem}[Incompatibility (Soundness) of Modified DPLL]
-If  $\Gamma \vdash_{\Delta'} \Delta$  then $\incompatible{\Gamma}{\Delta}$.
+\begin{mytheorem}[Incompatibility (Soundness) of Modified DPLL] \hspace*{0pt} \\
+\begin{center}If  $\Gamma \vdash_{\Delta'} \Delta$  then $\incompatible{\Gamma}{\Delta}$. \end{center}
 \begin{proof}
 We perform induction on the build up of the derivation $\Gamma \vdash_{\Delta'} \Delta$ leading to three cases:
 %

@@ -482,7 +482,70 @@ The proof of completeness from which we extract a resolution solver proceeds as 
 The instantiation of the DPLL completeness theorem with the formula  \texttt{f} is at the core of the proof. Following that a case distinction is made on whether the formula \texttt{f} has a DPLL derivation or a model. In the case that it has a DPLL derivation the equivalence theorem is applied to obtain a resolution derivation. In the case that the formula has a model, that model satisfies the second closure axiom of \texttt{ressucess}. 
 
 \section{The Extracted SAT Solver X-SAT}\label{chapter:dpllprogram} \label{section:dpllapp}
-We used the program extraction facilities of the Minlog system to extract different versions X-SAT; one based on the formalisation optimised with $\forallnc$ quantifiers and the other based on an unoptimised formalisation containing only $\forall$ quantifiers.
+\label{sec:program}
+The size of the DPLL formalization 
+%containing  $\forallnc$ quantifier s
+is approximately 5500  lines of Minlog code. The extracted program comes to 300 lines of code as a Minlog term and  600 lines of Haskell code. In the following we present two versions of our extracted solver X-SAT: one optimized with $\forallnc$ quantifiers which we shall refer to as the $\forallnc$ solver, and the other without these optimizations which we shall refer to as the $\forall$ solver.
+  
+%
+%FRED: what do we count? The output of the translation is 204 lines, but
+% some of those lines are pretty long...
+% My suggestion: report the number of lines after manual formatting (I
+% guess this is what we are doing now, but some current choices seem
+% to use a lot of lines, see e.g. list_clalist_clavalugrecguard in the
+% appendix).
+%
+The $\forall$ solver takes a CNF formula $\Delta$ represented as a list of
+clauses as input, and produces either a model of $\Delta$ or a
+derivation of its unsatisfiability.
+%
+%FRED: not true at the moment! Really, the extracted program takes a valuation
+% Gamma and two formulae Delta, Theta, assumes Gamma is consistent and produces
+% a model of Delta /\ Theta or a derivation of Gamma |- Delta /\ Theta.
+%
+% ANDY: This has now been changed in the Minlog code. 
+% The formalization of the completeness theorem may need to be changed to reflect this. 
+Models are represented as functions from literals to booleans. An
+algebraic data type for DPLL derivations is automatically generated
+from its inductive definition in Minlog. It has five constructors, one
+for each of the DPLL rules in Definition~\ref{def:derivable-DPLL}:
+\begin{verbatim}
+      data Algdpll = CConflict Valu For
+                   | CElim Valu For Cla Lit Algdpll
+                   | CUnit Valu For Lit Algdpll
+                   | CRed Valu For Cla Lit Algdpll
+                   | CSplit Valu For Lit Algdpll Algdpll
+        deriving (Show, Read, Eq, Ord)
+\end{verbatim}
+%
+Each constructor takes a formula and a valuation as arguments. The
+formula itself never changes during the proof and is only part of the algebra for the purpose of proving correctness and does not play a role in any computation. While the valuation changes
+during the proof search, these changes can be captured by indicating
+which literal was added by the $\Unit$ and $\Split$ rules, thus making
+the valuation redundant as well.  We added $\NC$-quantifiers to the
+definition by hand in order to remove redundant
+computational content, resulting in
+%
+\begin{verbatim}
+      data Algdpll = CConflict
+                   | CElim Cla Lit Algdpll
+                   | CUnit Lit Algdpll
+                   | CRed Cla Lit Algdpll
+                   | CSplit Lit Algdpll Algdpll
+        deriving (Show, Read, Eq, Ord)
+\end{verbatim}
+%
+%FRED: Could we just present this version and say that we have
+% added nc-quantifiers by hand?
+%
+
+The control structure of the program closely follows the structure
+of the case distinctions and proofs by induction performed in the
+proof. Lemmas invoked during the proof are extracted separately and
+called as procedures. Since the proof is by general induction along a
+measure, the main body of the program is using general recursion along
+the same measure.
+\subsection*{Execution of X-SAT}
 In the following we will see how both $\forall$ and $\forallnc$  variants of the X-SAT solver 
 behave when they are applied to a number of SAT problems. The extracted 
 decision procedure was run on several instances of the pigeon hole 
