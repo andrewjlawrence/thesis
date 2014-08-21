@@ -223,7 +223,7 @@ At every step the automaton is simplified by removing unreachable states and sub
 
 The model checking algorithm performs a search, using the double depth first search algorithm, for strongly connected components in a \Buchi automataon $A = (L,S,T, S_0, F)$ and tests to see whether the the acceptance condition is empty. Let $\rho$ be an accepting run of the automaton i.e. it contains infinitely many accepting states from $A$.  There must exist some $\rho'$, which is a suffix of $\rho$, such that every state within $\rho'$ occurs infinitely often in $\rho'$. These states of $\rho'$ form a strongly connected component as every state must be reachable from every other state. The converse also holds meaning that a search algorithm for strongly connected components also checks for accepting runs of the automata.The following is the double depth first search algorithm \cite{CC91,GH96}:
 
-\begin{lstlisting}[caption = The double depth first search algorithm, mathescape]
+\begin{lstlisting}[caption = The Double Depth First Search Algorithm, mathescape]
 Emptiness(A)
 $\forall s_0 \in S_0$ do
 	dfs1(s_0,A,HT)

@@ -356,7 +356,7 @@ There are different induction schemes  that yield different extracted programs h
 
 The extracted program for an application of general induction is the guarded recursion operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
 
-\begin{lstlisting}[mathescape]
+\begin{lstlisting}[caption = The Guarded Recursion Operation Used in the Minlog System, mathescape]
 (GRecGuard $\rho$1 $\rho$2 $\rho$3 $\tau$) $\mu$ z1 z2 z3 G t = f z1 z2 z3 t where
 f : $\rho$1 $\implies$ $\rho$2 $\implies$ $\rho$3 $\implies$ Boole $\implies$ $\tau$
 f x1 x2 x3 True = G x x2 x3 (
@@ -367,7 +367,7 @@ f x1 x2 x3 False = Inhab
 
 Similarly, the extracted program for non-measure induction is a recursion operation \texttt{Rec}. It is possible to write the operation \texttt{Rec list} $\rho$ $\implies$ $\tau$ using a function
 f : list $\rho \implies \tau$ which gives a more intuitive view of its behaviour.
-\begin{lstlisting}[mathescape]
+\begin{lstlisting}[caption = The Recursion Operation Used in the Minlog System ,mathescape]
 (Rec list $\rho \implies \tau$)ys z G = f ys where
 f Nil = z
 f (x :: xs) = G x xs(f xs)
