@@ -38,17 +38,27 @@ The first result of this thesis (Chapter 4/5) is the use of program extraction t
 The second result of this thesis is the modelling of the European Rail Traffic Management System and verification of its safety and performance using Real Time Maude. First, we formalised the ERTMS system, controlling an example railway in the form of a pentagon, as several hybrid automata in order to capture its behaviour.  This pentagon example along with a small junction were then modelled as Real Time Maude specifications. In our model, speed, acceleration, braking behaviour and track length are integral parts, as even safety cannot be decided without these properties. The inclusion of these properties in the model enables the performance of this system to be analysed by executing the Real Time Maude specifications. This is also the first formalisation of ERTMS to capture the interlocking, radio block processor, train and the communications between them. The interface between the interlocking and the radio block processor, in particular, has yet to be examined in detail even though it plays a crucial role in the safety of the overall system.
 
 \section{Publications}
-The follow is a list of publications that I have produced during my studies
+Material from the following publications formed part of my MRes thesis and influenced work in this thesis:
 
 \textbf{Verification of Railway Interlockings in SCADE (extended abstract with Seisenberger), AVOCS 2010 \cite{AL10}} 
+Two approaches are described to model and verify train control systems using the industrial modelling and verification tool SCADE~\cite{Scade}. The first involves the translation of ladder logic into the SCADE language and then applying SCADE's built in model checker to verify safety properties. The second approach involves segment of railway in a modular fashion allowing for the individual components to be verified before being combined together.
+
 
 \textbf{Verification of Solid State Interlocking Programs (with Chadwick, James, Kanso, Moller, Roggenbach and Seisenberger), FM-Rail-BOK, \cite{AL14a}}
+This paper aims to provide a complete body of knowledge on the subject of verifying ladder logic programs for solid state interlockings. It contains the combined work of three MRes theses and associated research papers condensed to form a single methodology.
+
+Material from the following publications forms part of this thesis:
 
 \textbf{Extracting a DPLL Algorithm (with Berger and Seisenberger), MFPS 2012, \cite{AL12}}
+The formalisation of the DPLL proof system and its completeness are described along with the use of non-computational quantifiers to optimise the extracted program. The extracted program is run as a term inside the Minlog system on pigeon hole formulae.
+
 
 \textbf{Extracting Verified Decision Procedures: DPLL and Resolution (with Berger, Nordval Forsberg and Seisenberger), LMCS accepted for publication \cite{AL14b}}
+This paper is an extension of \cite{AL12}. We extract a resolution solver based on the DPLL solver by showing that DPLL derivability implies derivability in the resolution proof calculus. The extracted program was translated into the function programming language Haskell and a comparison was performed with another verified SAT solver Versat and the industrial tool SCADE. The extracted solver was additionally applied to the verification of solid state interlocking programs following the methodology set out in \cite{AL14a}.
 
-\textbf{Safety and Performance of the European Rail Traffic Management System: A Modelling and Verification Exercise in Real Time Maude (with Berger, Roggenbach and Seisenberger), WADT 2014 \cite{AL14c}}
+
+
+\textbf{Safety and Performance of the European Rail Traffic Management System: A Modelling and Verification Exercise in Real Time Maude (extended abstract with Berger, Roggenbach and Seisenberger), WADT 2014 \cite{AL14c}} We present a
 
 
 \section{Thesis Outline}
