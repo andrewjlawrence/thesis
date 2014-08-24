@@ -1,6 +1,6 @@
  \thesischapter{Introduction}{Introduction}
 
-This thesis is concerned with the application of formal methods within the Railway Domain and to the tools used when applying formal methods themselves. Firstly we present a new approach to develop verified SAT solving algorithms, which have been applied to the verification of a real world train control system: the solid state interlocking. Secondly we present an approach to formalise and model the European Rail Traffic Management System (ERTMS), in such a way as to capture the performance of the system and apply a model checker to verify the system's safety.
+This thesis is concerned with the application of formal methods within the Railway Domain and to the tools used when applying formal methods themselves. Firstly we present a new approach to develop verified SAT solving algorithms, which have been applied to the verification of a real world train control system: the solid state interlocking. Secondly we present an approach to formalise and model the European Rail Traffic Management System (ERTMS), in such a way as to capture the performance of the system and also apply a model checker to verify the system's safety.
 
 \section{Motivation}
 
@@ -29,15 +29,26 @@ The Railway Verification Group at the Computer Science Department of Swansea Uni
 
 
 
-
 \section{Results of the Thesis}
+ 
 
-
-The main result of this thesis is the use of program extraction to obtain a verified DPLL SAT solving algorithm that can solve industrial sized problems in the form of verifying solid state interlockings following the approach set out in \cite{AL14a}. We have named the resulting SAT solver X-SAT and show that its performance is comparable with other verified SAT algorithms. This case study opens up a new area of application for program extraction to obtain verified SAT and resolution algorithms and has been published in \cite{AL14b}. This is one of the biggest case studies so far in the area of program extraction and demonstrates that it can be used for practical purposes.  One of the biggest arguments against the use of program extraction is that one loses control over the efficiency of the program. We have demonstrated that it is possible to carry out efficiency considerations at the proof level and therefore obtain a more efficient extracted program. We demonstrate that it is possible to modify the SAT proof system and extract a more advanced SAT algorithm that implements an optimisation called clause learning. We also demonstrate that it is possible to extract a resolution algorithm based on our original DPLL SAT solver.
+The first result of this thesis (Chapter 4/5) is the use of program extraction to obtain a verified DPLL SAT solving algorithm that can solve industrial sized problems in the form of verifying solid state interlockings following the approach set out in \cite{AL14a}. We have named the resulting SAT solver X-SAT and show that its performance is comparable with other verified SAT algorithms. This case study opens up a new area of application for program extraction to obtain verified SAT and resolution algorithms and has been published in \cite{AL12,AL14b}. This is one of the largest case studies so far in the area of program extraction and demonstrates that it can be used for practical purposes.  One of the biggest arguments against the use of program extraction is that one loses control over the efficiency of the program. We have demonstrated that it is possible to carry out efficiency considerations at the proof level and therefore obtain a more efficient extracted program. We demonstrate that it is possible to modify the SAT proof system and extract a more advanced SAT algorithm that implements an optimisation called clause learning. We also demonstrate that it is possible to extract a resolution algorithm based on our original DPLL SAT solver.
 
 
 The second result of this thesis is the modelling of the European Rail Traffic Management System and verification of its safety and performance using Real Time Maude. First, we formalised the ERTMS system, controlling an example railway in the form of a pentagon, as several hybrid automata in order to capture its behaviour.  This pentagon example along with a small junction were then modelled as Real Time Maude specifications. In our model, speed, acceleration, braking behaviour and track length are integral parts, as even safety cannot be decided without these properties. The inclusion of these properties in the model enables the performance of this system to be analysed by executing the Real Time Maude specifications. This is also the first formalisation of ERTMS to capture the interlocking, radio block processor, train and the communications between them. The interface between the interlocking and the radio block processor, in particular, has yet to be examined in detail even though it plays a crucial role in the safety of the overall system.
 
+\section{Publications}
+The follow is a list of publications that I have produced during my studies
+
+\textbf{Verification of Railway Interlockings in SCADE (extended abstract with Seisenberger), AVOCS 2010 \cite{Al10}} 
+
+\textbf{Verification of Solid State Interlocking Programs (with Chadwick, James, Kanso, Moller, Roggenbach and Seisenberger), FM-Rail-BOK, \cite{}}
+
+\textbf{Extracting a DPLL Algorithm (with Berger and Seisenberger), MFPS 2010, \cite{}}
+
+\textbf{Extracting Verified Decision Procedures: DPLL and Resolution (with Berger, Nordval Forsberg and Seisenberger), LMCS accepted for publication \cite{})
+
+\textbf{Safety and Performance of the European Rail Traffic Management System: A Modelling and Verification Exercise in Real Time Maude (with Berger, Roggenbach and Seisenberger), WADT 2014 \cite{}}
 
 
 \section{Thesis Outline}
@@ -114,3 +125,30 @@ Hard disk: &  750GB 7200 RPM  SATA\\  \hline
 
 \section{Implementations}
 The Minlog implementations described in Chapters \ref{chapter:dpllminlog} and \ref{chapter:cdclproof} and Real Time Maude implementations described in \ref{chap:modelertms} and \ref{chap:verifyertms} are available at \url{http://cs.swan.ac.uk/~csal/phd/index.html}.
+
+\section{Acknowledgements}
+There are a great many who have supported me or contributed in some way throughout the writing of this thesis. I would first and foremost like to thank my supervisor Monika Seisenberger for her eternal patience and guidance. She introduced me to both of the tools used in this thesis.
+
+
+Siemens Rail Automation/ Invensys Rail deserve many thanks for their support and valuable technical input throughout the whole of my research career.
+ 
+
+My mother Sharon Lawrence provided me with many cooked meals and washed my clothes during my stay at her house; this enabled me to spend even more of my time on the writing of this thesis.
+
+
+
+Fredrik Nordsval Forsberg has made several contributions to this thesis. Firstly, he wrote the automatic translation which enabled Minlog terms to be translated into Haskell.  I would have been unable to perform such an in-depth analysis of the extracted program without it. He was also a co-author and worked 
+
+Ulrich Berger has provide his expert guidence numerous times both as an author
+
+Markus Roggenbach introduced me to Hybrid Automata and provided valuable knowledge on the Railway Domain.
+
+Alison Jones for sharing her in depth understanding of the English language and for proof reading my thesis.
+
+
+
+
+
+
+My lovely girl friend Cerri has supported with m
+
