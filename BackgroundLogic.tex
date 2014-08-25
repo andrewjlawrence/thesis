@@ -98,6 +98,14 @@ derivation & term \\
 \DisplayProof} & \raisebox{-2.8\height}{$(M^{A \wedge B} 0)^A \quad (M^{A \wedge B} 1)^B$} \\ [10ex] \hline
 
 
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{|c|c|} \hline
+
+derivation & term \\ \hline
+
 \raisebox{-1\height}{
 \AxiomC{$\mathass{u: \,A}$}
 \noLine
@@ -120,11 +128,6 @@ derivation & term \\
 \DisplayProof} & \raisebox{-1.2\height}{$(M^{A \to B} N^{A})^B$} \\ [5ex] \hline
 
 
-\end{tabular}
-\end{center}
-\begin{center}
-\begin{tabular}{|c|c|} \hline
-derivation & term \\ \hline
 
 \raisebox{-1\height}{
 \AxiomC{$|M$}
@@ -144,6 +147,38 @@ derivation & term \\ \hline
 \DisplayProof} & \raisebox{-2.8\height}{$(M^{\forall x A}t)^{A[x:=t]}$} \\ [10ex] \hline
 
 
+\end{tabular}
+\end{center}
+
+
+\end{mydef}
+\medskip
+Minlog also allows for the use of the \emph{ex falso quodlibet} rule in order to perform proofs by contradiction. Such proof do not contain any computational content and it is typically used to prove properties about computations that never executed by the program.\\
+\medskip
+\begin{mydef}[The Ex Falso Quodlibet Rule] \hspace*{0pt} \\
+\begin{center}
+\AxiomC{$\bot$}
+\LeftLabel{efq}
+\UnaryInfC{$A$}
+\DisplayProof 
+\end{center}
+\end{mydef}
+
+The stability rule is also included in the Minlog system, although I have not used it in any proofs in this thesis, it is used to obtain classical logic.
+\medskip
+\begin{mydef}[The Stability Rule] \hspace*{0pt} \\
+\begin{center}
+\AxiomC{$A \to \bot \to \bot$}
+\LeftLabel{efq}
+\UnaryInfC{$A$}
+\DisplayProof 
+\end{center}
+\end{mydef}
+
+\begin{center}
+\begin{tabular}{| c | c |} \hline
+
+derivation & term \\ \hline
 
 \raisebox{-1\height}{
 \AxiomC{$t$}
@@ -202,19 +237,6 @@ derivation & term \\ \hline
 \end{tabular}
 \end{center}
 
-
-\end{mydef}
-\medskip
-Minlog also allows for the use of the \emph{ex falso quodlibet} rule in order to perform proofs by contradiction. Such proof do not contain any computational content and it is typically used to prove properties about computations that never executed by the program.\\
-\medskip
-\begin{mydef}[The Ex Falso Quodlibet rule] \hspace*{0pt} \\
-\begin{center}
-\AxiomC{$\bot$}
-\LeftLabel{efq}
-\UnaryInfC{$A$}
-\DisplayProof 
-\end{center}
-\end{mydef}
 
 \section{Program Extraction}
 
