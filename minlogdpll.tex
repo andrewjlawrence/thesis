@@ -481,11 +481,11 @@ The proof of completeness from which we extract a resolution solver proceeds as 
 
 The instantiation of the DPLL completeness theorem with the formula  \texttt{f} is at the core of the proof. Following that a case distinction is made on whether the formula \texttt{f} has a DPLL derivation or a model. In the case that it has a DPLL derivation the equivalence theorem is applied to obtain a resolution derivation. In the case that the formula has a model, that model satisfies the second closure axiom of \texttt{ressucess}. 
 
-\section{The Extracted SAT Solver X-SAT}\label{chapter:dpllprogram} \label{section:dpllapp}
+\section{The Extracted SAT Solver XSAT}\label{chapter:dpllprogram} \label{section:dpllapp}
 \label{sec:program}
 The size of the DPLL formalization 
 %containing  $\forallnc$ quantifier s
-is approximately 5500  lines of Minlog code. The extracted program comes to 300 lines of code as a Minlog term and  600 lines of Haskell code. In the following we present two versions of our extracted solver X-SAT: one optimized with $\forallnc$ quantifiers which we shall refer to as the $\forallnc$ solver, and the other without these optimizations which we shall refer to as the $\forall$ solver.
+is approximately 5500  lines of Minlog code. The extracted program comes to 300 lines of code as a Minlog term and  600 lines of Haskell code. In the following we present two versions of our extracted solver XSAT: one optimized with $\forallnc$ quantifiers which we shall refer to as the $\forallnc$ solver, and the other without these optimizations which we shall refer to as the $\forall$ solver.
   
 %
 %FRED: what do we count? The output of the translation is 204 lines, but
@@ -545,8 +545,8 @@ proof. Lemmas invoked during the proof are extracted separately and
 called as procedures. Since the proof is by general induction along a
 measure, the main body of the program is using general recursion along
 the same measure.
-\subsection*{Execution of X-SAT}
-In the following we will see how both $\forall$ and $\forallnc$  variants of the X-SAT solver 
+\subsection*{Execution of XSAT}
+In the following we will see how both $\forall$ and $\forallnc$  variants of the XSAT solver 
 behave when they are applied to a number of SAT problems. The extracted 
 decision procedure was run on several instances of the pigeon hole 
 principle \cite{SC79} in both Minlog and as Haskell programs. The pigeon hole principle states that there is 
@@ -579,7 +579,7 @@ $\mathbf{PHP}(2,1) = \{\{l_{11} \}, \{l_{21}\} , \{\mybar{ l_{11}}, \mybar{ l_{2
 \vspace*{3mm}
 The following is the Minlog output for the pigeon hole formulae $\mathbf{PHP}(2,1)$. There is a constructor \verb|CsuccessZero| of the algebra \verb|success| which represents the disjunction in the main proof statement. The data type extracted from this algebra can be seen as a union type that contains either a DPLL derivation or a model of the formula. In this case it contains a DPLL derivation showing that the formula is unsatisfiable. The arguments to \verb|CsuccessZero| store how the $\Conflict$ is derived. The literal $l_{11}$ is represented as \verb|(Pos(Variable 11))| in the Minlog formalisation and the clause $\{ \mybar{ l_{11}} , \mybar{l_{21}} \}$ is represented as \verb|CC(Neg(Variable 21)::(Neg(Variable 11)):)|.
 
-\begin{lstlisting}[caption = "The derivation produce by X-SAT for PHP(2\,1)"]
+\begin{lstlisting}[caption = "The derivation produce by XSAT for PHP(2\,1)"]
 CsuccessZero
  (CUnit
   (Pos(Variable 11))
@@ -601,7 +601,7 @@ $\mathbf{PHP}(2,2)$ results in the function
 $\mathrm{M}(l) = \True$ iff  $l \in \{ l_{12}, \mybar{ l_{11}}, l_{21}, \mybar{ l_{22}}  \}$.
 %all val,c.  (valclaIntersection val c = (Nil lit) -> F) ->  ex l. (memlitcla l c & memlitval l val)
 The Minlog output for the satisfiable formula $\mathbf{PHP}(2,2)$ is as follows. Here the square brackets represent a lambda abstraction for the literal $l_0$. The model $M$ is written as $\lambda l_0 . l_0 \in \{ l_{12}, \mybar{l_{11}},l_{21}, \mybar{l_{22}} \}$.
-\begin{lstlisting}[caption = "The model produced by X-SAT for PHP(2\,2)"]
+\begin{lstlisting}[caption = "The model produced by XSAT for PHP(2\,2)"]
 CsuccessOne
  ([l0]
   [if (l0=Pos(Variable 12))

@@ -94,7 +94,7 @@ derivation & term \\
 \noLine
 \UnaryInfC{$A \wedge B$}
 \RightLabel{$\wedge^-_1$}
-\UnaryInfC{$A$}
+\UnaryInfC{$B$}
 \DisplayProof} & \raisebox{-2.8\height}{$(M^{A \wedge B} 0)^A \quad (M^{A \wedge B} 1)^B$} \\ [10ex] \hline
 
 
@@ -236,15 +236,20 @@ derivation & term \\ \hline
 \DisplayProof} & \raisebox{-3.8\height}{$(M^{A \vee B} (u^A.N^{C},v^{B}.K^{C}))$} \\ [15ex] \hline
 \end{tabular}
 \end{center}
-
+\bigskip
 \begin{myremark}[Minlog Specifics]
 The following is a list of implementations specifics which describe the particular way in which the Minlog system implements program extraction:
 
 \begin{itemize}
-\item The disjunction $\vee$ operation is defined as an inductive defined predicate \texttt{ori} using axioms to capture the proofs rules from Def. \ref{} 
+\item The disjunction $\vee$ operation is defined as an inductive defined predicate \texttt{ori} with closure axioms instead of the rules 
 
-\item
+\item $\exists$ is treated by axioms instead of rules.
 
+\item The nc-quantifiers are treated in the same way as their non-nc counter parts in terms of how natural deduction is implemented. 
+
+\item Program constants are given computational behaviour using rewriting rules.
+
+\item Inductively defined predicates are given computational behaviour by their closure axioms.
 
 \end{itemize}
 
@@ -281,7 +286,7 @@ variable $\rho$ and the type of the formula $A$ $\tau (A)$.
 \tau(\exists x^{\rho} A) :=  \rho \times \tau (A)
 \]
 \[
-\tau(\exists_{nc} x^{\rho} A) := 
+\tau(\exists^{nc} x^{\rho} A) := 
  \tau (A) 
 \]
 
@@ -310,7 +315,7 @@ returns a function that has a parameter with a type of $\tau (A)$ and returns a 
 a type of $\tau (B)$.
 
 \[
-\tau(\forall x^{\rho} A) := \left\{ 
+\tau(A \to B) := \left\{ 
 \begin{array}{l l}
   \tau (B) & \quad \text{if $\tau (A) = \epsilon$}\\
   \epsilon & \quad \text{if $\tau (B) = \epsilon$}\\
@@ -444,12 +449,38 @@ r1 \ \textbf{r} \ A[x:= r0] & \quad \text{otherwise} \\
 \end{array} \right.
 \]
 
+
+\[ r \ \textbf{r} \ (\exists^{nc} x A) = \left\{ 
+\begin{array}{l l}
+\exists^{nc} x. \epsilon \ \textbf{r} \ A & \quad \text{if $\tau (A) = \epsilon$} \\ 
+\exists^{nc} x. r \ \textbf{r} \ A & \quad \text{otherwise} \\
+
+\end{array} \right.
+\]
+
+\[ r \ \textbf{r} \ (\forall^{nc} x A) = \left\{ 
+\begin{array}{l l}
+\forall x. \epsilon \ \textbf{r} \ A & \quad \text{if $\tau (A) = \epsilon$} \\ 
+\forall x. r \ \textbf{r} \ A & \quad \text{otherwise} \\
+
+\end{array} \right.
+\]
 \[ r \ \textbf{r} \ (A \to B) = \left\{ 
 \begin{array}{l l}
 \epsilon \ \textbf{r} \ A \to r \ \textbf{r} \ B & \quad \text{if $\tau (A) = \epsilon$} \\ 
 \forall x.x \ \textbf{r} \ A \to \epsilon \ \textbf{r} \ B & \quad \text{if
   $\tau (A) \neq \epsilon \neq \tau (B)$} \\
 \forall x. x \ \textbf{r} \ A \to r x  \ \textbf{r} \ B & \quad \text{otherwise} \\
+
+\end{array} \right.
+\]
+
+\[ r \ \textbf{r} \ (A \wedge B) = \left\{ 
+\begin{array}{l l}
+\epsilon \ \textbf{r} \ A  \wedge r \ \textbf{r} \ B & \quad \text{if $\tau (A) = \epsilon$} \\ 
+r \ \textbf{r} \ A \wedge \epsilon \ \textbf{r} \ B & \quad \text{if
+  $\tau (B) \neq \epsilon$} \\
+r_1 \ \textbf{r} \ A \wedge r_2  \ \textbf{r} \ B & \quad \text{otherwise} \\
 
 \end{array} \right.
 \]
@@ -465,7 +496,7 @@ If $M$ is a proof of a formula $B$, then we can derive  $ \llbracket M \rrbracke
 
 \begin{proof}
 
-We begin the proof by performing induction on the proof term M.
+The proof proceeds by performing induction on the proof term $M$ we omit further details.
 
 \begin{comment}
 \begin{description}
