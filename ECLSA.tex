@@ -662,23 +662,42 @@ The statement of completeness for the DPLL proof system has been modified from t
 
 \section{Behaviour of Prototype Clause Learning Algorithm}
 In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. This prototype has had $\forallnc$ quantifiers inserted to reduce the amount of redundant computational content and the overall size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
-
-\begin{center}\texttt{(term-to-string (nt (make-term-in-app-form program (pt "(CF ((CC (Pos (Variable 11)):)::(CC (Pos (Variable 12)):):)) "))))}
-\end{center}
-
+\begin{lstlisting}
+(term-to-string (nt (make-term-in-app-form 
+   program 
+   (pt "(CF ((CC (Pos (Variable 11)):)::(CC (Pos (Variable 12)):):)) 
+"))))
+\end{lstlisting}
 The solver produces a model of the formula paired with a function which indicates which literal satisfies which individual clause:
 
-\begin{center}
-\texttt{"(InL (lit=>boole)@@(cla=>lit) for@@algmodDPLL)(([l0][if (l0=Pos(Variable 12)) True (l0=Pos(Variable 11))])@([c0][if (c0=CC(Pos(Variable 12)):) (Pos(Variable 12)) [if (c0=CC(Pos(Variable 11)):) (Pos(Variable 11)) (Pos(Variable 0))]]))"}                                                                      
-\end{center}
+\begin{lstlisting}
+"(InL (lit=>boole)@@(cla=>lit) for@@algmodDPLL)
+  (
+   ([l0][if (l0=Pos(Variable 12)) True (l0=Pos(Variable 11))])
+ @
+   ([c0][if (c0=CC(Pos(Variable 12)):) 
+              (Pos(Variable 12))
+              [if (c0=CC(Pos(Variable 11)):) 
+                  (Pos(Variable 11)) 
+                  (Pos(Variable 0))]]))"}                                                                     
+\end{lstlisting}
 
 We modelled the completeness statement of this solver using Minlog's built in inductively defined disjunction \texttt{ori}. The constructors \texttt{InL} and \texttt{InR} capture the extracted computation content of the left and right hand of the disjunction respectively. We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
 
-\begin{center}
-\texttt{
-(pp (nt (mk-term-in-app-form program (pt "(CF (                                                                
-(CC ((Pos (Variable11))::(Pos (Variable12)):))::(CC ((Pos (Variable21))::(Pos (Variable22)):))::(CC ((Pos (Variable31))::(Pos (Variable32)):))::(CC ((Neg (Variable11))::(Neg (Variable21)):))::(CC ((Neg (Variable11))::(Neg (Variable31)):))::(CC ((Neg (Variable21))::(Neg (Variable31)):))::(CC ((Neg (Variable12))::(Neg (Variable22)):))::(CC ((Neg (Variable12))::(Neg (Variable32)):))::(CC ((Neg (Variable22))::(Neg (Variable32)):)):) )") )))}
-\end{center}
+\begin{lstlisting}
+(pp (nt (mk-term-in-app-form program 
+  (pt "(CF (                                                                
+     (CC ((Pos (Variable11))::(Pos (Variable12)):))::
+     (CC ((Pos (Variable21))::(Pos (Variable22)):))::
+     (CC ((Pos (Variable31))::(Pos (Variable32)):))::
+     (CC ((Neg (Variable11))::(Neg (Variable21)):))::
+     (CC ((Neg (Variable11))::(Neg (Variable31)):))::
+     (CC ((Neg (Variable21))::(Neg (Variable31)):))::
+     (CC ((Neg (Variable12))::(Neg (Variable22)):))::
+     (CC ((Neg (Variable12))::(Neg (Variable32)):))::
+     (CC ((Neg (Variable22))::(Neg (Variable32)):)):) )
+  ") )))}
+\end{lstlisting}
 
 This results in the output seen in Code Listing \ref{cl:cdclphp32}.  We see that the solver has learned two clauses. The clause \texttt{(CC (Neg (Variable 32)):)} comes from the first branch of the proof where the literal \texttt{(Pos (Variable 32))} was used in an application of the $\Split$ rule. This learned unit clause was then used in subsequent unit resolution derivations of the second branch of the proof resulting in the empty clause \texttt{CC(Nil lit)} being learned.  This use of the unit clauses before assignments from the $\Split$ rule results in shorter learned clauses which better aid the subsequent proof search.
 \newpage
@@ -722,6 +741,31 @@ CmodDPLLTwo(Pos(Variable 32))
 (CunitResThree(Neg(Variable 12))(CunitResOne(Pos(Variable 12))1)
 (CunitResZero(CC(Neg(Variable 12)::(Neg(Variable 22)):))))))))))))
 \end{lstlisting}
+
+
+\section{Prototype Clause Learning Algorithm: Limitations and Future Work}
+We call this algorithm a prototype for the reason that it still requires further development and has a number of limitations:
+
+\begin{itemize}
+\item The satisfiable pigeon hole formula PHP(2,2) results in a model which contains repeated occurrences of the same literal.
+
+\item The pigeon hole formulae PHP(4,3) and several other larger formulae result in a dummy model being returned containing the dummy literal \texttt{(Pos (Variable 0))}.
+
+\item The algorithm is not quite as efficient as I feel it could with further insight the proof could be restructured to increase the efficiency of the algorithm.
+
+\end{itemize}
+
+There are a number of improvements that one could envisage making to this algorithm in order to increase its performance:
+
+\begin{itemize}
+
+\item The proofs generated by this algorithm are significantly larger than those produced by XSAT. One optimisation that could be employed to tackle this problem is proof tree compression \cite{}.
+
+
+\end{itemize}
+
+
+
 
 
 

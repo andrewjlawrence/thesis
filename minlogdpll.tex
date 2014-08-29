@@ -594,7 +594,7 @@ CsuccessZero
      CConflict))))
 \end{lstlisting}
 
-Running the DPLL solver on a satisfiable formula results in a function which 
+Running XSAT on a satisfiable formula results in a function which 
 maps literals to booleans. For example running the solver with 
 $\mathbf{PHP}(2,2)$ results in the function  
 	 $\mathrm{M}: \mathrm{literals} \to \mathbb{B}$  where  
@@ -714,7 +714,7 @@ faster on the hardest pigeon hole formulae. This is because the clause learning 
 %% (Andy) I need to look in the safety condition book and come up with a good description of this condition.
 
 %
-The same version of our solver was also applied to the verification of a real world railway control system via falisfication checking and compared with a SAT solver within the industrial tool SCADE~\cite{SCADE} and Versat. The verification problem was formulated following \cite{MS00} using a tool presented in \cite{KK08}. This is a non trivial example of an application of our SAT solver. We check 5 safety conditions which related to checking that two conflicting routes, out of a set of four routes $R1, \ldots, R4$, can not be active in the railway at the same time. The SAT problem is formulated to perform falisfication checking of the system i.e. a satisfying assignment represents a counter example and an unsatisfiable result means the safety property can not be violated in the system. With each of the five safety conditions our solver produces a proof which certifies that the safety property holds. The SCADE suite can verify that each of the safety properties holds in less than one second with no greater degree of accuracy provided by the system.
+The same version of XSAT was also applied to the verification of a real world railway control system via falisfication checking and compared with a SAT solver within the industrial tool SCADE~\cite{Scade} and Versat. The verification problem was formulated following \cite{MS00} using a tool presented in \cite{KK08}. This is a non trivial example of an application of XSAT. We check 5 safety conditions which related to checking that two conflicting routes, out of a set of four routes $R1, \ldots, R4$, can not be active in the railway at the same time. The SAT problem is formulated to perform falisfication checking of the system i.e. a satisfying assignment represents a counter example and an unsatisfiable result means the safety property can not be violated in the system. With each of the five safety conditions our solver produces a proof which certifies that the safety property holds. The SCADE suite can verify that each of the safety properties holds in less than one second with no greater degree of accuracy provided by the system.
 
 \begin{comment} 
 The safety condition SC1 results in a SAT problem containing 8166 variables and 14716 clauses. It is unsatisfiable due to under-specification of the railway interlocking program which does not include all physical invariants. Out of 100 safety conditions available for the interlocking program, SC1 is the hardest to verify; most of the safety conditions are easily satisfiable. Our solver produces a proof showing that the safety condition is unsatisfiable, whereas the SCADE suite produces a counter example trace showing a sequence of states and transitions that lead to the safety condition being falsified. The results can be found in Table~\ref{tab:scade}.
