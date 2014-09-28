@@ -34,20 +34,12 @@ The Railway Verification Group at the Computer Science Department of Swansea Uni
 
 The first result of this thesis (Chapter 4/5) is the use of program extraction to obtain a verified DPLL SAT solving algorithm that can solve industrial sized problems in the form of verifying solid state interlockings following the approach set out in \cite{AL14a}. We have named the resulting SAT solver XSAT and show that its performance is comparable with other verified SAT algorithms. This case study opens up a new area of application for program extraction to obtain verified SAT and resolution algorithms and has been published in \cite{AL12,AL14b}. This is one of the largest case studies so far in the area of program extraction and demonstrates that the technique can be used for practical purposes.  One argument against the use of program extraction is that one loses control over the efficiency of the program. We have demonstrated that it is possible to carry out efficiency considerations at the proof level and therefore obtain a more efficient extracted program. 
 
-We also demonstrate that it is possible to modify the SAT proof system and extract a more advanced SAT algorithm that implements an optimisation called clause learning. Finally, we demonstrate that it is possible to extract a resolution algorithm based on our original DPLL SAT solver (end of chapter 4).
+As a next result, we show that it is possible to modify the SAT proof system and extract a more advanced SAT algorithm that implements an optimisation called clause learning. Finally, we demonstrate that it is possible to extract a resolution algorithm based on our original DPLL SAT solver (end of chapter 4).
 
 
-The second set of  results of this thesis is the modelling of the European Rail Traffic Management System and verification of its safety and performance using Real Time Maude. First, we formalised the ERTMS system, controlling an example railway in the form of a pentagon, as several hybrid automata in order to capture its behaviour.  This pentagon example along with a small junction were then modelled as Real Time Maude specifications. In our model, speed, acceleration, braking behaviour and track length are integral parts, as even safety cannot be decided without these properties. The inclusion of these properties in the model enables the performance of this system to be analysed by executing the Real Time Maude specifications. This is also the first formalisation of ERTMS to capture the interlocking, radio block processor, train and the communications between them. The interface between the interlocking and the radio block processor, in particular, has yet to be examined in detail even though it plays a crucial role in the safety of the overall system.
+The final set of  results of this thesis is the modelling of the European Rail Traffic Management System and verification of its safety and performance using Real Time Maude. First, we formalised the ERTMS system, controlling an example railway in the form of a pentagon, as several hybrid automata in order to capture its behaviour.  This pentagon example along with a small junction were then modelled as Real Time Maude specifications. In our model, speed, acceleration, braking behaviour and track length are integral parts, as even safety cannot be decided without these properties. The inclusion of these properties in the model enables the performance of this system to be analysed by executing the Real Time Maude specifications. This is also the first formalisation of ERTMS to capture the interlocking, radio block processor, train and the communications between them. The interface between the interlocking and the radio block processor, in particular, has yet to be examined in detail even though it plays a crucial role in the safety of the overall system.
 
 \section{Publications}
-Material from the following publications formed part of my MRes thesis and influenced work in this thesis:
-
-\textbf{\ul{Verification of Railway Interlockings in SCADE} (extended abstract with Seisenberger), AVOCS 2010 \cite{AL10}} 
-Two approaches are described to model and verify train control systems using the industrial modelling and verification tool SCADE~\cite{Scade}. The first involves the translation of ladder logic into the SCADE language and then applying SCADE's built in model checker to verify safety properties. The second approach involves segment of railway in a modular fashion allowing for the individual components to be verified before being combined together.
-
-
-\textbf{\ul{Verification of Solid State Interlocking Programs} (with Chadwick, James, Kanso, Moller, Roggenbach and Seisenberger), FM-Rail-BOK, \cite{AL14a}}
-This paper aims to provide a complete body of knowledge on the subject of verifying ladder logic programs for solid state interlockings. It contains the combined work of three MRes theses and associated research papers condensed to form a single methodology.
 
 Material from the following publications forms part of this thesis:
 
@@ -61,6 +53,19 @@ This paper is an extension of \cite{AL12}. We extract a resolution solver based 
 
 
 \textbf{\ul{Safety and Performance of the European Rail Traffic Management System: A Modelling and Verification Exercise in Real Time Maude} (extended abstract with Berger, Roggenbach and Seisenberger), WADT 2014 \cite{AL14c}} We present an approach to model ERTMS in such a way as to capture performance aspects of the system in an executable specification to which we can apply model checking to verify safety properties. Two examples are presented: the first consists of two trains that travel round a closed track in the shape of a pentagon, the second example takes the shape of the small junction from which trains can enter and leave. In the pentagon example we verify the safety property that the movement authorities of the two trains do not overlap which implies that they do not crash. In the second example we verify the safety property that the point does not move whilst it is in a movement authority i.e. the train does not derail.
+
+\textbf{\ul{Modelling and Analysing the European Rail Traffic Management System in Real Time Maude} (extended abstract with Berger, James, Roggenbach, and Seisenberger), FTSCS 2014 \cite{AL14d}} An extended version of \cite{AL14c} has been submitted.
+
+
+
+Material from the following publications formed part of my MRes thesis and influenced work in this thesis:
+
+\textbf{\ul{Verification of Railway Interlockings in SCADE} (extended abstract with Seisenberger), AVOCS 2010 \cite{AL10}} 
+Two approaches are described to model and verify train control systems using the industrial modelling and verification tool SCADE~\cite{Scade}. The first involves the translation of ladder logic into the SCADE language and then applying SCADE's built in model checker to verify safety properties. The second approach involves segment of railway in a modular fashion allowing for the individual components to be verified before being combined together.
+
+
+\textbf{\ul{Verification of Solid State Interlocking Programs} (with Chadwick, James, Kanso, Moller, Roggenbach and Seisenberger), FM-Rail-BOK, \cite{AL14a}}
+This paper aims to provide a complete body of knowledge on the subject of verifying ladder logic programs for solid state interlockings. It contains the combined work of three MRes theses and associated research papers condensed to form a single methodology.
 
 
 \section{Thesis Outline}
