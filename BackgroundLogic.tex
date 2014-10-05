@@ -63,7 +63,7 @@ Blah
 
 \end{comment}
 \section{Natural Deduction}
-In the following sections we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manner designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is suited for program extraction as its constituent proofs are constructive. This is then extended to classical logical in a constructive manner. In the following we present the natural deduction proof system together with the proof terms derived from each rule:  \medskip
+In the following sections we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manner designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is suited for program extraction as its constituent proofs are constructive. This is then extended to classical logic in a constructive manner. In the following we present the natural deduction proof system  for first order logic together with the proof terms derived from each rule:  \medskip
 %
 \begin{mydef}[Natural Deduction for Minimal Logic] 
 The natural deduction proof system for minimal logic  consists of the following derivation terms for $\wedge$, $\to$ and $\forall$: 
@@ -175,6 +175,10 @@ The stability rule is also included in the Minlog system, although I have not us
 \end{center}
 \end{mydef}
 
+
+The natural deduction proof system for minimal logic previously introduced is extended to first order logic by the addition of the following rules for $\vee$ and $\exists$. Following the description of these rules we describe their Minlog specific implementation details.
+
+
 \begin{center}
 \begin{tabular}{| c | c |} \hline
 
@@ -245,11 +249,14 @@ The following is a list of implementation specifics which describe the particula
 
 \item $\exists$ is treated by axioms instead of rules.
 
-\item The nc-quantifiers (See Section \ref{sec:realizability})are treated in the same way as their non-nc counter parts in terms of how natural deduction is implemented. 
+\item We also have rules for the so-called nc-quantifiers (quantifiers without computational content). They logically behave like the usual quantifiers, but they behave differently when it comes 
+to program extraction.
 
-\item Program constants are given computational behaviour using rewriting rules.
+\item Program constants are included in the proof term.
 
 \item Inductively defined predicates are given computational behaviour by their closure axioms.
+
+\item Axioms are represented on the term level by axiom constants.
 
 \end{itemize}
 
