@@ -254,7 +254,7 @@ to program extraction.
 
 \item Program constants are included in the proof term.
 
-\item Inductively defined predicates are given computational behaviour by their closure axioms.
+\item Inductively definitions are represented on the term level by their closure axioms.
 
 \item Axioms are represented on the term level by axiom constants.
 
@@ -418,6 +418,9 @@ f Nil = z
 f (x :: xs) = G x xs(f xs)
 \end{lstlisting}
 
+
+When program extraction is applied to an inductive definition a data structure is extracted. Inductive definitions are assigned algebras 
+where the types of constructors of the algebras are determined by the types of the closure axioms.
 \section{Realizability}\label{sec:realizability}
 We need to have a notion of what it means for an extracted program to realize
 a formula. The notion that we define to do this is called realizability which takes shape as a formula $r \textbf{r} A$. This can be read as
@@ -426,7 +429,7 @@ otherwise $r$ is the symbol $\epsilon$. We also need to define realizability
 for predicates. If we have a predicate P
 with an arity $\vec{s}$ then there are two possibilities here. One is that
 $P$ is a predicate variable with an assigned $\alpha_P$ for this we create a new
-predicate variable $P^{\textbf{r}}$ with an arity of $\alpha_P,\vec{\rho}$. 
+predicate variable $P^{\textbf{r}}$ with an arity of $\alpha_P,\vec{\rho}$. In Minlog this corresponds to inductive definitions being realized algebras.
 The other case is that $P$ is a predicate constant, if this is the case then
 we use the predicate constant.
 
