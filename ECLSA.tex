@@ -53,7 +53,7 @@ The definitions of variables, literals, clauses, formulae and models remain the 
 %%and we will identify it with a finite set of clauses 
 %%%$\{ C_1 , \ldots , C_k \}$, representing the conjunction of the $C_i$.
 %
-\item A \emph{valuation} $\Gamma$ is a finite set $\{ (D_1 \, l_1 \, n_1), \ldots , ( D_k \, l_k \, n_k) \}$ of literals paired with a natural number representing the decision level of that literal and a label $D \in \{S, U\}$ indicating that they are either a split or unit literal. This set is to be viewed as the conjunction of the elements.
+\item A \emph{valuation} $\Gamma$ is a finite set $\{ (D_1 \, l_1 \, n_1), \ldots , ( D_k \, l_k \, n_k) \}$ of literals $l_i$ paired with a natural number representing the decision level of that literal and a label $D \in \{S, U\}$ indicating that they are either a split or unit literal. This set is to be viewed as the conjunction of the literals contained in it.
 %
 \item We define the literal set of valuation $\lit{\Gamma}$ as follows:
 	 $$ \lit{\Gamma} := \{l | (D \, l \, n) \in \Gamma\}$$
@@ -84,7 +84,7 @@ $\forall D,l,n,n'( (D \, l \, n) \in \Gamma \wedge (D \, l \, n') \in \Gamma \to
 %
 \item We define pair operations $\mathrm{First}$ and $\mathrm{Second}$ which return the first and second elements of a pair i.e. $\first{A,B} = A$ and $\second{A,B} = B$.
 %
-\item We define an operation $\mybar{\Gamma}$ that computes a clause from a valuation $\mybar{\Gamma} := \{ \mybar{l}\, | \, \, (D \, l \, i) \in \Gamma \}$.
+\item We define an operation $\mybar{\Gamma}$ that computes a clause from a valuation $\mybar{\Gamma} := \{ \mybar{l}\, | \, \, (D \, l \, n) \in \Gamma \}$.
 %
 \item We define an \emph{extension} of a valuation $\Gamma$ to be another valuation $\Gamma'$ such that $\extends{\Gamma'}{\Gamma} :=  \exists l,n \, ( \forall D (D \, l \, n) \in \Gamma' \wedge n  = \delta(\Gamma) + 1) \wedge \forall l,n ( \forall D (D \, l \, n) \in \Gamma' \to  \delta(\Gamma) < n)$.
 
@@ -94,7 +94,7 @@ $\forall D,l,n,n'( (D \, l \, n) \in \Gamma \wedge (D \, l \, n') \in \Gamma \to
 
 \section{Modified Proof Systems}
 %
-The modified DPLL proof system retains the $\Split$, $\Conflict$ and $\Unit$ rules in a modified form, however the $\Elim$ and $\Red$ rules have been replaced by a modified unit resolution proof system. The DPLL derivation relation has an additional argument placed under the turnstyle $\vdash_{\Delta'}$ which is used to capture the transfer of learned clauses up through the proof tree towards the root. The manipulation of individual clauses in the formula to be solved is carried out using the unit resolution proof system. When a derivation of a unit clause or empty clause is discovered during the unit resolution proof search this proof is plugged into the appropriate DPLL rule. \\
+The modified DPLL proof system retains the $\Split$, $\Conflict$ and $\Unit$ rules in a modified form, however the $\Elim$ and $\Red$ rules are replaced by a modified unit resolution proof system. The DPLL derivation relation has an additional argument placed under the turnstyle $\vdash_{\Delta'}$ which is used to capture the transfer of learned clauses up through the proof tree towards the root. The manipulation of individual clauses in the formula to be solved is carried out using the unit resolution proof system. When a derivation of a unit clause or empty clause is discovered during the unit resolution proof search this proof is plugged into the appropriate DPLL rule. \\
 \medskip
 \begin{mydef}[Modified DPLL Proof System] The DPLL proof system consists 
 of three rules:
