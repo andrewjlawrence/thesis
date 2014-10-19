@@ -94,45 +94,6 @@ $\forall D,l,n,n'( (D \, l \, n) \in \Gamma \wedge (D \, l \, n') \in \Gamma \to
 
 \section{Modified Proof Systems}
 %
-The modified DPLL proof system retains the $\Split$, $\Conflict$ and $\Unit$ rules in a modified form, however the $\Elim$ and $\Red$ rules are replaced by a modified unit resolution proof system. The DPLL derivation relation has an additional argument placed under the turnstyle $\vdash_{\Delta'}$ which is used to capture the transfer of learned clauses up through the proof tree towards the root. The manipulation of individual clauses in the formula to be solved is carried out using the unit resolution proof system. When a derivation of a unit clause or empty clause is discovered during the unit resolution proof search this proof is plugged into the appropriate DPLL rule. \\
-\medskip
-\begin{mydef}[Modified DPLL Proof System] The DPLL proof system consists 
-of three rules:
-%
-\begin{center}
-%
-\AxiomC{$\Gamma_2 \subseteq \Gamma, (S \,\mybar{l} \, \delta(\Gamma) \! + \!1)$}
-\noLine
-\UnaryInfC{$\Gamma_1 \subseteq \Gamma, (S \, l \, \delta(\Gamma) \! + \!1)$}
-\AxiomC{$\Gamma_1 \vdash_{\Delta'} \Delta$}
-\AxiomC{$\Gamma_2   \vdash_{\Delta''} \Delta, \Delta'$}
-\RightLabel{$\Split$}
-\TrinaryInfC{$\Gamma  \vdash_{\Delta',\Delta''} \Delta$}
-\DisplayProof \\
-%
-\bigskip
-%
-\AxiomC{$\Gamma' \subseteq \Gamma$}
-\AxiomC{$\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$}
-\AxiomC{$C_0 \in \Delta$}
-\RightLabel{$\Conflict$}
-\TrinaryInfC{$\Gamma \vdash_{\mybar{\Gamma'}} \Delta$}
-\DisplayProof \ \hspace{1mm} \\
-\medskip
-%
-\AxiomC{$\Gamma _1 \vdash_{\Delta'} \Delta$}
-\AxiomC{$\Gamma' \clmodres{\Gamma}{\Delta}\{ l \}$}
-\AxiomC{$\Gamma_1 \subseteq \Gamma, (U \, l \, \delta(\Gamma)) $}
-\noLine
-\UnaryInfC{$\var{l} \notin \Gamma, \, C_0 \in \Delta$}
-\RightLabel{$\Unit$}
-\TrinaryInfC{$\Gamma \vdash_{\Delta'} \Delta$   }
-\DisplayProof \
-\end{center}
-%
-\end{mydef}
-\hspace{1mm}
- \\
 The unit resolution proof system consists of two rules. In practice these rules are applied in the opposite direction to the DPLL rules. The subsumption or $\Sub$ rule allows us to assume that a clause has a unit resolution derivation and the unit resolution rule allows for the derivation of a new clause from two previously derived clauses, one of which must be a unit clause. \\
 \medskip
 \begin{mydef}[Unit Resolution Proof System]\label{def:modures} The standard Unit Resolution proof system consists 
@@ -190,15 +151,57 @@ The modified unit resolution proof system contains additional subsumption rules 
 \DisplayProof \
 \end{center}
 \end{mydef}
+\hspace{1mm}
+ \\
+
+
+
+The modified DPLL proof system retains the $\Split$, $\Conflict$ and $\Unit$ rules in a modified form, however the $\Elim$ and $\Red$ rules are replaced by a modified unit resolution proof system. The DPLL derivation relation has an additional argument $\Delta'$ placed under the turnstyle, $\vdash_{\Delta'}$, which is used to capture the transfer of learned clauses up through the proof tree towards the root. The manipulation of individual clauses in the formula to be solved is carried out using the unit resolution proof system. When a derivation of a unit clause or empty clause is discovered during the unit resolution proof search this proof is plugged into the appropriate DPLL rule. The premise that $\Gamma' \subseteq \Gamma$ has been omitted from the $\Unit$ rule as any such valuation formed by unit resolution is always formed from literals in $\Gamma$.
+\medskip
+\begin{mydef}[Modified DPLL Proof System] The DPLL proof system consists 
+of three rules:
+%
+\begin{center}
+%
+\AxiomC{$\Gamma_2 \subseteq \Gamma, (S \,\mybar{l} \, \delta(\Gamma) \! + \!1)$}
+\noLine
+\UnaryInfC{$\Gamma_1 \subseteq \Gamma, (S \, l \, \delta(\Gamma) \! + \!1)$}
+\AxiomC{$\Gamma_1 \vdash_{\Delta'} \Delta$}
+\AxiomC{$\Gamma_2   \vdash_{\Delta''} \Delta, \Delta'$}
+\RightLabel{$\Split$}
+\TrinaryInfC{$\Gamma  \vdash_{\Delta',\Delta''} \Delta$}
+\DisplayProof \\
+%
+\bigskip
+%
+\AxiomC{$\Gamma' \subseteq \Gamma$}
+\AxiomC{$\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$}
+\AxiomC{$C_0 \in \Delta$}
+\RightLabel{$\Conflict$}
+\TrinaryInfC{$\Gamma \vdash_{\mybar{\Gamma'}} \Delta$}
+\DisplayProof \ \hspace{1mm} \\
+\medskip
+%
+\AxiomC{$\Gamma _1 \vdash_{\Delta'} \Delta$}
+\AxiomC{$\Gamma' \clmodres{\Gamma}{\Delta}\{ l \}$}
+\AxiomC{$\Gamma_1 \subseteq \Gamma, (U \, l \, \delta(\Gamma)) $}
+\noLine
+\UnaryInfC{$\var{l} \notin \Gamma, \, C_0 \in \Delta$}
+\RightLabel{$\Unit$}
+\TrinaryInfC{$\Gamma \vdash_{\Delta'} \Delta$   }
+\DisplayProof \
+\end{center}
+%
+\end{mydef}
 \hspace{0mm} \\
 \medskip
-We use the following abbreviation $\clmodres{\Gamma}{\Delta} := \exists \Gamma_0 \subseteq \Gamma (\Gamma_0 \clmodres{\Gamma}{\Delta} C)$ in subsequent proofs where the the information regarding which decisions result resulted in the derivation of the clause $C$ is not needed. \\
+We use the following abbreviation $\clmodres{\Gamma}{\Delta} C := \exists \Gamma_0 \subseteq \Gamma (\Gamma_0 \clmodres{\Gamma}{\Delta} C)$ in subsequent proofs where the the information regarding which decisions result resulted in the derivation of the clause $C$ is not needed. \\
 \medskip
 \begin{mytheorem}[Equivalence of Unit Resolution Proof Systems]
 \begin{align*}
 \forall \Gamma,\Delta,C ( \Gamma,\Delta \vdash_{URes} C  \leftrightarrow   \clmodres{\Gamma}{\Delta} C )
 \end{align*}
- We begin by proving $\Gamma,\Delta \vdash_{URes} C  \to   \clmodres{\Gamma}{\Delta} C$ by induction on the build up of $\Gamma, \Delta \vdash_{URes} C$.
+ We begin by proving $\Gamma,\Delta \vdash_{URes} C  \to   \clmodres{\Gamma}{\Delta} C$ by induction on the build up of $\Gamma, \Delta \vdash_{URes} C$. Here $\Gamma$ is seen as a set of unit clauses.
 \begin{description}
 
 \item[Case: $\Sub$]
@@ -246,7 +249,6 @@ By induction hypothesis we know $ \Delta \models C \vee l$, $ \Delta \models \{ 
  %
 \end{proof}
 \end{mytheorem} 
-
 %
 Our modified DPLL proof system uses a set of learned clauses from the first branch of any proof along any subsequent branches. It is important that these clauses do not change the (un)satisfiability of the original formula $\Delta$ in anyway. Therefore, we prove that if there is a DPLL derivation of a formula $\Delta$ using set of learned clauses $\Delta'$ then $\Delta$ forms a model of $\Delta'$. \\
 \medskip
