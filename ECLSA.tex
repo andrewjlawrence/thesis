@@ -17,7 +17,7 @@
 
 \thesischapter{Extracting a Conflict Driven Clause Learning SAT Algorithm}{Extracting a Conflict Driven Clause Learning SAT Algorithm} \label{chapter:cdclproof}
 \chaptermark{Extracting a CDCL SAT Algorithm}
-In the following chapter we shall describe how a conflict driven clause learning SAT algorithm can be extracted from a modified DPLL proof system (see chapter \ref{chapter:dpll}) in combination with a modified unit resolution proof system. The $\Conflict$ rule is modified such that a clause is learned and stored as part of the sequent. The $\Split$ rule allows for these learned clauses to be transferred up the first branch of the proof tree and then used in the proof search of the next branch. This has the implication that the $\Split$ rule is no longer symmetric and has a more imperative nature. The unit resolution proof system has been modified so that it captures the behaviour  of the conflict graph (See chapter \ref{chapter:satbackground}.). We define a property which captures a complete\footnote{This is not completeness in the proof theoretic sense but in the sense that the set contains the right number of clauses  and that they come with associated unit resolution proofs} set of unit resolution derived clauses with respect to a valuation such that each resolved clause has a unit resolution derivation from a clause in the original formula. The extracted program makes use of these clauses during the search for a satisfying assignment. If this set of clauses becomes empty then the current valuation forms a model of the formula. An occurrence of the empty clause in this set of clauses indicates that a conflict has a occurred and a clause is learned and passed up the branch of the proof search. In order to facilitate clause learning, the valuations used in this proof have a modification to store the rule and level at which a literal has been added. 
+In the following chapter we shall describe how a conflict driven clause learning SAT algorithm can be extracted from a modified DPLL proof system (see chapter \ref{chapter:dpll}) in combination with a modified unit resolution proof system. The $\Conflict$ rule is modified such that a clause is learned and stored as part of the sequent. The $\Split$ rule allows for these learned clauses to be transferred up the first branch of the proof tree and then used in the proof search of the next branch. This has the implication that the $\Split$ rule is no longer symmetric and has a more imperative nature. The unit resolution proof system has been modified so that it captures the behaviour  of the conflict graph (See chapter \ref{chapter:satbackground}.). We define a property which captures a complete\footnote{This is not completeness in the proof theoretic sense but in the sense that the set contains the right number of clauses  and that they come with associated unit resolution proofs} set of unit resolution derived clauses with respect to a valuation such that each resolved clause has a unit resolution derivation from a clause in the original formula. The extracted program makes use of these clauses during the search for a satisfying assignment. If this set of clauses becomes empty then the current valuation forms a model of the formula. An occurrence of the empty clause in this set of clauses indicates that a conflict has a occurred and a clause is learned and passed up the branch of the proof search. In order to facilitate clause learning, the valuations used in this proof carry a modification: they store the rule and the level at which the literal has been added. This distinction between the literals added by the different rules allows one to analyse the cause of conflicts discovered during the proof search in more detail.
 
 
 \section{Preliminaries}
@@ -53,7 +53,7 @@ The definitions of variables, literals, clauses, formulae and models remain the 
 %%and we will identify it with a finite set of clauses 
 %%%$\{ C_1 , \ldots , C_k \}$, representing the conjunction of the $C_i$.
 %
-\item A \emph{valuation} $\Gamma$ is a finite set $\{ (D_1 \, l_1 \, n_1), \ldots , ( D_k \, l_k \, n_k) \}$ of literals $l_i$ paired with a natural number representing the decision level of that literal and a label $D \in \{S, U\}$ indicating that they are either a split or unit literal. This set is to be viewed as the conjunction of the literals contained in it.
+\item A \emph{valuation} $\Gamma$ is a finite set $\{ (D_1 \, l_1 \, n_1), \ldots , ( D_k \, l_k \, n_k) \}$ of literals $l_i$ paired with a natural number representing the decision level of that literal and a label $D_i \in \{S, U\}$ indicating that they are either a split or unit literal. This set is to be viewed as the conjunction of the literals contained in it.
 %
 \item We define the literal set of valuation $\lit{\Gamma}$ as follows:
 	 $$ \lit{\Gamma} := \{l | (D \, l \, n) \in \Gamma\}$$
@@ -317,9 +317,9 @@ We fix a model $M$ such that $M \models \Delta$. $\Delta \models \Delta'$ is equ
 We shall now perform a proof of soundness of our modified DPLL proof system by proving the stronger property of incompatibility. \\ \medskip
 %
 \begin{mytheorem}[Incompatibility (Soundness) of Modified DPLL] \hspace*{0pt} \\
-\begin{center}If  $\Gamma \vdash_{\Delta'} \Delta$  then $\incompatible{\Gamma}{\Delta}$. \end{center}
+\begin{center}If  $\exists \Delta' \, \Gamma \vdash_{\Delta'} \Delta$  then $\incompatible{\Gamma}{\Delta}$. \end{center}
 \begin{proof}
-We perform induction on the build up of the derivation $\Gamma \vdash_{\Delta'} \Delta$ leading to three cases:
+We fix a $\Delta'$ and perform induction on the build up of the derivation $\Gamma \vdash_{\Delta'} \Delta$ leading to three cases:
 %
 \subsection*{Case 1: $\Conflict$}
 One has to show that if $\Gamma' \subseteq \Gamma$ and $\exists C_0 \in \Delta$ $\Gamma' \clmodres{\Gamma}{\{ C_0 \}} \emptyset$ then $\Gamma$ and $\Delta$ are incompatible. To do this we fix a model $M$ that causes $\Gamma$ and $\Delta$ to be compatible and then show a contradiction. Using $\Gamma' \clmodres{\Gamma}{C_0} \emptyset$ and the soundness of unit resolution (Theorem \ref{thm:UResSoundness}) we obtain $\Gamma, C_0 \models \emptyset$ which implies that $\incompatible{\Gamma}{\Delta}$. 
@@ -378,7 +378,7 @@ We have two sets of learned clauses $\Delta'$ and $\Delta''$ which do not contai
 
 \end{comment}
 
-\section{Storing Unit Resoltion Derived Clauses}
+\section{Storing Unit Resolution Derived Clauses}
 
 We now define a complete set of clause pairs $\DeltaVec$ such the the first component in each pair is contained within $\Delta$ and the second component is derived by the first via unit resolution to such an extent that it no longer contains any variables in common with $\Gamma$. \\
 \medskip
@@ -390,7 +390,7 @@ We now define a complete set of clause pairs $\DeltaVec$ such the the first comp
 & \hspace{30pt}  (b) \ C_2 = C_1 \setminus \mybar{\Gamma} \\
 & \hspace{30pt}  (c) \ \var{C_2} \cap \var{\Gamma} = \emptyset \\
 & \hspace{30pt}  (d) \  \clmodres{\Gamma}{\{C_1 \}} C_2 \\
-&2. \ \forall C_1 \in \Delta \to \forall C_2. \, (C_1, C_2 ) \notin \DeltaVec \to \exists l \, (l \in C_1 \wedge l \in \lit{\Gamma})
+&2. \ \forall C_1 \in \Delta. (\forall C_2. \, (C_1, C_2 ) \notin \DeltaVec) \to \exists l \, (l \in C_1 \wedge l \in \lit{\Gamma})
 \end{align*}
 
 \end{mydef}
@@ -415,8 +415,8 @@ The following lemma allows for a new set of clause pairs to be generated from an
 The proof proceeds by induction on $\DeltaVec$
 \begin{description}
 \item[Case: $\DeltaVec = \emptyset$] 
-We fix an $l$ and show $\complete{\emptyset}{\Gamma, \unitdecg{l}}{\Delta}$.  There are no pairs of clauses in $\emptyset$ and therefore part 1 of the $\mathrm{complete}$ definition holds. We now have to show part 2 of the completeness definition holds for the extended valuation. This part states that forever clause in the formula that does not have a corresponding clause pair in $\DeltaVec$ that clause is satisfied by the extended valuation.  It follows from the induction hypothesis that if every clause is satisified by the original valuation then it is also satisfied by the extended one.
-\item[Case: $\DeltaVec = (C_1, C_2), \DeltaVec'''$] We fix an $l$ and then by Lemma \ref{lem:comprem} $\complete{\DeltaVec'''}{\Gamma}{\Delta \setminus C_1}$. Using the induction hypothesis we obtain $\complete{\DeltaVec''}{\Gamma, \unitdecg{l}}{\Delta \setminus C_1}$. A case distinction is performed on whether $l \in C_2$. If it is then $l \in C_1$, the clause $C_1$ has been satisfied and we can remove it as condition two of $\mathrm{complete}$ has been satisfied and $\complete{\DeltaVec''}{\Gamma, \unitdecg{l}}{\Delta}$. If $l \notin C_2$ then we perform a case distinction on whether $\mybar{l} \in C_2$. In the case that $\mybar{l} \in C_2$ we extend the resolution derivation using the $\UnitSub$ rule with $\mybar{l}$ and then resolving the resulting unit clause with $C_2$ using the $\Res$ rule to obtain $C_2 \setminus \mybar{l}$. The completenenss definition is satisified by $\DeltaVec'',(C_1, C_2 \setminus \mybar{l})$ as the clause pairs in $\DeltaVec''$ are complete by induction and the clause pair $(C_1, C_2 \setminus \mybar{l})$ satisfies the first part of the definition. 
+We fix an $l$ and show $\complete{\emptyset}{\Gamma, \unitdecg{l}}{\Delta}$.  There are no pairs of clauses in $\emptyset$ and therefore part 1 of the definition $\mathrm{complete}$ holds. We now have to show part 2 of the completeness definition holds for the extended valuation. This part states that for every clause in the formula that does not have a corresponding clause pair in $\DeltaVec$ that clause is satisfied by the extended valuation.  It follows from the induction hypothesis that if every clause is satisfied by the original valuation then it is also satisfied by the extended one.
+\item[Case: $\DeltaVec = (C_1, C_2), \DeltaVec'''$] We fix an $l$ and then by Lemma \ref{lem:comprem} $\complete{\DeltaVec'''}{\Gamma}{\Delta \setminus C_1}$. Using the induction hypothesis we obtain $\complete{\DeltaVec''}{\Gamma, \unitdecg{l}}{\Delta \setminus C_1}$. A case distinction is performed on whether $l \in C_2$. If it is then $l \in C_1$, the clause $C_1$ has been satisfied and we can remove it as condition 2 of $\mathrm{complete}$ has been satisfied and $\complete{\DeltaVec''}{\Gamma, \unitdecg{l}}{\Delta}$. If $l \notin C_2$ then we perform a case distinction on whether $\mybar{l} \in C_2$. In the case that $\mybar{l} \in C_2$ we extend the resolution derivation using the $\UnitSub$ rule with $\mybar{l}$ and then resolving the resulting unit clause with $C_2$ using the $\Res$ rule to obtain $C_2 \setminus \mybar{l}$. The completenenss definition is satisified by $\DeltaVec'',(C_1, C_2 \setminus \mybar{l})$ as the clause pairs in $\DeltaVec''$ are complete by induction and the clause pair $(C_1, C_2 \setminus \mybar{l})$ satisfies the first part of the definition. 
 \end{description}
 \end{proof}
 \end{mylemma}
