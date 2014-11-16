@@ -43,30 +43,32 @@ The final set of  results of this thesis is the modelling of the European Rail T
 
 Material from the following publications forms part of this thesis:
 
-\textbf{\ul{Extracting a DPLL Algorithm} (with Berger and Seisenberger), MFPS 2012, \cite{AL12}}
+\textbf{\ul{1. Extracting a DPLL Algorithm} (with Berger and Seisenberger), MFPS 2012, \cite{AL12}}
 The formalisation of the DPLL proof system and its completeness are described along with the use of non-computational quantifiers to optimise the extracted program. The extracted program is run as a term inside the Minlog system on pigeon hole formulae.
 
 
-\textbf{\ul{Extracting Verified Decision Procedures: DPLL and Resolution} (with Berger, Nordval Forsberg and Seisenberger), LMCS accepted for publication \cite{AL14b}}
+\textbf{\ul{2. Extracting Verified Decision Procedures: DPLL and Resolution} (with Berger, Nordval Forsberg and Seisenberger), LMCS accepted for publication \cite{AL14b}}
 This paper is an extension of \cite{AL12}. We extract a resolution solver based on the DPLL solver by showing that DPLL derivability implies derivability in the resolution proof calculus. The extracted program was translated into the function programming language Haskell and a comparison was performed with another verified SAT solver Versat and the industrial tool SCADE. The extracted solver was additionally applied to the verification of solid state interlocking programs following the methodology set out in \cite{AL14a}.
 
 
 
-\textbf{\ul{Safety and Performance of the European Rail Traffic Management System: A Modelling and Verification Exercise in Real Time Maude} (extended abstract with Berger, Roggenbach and Seisenberger), WADT 2014 \cite{AL14c}} We present an approach to model ERTMS in such a way as to capture performance aspects of the system in an executable specification to which we can apply model checking to verify safety properties. Two examples are presented: the first consists of two trains that travel round a closed track in the shape of a pentagon, the second example takes the shape of the small junction from which trains can enter and leave. In the pentagon example we verify the safety property that the movement authorities of the two trains do not overlap which implies that they do not crash. In the second example we verify the safety property that the point does not move whilst it is in a movement authority i.e. the train does not derail.
+\textbf{\ul{3. Safety and Performance of the European Rail Traffic Management System: A Modelling and Verification Exercise in Real Time Maude} (extended abstract with Berger, Roggenbach and Seisenberger), WADT 2014 \cite{AL14c}} We present an approach to model ERTMS in such a way as to capture performance aspects of the system in an executable specification to which we can apply model checking to verify safety properties. Two examples are presented: the first consists of two trains that travel round a closed track in the shape of a pentagon, the second example takes the shape of the small junction from which trains can enter and leave. In the pentagon example we verify the safety property that the movement authorities of the two trains do not overlap which implies that they do not crash. In the second example we verify the safety property that the point does not move whilst it is in a movement authority i.e. the train does not derail.
 
-\textbf{\ul{Modelling and Analysing the European Rail Traffic Management System in Real Time Maude} (extended abstract with Berger, James, Roggenbach, and Seisenberger), FTSCS 2014 \cite{AL14d}} An extended version of \cite{AL14c} has been submitted.
+\textbf{\ul{4. Modelling and Analysing the European Rail Traffic Management System in Real Time Maude} (extended abstract with Berger, James, Roggenbach, and Seisenberger), FTSCS 2014 \cite{AL14d}} An extended version of \cite{AL14c} has been submitted.
 
 
 
 Material from the following publications formed part of my MRes thesis and influenced work in this thesis:
 
-\textbf{\ul{Verification of Railway Interlockings in SCADE} (extended abstract with Seisenberger), AVOCS 2010 \cite{AL10}} 
+\textbf{\ul{5. Verification of Railway Interlockings in SCADE} (extended abstract with Seisenberger), AVOCS 2010 \cite{AL10}} 
 Two approaches are described to model and verify train control systems using the industrial modelling and verification tool SCADE~\cite{Scade}. The first involves the translation of ladder logic into the SCADE language and then applying SCADE's built in model checker to verify safety properties. The second approach involves segment of railway in a modular fashion allowing for the individual components to be verified before being combined together.
 
 
-\textbf{\ul{Verification of Solid State Interlocking Programs} (with Chadwick, James, Kanso, Moller, Roggenbach and Seisenberger), FM-Rail-BOK, \cite{AL14a}}
+\textbf{\ul{6. Verification of Solid State Interlocking Programs} (with Chadwick, James, Kanso, Moller, Roggenbach and Seisenberger), DTU Technical Report, \cite{AL13}}
 This paper aims to provide a complete body of knowledge on the subject of verifying ladder logic programs for solid state interlockings. It contains the combined work of three MRes theses and associated research papers condensed to form a single methodology.
 
+\textbf{\ul{7. Verification of Solid State Interlocking Programs} (with Chadwick, James, Kanso, Moller, Roggenbach and Seisenberger), Lecture Notes in Computer Science, \cite{AL14a}}
+This is an extended version of \cite{AL13}.
 
 \section{Thesis Outline}
 

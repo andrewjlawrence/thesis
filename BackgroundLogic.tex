@@ -252,10 +252,6 @@ The following is a list of implementation specifics which describe the particula
 \item We also have rules for the so-called nc-quantifiers (quantifiers without computational content). They logically behave like the usual quantifiers, but they behave differently when it comes 
 to program extraction.
 
-\item Program constants are included in the proof term.
-
-\item Inductively definitions are represented on the term level by their closure axioms.
-
 \item Axioms are represented on the term level by axiom constants.
 
 \end{itemize}
@@ -314,6 +310,15 @@ of type $\tau (A)$.
 \]
 
 
+The type of a formula containing a non-computational universal quantifier and a sub-formula $A$
+is solely dependent on the type of $A$.
+
+\[
+\tau(\forallnc x^{\rho} A) := \tau(A)
+\]
+
+
+
 The type of a formula $A \to B$ containing the implication operator and
 sub-formulae $A$ and $B$ is dependent on the types of the sub-formulae.
 If $\tau (A) = \epsilon$ then the type of the formula is $ \tau (B)$. If $\tau
@@ -329,6 +334,8 @@ a type of $\tau (B)$.
   \tau (A) \to \tau (B) & \quad \text{otherwise}\\
 \end{array} \right.
 \]
+
+If P  is an inductively defined predicate, then $\alpha_P$ is the algebra whose constructors have the same type as the closure axioms of the inductive predicate.
 
 \section{Program Extraction}
 Given a proof term it is possible to extract a program in the lambda calculus  that depends on the type of the term. We shall now give a case by case definition of the program extracted from a formula $\llbracket M \rrbracket$ which has a type $\tau (A)$. Where, $M$ is a derivation of the formula $A$ with $A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.

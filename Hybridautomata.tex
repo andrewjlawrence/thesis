@@ -109,7 +109,7 @@ One formalism which we can use to reason about systems such as ERTMS is hybrid a
 
 
 \medskip
-\begin{mydef}[Hybrid Automaton: Syntax]
+\begin{mydef}[Hybrid Automaton: Syntax]\label{def:hybridautomatonsyntax}
 The syntax of a hybrid automaton $H$ comprises of the following:
 \begin{description}
 \item[Variables] A finite set $X = \{x_1, \ldots x_n \}$ of variables which range over the real numbers. The cardinality of $|X|$ is called the \emph{dimension} of $H$. The variable set has a corresponding dotted variable set $\dot{X} = \{\dot{x}_1, \ldots \dot{x}_n \}$ which represents the continuous changes of variables and a primed variable set $X' = \{x'_1, \ldots , x'_n \}$ that represents  values at the conclusion of a discrete change.
@@ -145,11 +145,16 @@ We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing o
 
 \section{Laws of Motion}\label{sec:lawsofmotion}
 In the following we shall describe how to use the laws of motion to capture the motion of the train.
-The behaviour of the train is based on two of Newton's laws of motion $s = s_0 +at$ and  $s^2 = s_{0}^2 +2ad$, where $d$ = distance, $s_0$ = initial velocity, s = final velocity, a = acceleration and t = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current S and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the train's S decreases at $-1$ unit of distance per unit of time. The second equation of motion  is used to calculate the braking distance with $u = 0$ and $a = 1$. It can be rewritten to allow for the calculation of the braking distance.
+The behaviour of the train is based on two of Newton's laws of motion:
+\begin{enumerate}
+\item $S_{Final} = S_{Initial} +AT$
+\item$S_{Final}^2 = S_{Initial}^2 +2AD$
+\end{enumerate}
+ Where $D$ = distance, $S_{Initial}$ = initial speed, $S_{Final}$ = final speed, $A$ = acceleration and $T$ = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current speed and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the train's speed decreases at a constant deceleration of  $-1$ unit of distance per unit of time. The second equation of motion  is used to calculate the braking distance with $S_{Initial} = 0$ and $A = -1$. It can be rewritten to allow for the calculation of the braking distance.
 \medskip
 
 \begin{mydef}[Braking Distance]
-We define the braking distance for a train in terms of its speed S and acceleration A as: 
+The braking distance for a train in terms of its speed S and (constant) acceleration A is: 
 
 $$\BD{S,A} = \frac{S^2}{-2A} $$
 
@@ -556,10 +561,10 @@ Safety conditions for the combined system can be separated into discrete and con
 
 \section{Semantics of Hybrid Automata} \label{sec:hyseman}
 
-The semantics of the hybrid automaton are described using labelled transitions systems. These transition systems allow us to model the behaviour of a system with a possibly infinite number of discrete labelled states. 
+The semantics of the hybrid automaton are described using labelled transition systems. These transition systems allow us to model the behaviour of a system with a possibly infinite number of discrete labelled states. 
 \medskip
 \begin{mydef}[Labelled Transition System]
-We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
+We define a \emph{labelled transition system} $LTS = (S,S_0,L,T)$ as follows:
 \begin{itemize}
 
 \item $S$ is a possibly infinite set of states
@@ -573,19 +578,19 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,T,L)$ as follows:
 \end{itemize}
 \end{mydef}
 \medskip
-When defining the semantics of a hybrid automata we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continuous region for an initial state of a system rather than a discrete state. The semantics of hybrid automata are defined in terms of  timed transition systems which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automaton's real-numbered variables.
+When defining the semantics of a hybrid automaton we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continuous region for an initial state of a system rather than a discrete state. The semantics of an hybrid automaton is defined in terms of a timed transition system which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automaton's real-numbered variables.
 
 \medskip
 \begin{mydef}[Transition Semantics of Hybrid Automata]
-We define the semantics of a hybrid automaton $H$ in terms of a \emph{timed transition system} $LTS^t_H = (S,S_0,L,T)$ as follows:
+We define the semantics of a hybrid automaton $H$ (See definition \ref{def:hybridautomatonsyntax}) in terms of a \emph{timed transition system} $LTS^t_H = (S,S_0,L,T)$ as follows:
 
 
 \begin{itemize}
  
-\item The state space $S$ of the timed transition system is defined as, $S, S_0 \subseteq V \times R^n$. A state is in the state space $(v,x) \in S_0$ iff the closed predicate $inv(v)[X := x]$ holds. In addition to the previous condition a state is in the initial state space $(v,x) \in S_0$ iff the closed predicate $init(v)[X := x]$ holds. We call a subset of the state space $S$ a \emph{H-region}.
+\item The state space $S$ of the timed transition system is defined as, $S, S_0 \subseteq V \times R^n$, where $R$ is the set of real numbers and $n$ the number of variables in $X$ . A state is in the state space $(v,x) \in S_0$ iff the closed predicate $inv(v)[X := x]$ holds. In addition to the previous condition a state is in the initial state space $(v,x) \in S_0$ iff the closed predicate $init(v)[X := x]$ holds. We call a subset of the state space $S$ a \emph{H-region}.
 
 
-\item $L = \Sigma \cup R {\geq 0}$
+\item $L = \Sigma \cup R_{\geq 0}$
 
 \item For all events $\sigma \in \Sigma$ such that there exists a control switch $e \in E$, we define $(v,x) \xrightarrow{\sigma} (v',x')$ iff the following conditions are satisfied:
 \begin{enumerate}
@@ -608,11 +613,11 @@ We call the function f the \emph{witness} of the transition $(v,x) \to (v, x')$.
 \end{mydef}
 \medskip
 \begin{mydef}[$q_0$-rooted and initialised trajectories]
-Given a labelled transition system $LTS = (S,T,S_0,L)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} as a finite or infinite sequence of pairs $\langle a_i, q_i \rangle_{i \geq 1}$ of labels $a_1 \in L$ and states $q_i \in S$  such that $q_{i-1} \xrightarrow{a_i} q_{i} \in T$ for all $i \geq 1$. If $q_0 \in S_0$ then the sequence of pairs $\langle a_i, q_i \rangle_{I \geq 1}$ is an \emph{initialized trajectory}. 
+Given a labelled transition system $LTS = (S,S_0,L,T)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} as a finite or infinite sequence of pairs $\langle a_i, q_i \rangle_{i \geq 1}$ of labels $a_1 \in L$ and states $q_i \in S$  such that $q_{i-1} \xrightarrow{a_i} q_{i} \in T$ for all $i \geq 1$. If $q_0 \in S_0$ then the sequence of pairs $\langle a_i, q_i \rangle_{I \geq 1}$ is an \emph{initialized trajectory}. 
 \end{mydef}
 \medskip
 \begin{mydef}
-We define a live transition system (LTS,A) to consist of a labelled transition system $LTS$ and a set $A$ of infinite initialised trajectories of $LTS$. If for all of the finite initialised trajectories of $LTS$ there exists an infinite trajectory in $A$ such that the finite trajectory is a prefix of the infinite one then we call $A$ \emph{machine-closed}. We define a \emph{trace} $\langle a_i \rangle_{i \geq 1}$ of (LTS,A) to consist of the labels from the either a finite initialised trajectory of $LTS$ or a trajectory in $A$.
+We define a live transition system (LTS,A) to consist of a labelled transition system $LTS$ and a set $A$ of infinite initialised trajectories of $LTS$. If for all of the finite initialised trajectories of $LTS$ there exists an infinite trajectory in $A$ such that the finite trajectory is a prefix of the infinite one then we call $A$ \emph{machine-closed}. We define a \emph{trace} $\langle a_i \rangle_{i \geq 1}$ of (LTS,A) to consist of the labels from either a finite initialised trajectory of $LTS$ or a trajectory in $A$.
 \end{mydef}
 \medskip
 
@@ -621,18 +626,18 @@ We define a live transition system (LTS,A) to consist of a labelled transition s
 All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}. For the set of divergent initialized trajectories $L^t_H$ of the timed transition system $S^t_H$, the hybrid automaton $H$ is \emph{non-Zeno} if $L^t_H$ is machined-closed for $S^t_H$.
  \end{mydef}
 
-The automaton is non-Zeno if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system.
+The automaton is \emph{non-Zeno} if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system.
 
 \section{Automaton Validation}
 In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since they do not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in while time cannot progress.
 \medskip
 
 \begin{mytheorem}[Train Automaton is Non-Zeno]
-The hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory of which it is a prefix in set of divergent initialized trajectories in the automaton.
+The hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory of which it is a prefix.
 \begin{proof}
-The proof proceeds by performing a case distinction on the state of $H_{T}$.
+Given a finite initialized trajectory, we perform a case distinction on the current case, i.e. the last state in the trajectory.
 \begin{description}
-\item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ cannot be violated.
+\item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ cannot be violated. 
 
 
 \item[Case: Accelerating] The invariant $\BD{S} \leq \DMA{D}{EoA}$ bounds the increase of the variables for the distance and speed which occur in this state resulting in two cases. The automaton is either in the region in which the invariant holds and can progress in time, or the automaton is at the boundary of the region defined by the invariant and time can no longer progress. When the automaton is at the boundary of the region $\BD{S} = \DMA{D}{EoA}$ holds and time can no longer progress in this control mode however a jump can occur to the Braking state in which the invariant $\BD{S} = \DMA{D}{EoA}$ holds. The invariant $S \leq MaxSpeed$ bounds the increase of the $S$ variable. In this state the speed will increase until the boundary of the invariant $S \leq MaxSpeed$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Speed$ state.
