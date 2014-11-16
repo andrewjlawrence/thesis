@@ -342,38 +342,31 @@ Given a proof term it is possible to extract a program in the lambda calculus  t
 
 \[ \llbracket u^A \rrbracket := x^{\tau (A)}_{u} \text{uniquely associated with $u^A$}
 \]
-
 \[
 \llbracket \lambda u^A M \rrbracket := \left\{ 
 \begin{array}{l l}
 \llbracket M \rrbracket  & \quad \text{if $\tau (A) = \epsilon$} \\ 
 \lambda x^{\tau (A)}_{u} \llbracket M \rrbracket & \quad \text{otherwise} \\
-
 \end{array} \right.
  \]
-
 \[
 \llbracket M^{A \to B} N \rrbracket := \left\{ 
 \begin{array}{l l}
 \llbracket M \rrbracket  & \quad \text{if $\tau (A) = \epsilon$} \\ 
 \llbracket M \rrbracket  \llbracket N \rrbracket & \quad \text{otherwise} \\
-
 \end{array} \right.
  \]
-
 \[
 \llbracket \langle M^{A_0}_0, M^{A_1}_1 \rangle \rrbracket := \left\{ 
 \begin{array}{l l}
 \llbracket M_i \rrbracket  & \quad \text{if $\tau (A_{1-i}) = \epsilon$} \\ 
 \langle \llbracket M_0 \rrbracket , \llbracket M_1 \rrbracket \rangle & \quad \text{otherwise} \\
-
 \end{array} \right.
  \]
-
-
 $$\llbracket ( \lambda x^{\rho} M)^{\forall x A} \rrbracket := \lambda x^{\rho} \llbracket   M \rrbracket$$
-
 $$\llbracket M^{\forall x A} t \rrbracket := \llbracket M \rrbracket t$$
+$$ \llbracket (\lambda x^{\rho} M)^{\forallnc x A} \rrbracket := \llbracket M \rrbracket $$
+$$ \llbracket M^{\forallnc x A} t \rrbracket := \llbracket M \rrbracket  $$
 
 
 The axioms for dealing with existential quantifiers produce slightly more
@@ -396,16 +389,16 @@ The following are the extracted programs for the above axioms.
 There are different induction schemes  that yield different extracted programs however in general they yield a recursion operation. The extracted program $\llbracket ind_j \rrbracket$ is defined to be the recursion operation $\mathcal{R}^{\vec{\mu},\vec{\tau}}_{\mu_j}$
 
 
-
 \[ \llbracket \exists^{-}_{x^{\rho}, A, B} \rrbracket := \left\{ 
 \begin{array}{l l}
 \lambda x^{\rho} \lambda f^{\rho \to \tau (B)}. f x  & \quad \text{if $\tau (A) = \epsilon$} \\ 
 \lambda z^{\rho \times \tau (A)} \lambda f^{\rho \to \tau (A) \to \tau (B)}. f
 (z0) (z1) & \quad \text{otherwise} \\
-
 \end{array} \right.
 \]
 
+
+Induction on the inductively defined predicate corresponds on the program level  to recursion on the corresponding algebra. 
 The extracted program for an application of general induction is the guarded recursion operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
 
 \begin{lstlisting}[caption = The Guarded Recursion Operation Used in the Minlog System, mathescape]
@@ -513,7 +506,7 @@ If $M$ is a proof of a closed formula $B$, then we can derive  $ \llbracket M \r
 
 \begin{proof}
 
-The proof proceeds by performing induction on the proof term $M$, we omit further details (See \ref{HS14}).
+The proof proceeds by performing induction on the proof term $M$, we omit further details (See \cite{HS14}).
 
 \begin{comment}
 \begin{description}
