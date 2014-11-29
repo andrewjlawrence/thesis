@@ -259,38 +259,36 @@ We define a hybrid automaton $H_{T}$ as follows:
 \begin{center}
 \begin{tikzpicture}[node distance = 2cm]
 
-\tikzstyle{box1}=[circle, draw, text width = 2cm, font=\scriptsize]
+\tikzstyle{box1}=[circle, draw, text width = 2cm, font=\scriptsize, text centered]
 \tikzstyle{box3}=[rectangle, draw, text width = 2cm, font=\scriptsize]
 \tikzstyle{arrow}=[->,shorten >=7pt,shorten <= 7pt]
 \tikzstyle{biarrow}=[<->,very thick,shorten >=7pt,shorten <=7pt]
 
 
-\node (A) [box1]  at (0,0)                  {\begin{center} \textbf{Stop (EoA)} \\
+\node (A) [box1]  at (0,0)                  {\textbf{Stop (EoA)} \\
 							$S = 0$ \\
                                                         $\dot{S} = 0$
-							$D = EoA$  \end{center}
+							$D = EoA$ 
 
                                             };
 
-\node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Accelerating} \\
-       $\dot{S = 1}$
+\node (B) [box1]    at (7.5,0)          { \textbf{Accelerating} \\
+       $\dot{S} = 1$
        $\BD{S} \leq \DMA{D}{EoA}$
        $S \leq MaxSpeed$
-  \end{center}
 
 };
 
-\node (C)[box1] at (0, 7.5)  { \begin{center} \textbf{Braking}\\
+\node (C)[box1] at (0, 7.5)  { \textbf{Braking}\\
 					                   $\dot{S} = -1$ 
-						           $\BD{S} = \DMA{D}{EoA}$\end{center}
+						           $\BD{S} = \DMA{D}{EoA}$
                                                
 						};
 
-\node (D)[box1] at (7.5, 7.5)  { \begin{center} \textbf{Full Speed }\\
+\node (D)[box1] at (7.5, 7.5)  {   \textbf{Full Speed }\\
 					                   $S = MaxSpeed$
                                                             $\dot{S} = 0$
 							    $\BD{S} \leq \DMA{D}{EoA}$
-                                                            \end{center}
                                                
 						};
 
@@ -378,19 +376,17 @@ We define a hybrid automaton $H_{IL}$ as follows:
 \begin{center}
 \begin{tikzpicture}[scale = 0.60]
 
-\tikzstyle{box1}=[circle, draw, text width =3cm]
+\tikzstyle{box1}=[circle, draw, text width =3cm , text centered]
 \tikzstyle{box3}=[rectangle, draw, text width = 2cm, font=\scriptsize]
 \tikzstyle{arrow}=[->,shorten >=7pt,shorten <= 7pt]
 \tikzstyle{biarrow}=[<->,very thick,shorten >=7pt,shorten <=7pt]
 
 
 
-\node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Idle} \\ \end{center}
-
+\node (B) [box1]    at (7.5,0)          {\textbf{Idle}
 };
 
-\node (C)[box1] at (0, 7.5)  { \begin{center} \textbf{Response}\\ \end{center}                                               
-						};
+\node (C)[box1] at (0, 7.5)  { \textbf{Response} };
 
 
 \draw [arrow] (B)  .. controls +(-1.5 cm,  2.75 cm) and +(4.5cm,  -2.5cm ) .. node [right, text width=4cm] {Req.z} (C);
@@ -513,30 +509,19 @@ Safety conditions for the combined system can be separated into discrete and con
 \begin{center}
 \begin{tikzpicture}[node distance = 1cm]
 
-\tikzstyle{box1}=[circle, draw, text width = 2cm ]
+\tikzstyle{box1}=[circle, draw, text width = 2cm, text centered ]
 \tikzstyle{box3}=[rectangle, draw, text width = 2cm, font=\scriptsize]
 \tikzstyle{arrow}=[->,shorten >=7pt,shorten <= 7pt]
 \tikzstyle{biarrow}=[<->,very thick,shorten >=7pt,shorten <=7pt]
 
 
-\node (A) [box1]  at (0,0)                  {\begin{center} \textbf{Idle} \\
-\end{center}};
+\node (A) [box1]  at (0,0)                  {\textbf{Idle} };
 
-\node (B) [box1]    at (7.5,0)          {\begin{center} \textbf{Ready to Request} \\
- \end{center}
+\node (B) [box1]    at (7.5,0)          { \textbf{Ready to Request} };
 
-};
+\node (C)[box1] at (0, 7.5)  { \textbf{Granted}};
 
-\node (C)[box1] at (0, 7.5)  { \begin{center} \textbf{Granted}\\
-					                \end{center}
-                                               
-						};
-
-\node (D)[box1] at (7.5, 7.5)  { \begin{center} \textbf{Wait}\\
-				
-                                                            \end{center}
-                                               
-						};
+\node (D)[box1] at (7.5, 7.5)  { \textbf{Wait} };
 
 
 \draw [arrow] (B)  .. controls +(0.5cm,  1.5 cm) and +(0.5cm,  -1.5 cm ) .. node[right, text width = 3cm] {\begin{center}$Req.NextTrack($ \\ $Pos.LastTrain)$ \end{center}} (D);
@@ -647,7 +632,7 @@ Given a finite initialized trajectory, we perform a case distinction on the curr
 The case for the $Full \, Speed$ state follows the same argument as the Accelerating state except for the part relating to the invariant $S \leq MaxSpeed$.
 
 \item[Case: Braking]
-The invariant $0 \leq S$ is the only invariant to bound the decrease of the speed in the Braking state. When the speed of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state.
+The invariant $0 \leq S$ is the only invariant to bound the decrease of the speed in the Braking state. When the speed of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state. It is not possible for the automaton to alternate between braking and accelerating. The only way the automaton can go to accelerating is when it receives a new movement authority in which case  BD < DMA is invariant and the train will accelerate. Once the automaton starts braking BD = DMA becomes invariant and it is not possible for it to return to the accelerating state without receiving a new movement authority. It is therefore non-zeno as time will progress in the braking state until the automaton receives a new movement authority and changes state or the automaton stops.
 \end{description}
 \end{proof}
 \end{mytheorem}
