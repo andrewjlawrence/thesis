@@ -2,7 +2,7 @@
 \chaptermark{Simulating and Verifying ERTMS using Real Time Maude}
 
 
-In the following we describe how the Real Time Maude tool can be used to analyse the performance and safety of the ERTMS system by both simulation and verification using the Maude LTL model checker (The modelling of ERTMS in Real Time Maude was describe in Chapter \ref{chap:modelertms}).  We begin by presenting the simulation of the pentagon example which demonstrates a situation where a slow train is held up by a faster train. Secondly we look at applying model checking to both the pentagon example and the junction example. The safety properties verified for the pentagon example relate to the safety condition "The movement authorities of the two trains do not overlap" whilst the properties for the junction example relate to the safety condition "The point does not move when it is in a train's movement authority". We also modified the pentagon example to use more realistic distances with a track segment length of 25000, segment length of 5000 and train speeds of 70 and 120.  We then applied the LTL model checker and verify this example so that a comparison can be performed between the two pentagon examples in terms of verification difficulty.
+In the following we describe how the Real Time Maude tool can be used to analyse the performance and safety of the ERTMS system by both simulation and verification using the Maude LTL model checker (The modelling of ERTMS in Real Time Maude was describe in Chapter \ref{chap:modelertms}).  We begin by presenting the simulation of the pentagon example which demonstrates a situation where a slow train is held up by a faster train. Secondly we look at applying model checking to both the pentagon example and the junction example. The safety properties verified for the pentagon example relate to the safety condition "The movement authorities of the two trains do not overlap" whilst the properties for the junction example relate to the safety condition "The point does not move when it is in a train's movement authority". We also modified the pentagon example to use more realistic distances (See Section \ref{sec:executionofltlchecker}). 
 
 It is stated by its developers that Real Time Maude is not first and foremost a verification tool. This is due to some inherent limitations in LTL-model checking that hinder the verification of infinite state systems. We have, as in the sensor network example \cite{PO07}, only model checked a portion of the state space for the pentagon. This is however enough to have confidence in the correctness of the system with respect to a given safety condition. A larger portion of the state space could be model checked by removing non-determinism from the model making it more concrete. This has been done in the junction example where the radio block processor is modified in such a way that it processes movement authorities in one time step.
 
@@ -74,27 +74,30 @@ Result ClockedSystem :
 \end{lstlisting}
 
 \begin{figure}
-\label{t1graph}
+
 \begin{center}
 \includegraphics[scale=0.5]{t1graph.png}
 \end{center}
 \caption{A graph comparing the distance and speed of train1}
+\label{t1graph}
 \end{figure}
 
 \begin{figure}
-\label{t2graph}
+
 \begin{center}
 \includegraphics[scale=0.5]{t2graph.png}
 \end{center}
 \caption{A graph comparing the distance and speed of train2}
+\label{t2graph}
 \end{figure}
 
 \begin{figure}
-\label{t1t2graph}
+
 \begin{center}
 \includegraphics[scale=0.5]{t1t2graph.png}
 \end{center}
 \caption{A graph comparing the distances of train1 and train2}
+\label{t1t2graph}
 \end{figure}
 
 The first graph (See Fig. \ref{t1graph}.) shows the speed and distance of train1 over time. The train spends the majority of its time at maximum speed however there is a slight decrease in speed when a movement authority is requested. The distance of the train increases in roughly a linear fashion. The second graph (See Fig. \ref{t2graph}.) shows the speed and distance of train2 over time. The train brakes repeatedly and at one position comes to a complete stop as it waits for the slower train to progress and exit its current track segment. The distance time graph shows this stop/start behaviour through a wavy appearance. The final graph (See Fig. \ref{t1t2graph}.) shows that there is a consistent distance between the two trains of at least one track segment. Due to the discretisation of time we have had to favour braking over accelerating in order for the train to stop behind its movement authority. The speed of the train decreases on a transition from accelerating or full speed states to a braking state but does not increase speed immediately on a transition from a braking to accelerating state. This behaviour can be see in the speed graph for train2 (See Fig. \ref{t2graph}.) where there are several sharp peaks where the maximum speed has only been in place for one time step. In contrast when the train transitions from braking to accelerating there is always a flat section of constant speed. These flat sections of constant speed also occur when the train is braking and the train jumps back into the accelerating state for one time step to ensure the train brakes as closely to the end of movement authority as possible.
@@ -217,7 +220,7 @@ We formalise the safety property "a point does not move when it is in a movement
   eq { REST   < O1 : Inter | p1r : B >  } |= pointreverse = B .
 \end{lstlisting}
 
-\subsection{Execution of The LTL Model Checker}
+\subsection{Execution of The LTL Model Checker}\label{sec:executionofltlchecker}
 
 We shall now describe the execution of the Maude LTL model checker in Real Time Maude. This is done using the \texttt{mc} command with some initial state of type \texttt{System}, a satisfaction relation, the LTL formula to be checked and an optional time. The satisfaction relation can be either $\models_u$ for un-timed model checking for which time is not specified or $\models_t$ for which the optional time is specified.
 
@@ -262,9 +265,9 @@ P2 (Junction)& untimed & 6.636s \\
 \end{tabular}
 \end{center}
 \medskip
-The removal of non-determinism from the pentagon example has made timed model checking more successful. Prior to the \texttt{nondelta} operation being added the safety properties could only be checked for the first 30 time steps of the system.
+The removal of non-determinism from the pentagon example has made timed model checking more successful. Prior to the \texttt{nondelta} operation (See Chapter \ref{sec:maudetimemodelling}) being added the safety properties could only be checked for the first 30 time steps of the system.
 
-The no overlapping movement authorities safety property was verified using time bounded model checking over the modified pentagon example containing realistic speeds and distances. The following table shows how the difficulty of the model checking problem increases with search depth:
+The no overlapping movement authorities safety property was verified using time bounded model checking over the modified realistic pentagon example with a track segment length of 25000,  segment length of 5000 and train speeds of 70 and 120.  We then applied the LTL model checker and verify this example so that a comparison can be performed between the two pentagon examples in terms of verification difficulty.. The following table shows how the difficulty of the model checking problem increases with search depth:
 \medskip
 \begin{center}
 \begin{tabular}{c | c | c} 
@@ -288,5 +291,5 @@ Currently the track is closed and trains are capable of looping round the track 
 \end{comment}
 It is highly desirable to be able to verify properties about the energy consumption of the ERTMS and traditional railway control systems and prove that the former is more efficient than the latter. It is also desirable to verify properties of the systems performance in a similar fashion; our current model provides a framework for this.
 
-The next challenge would be to verify  some real world track layouts as would be controlled by the ERTMS system on its implementation. This would require further removal of non-determinism from the models and a more general approach to modelling the railway interlocking. A summer project student at Swansea University has successfully modelled an interlocking, which acts a ladder logic interpreter, and executes a ladder logic program. This could be integrated with our model and would allow for a general approach to model tracks, rather than having to model each interlocking by hand.
+The next challenge would be to verify  some real world track layouts as would be controlled by the ERTMS system on its implementation. This would require further removal of non-determinism from the models and a more general approach to modelling the railway interlocking. A summer project student at Swansea University has successfully modelled an interlocking, which acts as a ladder logic interpreter, and executes a ladder logic program. This could be integrated with our model and would allow for a general approach to model tracks, rather than having to model each interlocking by hand.
 
