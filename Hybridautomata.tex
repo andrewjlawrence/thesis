@@ -616,14 +616,16 @@ In other words automaton is \emph{non-Zeno} if for every possible state of the s
 \section{Automaton Validation}
 In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since they do not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in while time cannot progress.
 \medskip
+\subsection{Realistic Assumption}
+The automaton as defined above is Zeno as it is possible for movement authorities of an arbitrary length to be sent to the train automaton. In practice this will not be the case as the RBC will extend the movement authority by a fixed length.  Assume that this is the case in the following proof.
 
-\begin{mytheorem}[Train Automaton is Non-Zeno]
-The hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory, of which it is a prefix, in the set of divergent initialized trajectories in the automaton.
+
+\begin{mytheorem}[Realistic Train Automaton is Non-Zeno]
+The realistic train hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory, of which it is a prefix, in the set of divergent initialized trajectories in the automaton.
 \begin{proof}
-Given a finite initialized trajectory, we perform a case distinction on the current case, i.e. the last state in the trajectory.
+Given a finite initialized trajectory, we perform a case distinction on the current case, i.e. the last state in the trajectory. We then prove that time can progress and that time is divergent separately.
 \begin{description}
 \item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ cannot be violated. 
-
 
 \item[Case: Accelerating] The invariant $\BD{S} \leq \DMA{D}{EoA}$ bounds the increase of the variables for the distance and speed which occur in this state resulting in two cases. The automaton is either in the region in which the invariant holds and can progress in time, or the automaton is at the boundary of the region defined by the invariant and time can no longer progress. When the automaton is at the boundary of the region $\BD{S} = \DMA{D}{EoA}$ holds and time can no longer progress in this control mode however a jump can occur to the Braking state in which the invariant $\BD{S} = \DMA{D}{EoA}$ holds. The invariant $S \leq MaxSpeed$ bounds the increase of the $S$ variable. In this state the speed will increase until the boundary of the invariant $S \leq MaxSpeed$ at which point time can not longer progress in the Accelerating state so the system must jump to the $Full Speed$ state.
 
@@ -632,8 +634,21 @@ Given a finite initialized trajectory, we perform a case distinction on the curr
 The case for the $Full \, Speed$ state follows the same argument as the Accelerating state except for the part relating to the invariant $S \leq MaxSpeed$.
 
 \item[Case: Braking]
-The invariant $0 \leq S$ is the only invariant to bound the decrease of the speed in the Braking state. When the speed of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state. It is not possible for the automaton to alternate between braking and accelerating. The only way the automaton can go to accelerating is when it receives a new movement authority, which is of a fixed size, in which case  $BD < DMA$ is invariant and the train will accelerate. Once the automaton starts braking $BD = DMA$ becomes invariant and it is not possible for it to return to the accelerating state without receiving a new movement authority. It is therefore non-zeno as time will progress in the braking state until the automaton receives a new movement authority and changes state or the automaton stops.
+The invariant $0 \leq S$ is the only invariant to bound the decrease of the speed in the Braking state. When the speed of  the automaton reaches zero, time can no longer progress in this state and the automaton is forced to perform a control mode jump to the stopped state. 
 \end{description}
+
+Time is divergent in at least one trajectory of the system because the movement authorities granted are always of a fixed length. This leads to a fixed set of trajectories from the moment at which a movement authority is received that must take a fixed length of time.
+
+Initially the train is in the stopped state for some arbitrary length of time before receiving a movement authority. At this point, the hybrid automaton must jump to the accelerating state. From this state onwards there several possible control mode loops which the automaton must proceed through, each of which start and end with a movement authority being received . Each time the train enters one of these loops it spends a fixed amount of time in the accelerating and full speed states before braking.
+
+\begin{itemize}
+\item $Accelerating \to Braking \to Stopped \to Accelerating $
+\item $Accelerating \to Braking \to Accelerating$
+\item $Accelerating \to Full speed \to Braking \to Accelerating$
+\item $Accelerating \to Full speed \to Braking \to Stopped \to Accelerating$
+\end{itemize}
+
+
 \end{proof}
 \end{mytheorem}
 
@@ -672,7 +687,7 @@ cases in which the duration of the transition  $\delta = 0$ or $\delta \in \math
 
 \item[v = Accelerating (Acc)] In the case that the duration of the transition is $\delta = 0$ and only control mode jumps caused by events can occur. The only one of these events that affects the invariant $BD(S) \leq DMA(D, EoA)$ is that a new movement authority is received $EoA'$ and since movement authorities are always incremented $DMA(D, EoA) < DMA(D, EoA')$.
   
-In the case that $\delta \in \mathbb{R}_{< 0}$ then a flow transition has occured and we are one of several
+In the case that $\delta \in \mathbb{R}_{< 0}$ then a flow transition has occurred and we are one of several
 possible control modes depending on whether the transition of time triggered a jump or not.  The possibilities are as follows: \\
 
 Acc: The train has accelerated and at not point in time has the distance become equal to the breaking distance therefore the current distance remains below the breaking distance. 
