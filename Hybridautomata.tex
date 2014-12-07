@@ -360,7 +360,7 @@ We define a hybrid automaton $H_{IL}$ as follows:
 
 \item[Events] \hspace*{0mm}
 \begin{itemize}
-	\item $event (Idle \to Response) := Req.z$
+	\item $event(Idle \to Response) := Req.z$
 	\item $event(Response \to Idle) := Grant.z$
 	\item $event(Response \to Idle (2)) := Deny.z$
 	\item $event(Idle \to Idle) := l_x.l_{x+1}$
@@ -492,7 +492,7 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 	\item $event(Ready \, to \, Request \to Wait) := Req.NextTrack(Pos.LastTrain)$
 	\item $event(Wait \to Ready \, to \, Request) := Deny.x$
 	\item $event(Wait \to Granted) := Grant.x$
-	\item $event(Granted \to Idle) := MA.LastTrain.EndOf(NextTrack(Pos.LastTrain)))$
+	\item $event(Granted \to Idle) := MA.LastTrain.EndOf(NextTrack(Pos.LastTrain))$
 \end{itemize}
 
 \end{description}
@@ -500,7 +500,7 @@ We define a hybrid automaton $H_{RBC}$ as follows:
 \end{mydef}
 
 
-Safety conditions for the combined system can be separated into discrete and continuous parts.  If we want to specify a safety condition which states that it is not possible for two trains to collide in our current system this could have the following components. The continuous part would state that any movement authority issued by the radio block processor would respect the interlocking's separation policy. \textbf{(Note: I should up date this part at some point. In the current Maude implementation the interlocking will grant a track segment if it is not occupied)} The discrete part would basically state that there is at least two free track circuits in-between each train.
+Safety conditions for the combined system can be separated into discrete and continuous parts.  If we want to specify a safety condition which states that it is not possible for two trains to collide in our current system this could have the following components. The continuous part would state that any movement authority issued by the radio block processor would respect the interlocking's separation policy. The discrete part would basically state that two trains do not occupy the same track segment.
 
 \FloatBarrier
 
@@ -617,7 +617,7 @@ In other words automaton is \emph{non-Zeno} if for every possible state of the s
 In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since they do not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in while time cannot progress.
 \medskip
 \subsection{Realistic Assumption}
-The automaton as defined above is Zeno as it is possible for movement authorities of an arbitrary length to be sent to the train automaton. In practice this will not be the case as the RBC will extend the movement authority by a fixed length.  Assume that this is the case in the following proof.
+For the automaton presented we cannot show that is nonZeno as it s possible for movement authorities of an arbitrary length to be sent to the train automaton, which would allow the system alternate faster and faster between states. In practice this will not be the case as the RBC will extend the movement authority by a positive fixed length.  Assume that this is the case in the following proof.
 
 
 \begin{mytheorem}[Realistic Train Automaton is Non-Zeno]
@@ -639,7 +639,7 @@ The invariant $0 \leq S$ is the only invariant to bound the decrease of the spee
 
 Time is divergent in at least one trajectory of the system because the movement authorities granted are always of a fixed length. This leads to a fixed set of trajectories from the moment at which a movement authority is received that must take a fixed length of time.
 
-Initially the train is in the stopped state for some arbitrary length of time before receiving a movement authority. At this point, the hybrid automaton must jump to the accelerating state. From this state onwards there several possible control mode loops which the automaton must proceed through, each of which start and end with a movement authority being received . Each time the train enters one of these loops it spends a fixed amount of time in the accelerating and full speed states before braking.
+Initially the train is in the stopped state for some arbitrary length of time before receiving a movement authority. At this point, the hybrid automaton must jump to the accelerating state. From this state onwards there several possible control mode loops which the automaton must proceed through, each of which start and end with a movement authority being received. Each time the train enters one of these loops it spends a fixed amount of time in the accelerating and full speed states before braking.
 
 \begin{itemize}
 \item $Accelerating \to Braking \to Stopped \to Accelerating $

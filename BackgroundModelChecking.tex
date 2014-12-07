@@ -191,9 +191,6 @@ Given a transition system $M$, a safety property $\phi$ and a bound $k$ we defin
 $$bmc_M(\phi,k):= \forall \sseq{0}{k} \subseteq S \to  path_R(\sseq{0}{k}) \to S_0(s_0) \to \sseq{0}{k} \models \phi$$
 \end{mydef}
 \medskip
-\begin{comment}
-\textbf{Note to self: I need to add something on loop freedom and inclusion checking for sat based model checking, I also need to describe the LTL model checker in Maude which uses Buchi automaton.}  
-\end{comment}
 \section{On-the-fly Model Checking of Linear Temporal Logic Properties}
 The Maude LTL model checker performs on-the-fly model checking~\cite{CC91} of an LTL property $\phi$.
 This process of model checking linear temporal logic involves first  negating the linear temporal  logic property, placing it in negation normal form and then constructing a B{\"u}chi automaton for that property that accepts the language of counterexamples $\neg \phi$. The product of the B{\"u}chi automata and the state transition system is constructed and a double depth first search is applied to search for strongly connected components with a state in which $\neg \phi$ holds.
@@ -251,9 +248,6 @@ pop(Stack2)
 \end{lstlisting}
 
 The algorithm uses a combination of hash tables and stacks for efficiency reasons. It is more computationally expensive to check that an element does not occur in a stack than in a hash table. The first procedure \texttt{dfs1} searchs for a state that is part of an accepting run and  is reachable from an initial state. The second depth first search procedure attempts to form a loop by looking for successor states that are already on the state stack. 
-
-
-\textbf{Note to self: Do I need to describe fairly strongly connected components???}
 
 
 
