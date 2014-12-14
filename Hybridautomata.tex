@@ -81,9 +81,11 @@ Since this is a first attempt at modelling a complex system we make several assu
 
 \item The train track is uni-directional.
 
+\item The train will make maximal progress i.e. the train will accellerate whenever allowed by the movement authority and brake when the movement authority requires it.
+
 \item The trains can only accelerate one unit of speed per unit time interval.
 
-\item All trains are fitted with the ERTMS system
+\item All trains are fitted with the ERTMS system.
 
 \item The positioning systems on the train are assumed to function at all times, constantly providing the radio block processor with correct information regarding the location of the train.
 
@@ -91,9 +93,11 @@ Since this is a first attempt at modelling a complex system we make several assu
 
 \item We do not allow movement authorities to be revoked.
 
-\item  We assume that the track will be under the control of one radio block processor.
+\item We assume that the track will be under the control of one radio block processor.
 
-\item  If we work with an open section of track in which trains can enter and leave, we shall assume that the handover is performed correctly in an automatic fashion.
+\item If we work with an open section of track in which trains can enter and leave, we shall assume that the handover is performed correctly in an automatic fashion.
+
+\item In an open track plan a train will be allowed to enter as the seperation policy allows.
 
 \end{enumerate}
 
@@ -611,7 +615,7 @@ We define a live transition system (LTS,A) to consist of a labelled transition s
 All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}. For the set of divergent initialised trajectories $L^t_H$ of the timed transition system $S^t_H$, the hybrid automaton $H$ is \emph{non-Zeno} if $L^t_H$ is machined-closed for $S^t_H$.
  \end{mydef}
 
-In other words automaton is \emph{non-Zeno} if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system that diverges in time. This means for instance that the system cannot alternate between two modes where the time between transitions infinitely decrease e.g. $\frac{1}{2},\frac{1}{4},\frac{1}{8}$.
+In other words automaton is \emph{non-Zeno} if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system that diverges in time. This means for instance that the system cannot alternate between two modes where the time between transitions infinitely decreases e.g. $\frac{1}{2}$,$\frac{1}{4}$,$\frac{1}{8}$,$\ldots$.
 
 \section{Automaton Validation}
 In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since they do not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in while time cannot progress.
@@ -639,7 +643,7 @@ The invariant $0 \leq S$ is the only invariant to bound the decrease of the spee
 
 Time is divergent in at least one trajectory of the system because the movement authorities granted are always of a fixed length. This leads to a fixed set of trajectories from the moment at which a movement authority is received that must take a fixed length of time.
 
-Initially the train is in the stopped state for some arbitrary length of time before receiving a movement authority. At this point, the hybrid automaton must jump to the accelerating state. From this state onwards there several possible control mode loops which the automaton must proceed through, each of which start and end with a movement authority being received. Each time the train enters one of these loops it spends a fixed amount of time in the accelerating and full speed states before braking.
+Initially the train is in the stopped state for some arbitrary length of time before receiving a movement authority. At this point, the hybrid automaton must jump to the accelerating state. From this state onwards there several possible control mode loops which the automaton must proceed through, each of which starts and ends with a movement authority being received. Each time the train enters one of these loops it spends a fixed amount of time in the accelerating and full speed states before braking.
 
 \begin{itemize}
 \item $Accelerating \to Braking \to Stopped \to Accelerating $
