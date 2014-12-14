@@ -299,7 +299,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 \draw [arrow] (C) -- node [left] {$S = 0$} (A);
 \draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}DMA(D,EoA) =\\
     BD(S)\\MA.Req.TrainID \end{center}} (C);
-\draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-1.5cm, 0.5 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y\end{center} } (B);
+\draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-2cm, 1.0 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y\end{center} } (B);
 \draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center}\textbf{train movement events} \end{center}} (C);
 \draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center} \textbf{train movement events} \end{center}} (D);
 \draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}\textbf{train movement events} \end{center}} (B);
@@ -598,7 +598,7 @@ We call the function f the \emph{witness} of the transition $(v,x) \to (v, x')$.
 \end{mydef}
 \medskip
 \begin{mydef}[$q_0$-rooted and initialised trajectories]
-Given a labelled transition system $LTS = (S,S_0,L,T)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} as a finite or infinite sequence of pairs $\langle a_i, q_i \rangle_{i \geq 1}$ of labels $a_1 \in L$ and states $q_i \in S$  such that $q_{i-1} \xrightarrow{a_i} q_{i} \in T$ for all $i \geq 1$. If $q_0 \in S_0$ then the sequence of pairs $\langle a_i, q_i \rangle_{I \geq 1}$ is an \emph{initialized trajectory}. 
+Given a labelled transition system $LTS = (S,S_0,L,T)$ and a state $s \in S$. We define a $q_0$-\emph{rooted} \emph{trajectory} as a finite or infinite sequence of pairs $\langle a_i, q_i \rangle_{i \geq 1}$ of labels $a_1 \in L$ and states $q_i \in S$  such that $q_{i-1} \xrightarrow{a_i} q_{i} \in T$ for all $i \geq 1$. If $q_0 \in S_0$ then the sequence of pairs $\langle a_i, q_i \rangle_{I \geq 1}$ is an \emph{initialised trajectory}. 
 \end{mydef}
 \medskip
 \begin{mydef}
@@ -608,7 +608,7 @@ We define a live transition system (LTS,A) to consist of a labelled transition s
 
 
 \begin{mydef}[Trace semantics of hybrid automata]
-All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}. For the set of divergent initialized trajectories $L^t_H$ of the timed transition system $S^t_H$, the hybrid automaton $H$ is \emph{non-Zeno} if $L^t_H$ is machined-closed for $S^t_H$.
+All transitions of a timed transition system $S^t_H$ have an associated \emph{duration} $\delta \in R_{\geq 0}$. Every event $\sigma \in \Sigma$ the transition $q \xrightarrow{\sigma} q'$ has a duration of 0. For all transitions $q \xrightarrow{\delta} q'$ where $\delta \in R_{\geq 0}$ the duration is $\delta$.  We define an infinite trajectory $\langle a_i, q_i \rangle_{i \geq 1}$ of a transition system $S^t_H$ to be \emph{divergent} if the sum of the transitions $\Sigma_{i \geq 1} \delta$ is \emph{divergent}. For the set of divergent initialised trajectories $L^t_H$ of the timed transition system $S^t_H$, the hybrid automaton $H$ is \emph{non-Zeno} if $L^t_H$ is machined-closed for $S^t_H$.
  \end{mydef}
 
 In other words automaton is \emph{non-Zeno} if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system that diverges in time. This means for instance that the system cannot alternate between two modes where the time between transitions infinitely decrease e.g. $\frac{1}{2},\frac{1}{4},\frac{1}{8}$.
@@ -621,9 +621,9 @@ For the automaton presented we cannot show that is nonZeno as it s possible for 
 
 
 \begin{mytheorem}[Realistic Train Automaton is Non-Zeno]
-The realistic train hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory, of which it is a prefix, in the set of divergent initialized trajectories in the automaton.
+The realistic train hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory, of which it is a prefix, in the set of divergent initialised trajectories in the automaton.
 \begin{proof}
-Given a finite initialized trajectory, we perform a case distinction on the current case, i.e. the last state in the trajectory. We then prove that time can progress and that time is divergent separately.
+Given a finite initialised trajectory, we perform a case distinction on the current case, i.e. the last state in the trajectory. We then prove that time can progress and that time is divergent separately.
 \begin{description}
 \item[Case: Stopped] There are no flows in this state, therefore invariant $S = 0$ cannot be violated. 
 

@@ -9,14 +9,14 @@ There is one previous project involving the use of program extraction to obtain 
 %
 Several attempts have been made to integrate an automatic theorem prover into Coq. Most of this work has made use of Coq's program extraction facilities to extract programs from proofs of decision procedures.
  In \cite{SL08}, a SAT-solver based on the DPLL algorithm has been
-formalized, its soundness and completeness verified in Coq,
+formalised, its soundness and completeness verified in Coq,
 and code extracted from the proof.
-Finally, the extracted system has been instantiated on the propositional fragment of Coq's logic creating a user friendly proof tactic.  Binary decision diagrams have been formalized in Coq \cite{KV00}. Then their correctness has been proven, and certified BDD algorithms have been extracted in Caml. The main reason for their formalization was to integrate symbolic model checking in Coq.
+Finally, the extracted system has been instantiated on the propositional fragment of Coq's logic creating a user friendly proof tactic.  Binary decision diagrams have been formalised in Coq \cite{KV00}. Then their correctness has been proven, and certified BDD algorithms have been extracted in Caml. The main reason for their formalisation was to integrate symbolic model checking in Coq.
 %
-Significant work has also been performed in Isabelle with several decision procedures having been verified and integrated into the system. The DPLL algorithm has been formalized in \cite{FM10}. The automatic theorem prover Metis \cite{LP07} was formally verified inside Isabelle and is now used to reconstruct proofs from faster external procedures such as the ones used in Sledgehammer \cite{SB10}.
+Significant work has also been performed in Isabelle with several decision procedures having been verified and integrated into the system. The DPLL algorithm has been formalised in \cite{FM10}. The automatic theorem prover Metis \cite{LP07} was formally verified inside Isabelle and is now used to reconstruct proofs from faster external procedures such as the ones used in Sledgehammer \cite{SB10}.
 
 %Differences to our approach
-The approaches \cite{SL08,FM10} to formalizing a DPLL SAT-solver in 
+The approaches \cite{SL08,FM10} to formalising a DPLL SAT-solver in 
 both Coq and Isabelle
 involve explicitly stating the algorithm to be verified. In contrast, we
 prove a theorem that just states that each formula in CNF is either unsatisfiable
@@ -26,7 +26,7 @@ In the long run we would like to integrate automatic verification techniques int
 \section{Reformulation of the DPLL Proof System}
 
 We first reformulate the DPLL proof system as an inductive definition
-that can be immediately formalized in the Minlog system. The definition
+that can be immediately formalised in the Minlog system. The definition
 has a clause for each rule. We notationally identify a sequent
 $\Gamma \vdash \Delta$ with the statement `$\Gamma \vdash \Delta$ is derivable'.
 \medskip
@@ -63,7 +63,7 @@ $\Gamma, l  \vdash \Delta
 
 The soundness property can be thought of as the following: If we can derive a refutation for a formula under a given model using the DPLL, then the formula is unsatisfiable under that model. We have proven the incompatibility ($\forall M. M \models \Gamma \to M \not\models \Delta$)  of the DPLL proof system in Minlog following the approach found in \cite{SL08}. 
 
-Instead of proving soundness we formalized a stronger property of incompatibility in Minlog. We define a formula to be incompatible under a valuation if there does not exist a model which models the valuation and the formula. 
+Instead of proving soundness we formalised a stronger property of incompatibility in Minlog. We define a formula to be incompatible under a valuation if there does not exist a model which models the valuation and the formula. 
 
 Using this definition of incompatibility the soundness theorem can be formulated as follows.
 \medskip
@@ -76,7 +76,7 @@ The proof proceeds by structural induction on the given derivation of the sequen
 %
 Case \textbf{Conflict}:
 $$\forall \Gamma, \Delta. \emptyset \in \Delta \to \incompatible{\Gamma}{\Delta}$$
-The empty set is trivally unsatisfiable, therefore there does not exist a model that models both $\Gamma$ and $\Delta$.
+The empty set is trivially unsatisfiable, therefore there does not exist a model that models both $\Gamma$ and $\Delta$.
 
 Case \textbf{Red}:
 $$l \in \Gamma \to \mybar{l} \in C \to C \in \Delta \to \incompatible{\Gamma}{\Delta \setminus C, (C \setminus \mybar{l})} \to \incompatible{\Gamma}{\Delta}$$
@@ -345,7 +345,7 @@ applications, for instance in tools for proof checking and debugging
 \cite{tracecheck} or interchange between different solvers
 \cite{CK13}. State-of-the-art SAT solvers such as MiniSAT
 \cite{NE04} and zChaff \cite{MM01} return (extended) resolution
-proofs for unsatisfiable problems.  By formalizing that every DPLL
+proofs for unsatisfiable problems.  By formalising that every DPLL
 derivation has an equivalent resolution derivation, and combining this result
 with the completeness proof from the previous section, we can extract
 a SAT solver which produces resolution derivations. The equivalence of DPLL

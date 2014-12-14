@@ -197,7 +197,7 @@ This process of model checking linear temporal logic involves first  negating th
 
 \subsection{B{\"u}chi Automata}
 \newcommand{\Buchi}{B{\"u}chi\xspace}
-Most applications of model checking typically search for a finite counterexample trace in the set of infinite traces of the system. The class of automatons which can accept infinite words is called the $\omega$-automata and the simplest class $\omega-automata$ is \Buchi automata. These \Buchi automata are a minor modification of finite state automata in that they have a finite alphabet and a finite set of states but instead of a set of final states the automata have a set of \emph{accepting states}.
+Most applications of model checking typically search for a finite counterexample trace in the set of infinite traces of the system. The class of automatons which can accept infinite words is called the $\omega$-automata and the simplest class $\omega$-automata is \Buchi automata. These \Buchi automata are a minor modification of finite state automata in that they have a finite alphabet and a finite set of states but instead of a set of final states the automata have a set of \emph{accepting states}.
 \medskip
 \begin{mydef}[B{\"u}chi Automata]
 We define a \Buchi automaton $A$ is a five-tuple $(L, S,T,S_0, F)$ where:
@@ -212,8 +212,8 @@ The translation of the LTL property into a \Buchi automaton takes three steps fo
 
 \begin{enumerate}
 \item Construct a very weak alternating (VWA) automaton
-\item Convert this VWA automata into a generalized \Buchi automaton
-\item Convert the generalized \Buchi automata into a standard \Buchi automaton
+\item Convert this VWA automata into a generlised \Buchi automaton
+\item Convert the generlised \Buchi automata into a standard \Buchi automaton
 \end{enumerate}
 
 At every step the automaton is simplified by removing unreachable states and subsumed transitions and combining equivalent states. In order to perform model checking we need to be able to find accepting runs of the automaton. Since these accepting runs are infinite they must contain a loop through the automaton. Therefore the model checking algorithm partitions the \Buchi automaton into its strongly connected components. A set of states in a \Buchi automaton is a \emph{strongly connected component} (SCC) if and only if every state in that set is reachable from every other state in that set. 
