@@ -471,7 +471,7 @@ The proof proceeds by induction on $\DeltaVec$
 \item[Case: $\DeltaVec = \emptyset$] 
 $\complete{\emptyset}{\Gamma, \splitdecgone{l}}{\Delta}$ trivially follows from $\complete{\emptyset}{\Gamma}{\Delta}$.
 \item[Case: $\DeltaVec = (C_1,C_2),\DeltaVec''$]
-By the definition of $\mathrm{complete}$ $(C_1, C_2)$ is the only pair in $\DeltaVec$ to contain $C_1$.  By using the induction hypothesis with $\Delta \setminus C_1$ and $\Gamma$ we obtain $\DeltaVec'''$ such that $\complete{\DeltaVec'''}{\Gamma, \splitdecgone{l}}{\Delta \setminus C_1}$.  If $l \in C_2$ then it is also in $C_1$ meaning the clause has been satisfied and $\complete{\Delta'''}{\Gamma, \splitdecgone{l}}{\Delta}$. If $l \notin C_2$ then we perform a case distinction on whether $\mybar{l} \in C_2$. If it is then we apply the $\SplitSub$ and $\Res$ rules to optain a unit resolution derivation for $C_2 \setminus \mybar{l}$. The clause pair $(C_1,C_2 \setminus \mybar{l})$ forms a complete set of clause pairs in combination with $\DeltaVec'''$. If $\mybar{l} \notin C_2$ then $(C_1,C_2)$ forms a complete set of clause pairs in combination with $\DeltaVec'''$.
+By the definition of $\mathrm{complete}$ $(C_1, C_2)$ is the only pair in $\DeltaVec$ to contain $C_1$.  By using the induction hypothesis with $\Delta \setminus C_1$ and $\Gamma$ we obtain $\DeltaVec'''$ such that $\complete{\DeltaVec'''}{\Gamma, \splitdecgone{l}}{\Delta \setminus C_1}$.  If $l \in C_2$ then it is also in $C_1$ meaning the clause has been satisfied and $\complete{\Delta'''}{\Gamma, \splitdecgone{l}}{\Delta}$. If $l \notin C_2$ then we perform a case distinction on whether $\mybar{l} \in C_2$. If it is then we apply the $\SplitSub$ and $\Res$ rules to obtain a unit resolution derivation for $C_2 \setminus \mybar{l}$. The clause pair $(C_1,C_2 \setminus \mybar{l})$ forms a complete set of clause pairs in combination with $\DeltaVec'''$. If $\mybar{l} \notin C_2$ then $(C_1,C_2)$ forms a complete set of clause pairs in combination with $\DeltaVec'''$.
 
 \end{description}
 \end{proof}
@@ -549,7 +549,7 @@ We fix an $n'$ such that $n' \leq \delta(\Gamma) + 1$ then we perform a case dis
 \subsubsection*{Sub-case 4.2.1: $  n' = \delta(\Gamma) + 1 \, \wedge  \exists \Delta' ( (\Gamma, (S \,  l \, \delta(\Gamma) + 1)) _{\leq n'}  \vdash_{\Delta'} \Delta)$}
 The induction hypothesis is instantiated a second time with $\Delta, \Delta'$ and $\Gamma, (S \,  \mybar{l} \, \delta(\Gamma) + 1)$. We construct a new $\DeltaVec''$ such that $\complete{\DeltaVec''}{\Gamma}{\Delta'}$; this is built from the learned clauses. Then we merge $\DeltaVec'$ and $\DeltaVec''$ to create a new set $\DeltaVec' \cup \DeltaVec''$ of paired clauses such that $\complete{\DeltaVec' \cup \DeltaVec''}{\Gamma}{\Delta \cup \Delta'}$. This is done in two steps. Firstly we construct a new set of derivations $\DeltaVec''$ using Lemma \ref{lem:compgen} and then we merge that set of derivations with our existing one using Lemma \ref{lem:compunion}. This composed set of clause pairs is then used  along with Lemma \ref{lem:compsplit} to construct a new set of clause pairs $\DeltaVec''$ that is complete with respect to the valuation $\Gamma, (S \, \mybar{l} \, \delta(\Gamma) + 1)$ .  This induction hypothesis then leads to two further cases: Either we have a model $M$ such that $M \models \Gamma,(S \, \mybar{l} \, \delta(\Gamma) + 1)$ and $M \models \Delta, \Delta'$, in which case $\compatible{\Gamma}{\Delta}$ holds, or we have a $n'' \leq \delta(\Gamma) + 1$ and $(\Gamma,(S \, \mybar{l} \, \delta(\Gamma) + 1))_{\leq n''} \vdash_{\Delta''} \Delta, \Delta'$ in which case we apply the $\Split$ rule.
 \begin{comment}
-\textbf{We need to know that all of the learned clauses in $\Delta'$ are derivable from $\Gamma$ and $\Delta$ otherwise they are useless as the $\Conflict$ could not be applied to them. We know that they can be derived from some $\Gamma$ and $\Delta$ but how do we know that they are derivable from the current $\Gamma$ since it could be the case that backtracking has occured and there is now a smaller $\Gamma$.}
+\textbf{We need to know that all of the learned clauses in $\Delta'$ are derivable from $\Gamma$ and $\Delta$ otherwise they are useless as the $\Conflict$ could not be applied to them. We know that they can be derived from some $\Gamma$ and $\Delta$ but how do we know that they are derivable from the current $\Gamma$ since it could be the case that backtracking has occurred and there is now a smaller $\Gamma$.}
 \end{comment}
 %
 \subsubsection*{Sub-case 4.2.2: $ n' \leq \delta(\Gamma) \, \wedge  \exists \Delta' ( \Gamma_{ \leq n'}  \vdash_{\Delta'} \Delta)$} 
@@ -568,7 +568,7 @@ This is proven by using Lemma \ref{lem:compgen} to generate a complete set of cl
 \end{proof}
 \end{mycorollary}
 
-\section{Formalising a Soundness and Completeness of the Modified DPLL and Unit Resolution Proof Systems in Minlog}
+\section{Formalising Soundness and Completeness of the Modified DPLL and Unit Resolution Proof Systems in Minlog}
 We shall now describe how the soundness and completeness for the modified DPLL and  unit resolutions proof systems are formalised in the Minlog system. The formalisation is based on the Minlog formalisation for the DPLL proof system describe in Chapter \ref{chapter:dpllminlog}; the basic operations such as those on sets have been reused where possible. The inductive definition for the modified unit resolution proof system (See Code Listing \ref{def:moduresminlog}.) contains four closure axioms corresponding to the four rules in the proof system (See Definition \ref{def:modures} .). These axioms inductively define a predicate \texttt{unitRes} that captures a unit resolution derivation.
 
 
@@ -662,14 +662,14 @@ The statement of completeness for the DPLL proof system has been modified from t
 \end{lstlisting}
 
 \section{Behaviour of Prototype Clause Learning Algorithm}
-In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to some simple examples. This prototype has had $\forallnc$ quantifiers inserted to reduce the amount of redundant computational content and the overall size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
+In the following we shall describe the behaviour of the prototype clause learning algorithm when applied to a simple example containing two literals. This prototype has had $\forallnc$ quantifiers inserted to reduce the amount of redundant computational content and the overall size of the proof generated. We can apply the solver to a small example formula containing two unit clauses as follows:
 \begin{lstlisting}
 (term-to-string (nt (make-term-in-app-form 
    program 
    (pt "(CF ((CC (Pos (Variable 11)):)::(CC (Pos (Variable 12)):):)) 
 "))))
 \end{lstlisting}
-The solver produces a model of the formula paired with a function which indicates which literal satisfies which individual clause:
+The solver produces a model of the formula paired with a function which indicates which literal satisfies which individual clause. The second function produces the dummy literal in the case that it is applied to a clause not contained within the formula.
 
 \begin{lstlisting}
 "(InL (lit=>boole)@@(cla=>lit) for@@algmodDPLL)
@@ -683,7 +683,7 @@ The solver produces a model of the formula paired with a function which indicate
                   (Pos(Variable 0))]]))"}                                                                     
 \end{lstlisting}
 
-We modelled the completeness statement of this solver using Minlog's built in inductively defined disjunction \texttt{ori}. The constructors \texttt{InL} and \texttt{InR} capture the extracted computation content of the left and right hand of the disjunction respectively. We have also applied to solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
+We modelled the completeness statement of this solver using Minlog's built in inductively defined disjunction \texttt{ori}. The constructors \texttt{InL} and \texttt{InR} capture the extracted computation content of the left and right hand of the disjunction respectively. We have also applied the solver to several unsatisfiable examples. The prototype clause learning algorithm is applied to the pigeon hole formula PHP(3,2) using the following command:
 
 \begin{lstlisting}
 (pp (nt (mk-term-in-app-form program 
@@ -702,7 +702,7 @@ We modelled the completeness statement of this solver using Minlog's built in in
 
 This results in the output seen in Code Listing \ref{cl:cdclphp32}.  We see that the solver has learned two clauses. The clause \texttt{(CC (Neg (Variable 32)):)} comes from the first branch of the proof where the literal \texttt{(Pos (Variable 32))} was used in an application of the $\Split$ rule. This learned unit clause was then used in subsequent unit resolution derivations of the second branch of the proof resulting in the empty clause \texttt{CC(Nil lit)} being learned.  This use of the unit clauses before assignments from the $\Split$ rule results in shorter learned clauses which better aid the subsequent proof search.
 \newpage
-\begin{lstlisting}[caption = The Modified DPLL Proof that PHP(3\,2) is Unsatisfiable, label = cl:cdclphp32] 
+\begin{lstlisting}[caption = The Modified DPLL Proof that $PHP(3,2)$ is unsatisfiable, label = cl:cdclphp32] 
 (InR for@@algmodDPLL (lit=>boole)@@(cla=>lit))
 (CF(CC(Nil lit)::(CC(Neg(Variable 32)):):)@
 CmodDPLLTwo(Pos(Variable 32))
@@ -750,7 +750,7 @@ We call this algorithm a prototype for the reason that it still requires further
 \begin{itemize}
 \item The satisfiable pigeon hole formula PHP(2,2) results in a model which contains repeated occurrences of the same literal.
 
-\item The pigeon hole formulae PHP(4,3) and several other larger formulae result in a dummy model being returned containing the dummy literal \texttt{(Pos (Variable 0))}.
+\item The pigeon hole formulae PHP(4,3) and several other larger formulae result in a dummy model being returned containing the dummy literal \texttt{(Pos (Variable 0))}. This means that currently the algorithm is incomplete due to some unproven assumptions in the Minlog proof. The structure of the completeness proof has changed dramatically through several prototype implementations making a full proof difficult to achieve in the time available. 
 
 \item The algorithm is not quite as efficient as I feel it could with further insight the proof could be restructured to increase the efficiency of the algorithm.
 
