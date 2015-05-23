@@ -110,11 +110,11 @@ The Real Time Maude system employs the Maude LTL Model Checker, which does on-th
 
 \section{Model Checking the European Rail Traffic Management System}
 In the following section we will demonstrate an approach to apply the Real Time Maude LTL model checker to verify the Real Time Maude specification described previously.
-Firstly we shall define the property we want to check in the Real Time Maude system. To do this we have to define a satisfaction relation which describes what it means for the property to hold in a state of the system we are checking. The property we shall consider in this case is that the moment authorities of two trains in the system do not overlap. The logical property we define identifies the individual trains using their object identifiers and then computes whether or not an overlap has occurred using a boolean formula.  We shall show that it is possible to verify this property over a time period large enough for all normal behaviours of the system to occur. 
+Firstly we shall define the property we want to check in the Real Time Maude system. To do this we have to define a satisfaction relation which describes what it means for the property to hold in a state of the system we are checking. The property we shall consider in this case is that the moment authorities of two trains in the system do not overlap. The logical property we define identifies the individual trains using their object identifiers and then computes whether or not an overlap has occurred using a Boolean formula.  We shall show that it is possible to verify this property over a time period large enough for all normal behaviours of the system to occur. 
 
 \subsection*{Defining a Satisfaction Relation}
 The syntax of the properties for which we are going to check using the LTL model checker are defined separately from the semantics in terms of a satisfaction relation.
-We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a Real Time Maude specification. The satisfaction relation itself is predefined in a specification as an operation which takes a State and a property which is of type Prop and computes a boolean. Maude defines the satisfaction relation $\models$ in the following:
+We shall now describe how to define the behaviour of the satisfaction relation for a given system and property as a Real Time Maude specification. The satisfaction relation itself is predefined in a specification as an operation which takes a State and a property which is of type Prop and computes a Boolean. Maude defines the satisfaction relation $\models$ in the following:
 \medskip
 
 \begin{lstlisting}[caption =  The Maude Satisfaction module, label =code:satisfaction ]
@@ -195,7 +195,7 @@ eq {REST < O1 : Train |  dist : D1 , ma : M1 >
    (O1 == O1') and (O2 == O2') and noolap1(D1,M1,D2,M2) .
 \end{lstlisting}
 
-Here we have matched two object identifiers and natural numbers and called a boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a boolean depending on whether a set of inequalities is satisfied. The three sets of inequalities corresponding to the three safety properties are defined below:
+Here we have matched two object identifiers and natural numbers and called a Boolean function \texttt{noolap} on those variables. This definition features an external operation which computes a Boolean depending on whether a set of inequalities is satisfied. The three sets of inequalities corresponding to the three safety properties are defined below:
 
 \begin{lstlisting}[caption = The no overlap operations]
 eq noolap1(D1,M1,D2,M2) = 

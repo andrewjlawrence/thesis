@@ -131,7 +131,7 @@ The behaviour of models is captured axiomatically by the addition of a global as
 \begin{center}
 \texttt{(aga "modelproperty" (pf "all mod, l . ( mod l  -> (mod (opposite l) -> F)) \& ( (mod (opposite l) -> F) -> mod l)"))}
 \end{center}
-We have implemented a model as a mapping from literals to booleans as during the proof search we construct a valuation which is a set of literals. In the case that a satisfying assignment is found we extend this set of literals to be a function. This is done using the following minlog code:
+We have implemented a model as a mapping from literals to Booleans as during the proof search we construct a valuation which is a set of literals. In the case that a satisfying assignment is found we extend this set of literals to be a function. This is done using the following minlog code:
 
 \begin{lstlisting}[caption = "The ExtendVal function in Minlog"]
 (add-program-constant "ExtendVal" (py "valu => lit => boole") 
@@ -505,7 +505,7 @@ derivation of its unsatisfiability.
 %
 % ANDY: This has now been changed in the Minlog code. 
 % The formalization of the completeness theorem may need to be changed to reflect this. 
-Models are represented as functions from literals to booleans. An
+Models are represented as functions from literals to Booleans. An
 algebraic data type for DPLL derivations is automatically generated
 from its inductive definition in Minlog. It has five constructors, one
 for each of the DPLL rules in Definition~\ref{def:derivable-DPLL}:
@@ -595,7 +595,7 @@ CsuccessZero
 \end{lstlisting}
 
 Running XSAT on a satisfiable formula results in a function which 
-maps literals to booleans. For example running the solver with 
+maps literals to Booleans. For example running the solver with 
 $\mathbf{PHP}(2,2)$ results in the function  
 	 $\mathrm{M}: \mathrm{literals} \to \mathbb{B}$  where  
 $\mathrm{M}(l) = \True$ iff  $l \in \{ l_{12}, \mybar{ l_{11}}, l_{21}, \mybar{ l_{22}}  \}$.

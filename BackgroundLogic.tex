@@ -97,7 +97,6 @@ derivation & term \\
 \UnaryInfC{$B$}
 \DisplayProof} & \raisebox{-2.8\height}{$(M^{A \wedge B} 0)^A \quad (M^{A \wedge B} 1)^B$} \\ [10ex] \hline
 
-
 \end{tabular}
 \end{center}
 
@@ -150,6 +149,7 @@ derivation & term \\ \hline
 \end{tabular}
 \end{center}
 
+The $\forall^{+}$ rule has the condition that $x$ is not free in $A$. 
 
 \end{mydef}
 \medskip
@@ -164,7 +164,7 @@ Minlog also allows for the use of the \emph{ex falso quodlibet} rule to derive f
 \end{center}
 \end{mydef}
 
-The stability rule is also included in the Minlog system, although I have not used it in any proofs in this thesis, it is used to obtain classical logic. The Minlog system contains mechanisms to perform program extraction from classical proofs \cite{UB95}. 
+The stability rule is also included in the Minlog system, although I have not used it in any proofs in this thesis, it is used to obtain intuitionistic logic. The Minlog system contains mechanisms to perform program extraction from classical proofs \cite{UB95}. 
 \medskip
 \begin{mydef}[The Stability Rule] \hspace*{0pt} \\
 \begin{center}
@@ -176,7 +176,7 @@ The stability rule is also included in the Minlog system, although I have not us
 \end{mydef}
 
 
-The natural deduction proof system for minimal logic previously introduced is extended to first order logic by the addition of the following rules for $\vee$ and $\exists$. Following the description of these rules we describe their Minlog specific implementation details.
+The natural deduction proof system for minimal logic previously introduced is extended to classical logic by the addition of the following rules for $\vee$ and $\exists$. Following the description of these rules we describe their Minlog specific implementation details.
 
 
 \begin{center}
@@ -219,7 +219,7 @@ derivation & term \\ \hline
 \UnaryInfC{$B$}
 \RightLabel{$\vee^+_1$}
 \UnaryInfC{$A \vee B$}
-\DisplayProof} & \raisebox{-2.8\height}{$(\vee l_{0,b} M^A)$ $(\vee l_{1,A}M^{B})^{A \vee B}$}  \\ [10ex] \hline
+\DisplayProof} & \raisebox{-2.8\height}{$(\vee l_{0,B} M^A)^{A \vee B}$ $(\vee l_{1,A}M^{B})^{A \vee B}$}  \\ [10ex] \hline
 
 \raisebox{-1\height}{
 \AxiomC{$|M$}
@@ -237,7 +237,7 @@ derivation & term \\ \hline
 \UnaryInfC{$C$}
 \RightLabel{$\vee^- u,v$}
 \TrinaryInfC{$C$}
-\DisplayProof} & \raisebox{-3.8\height}{$(M^{A \vee B} (u^A.N^{C},v^{B}.K^{C}))$} \\ [15ex] \hline
+\DisplayProof} & \raisebox{-3.8\height}{$(M^{A \vee B} (u^A.N^{C},v^{B}.K^{C}))^C$} \\ [15ex] \hline
 \end{tabular}
 \end{center}
 \bigskip
@@ -249,8 +249,8 @@ The following is a list of implementation specifics which describe the particula
 
 \item $\exists$ is treated by axioms instead of rules.
 
-\item We also have rules for the so-called nc-quantifiers (quantifiers without computational content). They logically behave like the usual quantifiers, but they behave differently when it comes 
-to program extraction.
+\item We also have rules for the so-called nc-quantifiers (quantifiers without computational content) $\exists^{nc}$ and $\forall^{nc}$. They logically behave like the usual quantifiers ($\exists$ and $\forall$), but they behave differently when it comes 
+to program extraction. These nc-quantifiers will be discussed in more detail in the following sections of this chapter.
 
 \item Axioms are represented on the term level by axiom constants.
 
@@ -286,8 +286,13 @@ variable $x$. Otherwise the type is a product of the type of the bound
 variable $\rho$ and the type of the formula $A$ $\tau (A)$.
 
 \[
-\tau(\exists x^{\rho} A) :=  \rho \times \tau (A)
+\tau(\exists x^{\rho} A) := \left\{ 
+\begin{array}{l l}
+  \epsilon & \quad \text{if $\tau(A) = \epsilon$}\\
+ \rho \times \tau (A) & \quad \text{otherwise}\\
+\end{array} \right.
 \]
+
 \[
 \tau(\exists^{nc} x^{\rho} A) := 
  \tau (A) 
@@ -317,7 +322,15 @@ is solely dependent on the type of $A$.
 \tau(\forallnc x^{\rho} A) := \tau(A)
 \]
 
+The type of the formula $A_0 \wedge A_1$ is the product of the types of the two sub-formulas $A_0$ and $A_1$ unless one of the formulae has no computational content. In that case the type of the formula is equal to the sub-formula with computational content.
 
+\[
+\tau(A_0 \wedge A_1) := \left\{ 
+\begin{array}{l l}
+  \tau(A_i) & \quad \text{if $\tau(A_{1-i}) = \epsilon$}\\
+ \tau(A_0) \times \tau(A_1) & \quad \text{otherwise}\\
+\end{array} \right.
+\]
 
 The type of a formula $A \to B$ containing the implication operator and
 sub-formulae $A$ and $B$ is dependent on the types of the sub-formulae.
@@ -335,10 +348,15 @@ a type of $\tau (B)$.
 \end{array} \right.
 \]
 
-If P  is an inductively defined predicate, then $\alpha_P$ is the algebra whose constructors have the same type as the closure axioms of the inductive predicate.
+The formula $\bot$ has no computational content.
+\[
+\tau(\bot) := \epsilon
+\]
+
+If P  is an inductively defined predicate, then $\alpha_P$ is the algebra whose constructors have the same type as the closure axioms of the inductive predicate. More details can be found in \cite{HS14}.
 
 \section{Program Extraction}
-Given a proof term it is possible to extract a program in the lambda calculus  that depends on the type of the term. We shall now give a case by case definition of the program extracted from a formula $\llbracket M \rrbracket$ which has a type $\tau (A)$. Where, $M$ is a derivation of the formula $A$ with $A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.
+Given a proof term it is possible to extract a program in the typed lambda calculus  that depends on the type of the term. We shall now give a case by case definition of the program extracted from a formula $\llbracket M \rrbracket$ which has a type $\tau (A)$. Where, $M$ is a derivation of the formula $A$ with $A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.
 
 \[ \llbracket u^A \rrbracket := x^{\tau (A)}_{u} \text{uniquely associated with $u^A$}
 \]
@@ -368,13 +386,14 @@ $$\llbracket M^{\forall x A} t \rrbracket := \llbracket M \rrbracket t$$
 $$ \llbracket (\lambda x^{\rho} M)^{\forallnc x A} \rrbracket := \llbracket M \rrbracket $$
 $$ \llbracket M^{\forallnc x A} t \rrbracket := \llbracket M \rrbracket  $$
 
+For derivations $M^A$ with type $\tau(A) = \epsilon$, we define the extracted program to be $\llbracket M \rrbracket := \epsilon$, where $\epsilon$ is some new symbol. 
 
 The axioms for dealing with existential quantifiers produce slightly more
 complicated programs upon extraction. 
 
-$$ \exists^+_{x,A} : \forall x^{\rho}.A \to \exists x^{\rho} A  \ \mathbf{ex-intro}$$
+$$ \exists^+_{x,A} : \forall x^{\rho}.A \to \exists x^{\rho} A  \ \mathbf{ex \mhyphen intro}$$
 $$ \exists^-_{x,A,B} : \exists x^{\rho} A \to (\forall x^{\rho}. A \to B) \to
-B  \ \mathbf{ex-elim}$$
+B  \ \mathbf{ex \mhyphen elim}$$
 
 The following are the extracted programs for the above axioms.
 
@@ -399,7 +418,7 @@ There are different induction schemes  that yield different extracted programs h
 
 
 Induction on the inductively defined predicate corresponds on the program level  to recursion on the corresponding algebra. 
-The extracted program for an application of general induction is the guarded recursion operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
+The extracted program for an application of general induction is general recursion which in Minlog is called guarded recursion and implemented by the operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
 
 \begin{lstlisting}[caption = The Guarded Recursion Operation Used in the Minlog System, mathescape]
 (GRecGuard $\rho$1 $\rho$2 $\rho$3 $\tau$) $\mu$ z1 z2 z3 G t = f z1 z2 z3 t where

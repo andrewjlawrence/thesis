@@ -702,7 +702,7 @@ We modelled the completeness statement of this solver using Minlog's built in in
 
 This results in the output seen in Code Listing \ref{cl:cdclphp32}.  We see that the solver has learned two clauses. The clause \texttt{(CC (Neg (Variable 32)):)} comes from the first branch of the proof where the literal \texttt{(Pos (Variable 32))} was used in an application of the $\Split$ rule. This learned unit clause was then used in subsequent unit resolution derivations of the second branch of the proof resulting in the empty clause \texttt{CC(Nil lit)} being learned.  This use of the unit clauses before assignments from the $\Split$ rule results in shorter learned clauses which better aid the subsequent proof search.
 \newpage
-\begin{lstlisting}[caption = The Modified DPLL Proof that $PHP(3,2)$ is unsatisfiable, label = cl:cdclphp32] 
+\begin{lstlisting}[caption = The Modified DPLL Proof that PHP(3,2) is unsatisfiable, label = cl:cdclphp32] 
 (InR for@@algmodDPLL (lit=>boole)@@(cla=>lit))
 (CF(CC(Nil lit)::(CC(Neg(Variable 32)):):)@
 CmodDPLLTwo(Pos(Variable 32))
