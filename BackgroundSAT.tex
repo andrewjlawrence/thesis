@@ -61,7 +61,7 @@ $\forall C \in \Delta \, \exists l \in C \,(M \ l)$
 \end{itemize}
 %
 We call a valuation $\Gamma$ and a formula $\Delta$ \emph{compatible} 
-($\compatible{\Gamma}{\Delta})$
+$(\compatible{\Gamma}{\Delta})$
 if there exists a model satisfying both, i.e. 
 $\exists M \, (M \models \Gamma \wedge M\models \Delta)$;
 otherwise $\Gamma$ and $\Delta$ are called \emph{incompatible} 
@@ -76,7 +76,7 @@ A \emph{sequent} $\Gamma \vdash \Delta$ is a pair consisting of a valuation and 
 %\end{definition}
 %
 The intended meaning of a sequent $\Gamma \vdash \Delta$ is that $\Gamma$ and $\Delta$
-are incompatible. As a special case, when $\Gamma$ is empty, $\vdash \Delta$ means that $\Delta$ is unsatisfiable. 
+are incompatible. As a special case, when $\Gamma$ is empty, $\vdash \Delta$ means that $\Delta$ is unsatisfiable. This is unusual as one normally proves a positive statement and might expect to prove satisfiability.
 \begin{comment}
 \begin{defi}
 We define an equivalence relation $\sim$ over the formulae $\Delta_1$ and $\Delta_2$ as follows
@@ -92,6 +92,7 @@ $X\setminus a := \{x \mid x\in X \land x \neq a\}$ (removing $a$ from $X$).
 \begin{mydef}[The Boolean satisfiability (SAT) problem]
 Given a formula $\Delta$, does there exist a valuation $\Gamma$ such that:
 $$\Gamma \models \Delta$$
+where $\Gamma \models \Delta$ is equivalent to $\forall M. M \models \Gamma \to M \models \Delta$.
 \end{mydef}
 This is an NP complete problem, meaning that it is solvable by a non-deterministic Turing machine in polynomial time. Such problems are solved by a backtracking search for a potential solution: first an  assignment the variables is tried and if that fails then the algorithm un-does some assignments and tries another solution until all potential solutions have been tried. If all potential solutions do not satisfy the problem then it is said to be unsatisfiable i.e. it has no solution.
 \section{The DPLL Algorithm}
@@ -125,7 +126,7 @@ $$PHP(2,1) := \{\{\neg X_1, \neg X_2\}, \{ X_1 \}, \{ X_2 \} \}$$
 \end{figure}
 \bigskip
 
-The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Delta,\Gamma)$ which takes a formula and a valuation as input and returns either UNSAT in the case that the formula is unsatisfiable or in the satisfiable case it returns a valuation which forms a model of the formula.  The algorithm begins by applying $\mathrm{Unit-Resolution}$, which repeatedly simplifies the formula by removing clauses that contain a literal in common ($\Red$ Rule, see Definition \ref{def:dpllproofsys}) with the valuation and by removing literals in clauses with opposing literals in the valuation ($\Elim$ Rule, see Definition \ref{def:dpllproofsys}) and then for all resulting \emph{unit} clauses which contain a single literal that literal is added to the valuation ($\Unit$ Rule, see Definition \ref{def:dpllproofsys}).  The algorithm then checks to see if the formula is empty in which case the current valuation forms a satisfying assignment for the formula in which case the algorithm terminates.  Otherwise if this is not the case the algorithms checks to see if the empty clause is in the formula. If the empty clause is in the formula then that clause can not be satisfied and therefore the formula is unsatisfiable with respect to the current valuation and that branch of the algorithm can terminate. If $\mathrm{Unit-Resolution}$ does result in an empty clause then a new literal $l$ is selected from the formula such that neither that literal nor its opposite is in the valuation, then two recursive calls are made, one with the current formula and the valuation extended by $l$ and the second made with the current formula and the valuation extended by the opposite of $l$. 
+The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Delta,\Gamma)$ which takes a formula and a valuation as input and returns either UNSAT in the case that the formula is unsatisfiable or in the satisfiable case it returns a valuation which forms a model of the formula.  The algorithm begins by applying $\mathrm{UnitResolution}$, which repeatedly simplifies the formula by removing clauses that contain a literal in common ($\Red$ Rule, see Definition \ref{def:dpllproofsys}) with the valuation and by removing literals in clauses with opposing literals in the valuation ($\Elim$ Rule, see Definition \ref{def:dpllproofsys}) and then for all resulting \emph{unit} clauses which contain a single literal that literal is added to the valuation ($\Unit$ Rule, see Definition \ref{def:dpllproofsys}).  The algorithm then checks to see if the formula is empty in which case the current valuation forms a satisfying assignment for the formula in which case the algorithm terminates.  Otherwise if this is not the case the algorithms checks to see if the empty clause is in the formula. If the empty clause is in the formula then that clause can not be satisfied and therefore the formula is unsatisfiable with respect to the current valuation and that branch of the algorithm can terminate. If $\mathrm{UnitResolution}$ does result in an empty clause then a new literal $l$ is selected from the formula such that neither that literal nor its opposite is in the valuation, then two recursive calls are made, one with the current formula and the valuation extended by $l$ and the second made with the current formula and the valuation extended by the opposite of $l$. 
 
 \begin{lstlisting}[caption = Example DPLL Algorithm,mathescape, label = cl:dpllalg]
 DPLL($\Delta, \Gamma$)
@@ -137,18 +138,18 @@ else if {} $\in \Delta$ then
 else
 	$l = \mathrm{Select}(\Delta, \Gamma)$
 	if $M$ = DPLL($\Delta, \Gamma \cup \{l\}$) $\neq$ UNSAT then
-		return $\Gamma' \cup \Gamma$ 
+		return $M \cup \{ l \}$ 
 	else if $M$ = DPLL($\Delta, \Gamma \cup \{\neg l\}$) $\neq$ UNSAT then 
-		return $\Gamma' \cup \Gamma$ 
+		return $M \cup \{ \mybar{l} \}$ 
 	else
 		return UNSAT
 \end{lstlisting}
 
-The selection of literals is typically made by some heuristics which are a research topic in their own right and therefore beyond the scope of this thesis. We shall make use of simple heuristics such as  picking the first literal  or choosing the most commonly occurring literal  from a formula as these produce reasonable performance without overly complicating the algorithm or inducing significant overhead.
+The selection of literals,  as performed by $\mathrm{Select}$, is typically made by some heuristics which are a research topic in their own right and therefore beyond the scope of this thesis. We shall make use of simple heuristics such as  picking the first literal  or choosing the most commonly occurring literal  from a formula as these produce reasonable performance without overly complicating the algorithm or inducing significant overhead.
 
 \subsection*{DPLL Proof System}
 
-The search that this algorithm performs can be viewed as constructing a proof of unsatisfiability for a given formula. The individual operations carried out to during the search correspond to rules in a proof system, which are applied in a backwards fashion. The Unit-Resolution step can be broken down into 3 operations, one that adds unit clauses to the valuation, another that removes clauses that have been satisfied by a literal set to true and finally we have a rule that rules a literal from a clause if its opposing literal is in the valuation. There is an axiom rule $\Conflict$ corresponding to the cases in the algorithm where the empty clause has been derived. Finally, there is a branching rule referred to as $\Split$ which allows a decision to be made on a literal.  The result of an application $\Split$ rule with a literal is two branches; one in which that literal is true in the valuation and another branch in which it is false.
+The search that this algorithm performs can be viewed as constructing a proof of unsatisfiability for a given formula. The individual operations carried out to during the search correspond to rules in a proof system, which are applied in a backwards fashion. The $\mathrm{UnitResolution}$ step can be broken down into 3 operations, one that adds unit clauses to the valuation, another that removes clauses that have been satisfied by a literal set to true and finally we have a rule that rules a literal from a clause if its opposing literal is in the valuation. There is an axiom rule $\Conflict$ corresponding to the cases in the algorithm where the empty clause has been derived. Finally, there is a branching rule referred to as $\Split$ which allows a decision to be made on a literal.  The result of an application $\Split$ rule with a literal is two branches; one in which that literal is true in the valuation and another branch in which it is false.
 \medskip
 \begin{mydef}[DPLL Proof System]\label{def:dpllproofsys} The DPLL proof system consists 
 of five rules: 
@@ -216,7 +217,6 @@ The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$
                &= (x_1 \vee x_2 \vee x_3) \wedge (\neg x_1 \vee x_4) \wedge (\neg x_2 \vee \neg x_4) \wedge (\neg x_4 \vee x_5) \, \wedge \\
                &\hspace{16pt} (\neg x_3 \vee x_2 \vee  \neg x_5) \wedge (x_2 \vee \neg x_7 \vee x_6) \wedge (\neg x_6 \vee  x_7 \vee x_3) \wedge (\neg x_6 \vee \neg x_7 \vee x_3)
 \end{align*}
-
 %
 \begin{figure} [H]
 \begin{center}
@@ -244,8 +244,8 @@ The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$
 \end{center}
 \caption{Conflict Graph for the Formula $\phi$}
 \label{fig:conflictgraph}
-
 \end{figure}
+Some possible learned clauses are $( \neg x_4 \vee \neg x_7 )$ and $(x_3 \vee \neg x_6)$.
 \end{myexample}
 
 The clause learning process makes use of a resolution operation $\circ$ which resolves two clauses and removes any complimentary literals contained within the two $C_1 \circ C_2 := \{l | l \in C_1 \vee l \in C_2, \neg l \in C_1 \wedge \mybar{l} \in C_2 \}$. The conflict analysis procedure repeatedly applies resolution clauses that are antecedents of the conflict clause. It also makes use of a predicate that computes whether a clause $\omega$ contains an implied literal $l$ that has been assigned at the decision level $d$.
@@ -258,8 +258,8 @@ The conflict analysis procedure takes as input a formula $\Delta$ and a valuatio
 ConflictAnalysis($\Delta$,$\Gamma$) 
 $i \leftarrow 0$
 $\omega \leftarrow \alpha(\kappa)$
-$d \leftarrow \omega$
-while($\neg \forall l. \eta(\omega,l,d) = 1$)
+$d \leftarrow \delta(\Gamma)$
+while($\exists l. \eta(\omega,l,d)$)
  do $\omega \leftarrow  \omega \circ \alpha(l)$
 $\Delta \leftarrow \Delta \cup \{ \omega \}$
 return d
