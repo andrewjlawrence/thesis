@@ -356,6 +356,7 @@ The formula $\bot$ has no computational content.
 If P  is an inductively defined predicate, then $\alpha_P$ is the algebra whose constructors have the same type as the closure axioms of the inductive predicate. More details can be found in \cite{HS14}.
 
 \section{Program Extraction}
+\label{sec:programextraction}
 Given a proof term it is possible to extract a program in the typed lambda calculus  that depends on the type of the term. We shall now give a case by case definition of the program extracted from a formula $\llbracket M \rrbracket$ which has a type $\tau (A)$. Where, $M$ is a derivation of the formula $A$ with $A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.
 
 \[ \llbracket u^A \rrbracket := x^{\tau (A)}_{u} \text{uniquely associated with $u^A$}

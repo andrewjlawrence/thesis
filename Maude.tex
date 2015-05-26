@@ -1,30 +1,22 @@
 \newcommand{\rtmaude}{Real Time Maude}
-
 \thesischapter{The Modelling of the European Rail Traffic Management System Using Real Time Maude}{The Modelling of the European Rail Traffic Management System Using Real Time Maude}\label{chap:modelertms}
 \chaptermark{Modelling ERTMS Using Real Time Maude}
-In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe how they can be used model the ERTMS system (See chapter \ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describe how each of the three subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in chapter \ref{chap:hybrid}. Each of these individual components is modelled as an object oriented specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects behaviour. The  built-in message construct of the Real Time Maude system is used to define communication between the subsystems. 
-
+In the following we present the Maude \cite{MC03,Maude} and Real Time Maude \cite{PO02,PO04,RTMaude} tools and describe how they can be used model the ERTMS system (See Chapter~\ref{chapter:ERTMS}).   We begin by giving a general introduction to Maude and Real Time Maude and then describe how each of the three subsystems (trains, the interlocking and the RBC) are specified following the hybrid automata formalisation found in Chapter~\ref{chap:hybrid}. Each of these individual components is modelled as an object oriented specification. We define classes representing each of the subsystems and then rewrite rules are used to give objects behaviour. The  built-in message construct of the Real Time Maude system is used to define communication between the subsystems.
 \subsection*{Related Work}
 The Maude system has been used for a variety of specification and verification tasks. Hardware such has microprocessors has been specified and verified \cite{NH00}. A distributed sensor network employing the OGDC algorithm has been modelled and verified using Real Time Maude \cite{PO07}. The modelling of the progression of time over the sensor network has inspired the distribution of in our ERTMS model. The Real Time Maude system can also be used for simulation and analysis of systems as seen in the work on the CASH Scheduling Algorithm \cite{PO06}. 
-
+%
 ETCS has been verified in the form of hybrid automata by translating the automata into a program and then performing model checking using the post condition calculus \cite{DI13}. The Hi-Maude system \cite{MF11} is an extension of Real Time Maude designed specifically for modelling interacting hybrid systems and as such it can handle differential equations. It has been used in a case study to model the effects of extreme heat on the human body \cite{MF12}. It is geared towards systems of a highly dynamic nature and may be overkill for a system such as ERTMS with a large discrete component; however a comparison of the approaches might still be interesting as future work.
-
-
+%
 There have been several attempts to model and verify parts of the ERTMS system. The scale of the system and differences in implementations from one country to another both make its formalisation challenging. A subset of the systems requirements specification of ERTMS in UML consisting of high level discrete modes and transitions was captured, formalised and verified using the SMV model checker \cite{MG14}. A variety of properties were checked including safety and liveness which were formalised using modes of the system. One safety condition -- the ETCS on-board never leaves the TRIP mode (TR) before the driver has acknowledged the trip and the train has stopped\footnote{a train enters the TRIP mode after it has over run its stopping point.} -- was formalised as an LTL formula with a Boolean variable to represent that the train has stopped; it was then successfully verified using SMV. Our work attempts to capture the more concrete behaviour of the overall system including the physical behaviour of trains such as their speed and that of the highly safety critical interface between ERTMS and the interlocking. 
-
+%
 There has been a large amount of work on the modelling and verification of ETCS using differential dynamic logic \cite{AP08} in the Keymaera tool \cite{AP08b}. The RBC handover where a train moves from the area governed by one RBC into another has been modelled in \cite{YL11}. The properties proven in this study include non-derailment and non-collision of trains which follows from correct handover and new movement authority generation. ETCS \cite{AP09} itself has been modelled as a dynamical system with external disturbances and verified for safety in terms of collision avoidance, liveness, controllability and reactivity.
-
+%
 There are also several model checkers specifically for the verification of hybrid systems, including HyTech \cite{AR96} and PHAVer \cite{GF05}, which perform an exhaustive search of the state space to check that a given property holds. In contrast to these we concentrate on a modelling approach that results in a specification that is executable and allows for the verification of performance and safety properties.
-
+%
 \section{Maude}
 In the following section we shall describe the term rewriting system Maude. It is a multi-purpose tool containing support for executable-specification, simulation and verification of systems and software. We make use of all three of these capabilities and it is this wide range which draws us towards its use. In order to fully understand its use in the specification of a real time system we first present a formal and informal definition of a Maude specification followed by an example Maude specification to give insight into these definitions.
-
-
-
 \subsection{Maude Specifications}
-
 A Maude specification consists of \emph{functional modules} declared using \texttt{fmod} and \texttt{endfm} which contain the following:
-
 \medskip
 \begin{center}
 \begin{tabular}{| c | l |}
@@ -328,7 +320,7 @@ The following are some states reachable in time 2.
 \end{lstlisting}
 
 \section{Modelling the European Rail Traffic Management System}
-In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object oriented fashion following the hybrid automata described in chapter \ref{chap:hybrid} to define one class for each of the three hybrid automata. Time has been modelled by the use of a function $\mathrm{delta}$ that distributes the transition of time over objects in the system. Rewriting rules are then applied to $\mathrm{delta}$ containing singleton objects to give each individual object its behaviour. We attempt to remove as much non-determinism from the model as possible by forcing the ERTMS system to read all messages by the end of each time step and by preventing trains from making more than one movement authority request to the radio block processor in a given time step.
+In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object oriented fashion following the hybrid automata described in Chapter~\ref{chap:hybrid} to define one class for each of the three hybrid automata. Time has been modelled by the use of a function $\mathrm{delta}$ that distributes the transition of time over objects in the system. Rewriting rules are then applied to $\mathrm{delta}$ containing singleton objects to give each individual object its behaviour. We attempt to remove as much non-determinism from the model as possible by forcing the ERTMS system to read all messages by the end of each time step and by preventing trains from making more than one movement authority request to the radio block processor in a given time step.
 
 
 \subsubsection*{Modelling the Transition of Time} \label{sec:maudetimemodelling}
@@ -372,7 +364,7 @@ The left hand side contains a train which has had a delta operation applied to i
 
 For example if the train is in the \texttt{cons} state and the braking condition is met then in the next moment of time one of these rules will fire and cause a state transition to the braking state. 
 
-We compute the braking distance as follows (See chapter \ref{sec:lawsofmotion}): 
+We compute the braking distance as follows (See Chapter~\ref{sec:lawsofmotion}): 
 \begin{center}\texttt{eq bd(S) = (S * S) div 2 .}\end{center}
 
 
@@ -512,7 +504,7 @@ rl [resreq1g] : {< O : Inter | state : res, t
 \end{lstlisting}
 
 \section{Extension to a Small Junction}
-The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main difference with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter \ref{chap:verifyertms} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
+The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main difference with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter~\ref{chap:verifyertms} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
  
 \subsection*{Junction Example}
 The junction example consists of one point, two routes, seven track segments, a controller object to schedule trains, an RBC and an interlocking.
@@ -563,15 +555,3 @@ The controller object makes one join request, using a \texttt{reqjoin} message c
 The component classes from the pentagon example have been modified to capture the behaviour of a junction.  The train class has seen the least modification, with only one additional parameter route which stores a natural number corresponding to the train's route. The RBC class has been modified to include a additional mapping from object identifiers to the natural numbers that contains the route of each train. The number of states of an RBC has increased from three to four with an extra state $\mathbf{waitjoin}$ capturing that a join request has been made. When a join request is made the RBC checks to see if the route requested is currently set. If the route requested is set and the initial track segment is clear then the join request is accepted. If the route is not set then the RBC checks with the interlocking that it can set the route. This requires that the first three track segments are clear in order to change the direction of the point. The interlocking class has been modified to capture both the behaviour of the point and the addition of join requests. The point is modelled in the interlocking as two Boolean variables: $\mathbf{p1n}$ which indicates that the point is driven normal and $\mathbf{p1r}$ which indicates that the point is driven in the reverse direction.
 %
 The RBC has been modified to process any requests in one time step using an operation $\mathbf{nondelta}$ which prevents the transition of time in any non-idle state. This removes the possibility for a train to take an arbitrary amount of time to respond to a request, significantly cutting down on the state space.
-
-
-
-
-
-
-
-
-
-
-
-

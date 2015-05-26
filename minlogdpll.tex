@@ -2,10 +2,10 @@
 \chaptermark{Extracting Decision Procedures in Minlog}
 
 \label{chapter:dpllminlog}
-In the following chapter we describe how the completeness proofs from Chapter \ref{chapter:dpll} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in Chapter \ref{chapter:dpll} and is followed by the implementation of the soundness and completeness of the DPLL proof system in Minlog. A unique feature of the Minlog system, namely \emph{non-computational quantifiers}, have been used to remove redundant data and computations and obtain a more efficient extracted program. The performance and behaviour of the extracted program is analysed in Section \ref{section:dpllapp}. A detailed overview of the Minlog system can be found in the Minlog Reference Manual \cite{MinlogRef}.
+In the following chapter we describe how the completeness proofs from Chapter~\ref{chapter:dpll} are implemented in the Minlog system and how Minlog can be used to extract programs from these proofs.  This begins with the definition of preliminary data types and operations described in Chapter~\ref{chapter:dpll} and is followed by the implementation of the soundness and completeness of the DPLL proof system in Minlog. A unique feature of the Minlog system, namely \emph{non-computational quantifiers}, have been used to remove redundant data and computations and obtain a more efficient extracted program. The performance and behaviour of the extracted program is analysed in Section \ref{section:dpllapp}. A detailed overview of the Minlog system can be found in the Minlog Reference Manual \cite{MinlogRef}.
 
 \section{Formalising Preliminaries in the Minlog System}\label{sect:minlogprelim}
-We have tried to stay faithful to the definition of the fundamental data types described in chapter \ref{chapter:satbackground} and to this end have defined a number of data types as algebras in Minlog, including the variable, literal, valuation, clause and formula. The variable is defined using the command $\mathbf{add-alg}$ which adds an algebra named "variable " with one constructor "Variable" which takes a natural number and returns a variable.
+We have tried to stay faithful to the definition of the fundamental data types described in Chapter~\ref{chapter:satbackground} and to this end have defined a number of data types as algebras in Minlog, including the variable, literal, valuation, clause and formula. The variable is defined using the command $\mathbf{add-alg}$ which adds an algebra named "variable " with one constructor "Variable" which takes a natural number and returns a variable.
 \begin{lstlisting}[caption = "Definition of a variable in Minlog"]
 (add-alg "variable" '("Variable" "nat => variable"))
 \end{lstlisting}
@@ -184,7 +184,7 @@ This inductive definition contains a number of \texttt{allnc} quantifiers which 
 
 
 \section{The Soundness (Incompatibility) of the DPLL Proof System in Minlog}
-We have formalised the incompatibility proof for the DPLL proof system following the proof found in chapter \ref{chapter:dpll} that proof and this formalisation are both based on the Coq implementation \cite{SL08}. We shall now sketch some of the steps to carry out the proof using the Minlog system.
+We have formalised the incompatibility proof for the DPLL proof system following the proof found in Chapter~\ref{chapter:dpll} that proof and this formalisation are both based on the Coq implementation \cite{SL08}. We shall now sketch some of the steps to carry out the proof using the Minlog system.
 The proof goal is set in the Minlog system using the \texttt{set-goal} command:
 
 \begin{lstlisting}
@@ -317,7 +317,7 @@ The proof of the Split case proceeds by fixing a literal \texttt{l} and a model 
 
 
 \section{The Completeness of the DPLL in Minlog}
-The proof of completeness in Minlog follows the proof of completeness described in Chapter \ref{chapter:dpll}. There are however some implementation details such as the use of non-computational quantifiers and implementation of logical disjunction that are not dealt with in the paper proof and require some discussion. We begin by describing how the search heuristic for our SAT solver is inplemented and integrated at the proof level.
+The proof of completeness in Minlog follows the proof of completeness described in Chapter~\ref{chapter:dpll}. There are however some implementation details such as the use of non-computational quantifiers and implementation of logical disjunction that are not dealt with in the paper proof and require some discussion. We begin by describing how the search heuristic for our SAT solver is inplemented and integrated at the proof level.
 
 
 
@@ -415,7 +415,7 @@ In the above statement the list of clauses \texttt{cs1} has either a DPLL deriva
 (save "DPLLSuccess")
 \end{lstlisting}
 
-The theorem \texttt{DPLLSucces} is partitioned into several sub theorems or lemmas which give the extracted program a more procedural structure. The theorem \texttt{gRec} contains the application of the guarded recursion.  The \texttt{base} theorem deals with the two cases in which \texttt{cs1} is empty, namely the \texttt{Model} and $\Split$ cases. The \texttt{step} theorem deals with all of the remaining cases in which the clause list \texttt{cs1} is non-empty, namely the \texttt{Conflict}, \texttt{Elim}, \texttt{Reduce} and \texttt{Unit} cases.
+The theorem \texttt{DPLLSucces} is partitioned into several sub theorems or lemmas which give the extracted program a more procedural structure. The theorem \texttt{gRec} contains the application of Minlog's guarded recursion (See Chapter~\ref{sec:programextraction}).  The \texttt{base} theorem deals with the two cases in which \texttt{cs1} is empty, namely the \texttt{Model} and $\Split$ cases. The \texttt{step} theorem deals with all of the remaining cases in which the clause list \texttt{cs1} is non-empty, namely the \texttt{Conflict}, \texttt{Elim}, \texttt{Reduce} and \texttt{Unit} cases.
 
 
 \section{The Modified DPLL and  Resolution Proof Systems in Minlog}
@@ -434,7 +434,7 @@ The DPLL and Resolution proof systems were modified in order to obtain a proof c
 \end{lstlisting}
 
 \section{The Completeness of the Resolution Proof System in Minlog}
-The proof of completeness of the resolution proof system is performed by proving equivalence between the resolution and DPLL proof systems as described in Chapter \ref{chapter:dpll}.  
+The proof of completeness of the resolution proof system is performed by proving equivalence between the resolution and DPLL proof systems as described in Chapter~\ref{chapter:dpll}.  
 \begin{comment}
 \begin{center}
 \texttt{(set-goal  (pf "all f,c. all c0,n. resolution f c n  -> (memcf c0 f -> F) -> resolution (conccf c0 f) c n "))}
