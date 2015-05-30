@@ -198,7 +198,7 @@ of five rules:
 
 There are several variants of the DPLL proof system featured in the literature, the above definition is closest to the Coq formalisation \cite{SL08}, other formalisations such as \cite{FM10b} and \cite{JH09} combine the $\Unit$, $\Red$ and $\Elim$ rules to form a single rule called the "1-literal rule" or "unit propagation".
 
-\section{Conflict Driven Clause Learning Algorithms}
+\section{Conflict Driven Clause Learning Algorithms} \label{sec:CDCLalgos}
 One major improvement to the standard DPLL algorithm is \emph{clause learning} which enables the solvers to learn about the structure of the problem during the proof search, cutting down on the search space in the process. In their most common variant, conflict driven clause learning (CDCL) algorithms, a clause is learned when a conflict is reached that contains the negation of some of the assigned literals that caused the conflict to occur. Typically these algorithms have specialised decision heuristics that take into account the learned clauses.
 
 The first clause learning algorithm was GRASP \cite{MS99,MS96} which exploited the structure of conflicts and learned new clauses during backtracking search. This was greatly improved on by Chaff \cite{LZ01} which included the two watched literal data structure and a heuristic which received feedback from the clause learning process. MiniSAT \cite{NE04} the minimalistic SAT solver takes the optimisations from Chaff and GRASP and tries to structure them in such a way that the SAT solver is easily extended and that one has access to the internal workings of the solver for customisation.
@@ -210,6 +210,7 @@ A valuation in a clause learning algorithm is typically a total function $\Gamma
 The CDCL SAT algorithms cut down on the possible search space for a satisfying assignment by analysing and learning new clauses from conflicts. The causes of the conflict are analysed to see which decision assignments led to the conflict arising. The learned clause contains a negation of these literals such that if it was already in the formula it would have caused the conflict to arise earlier. The decisions and implications that led to the conflict can be seen as forming a graph called a \emph{conflict graph} an example of which can be see in Fig. \ref{fig:conflictgraph}. The literals which are negated to form the learned clause can be seen as forming a bar or cut across the conflict graph. Any of these cuts can be used as learned clauses, however typically the smallest clauses perform better in practice. The majority of modern SAT algorithms try to exploit \emph{unit implication points} (UIP) which are bottlenecks in the conflict graph which form an alternative decision assignment that will cause a conflict in the same clause. Formally a UIP is a dominator in that all paths from the  original decision assignment to the conflict must pass through the UIP node in the graph. 
 \medskip
 \begin{myexample}
+\label{example:conflictgraph}
 The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$ is as follows.  The notation $x = 1@n$ means the variable $x$ is assigned to true at $n$ and  $x = 0@n$ means the variable x is assigned to false at level $n$. 
 %
 \begin{align*}

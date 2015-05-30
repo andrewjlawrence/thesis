@@ -70,7 +70,7 @@ The definitions of variables, literals, clauses, formulae and models remain the 
 \item We define $\Gamma_{\leq n}$ to be the set of decisions assigned below or at the $n^{th}$ decision level, i.e. 
 	$$\Gamma_{\leq n} = \{( D \, l \, n') | n' \leq n \wedge (D \, l \, n') \in \Gamma \}$$
 %
-\item A valuation $\Gamma$ is \emph{consistent} ($\consistent{\Gamma}$) if \, 
+\item A valuation $\Gamma$ is \emph{consistent} $(\consistent{\Gamma})$ if \, 
 %
 $\forall l \,( l \in \lit{\Gamma} \to \mybar{l} \notin \lit{\Gamma})$
 %
@@ -91,6 +91,7 @@ $\forall D,l,n,n'( (D \, l \, n) \in \Gamma \wedge (D \, l \, n') \in \Gamma \to
 \end{enumerate}
 \end{mydef}
 \hspace{1mm} \\
+The labels $U$ and $S$ are used during the conflict analysis process to determine the cause of the conflict. The extracted algorithm, described later in this chapter, will learn a clause containing the negation of each of the literals labelled with an $S$.
 
 \section{Modified Proof Systems}
 %
@@ -119,7 +120,7 @@ of two rules:
 \end{mydef}
 
 %
-The modified unit resolution proof system contains additional subsumption rules  and arguments in order to implement a form of clause learning. When a conflict is reached a clause is learned representing the decision assignments which caused the conflict in that clause to occur similar to the GRASP algorithm \cite{MS99}.  Above the derivation turnstile the formula and valuation from which subsumptions can be made is stored. The decision ($\Split$) assignments used to derive the clause are stored on the left hand side of the derivability sign. This are added during an application of the $\SplitSub$ rule which subsumes a decision assignment from the valuation to form a unit clause. Applications of the $\UnitSub$ and $\Sub$ rules do not cause decisions to be added to this valuation.   \\
+The modified unit resolution proof system contains additional subsumption rules  and arguments in order to implement a form of clause learning. When a conflict is reached a clause is learned representing the decision assignments which caused the conflict in that clause to occur similar to the GRASP algorithm \cite{MS99}. In the case of Example \ref{example:conflictgraph} (See Section \ref{sec:CDCLalgos}) the learned clause would be $( \neg x_1 \vee \neg x_7 )$. Above the derivation turnstile the formula and valuation from which subsumptions can be made is stored. The decision ($\Split$) assignments used to derive the clause are stored on the left hand side of the derivability sign. This are added during an application of the $\SplitSub$ rule which subsumes a decision assignment from the valuation to form a unit clause. Applications of the $\UnitSub$ and $\Sub$ rules do not cause decisions to be added to this valuation. The $\Sub$ rule is more or less unchanged semantically as it allows one to subsume an extension of a clause in the formula $\Delta$, however it has changed syntactically to fit the structure of the modified proof system. \\
 \medskip
 \begin{mydef}[Modified Unit Resolution Proof System] The modified unit resolution proof system consists of four rules:
 \begin{center}
@@ -502,7 +503,7 @@ By Lemma \ref{lem:comprem} $\complete{\DeltaVec_1'}{\Gamma}{\Delta_1 \setminus C
 
 \section{Completeness of the Modified DPLL Proof System}
 
-We now proceed to the Main proof of completeness in which we maintain a complete set of clause pairs and unit resolution derivations with respect to the current valuation and formula. We call $n \leq \delta(\Gamma)$  the "witness", it provides us with a DPLL derivation of unsatisfiability using the valuation $\Gamma$ cropped to a decision level $n$.\\
+We now proceed to the Main proof of completeness in which we maintain a complete set of clause pairs and unit resolution derivations with respect to the current valuation and formula. We call $n \leq \delta(\Gamma)$  the "witness", it provides us with a DPLL derivation of unsatisfiability using the valuation $\Gamma$ cropped to a decision level $n$. It is always the case that $\exists \DeltaVec \, \complete{\DeltaVec}{\Gamma}{\Delta}$ holds by Lemma \ref{lem:compgen}. The reason for its inclusion as an assumption in this proof is to optimize the extracted program by preventing re-computation.\\
 \medskip
 \begin{mytheorem}[Completeness of Modified DPLL]\label{thm:moddpllcompleteness} 
 We can fix a finite set of variables $\{v_1, \ldots , v_N \}$ in advance and consider only $\Gamma$ and $\Delta$ built from these variables.
