@@ -197,7 +197,7 @@ This process of model checking linear temporal logic involves first  negating th
 
 \subsection{B{\"u}chi Automata}
 \newcommand{\Buchi}{B{\"u}chi\xspace}
-Most applications of model checking typically search for a finite counterexample trace in the set of infinite traces of the system. The class of automatons which can accept infinite words is called the $\omega$-automata and the simplest class $\omega$-automata is \Buchi automata. These \Buchi automata are a minor modification of finite state automata in that they have a finite alphabet and a finite set of states but instead of a set of final states the automata have a set of \emph{accepting states}.
+Most applications of model checking typically search for a finite counterexample trace in the set of infinite traces of the system. The class of automatons which can accept infinite words is called the $\omega$-automata and the simplest class $\omega$-automata is \Buchi automata \cite{JB62}. These \Buchi automata are a minor modification of finite state automata in that they have a finite alphabet and a finite set of states but instead of a set of final states the automata have a set of \emph{accepting states}.
 \medskip
 \begin{mydef}[B{\"u}chi Automata]
 We define a \Buchi automaton $A$ is a five-tuple $(L, S,T,S_0, F)$ where:
@@ -205,7 +205,7 @@ We define a \Buchi automaton $A$ is a five-tuple $(L, S,T,S_0, F)$ where:
 \item $S$ is a finite set of states
 \item $T \subseteq S \times L \times S$ is a transition relation
 \item $S_0 \subseteq S$ is a set of initial states 
-\item $F \subseteq S$ is an acceptance condition. The automaton A accepts only the infinite runs which contain at least one state occurring in $F$
+\item $F \subseteq S$ is an acceptance condition. The automaton A accepts only the infinite runs which contain at least one infinitely occurring state from $F$
 \end{mydef}
 
 The translation of the LTL property into a \Buchi automaton takes three steps following the approach of Gastin and Oddoux~\cite{PG01}:
@@ -218,7 +218,7 @@ The translation of the LTL property into a \Buchi automaton takes three steps fo
 
 At every step the automaton is simplified by removing unreachable states and subsumed transitions and combining equivalent states. In order to perform model checking we need to be able to find accepting runs of the automaton. Since these accepting runs are infinite they must contain a loop through the automaton. Therefore the model checking algorithm partitions the \Buchi automaton into its strongly connected components. A set of states in a \Buchi automaton is a \emph{strongly connected component} (SCC) if and only if every state in that set is reachable from every other state in that set. 
 
-The model checking algorithm performs a search, using the double depth first search algorithm, for strongly connected components in a \Buchi automataon $A = (L,S,T, S_0, F)$ and tests to see whether the the acceptance condition is empty. Let $\rho$ be an accepting run of the automaton i.e. it contains infinitely many accepting states from $A$.  There must exist some $\rho'$, which is a suffix of $\rho$, such that every state within $\rho'$ occurs infinitely often in $\rho'$. These states of $\rho'$ form a strongly connected component as every state must be reachable from every other state. The converse also holds meaning that a search algorithm for strongly connected components also checks for accepting runs of the automata.The following is the double depth first search algorithm \cite{CC91,GH96}:
+The model checking algorithm performs a search, using the double depth first search algorithm, for strongly connected components in a \Buchi automaton $A = (L,S,T, S_0, F)$ and tests to see whether the acceptance condition is empty. Let $\rho$ be an accepting run of the automaton i.e. it contains infinitely many accepting states from $A$.  There must exist some $\rho'$, which is a suffix of $\rho$, such that every state within $\rho'$ occurs infinitely often in $\rho'$. These states of $\rho'$ form a strongly connected component as every state must be reachable from every other state. The converse also holds meaning that a search algorithm for strongly connected components also checks for accepting runs of the automata. Accepting runs in the automata correspond to counter-examples and accepting states to violating states. The following is the double depth first search algorithm \cite{CC91,GH96}:
 
 \begin{lstlisting}[caption = The Double Depth First Search Algorithm, mathescape]
 Emptiness(A)
@@ -247,7 +247,7 @@ $\forall s' \in S.T(s,s')$ do
 pop(Stack2)
 \end{lstlisting}
 
-The algorithm uses a combination of hash tables and stacks for efficiency reasons. It is more computationally expensive to check that an element does not occur in a stack than in a hash table. The first procedure \texttt{dfs1} searchs for a state that is part of an accepting run and  is reachable from an initial state. The second depth first search procedure attempts to form a loop by looking for successor states that are already on the state stack. 
+The algorithm uses a combination of hash tables and stacks for efficiency reasons. It is more computationally expensive to check that an element does not occur in a stack than in a hash table. The first procedure \texttt{dfs1} searches for a state that is part of an accepting run and  is reachable from an initial state. The second depth first search procedure attempts to form a loop by looking for successor states that are already on the state stack. 
 
 
 

@@ -780,6 +780,7 @@ We shall now describe the behaviour of trains and their interaction with the ERT
 \node[] at (4, 10.5) {Trackside};
 \node[] at (6, 10.5) {Train 1};
 \node[] at (8, 10.5) {Train 2};
+\node[] at (10,10.5) {Train 3};
 
 \draw[->](0, 9.5) -- node[above, font = \small ]{Route Req} (2, 9.5);
 \draw[<-](0, 9) -- node[above, font = \small]{Route Ack}(2,9); 
@@ -805,6 +806,21 @@ We shall now describe the behaviour of trains and their interaction with the ERT
 \draw[<-](0,2.5) -- (8,2.5);
 \draw[-](0,2) -- node[above, font = \small]{Position Data} (2,2);
 \draw[<-](0,2) -- (8,2);
+
+
+
+\draw[->](0, 0.5) -- node[above, font = \small ]{Route Req} (2, 0.5);
+\draw[<-](0, 0) -- node[above, font = \small]{Route Ack}(2,0); 
+\draw[-](0,-0.5) -- node[above, font = \small]{Points Set} (2, -0.5);
+\draw[-](2, -1) -- node[above, font = \small]{Points Ack} (4, -1); 
+\draw[->](0,-0.5) -- node[above, font = \small]{} (4, -0.5);
+\draw[<-](0, -1) -- node[above, font = \small]{} (4, -1);  
+\draw[-](0,-1.5) -- node[above, font = \small]{MA A $\to$ B} (2, -1.5);
+\draw[->](0,-1.5) -- node[above, font = \small]{} (10, -1.5);
+\draw[-](0,-2) -- node[above, font = \small]{MA Ack} (2,-2);
+\draw[<-](0,-2) -- (10,-2);
+\draw[-](0,-2.5) -- node[above, font = \small]{Position Data} (2,-2.5);
+\draw[<-](0,-2.5) -- (10,-2.5);
 
 
 %\draw [arrow] (0,9) -- node[above = 7pt] {Comm Sess Init} (7 ,7 );
