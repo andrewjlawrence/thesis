@@ -4,7 +4,7 @@
 The ERTMS system will be central to many train control systems in the future and ensuring that it is safe is of paramount importance. It poses a particular challenge due to the fact that the system is specified at a high level with each individual country having its own particular implementation. One aspect that is particularly problematic and loosely specified is the interface between the existing interlocking and the RBC as both of these systems have a role to play in ensuring safety. In the following chapter we shall look at formalising the ERTMS system whilst capturing the behaviour of this critical interface between the two systems. 
 %
 \section{Pentagon Example}
-The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains five track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route. We have modelled  a simple implementation of the ERTMS system controlling  a small example railway in the shape of a pentagon (see fig \ref{fig:pentagon2}) using three hybrid automata (see section \ref{sec:hybrid}). In this example the value $D$ represents the distance from the start point at time $t$. It contains two trains $A$ and $B$ and five track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
+The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains five track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route. We have modelled  a simple implementation of the ERTMS system controlling  a small example railway in the shape of a pentagon (see Figure \ref{fig:pentagon2}) using three hybrid automata (see section \ref{sec:hybrid}). In this example the value $D$ represents the distance from the start point at time $t$. It contains two trains $A$ and $B$ and five track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
 \medskip
 %
 \begin{figure} [h!]
@@ -74,7 +74,7 @@ Since this is a first attempt at modelling a complex system we make several assu
 
 \item The train track is uni-directional.
 
-\item The train will make maximal progress i.e. the train will accellerate whenever allowed by the movement authority and brake when the movement authority requires it.
+\item The train will make maximal progress i.e. the train will accelerate whenever allowed by the movement authority and brake when the movement authority requires it.
 
 \item The trains can only accelerate one unit of speed per unit time interval.
 
@@ -90,13 +90,13 @@ Since this is a first attempt at modelling a complex system we make several assu
 
 \item If we work with an open section of track in which trains can enter and leave, we shall assume that the handover is performed correctly in an automatic fashion.
 
-\item In an open track plan a train will be allowed to enter as the seperation policy allows.
+\item In an open track plan a train will be allowed to enter as the separation policy allows.
 \end{enumerate}
 %
 The assumption regarding the acceleration causes the speed to be a linear function of time and greatly simplifies the laws of motion needed to compute the braking curves.   We do not allow movement authorities to be revoked for two reasons; the first is that it makes the verification of safety properties far more difficult and the second is that the model we have is quite simple and the pentagon example does not contain any situations which would cause a movement authority to be revoked.
 %
 \section{Hybrid Automata} \label{sec:hybrid}
-One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of hybrid automata before formalising ERTMS as three hybrid automata composed in parallel. A hybrid automaton has discrete states called control modes and transitions between these modes called control switches. These control switches are triggered by either some condition on variables or by some event occurring. These events can either occur in some other automaton or they can be fired by an automaton due to some condition being met. The continuous transitions of the automaton are described by dotted variables\footnote{The dotted variables represent the rate of change of a given variable over time $\dot{y} = \frac{dy}{dt}$. This notation was introduced by Newton \cite{CF28}.} and occur continually over time.
+One formalism which we can use to reason about systems such as ERTMS is hybrid automata \cite{TH96}. We shall give a theoretical overview of hybrid automata before formalising ERTMS as three hybrid automata composed in parallel. A hybrid automaton has discrete states called control modes and transitions between these modes called control switches. These control switches are triggered by either some condition on variables or by some event occurring. These events can either occur in some other automaton or they can be fired by an automaton due to some condition being met. The continuous transitions of the automaton are described by dotted variables\footnote{The dotted variables represent the rate of change of a given variable over time i.e. $\dot{y}$ denotes the derivative of $y$  $\dot{y} = \frac{dy}{dt}$. This notation was introduced by Newton \cite{CF28}.} and occur continually over time.
 \medskip
 \begin{mydef}[Hybrid Automaton: Syntax]\label{def:hybridautomatonsyntax}
 The syntax of a hybrid automaton $H$ comprises of the following:
@@ -123,13 +123,16 @@ For example, when we define our train control system it is desired that the S of
 Automata which contain states from which time cannot progress are called \emph{Zeno}. In order to form a transition system from the automaton, it must be \emph{non-Zeno} i.e. time can always progress in every state of the system. 
 \medskip
 \begin{comment}
- In the following specification events are used to pass messages between different automata placed in parallel. An example event is that of $event(Stopped \to Accelerating) :=MA.x.y \ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ which is triggered by the RBC and causes the train to update the value of its movement authority. flow conditions describe the rate of change of a given variable over time. In our formalisation of a train one such flow condition is $flow(Accelerating) := \dot{S} = 1$ which causes the train to accelerate at a S of one unit per unit of time.
+ In the following specification events are used to pass messages between different automata placed in parallel. An example event is that of $event(Stopped \to Accelerating) :=MA.x.y \ \textbf{if} \ x = TrainID \ \textbf{then} \ EoA' := y$ which is triggered by the RBC and causes the train to update the value of its movement authority. Flow conditions describe the rate of change of a given variable over time. In our formalisation of a train one such flow condition is $flow(Accelerating) := \dot{S} = 1$ which causes the train to accelerate at a S of one unit per unit of time.
 \end{comment}
 
 \begin{myremark}[Multievents and messages]
-We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing of messages that include some data between automata.  We denote a multievent using an sequence of labels $e_n$ and data $x_n$ composed using a ".".  For each possible value of $x$, there is a corresponding edge, event and flow triple that captures the effect of receiving a message containing $x$.
+We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing of messages that include some data between automata.  We denote a multievent using an sequence of labels $e_n$ and data $x_n$ composed using a ``.".  For each possible value of $x$, there is a corresponding edge, event and flow triple that captures the effect of receiving a message containing $x$.
 \end{myremark}
 
+\begin{myremark}[Automaton Diagrams]
+We draw arrows in our automaton diagrams to represent control mode jumps and flows with events. We do not draw arrows to represent a flow without an event as such time transitions are possible in all modes.
+\end{myremark}
 \section{Laws of Motion}\label{sec:lawsofmotion}
 In the following we shall describe how to use the laws of motion to capture the motion of the train.
 The behaviour of the train is based on two of Newton's laws of motion:
@@ -137,15 +140,16 @@ The behaviour of the train is based on two of Newton's laws of motion:
 \item $S_{Final} = S_{Initial} +AT$
 \item$S_{Final}^2 = S_{Initial}^2 +2AD$
 \end{enumerate}
- Where $D$ = distance, $S_{Initial}$ = initial speed, $S_{Final}$ = final speed, $A$ = acceleration and $T$ = time. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current speed and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the train's speed decreases at a constant deceleration of  $-1$ unit of distance per unit of time. The second equation of motion  is used to calculate the braking distance with $S_{Initial} = 0$ and $A = -1$. It can be rewritten to allow for the calculation of the braking distance.
+ Where $D$ = distance, $S_{Initial}$ = initial speed, $S_{Final}$ = final speed, $A$ = acceleration and $T$ = time. In our modelling approach a train has a position which is its distance from an initial starting point. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current speed and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the train's speed decreases at a constant deceleration of  $-1$ unit of distance per unit of time. The second equation of motion  is used to calculate the braking distance with $S_{Initial} = 0$ and $A = -1$. It can be rewritten to allow for the calculation of the braking distance.
 \medskip
 
-\begin{mydef}[Braking Distance]
-The braking distance for a train in terms of its speed S and (constant) acceleration A is: 
+As a consequence of the above, the braking distance for a train in terms of its speed S and (constant) acceleration A is: 
 
 $$\BD{S,A} = \frac{S^2}{-2A} $$
+Since the acceleration is  $-1$ in our model it is possible to remove $A$ from the above equation.
 
-Since the acceleration is $-1$ in our model this becomes:
+\begin{mydef}[Braking Distance]
+We define the braking distance as follows:
 
 $$\BD{S} = \frac{S^2}{2}$$
 
@@ -156,31 +160,31 @@ Since we are working with a loop in the track the distance to the movement autho
 
 \begin{mydef}[Distance to Movement Authority]
 
-The distance to the movement authority $\mathrm{DMA}$ is calculated from the distance and end of authority as follows:
+The distance to the movement authority $\mathrm{DMA}$ is calculated from the distance (D) and end of authority (EoA) as follows:
 \begin{align*}
 \DMA{D}{EoA} & = EoA \Monus D \quad \mathbf{if} \ D \leq EoA \\
                          & = 250 \Monus D + EoA \quad \mathbf{otherwise}
 \end{align*}
 
-
-
 \end{mydef}
 
 Together, both of these functions form are used to compute whether or not the train is far enough from the end of its movement authority and slow enough to be able to stop inside the movement authority. In the hybrid automaton they form a crucial invariant which determines whether the train should accelerate or brake.
 
+
 \subsection*{Train Automata}
-The train hybrid automaton (See fig. \ref{fig:TrainAuto}.) has four control modes namely $Braking \, (Auth)$, $Full \, Speed$, $Accelerating$ and $Stop$ and has three variables namely $D$ (Distance),  $S$ (Speed) and $EoA$ (End of movement authority). We have that $ \BD{S} \leq \DMA{D}{EoA}$ is an invariant of the stopped mode and $D \leq EoA$ is an invariant of all other control modes. We define a control switch with the event $l_x.l_{x+1}$ that is triggered by the condition $D \, mod \, 50 = 0$ in the modes $Full \, Speed$, $Accelerating$ and $Brake$ which captures the transition of the train from one track segment to another. It is possible for a new movement authority $EoA'$ to be received with $EoA < EoA'$  in the $Braking$ and $Stopped$ states.  This is triggered by the event $MA.x.y$ occurring then if the variable $x$ matches the train identifier $TrainID$ then $y$ becomes the new movement authority. The movement event $MA.Req.x$ is used by a train automaton requesting a movement authority for train $x$ from the RBC automaton. 
+The train hybrid automaton (See Figure \ref{fig:TrainAuto}.) has four control modes namely $Braking \, (Auth)$, $Full \, Speed$, $Accelerating$ and $Stop$ and has three variables namely $D$ (Distance),  $S$ (Speed) and $EoA$ (End of movement authority). We have transitions of the form $(A \to B)_y$, where $A$ and $B$ are control modes and $y$ is a label, which enable us to refer to a particular transition in a jump condition and event. The meaning  of $A \to B$ is that the automaton has transitioned from control mode $A$ to control mode $B$. We define a control switch with the event $l_x.l_{x+1}$ that is triggered by the condition $D \, mod \, 50 = 0$ in the modes $Full \, Speed$, $Accelerating$ and $Brake$ which captures the transition of the train from one track segment to another. It is possible for a new movement authority $EoA'$ to be received with $EoA < EoA'$  in the $Braking$ and $Stopped$ states.  This is triggered by the event $MA.x.y$ occurring then if the variable $x$ matches the train identifier $TrainID$ then $y$ becomes the new movement authority. Multiple events capture the passing of a message such $MA.x.y$ with one for each possible value of $x$ and $y$. The movement event $MA.Req.x$ is used by a train automaton requesting a movement authority for train $x$ from the RBC automaton.
 \medskip
 \begin{mydef}[Train Automaton]
 We define a hybrid automaton $H_{T}$ as follows:
 \begin{description}
-\item[Variables] The state of the train automaton consists of $\underbrace{D, EoA}_\text{0, \ldots , 249}$, \newline $\underbrace{S, TrainID}_{\mathbb{N}}$. The variable D is computed modulo 250 from S.
+\item[Variables] The state of the train automaton consists of $D, EoA \in \{0, \ldots , 249 \}$, $ S, TrainID \in {\mathbb{N}}$. 
 
 \item[Control Graph] The control graph of the interlocking automaton consists of four control modes $\{Stop \, (EoA), \, Braking, \, Accelerating, \, Full \,  Speed \}$ and control switches $(Full \, Speed \to  Full \, Speed)\_1$, $(Full \, Speed \to Full Speed)\_2$, $(Accelerating \to Accelerating)\_1$, $(Accelerating \to Accelerating)\_2$, $(Braking \to Braking)\_1$, $(Braking \to Braking)\_2$,  $Full \, Speed \to Braking$, $Braking \to Accelerating$, $Accelerating \to Braking$  $Braking \to Stop \, (EoA)$, 
 
 \item[Initial conditions] \hspace*{0mm}
 \begin{itemize} 
 	\item $init(Stop \, (EoA)) :=   \BD{S} \leq \DMA{D}{EoA}  $
+	\item $init(Stop \, (EoA)) :=   S = 0  $
 \end{itemize}
 
 \item[Invariants] \hspace*{0mm}
@@ -204,22 +208,13 @@ We define a hybrid automaton $H_{T}$ as follows:
 	\end{itemize}
 
 \item[Jump Conditions] \hspace*{0mm}
-
-	\begin{itemize}
-
-
+\begin{itemize}
 	\item  $jump(Braking \to Accelerating) := jump(Stop (EoA) \to Accelerating) :=  EoA' = y$ 
-	
-
 	\item $jump(Full \, Speed \to Braking) := jump(Accelerating \to Braking) := \DMA{D}{EoA} = \BD{S}$
-
-
-	\item $jump(Accelerating \to Full \, Speed) := S = MaxSpeed$
-	
+	\item $jump(Accelerating \to Full \, Speed) := S = MaxSpeed$	
 	\item $jump(Braking \to Stop \, (EoA)) := S = 0$
-
-	\item $jump((Braking \to Braking)\_1) := jump((Accelerating \to Accelerating)\_1) := jump((Full \, Speed \to Full \, Speed)_1) := D \, mod \, 50 = 0$
-	\end{itemize}
+	\item $jump((Braking \to Braking)\_1) := jump((Accelerating \to Accelerating)\_1) := jump((Full \, Speed \to Full \, Speed)\_1) := D \, mod \, 50 = 0$
+\end{itemize}
 
 \item[Events] \hspace*{0mm}
 \begin{itemize}
@@ -276,7 +271,7 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 
 \draw [arrow] (B) -- node[right] {$S = MaxSpeed$} (D);
-\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainId\\ \textbf{then} MA := y\end{center} } (B);
+\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID\\ \textbf{then} MA := y\end{center} } (B);
 \draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}DMA(D, EoA) =\\ BD(S)\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) -- node [left] {$S = 0$} (A);
 \draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}DMA(D,EoA) =\\
@@ -296,21 +291,21 @@ We define a hybrid automaton $H_{T}$ as follows:
 We use the following abbreviation to capture the two separate events and flow conditions for train movement in the automaton diagram:
 \begin{align*}
 \mathbf{train \, movement \, events} \, := \ &\mathbf{if} \ D \, mod \, 50 = 0 \\
-						&\mathbf{then} \ l_{D \, div \, 50}.l{D \, div \, 50 +1}, \\
+						&\mathbf{then} \ l_{D \, div \, 50}.l_{D \, div \, 50 +1}, \\
 					        &Train.TrainID.Pos.D 
 \end{align*}
 \end{myremark}
 
 
 \subsection*{Interlocking Automata}
-In the following we shall define a hybrid automaton that captures the behaviour of the solid state interlocking (See fig. \ref{fig:ILAuto}.).  The automaton has two control modes, namely $Idle$ and $Response$, which capture that the interlocking is either idle or processing a response to a request.  The automaton has five Boolean variables $\{ l_0, \ldots ,l_4 \}$ representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. The intended meaning of $l_i = true$ is that the track is occupied.  When a request for a track segment is made that track segment is stored, then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
+In the following we shall define a hybrid automaton that captures the behaviour of the solid state interlocking (See Figure \ref{fig:ILAuto}.).  The automaton has two control modes, namely $Idle$ and $Response$, which capture that the interlocking is either idle or processing a response to a request.  The automaton has five Boolean variables $\{ l_0, \ldots ,l_4 \}$ representing whether a track segment is occupied or not and a variable $ReqID$ which stores the last requested track segment. The intended meaning of $l_i = true$ is that the track is occupied.  When a request for a track segment is made that track segment is stored, then if the track freedom condition is met then a request is granted, otherwise it is denied. The event $l_x.l_{x+1}$ captures the movement of a train from one track segment to the next in both the interlocking automaton and the train automaton.
 \medskip
 \begin{mydef}[Interlocking Hybrid Automaton]
 We define a hybrid automaton $H_{IL}$ as follows:
 \begin{description}
-\item[Variables] The state of the interlocking automaton consists of five Boolean variables  $\underbrace{l_0, \ldots , l_4}_\text{Occupied/Free}$ and a variable $ReqID$ ranging over $\{0 , \ldots , 4 \}$ storing the last requested track segment.
+\item[Variables] The state of the interlocking automaton consists of five Boolean variables  $l_0, \ldots , l_4  \in \{Occupied, Free\}$ and a variable $ReqID \in \{0 , \ldots , 4 \}$ storing the last requested track segment.
 
-\item[Control Graph] The control graph of the interlocking automaton consists of two control modes $\{Response, Idle \}$ with five control switches connecting them; $Response \to Idle$, $Response \to Idle (2)$, $Idle \to Response$, $Response \to Response$, $Idle \to Idle$.
+\item[Control Graph] The control graph of the interlocking automaton consists of two control modes $\{Response, Idle \}$ with five control switches connecting them: $Response \to Idle$, $Response \to Idle (2)$, $Idle \to Response$, $Response \to Response$, $Idle \to Idle$.
 
 \item[Initial conditions] \hspace*{0mm}
 	\begin{itemize}
@@ -321,7 +316,7 @@ We define a hybrid automaton $H_{IL}$ as follows:
 \item[Jump Conditions] \hspace*{0mm}
 
 	\begin{itemize}
-	\item $jump(Idle \to Response) :=  ReqId' = z$
+	\item $jump(Idle \to Response) :=  ReqID' = z$
 
 	
 	\item $jump(Response \to Idle) :=  l_{ReqID} = Free $ 
@@ -369,8 +364,13 @@ We define a hybrid automaton $H_{IL}$ as follows:
 
 
 \draw [arrow] (B)  .. controls +(-1.5 cm,  2.75 cm) and +(4.5cm,  -2.5cm ) .. node [right, text width=4cm] {Req.z} (C);
-\draw [arrow] (C) .. controls +(1cm,  -3cm) and +(-2.75cm, 1 cm ) ..   node [left = 3 cm, below, text width = 6cm] {$Grant.z \  \mathbf{if} \ t_{ReqId} = \ free $\\$ \mathbf{else} \ Deny.z \ Otherwise$} (B);
+\draw [arrow] (C) .. controls +(1cm,  -3cm) and +(-2.75cm, 1 cm ) ..   node [left = 3 cm, below, text width = 6cm] {$Grant.z \  \mathbf{if} \ t_{ReqID} = \ free $\\$ \mathbf{else} \ Deny.z \ Otherwise$} (B);
 
+
+\draw [arrow] (B) .. controls +(3cm,  3cm) and +(3cm, 1.5 cm ) ..   node [above = 10pt, right = 10pt, text width = 4cm] {$l_{x}.l_{x+1}$ \\ $l_x' := Free$ \\ $l_{x+1}' := Occupied$ } (B);
+
+
+\draw [arrow] (C) .. controls +(3cm,  3cm) and +(3cm, 1.5 cm ) ..   node [above = 10pt, right = 10pt, text width = 4cm] {$l_{x}.l_{x+1}$ \\ $l_x' := Free$ \\ $l_{x+1}' := Occupied$} (C);
 
 \end{tikzpicture} 
 \end{center}
@@ -433,15 +433,15 @@ We define a hybrid automaton $H_{IL}$ as follows:
 \end{figure}
 \end{comment}
 
-\subsection{Radio Block Processor Automaton}
-Similarly to the train automaton the RBC automaton also has four control modes namely $Granted$, $Idle$, $Wait$ and $Ready \, to \, Request$. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the $Ready \, to \, Request$ state.  From this state the train sends a request for the next track segment of the $LastTrain$. In the following definition we have defined the initial state of the RBC for the pentagon example with the initial positions of the trains A and B being $0$ and $150$ and their movement authorities being $49$ and $199$ respectively.
+\subsection{Radio Block Processor Automata}
+Similarly to the train automaton the RBC automaton also has four control modes namely $Granted$, $Idle$, $Wait$ and $Ready \, to \, Request$. Initially the system is in an idle state where the system waits until it receives a movement authority request MA.Req.x. When the train receives such a movement authority request the LastTrain variable is assigned to be x and the system moves to the $Ready \, to \, Request$ state.  From this state the train sends a request for the next track segment of the $LastTrain$. In the following definition we have defined the initial state of the RBC for the pentagon example with the initial positions of the trains A and B being $0$ and $150$ and their movement authorities being $49$ and $199$ respectively. The state of the RBC automaton consists of two sets of variables $EoA_1, Pos_1$ and $EoA_2, Pos_2$ that each correspond to one of the trains in the example.
 \medskip
 
 \begin{mydef}[Radio Block Controller Hybrid Automaton]
 
 We define a hybrid automaton $H_{RBC}$ as follows:
 \begin{description}
-\item[Variables] The state of the radio block controller automaton consists of $\underbrace{EoA_1, Pos_1, EoA_2, Pos_2}_\text{0, \ldots , 249}$, \newline $\underbrace{LastTrain}_{\mathbb{N}}$.
+\item[Variables] The state of the radio block controller automaton consists of $EoA_1, Pos_1, EoA_2, Pos_2 \in  \{0, \ldots , 249\}$, $LastTrain \in \mathbb{N}$.
 
 \item[Control Graph] The control graph of the radio block controller automaton consists of four control modes $\{Idle, \, Ready \, to \, Request, \, Wait, \, Granted \}$ and control switches $Ready \, to \, Request \to Ready \, to \, Request$, $Granted \to Granted$ $Wait \to Wait$, $Idle \to Idle$, $Idle \to Ready \, to \, Request$, $Ready \, to \, Request \to Wait$, $Wait \to Ready \, to \, Request$, $Wait \to Granted$ and $Granted \to Idle$.
 
@@ -525,7 +525,7 @@ Safety conditions for the combined system can be separated into discrete and con
 
 \section{Semantics of Hybrid Automata} \label{sec:hyseman}
 
-The semantics of the hybrid automaton are described using labelled transition systems. These transition systems allow us to model the behaviour of a system with a possibly infinite number of discrete labelled states. 
+The semantics hybrid automata are captured using labelled transition systems. These transition systems allow us to model the behaviour of a system with a possibly infinite number of discrete labelled states. 
 \medskip
 \begin{mydef}[Labelled Transition System]
 We define a \emph{labelled transition system} $LTS = (S,S_0,L,T)$ as follows:
@@ -542,7 +542,7 @@ We define a \emph{labelled transition system} $LTS = (S,S_0,L,T)$ as follows:
 \end{itemize}
 \end{mydef}
 \medskip
-When defining the semantics of a hybrid automaton we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continuous region for an initial state of a system rather than a discrete state. The semantics of an hybrid automaton is defined in terms of a timed transition system which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automaton's real-numbered variables.
+When defining the semantics of a hybrid automaton we need to be able to speak about parts of the state space.  We define a \emph{region} as being a subset of the state space $R \subseteq S$.  This enables us to define, for example, a continuous region for an initial state of a system rather than a discrete state. The semantics of an hybrid automaton \cite{TH96} is defined in terms of a timed transition system which use transitions to capture the flows and jumps and an infinite number of states to capture the continuous nature of the hybrid automaton's real-numbered variables.
 
 \medskip
 \begin{mydef}[Transition Semantics of Hybrid Automata]
@@ -596,9 +596,12 @@ In other words automaton is \emph{non-Zeno} if for every possible state of the s
 In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since they do not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in while time cannot progress.
 \medskip
 \subsection{Realistic Assumption}
-For the automaton presented we cannot show that is nonZeno as it s possible for movement authorities of an arbitrary length to be sent to the train automaton, which would allow the system alternate faster and faster between states. In practice this will not be the case as the RBC will extend the movement authority by a positive fixed length.  Assume that this is the case in the following proof.
+For the automaton presented we cannot show that it  is non-Zeno as it is possible for movement authorities of an arbitrary length to be sent to the train automaton, which would allow the system alternate faster and faster between states. In practice this will not be the case as the RBC will extend the movement authority by a positive fixed length. 
 
-
+\begin{mydef}[Realistic Train Automaton]
+We define a train automaton to be \emph{realistic} if its movement authority extensions form a finite set of positive numbers.
+\end{mydef}
+The smallest movement authority extension shall be used in the following proof. 
 \begin{mytheorem}[Realistic Train Automaton is Non-Zeno]
 The realistic train hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory, of which it is a prefix, in the set of divergent initialised trajectories in the automaton.
 \begin{proof}

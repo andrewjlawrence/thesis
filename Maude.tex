@@ -41,9 +41,9 @@ An equational theory is a 2 tuple $(\Sigma, E)$ where $\Sigma$ is a set of sorts
 
 Equational theories \cite{JM98} form the signature of a Maude specification and provide one with a means to represent data types using various symbols. If we consider the natural numbers defined symbolically  as an equational theory, the set $\Sigma$ would consist of the sort $Nat$ and the operations $0$, $s$, and $+$, the set $E$ would consist of associativity and commutativity for $+$.
 
-Formally a Maude specification is a \emph{rewrite theory} of the form $\mathfrak{R}=(\Sigma,E,L,R)$, where  $(\Sigma, E)$ is an equational theory, $L$ is a set of labels and $R$ is a set of labelled rewrite rules of the form:
+Formally a Maude specification is a \emph{rewrite theory} \cite{JM98} of the form $\mathfrak{R}=(\Sigma,E,L,R)$, where  $(\Sigma, E)$ is an equational theory, $L$ is a set of labels and $R$ is a set of labelled rewrite rules of the form:
 
-$$ [l] : t \to t' \ \mathbf{if} \bigwedge^{n}_{i = 1} u_i \to v_i \bigwedge^{m}_{j = 1} w_j = w'_j $$
+$$ [l] : t \to t' \ \mathbf{if} \bigwedge^{n}_{i = 1} u_i \to v_i  \wedge \bigwedge^{m}_{j = 1} w_j = w'_j $$
 
 where $l$ is a label $l \in L$ and $t$, $t'$, $u_i$, $v_i$, $w_j$ and $w'_j$ are implicitly universally quantified variables representing $\Sigma$-terms. Maude theories are \emph{order-sorted} allowing for the specification of subsorts. This is achieved by including a partial order relation over sorts into the specification. Given two sorts $s$ and $s'$ this partial order relation $s \leq s'$ is interpreted as subset inclusion $A_s \subseteq A_{s'}$ in a model $A$.
 
@@ -77,7 +77,7 @@ The Real Time Maude system contains a general theory for time and several specif
 \subsection{Real Time Maude Specifications}
 A Real Time Maude specification consists of \emph{timed modules} that start with \texttt{tmod} and end with \texttt{endtm}. Formally a Real Time Maude specification is a real-time rewrite theory which can be thought of as a rewrite theory with an interpretation for the abstract time domain together with rewrite rules for terms of type \texttt{System} that have a time duration \cite{PO02}. These rewrite rules can be separated into two categories: the \emph{tick} rules which have a non-zero time lapse and the \emph{instantaneous} rules which have a time lapse of zero.
 
-The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process. Real Time Maude comes with two of these specifications as standard. The most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time for the specification which will result in a smaller state space and therefore better model checking results during the verification process.
+The interpretation of the abstract time domain is mapped to a concrete specification of time during the specification process by an equational theory morphism \cite{PO02}. Real Time Maude comes with two of these specifications as standard. The most simple  is discrete time based on the natural numbers and the more complicated of the two is dense time based on the rational numbers. We shall use discrete time for the specification which will result in a smaller state space and therefore better model checking results during the verification process.
 \medskip
 
 \begin{mydef}[Equational Theory Morphism]
@@ -101,7 +101,55 @@ The interpretation of the abstract time domain is mapped to a concrete specifica
 \end{mydef}
 \medskip
 
-A real time rewrite theory is a rewrite theory combined with some concrete implementation of time based on the abstract time domain defined in the time theory. The equational theory morphisms are used to map objects and morphisms in the abstract time domain to the concrete implementation.
+\subsection*{Time Domains}
+The Real Time Maude system  allows for the use of different concrete specifications of time which are all based on the TIME specification \cite{PO02} which abstractly defines addition, subtraction and inequality operations over a sort Time. 
+
+\begin{lstlisting}[caption = "The TIME specification in Real Time Maude"]
+fmod TIME is
+sorts Time NzTime .
+subsort NzTime < Time .
+op zero : -> Time .
+op _plus_ : Time Time -> Time [assoc comm prec 33 gather (E e)] .
+op _monus_ : Time Time -> Time [prec 33 gather (E e)] .
+ops _le_ _lt_ _ge_ _gt_ : Time Time -> Bool [prec 37] .
+eq zero plus R:Time = R:Time .
+eq R:Time le R’:Time = (R:Time lt R’:Time) or 
+	(R:Time == R’:Time) .
+eq R:Time ge R’:Time = R’:Time le R:Time .
+eq R:Time gt R’:Time = R’:Time lt R:Time .
+endfm
+\end{lstlisting}
+The  LTIME definition  \cite{PO02}  of linear time additionally allows for the computation of a maximum and minimum of two times.
+\begin{lstlisting}[caption = "The LTIME specification in Real Time Maude"]
+fmod LTIME is
+including TIME .
+ops minimum maximum : Time Time -> Time [assoc comm] .
+vars R R’ : Time .
+ceq maximum(R, R’) = R if R’ le R .
+ceq minimum(R, R’) = R’ if R’ le R .
+endfm
+\end{lstlisting}
+ 
+The NAT-TIME-DOMAIN module  \cite{PO02}  provides a concrete instantiation of time based on the natural numbers. The sort Nat is defined to be a subsort of Time and the time operations are defined using the corresponding operations for the natural numbers.
+
+\begin{lstlisting}[caption = "The Natural Number Time Domain in Real Time Maude "]
+fmod NAT-TIME-DOMAIN is
+including LTIME .
+protecting NAT .
+subsort Nat < Time .
+subsort NzNat < NzTime .
+vars N N’ : Nat .
+eq zero = 0 .
+eq N plus N’ = N + N’ .
+eq N monus N’ = if N > N’ then sd(N, N’) else 0 fi .
+eq N lt N’ = N < N’ .
+endfm
+\end{lstlisting}
+
+The operation sd(N,N') computes the symmetric difference of N and N' i.e. it subtracts the smaller of the two operands from the larger.
+
+
+A real time rewrite theory \cite{PO02} is a rewrite theory combined with some concrete implementation of time based on the abstract time domain defined in the time theory. The equational theory morphisms are used to map objects and morphisms in the abstract time domain to the concrete implementation.
 
 \medskip
 \begin{mydef}[Real-Time Rewrite Theory]
@@ -127,52 +175,7 @@ there is an assigned term $\tau_l(x_1 \ldots x_n)$ of sort $\phi(Time)$ within $
 \end{itemize}
 \end{mydef}
 
-\subsection*{Time Domains}
-The Real Time Maude system allows for the use of different concrete specifications of time which are all based on the TIME specification which abstractly defines addition, subtraction and inequality operations over a sort Time. 
 
-\begin{lstlisting}[caption = "The TIME specification in Real Time Maude"]
-fmod TIME is
-sorts Time NzTime .
-subsort NzTime < Time .
-op zero : -> Time .
-op _plus_ : Time Time -> Time [assoc comm prec 33 gather (E e)] .
-op _monus_ : Time Time -> Time [prec 33 gather (E e)] .
-ops _le_ _lt_ _ge_ _gt_ : Time Time -> Bool [prec 37] .
-eq zero plus R:Time = R:Time .
-eq R:Time le R’:Time = (R:Time lt R’:Time) or 
-	(R:Time == R’:Time) .
-eq R:Time ge R’:Time = R’:Time le R:Time .
-eq R:Time gt R’:Time = R’:Time lt R:Time .
-endfm
-\end{lstlisting}
-The  LTIME definition of linear time additionally allows for the computation of a maximum and minimum of two times.
-\begin{lstlisting}[caption = "The LTIME specification in Real Time Maude"]
-fmod LTIME is
-including TIME .
-ops minimum maximum : Time Time -> Time [assoc comm] .
-vars R R’ : Time .
-ceq maximum(R, R’) = R if R’ le R .
-ceq minimum(R, R’) = R’ if R’ le R .
-endfm
-\end{lstlisting}
- 
-The NAT-TIME-DOMAIN module provides a concrete instantiation of time based on the natural numbers. The sort Nat is defined to be a subsort of Time and the time operations are defined using the corresponding operations for the natural numbers.
-
-\begin{lstlisting}[caption = "The Natural Number Time Domain in Real Time Maude "]
-fmod NAT-TIME-DOMAIN is
-including LTIME .
-protecting NAT .
-subsort Nat < Time .
-subsort NzNat < NzTime .
-vars N N’ : Nat .
-eq zero = 0 .
-eq N plus N’ = N + N’ .
-eq N monus N’ = if N > N’ then sd(N, N’) else 0 fi .
-eq N lt N’ = N < N’ .
-endfm
-\end{lstlisting}
-
-The operation sd(N,N') computes the symmetric difference of N and N' i.e. it subtracts the smaller of the two operands from the larger.
 
 \subsubsection*{Example Real Time Maude Specification}
 We have devised the following simple model of a train in Real Time Maude that moves one unit of distance in one time unit along a circular track of length 500. It defines a sort \texttt{TrainState} and a single state \texttt{move}. We have a constructor train of type \texttt{System} which consists of a train state and a natural number.  
@@ -456,11 +459,8 @@ When we use a parametrised data type in a specification it is possible to assign
                                sort Entry\{Oid,Nat\} to EntryON) .}
 \end{center}
 
-
-
-
 \subsubsection*{Modelling the Radio Block Processor}
-The RBC is slightly different from the hybrid automaton described previously. Instead of having four states the RBC has three states with the behaviour of the granted state being combined into the behaviour of a transition which causes the RBC to leave the wait state. When the RBC receives a track segment grant from the interlocking it immediately grants the movement authority before going back to the idle state.
+The RBC is slightly different from the hybrid automaton described previously. Instead of having four states the RBC has three states with the behaviour of the granted state being combined into the behaviour of a transition which causes the RBC to leave the wait state. The rewriting rules allow us to both consume a message and produce another in the same step which is not possible with the hybrid automaton.  When the RBC receives a track segment grant from the interlocking it immediately grants the movement authority before going back to the idle state.
  
 \begin{lstlisting}[caption = The RBC state and class definition in Maude]
 sort RBCState .
