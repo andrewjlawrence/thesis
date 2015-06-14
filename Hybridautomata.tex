@@ -521,6 +521,74 @@ Safety conditions for the combined system can be separated into discrete and con
 \label{fig:RBCAuton}
 \end{figure}
 
+\subsection*{Inter-automaton Communication}
+The message sequence diagram Figure \ref{fig:SeqChart2} shows the communication between the RBC, interlocking and Train 1 from the pentagon example. Train 1 initially sends position updates to the RBC until it reaches its braking point, at which time it will request a movement authority the RBC. The RBC will then request the next track segment for the train, which in this case is immediately granted. The RBC then sends the train its new movement authority.
+\begin{figure} [h!]
+
+\begin{center}
+\begin{tikzpicture}[node distance = 3cm, scale = 1.5]
+\tikzstyle{arrow}=[->,shorten >=7pt,shorten <=7pt]
+
+\draw (0,10) --  (0,6.5);
+
+\draw (2, 10) -- (2, 6.5);
+
+\draw (4, 10) -- (4, 6.5);
+
+\node[] at (0, 10.5) {RBC};
+\node[] at (2, 10.5) {Interlocking};
+\node[] at (4, 10.5) {Train 1};
+
+\draw [->](4,9.5) -- (0,9.5);
+\draw  (2, 9.5) -- node[above, font = \small]{Train.1.Pos.1}(4,9.5); 
+
+
+\draw [->](4,9) -- (0,9);
+\draw  (2, 9) -- node[above, font = \small]{Train.1.Pos.36}(4,9); 
+
+
+\draw [->](4,8.5) -- (0,8.5);
+\draw  (2, 8.5) -- node[above, font = \small]{MA.Req.1}(4,8.5); 
+
+\draw [->] (0, 8) -- node[above, font = \small]{Req.1}(2,8); 
+
+
+\draw [->] (2, 7.5) -- node[above, font = \small]{Grant.1}(0,7.5); 
+
+\draw [->](0,7) -- (4,7);
+\draw  (0, 7) -- node[above, font = \small]{MA.1.99}(2,7); 
+
+%\draw[->](0, 9.5) -- node[above, font = \small ]{Route Req} (2, 9.5);
+%\draw[<-](0, 9) -- node[above, font = \small]{Route Ack}(2,9); 
+
+
+%\draw[->](0, 8.5) -- node[above, font = \small]{MA D $\to$ C} (4, 8.5);
+%\draw[<-](0, 8) -- node[above, font = \small]{MA Ack} (4, 8);  
+%\draw[<-](0, 7.5) -- node[above, font = \small]{Position Data} (4, 7.5);  
+
+
+%\draw [arrow] (0,9) -- node[above = 7pt] {Comm Sess Init} (7 ,7 );
+%
+%\draw [arrow] (7,6.5) -- node[above = 7pt] {System Version} (0 , 4.5);
+%\draw [arrow] (0,4) -- node[above = 8pt, text width = 3.3cm] {Report and Tele No (Compatable)}  (7 ,2 );
+%\node[text width = 3.5cm] at (3.5, 2) {Version Incompatable (Incompatable)};
+%
+%\node[rectangle,draw] at (-2 , 4.25) {Check Compatibility};
+%\draw [arrow] (-0.5,4) -- node [left, text width = 2 cm] {Connection Established (Compatable)}  (-0.5, 0);
+% \draw [arrow] (7.5,2) -- node [right, text width = 2 cm] {Connection Established (Compatable)}  (7.5, 0);
+
+
+\end{tikzpicture}
+\end{center}
+
+\caption{Message Sequence Chart Demonstrating Inter-automaton Communication}
+\label{fig:SeqChart2}
+\end{figure}
+
+
+
+
+
 
 
 \section{Semantics of Hybrid Automata} \label{sec:hyseman}
