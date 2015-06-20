@@ -133,7 +133,7 @@ We use multiple events, edges and $\mathrm{flow}$ conditions to encode passing o
 \begin{myremark}[Automaton Diagrams]
 We draw arrows in our automaton diagrams to represent control mode jumps and flows with events. We do not draw arrows to represent a flow without an event as such time transitions are possible in all modes.
 \end{myremark}
-\section{Laws of Motion}\label{sec:lawsofmotion}
+\subsubsection*{Laws of Motion}\label{sec:lawsofmotion}
 In the following we shall describe how to use the laws of motion to capture the motion of the train.
 The behaviour of the train is based on two of Newton's laws of motion:
 \begin{enumerate}
@@ -143,7 +143,7 @@ The behaviour of the train is based on two of Newton's laws of motion:
  Where $D$ = distance, $S_{Initial}$ = initial speed, $S_{Final}$ = final speed, $A$ = acceleration and $T$ = time. In our modelling approach a train has a position which is its distance from an initial starting point. In order to model the behaviour of trains we make use of two functions, one to compute the braking distance at the current speed and the other to compute the distance from the train to the end of the movement authority. When the values computed by these two functions become equal the train should begin to brake in order to stop at the end of the movement authority. The simplest way to model deceleration would be to assume that the train's speed decreases at a constant deceleration of  $-1$ unit of distance per unit of time. The second equation of motion  is used to calculate the braking distance with $S_{Initial} = 0$ and $A = -1$. It can be rewritten to allow for the calculation of the braking distance.
 \medskip
 
-As a consequence of the above, the braking distance for a train in terms of its speed S and (constant) acceleration A is: 
+As a consequence of the above, the braking distance for a train in terms of its speed $S$ and (constant) acceleration $A$ is: 
 
 $$\BD{S,A} = \frac{S^2}{-2A} $$
 Since the acceleration is  $-1$ in our model it is possible to remove $A$ from the above equation.

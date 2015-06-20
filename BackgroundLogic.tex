@@ -418,8 +418,7 @@ There are different induction schemes  that yield different extracted programs h
 \]
 
 
-Induction on the inductively defined predicate corresponds on the program level  to recursion on the corresponding algebra. 
-The extracted program for an application of general induction is general recursion which in Minlog is called guarded recursion and implemented by the operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
+Induction on the inductively defined predicate corresponds on the program level  to recursion on the corresponding algebra. The closure axioms of an inductively defined predicate are realized by the constructors of the algebra.The extracted program for an application of general induction is general recursion which in Minlog is called guarded recursion and implemented by the operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
 
 \begin{lstlisting}[caption = The Guarded Recursion Operation Used in the Minlog System, mathescape]
 (GRecGuard $\rho$1 $\rho$2 $\rho$3 $\tau$) $\mu$ z1 z2 z3 G t = f z1 z2 z3 t where

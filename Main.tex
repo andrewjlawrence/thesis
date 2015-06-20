@@ -24,6 +24,7 @@
 \usepackage{makeidx}
 \usepackage{nth}
 \usepackage{soul}
+\usepackage[nodayofweek,level]{datetime}
 
 \newcommand*\justify{%
   \fontdimen2\font=0.4em% interword space
@@ -185,7 +186,7 @@
   ;
 }
 
-
+\newcommand{\thesisdate}{\formatdate{1}{6}{2015}}
 
 \newcommand{\nodeLink}[1]{
   %% Draw a -
@@ -291,7 +292,7 @@ ${ \ } $ \vspace{4cm}
 \end{center}
 
 \begin{center}
-\today
+\thesisdate
 \end{center}
 
 \vspace{2.5cm}
@@ -334,7 +335,7 @@ and is not being currently submitted for any degree.
 
 \vspace{0.5cm}
 \begin{tabular}{l}
-\today \\
+\thesisdate \\
 \\
 Signed:
 \end{tabular}
@@ -345,7 +346,7 @@ requirements for the degree of Doctor of Philosophy.
 
 \vspace{0.5cm}
 \begin{tabular}{l}
-\today \\
+\thesisdate \\
 \\
 Signed:
 \end{tabular}
@@ -361,7 +362,7 @@ failure of this dissertation and the degree examination as a whole.
 
 \vspace{0.5cm}
 \begin{tabular}{l}
-\today \\
+\thesisdate \\
 \\
 Signed:
 \end{tabular}
@@ -374,7 +375,7 @@ to be made available to outside organisations.
 
 \vspace{0.5cm}
 \begin{tabular}{l}
-\today \\
+\thesisdate \\
 \\
 Signed:
 \end{tabular}

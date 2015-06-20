@@ -503,7 +503,7 @@ rl [resreq1g] : {< O : Inter | state : res, t
    {< O : Inter | state : idle > grant(1) REST} .
 \end{lstlisting}
 
-\section{Extension to a Small Junction}
+\section{Extension to a Single Junction}
 The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main difference with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter~\ref{chap:verifyertms} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
  
 \subsection*{Junction Example}
