@@ -148,7 +148,6 @@ endfm
 
 The operation sd(N,N') computes the symmetric difference of N and N' i.e. it subtracts the smaller of the two operands from the larger.
 
-
 A real time rewrite theory \cite{PO02} is a rewrite theory combined with some concrete implementation of time based on the abstract time domain defined in the time theory. The equational theory morphisms are used to map objects and morphisms in the abstract time domain to the concrete implementation.
 
 \medskip
@@ -217,7 +216,7 @@ Result ClockedSystem :
 The ability to perform such simulations is useful as it allows for the liveness of a system to be checked. It also provides another way of validating the correctness of a model by performing many of these executions and checking the behaviour of the system over time.
 
 \subsection{Object Oriented Specification in Real Time Maude}
-Real Time Maude is based on Full Maude which contains message and object constructs for object oriented specifications. Using these constructs it's possible to model ERTMS as several synchronously communicating processes. A Real Time Maude specification consists of  \emph{timed object oriented modules} which start with \texttt{tomod} and end with \texttt{endtom}.
+Real Time Maude is based on Full Maude \cite{MaudeBook} which contains message and object constructs for object oriented specifications. Using these constructs it's possible to model ERTMS as several synchronously communicating processes. A Real Time Maude specification consists of  \emph{timed object oriented modules} which start with \texttt{tomod} and end with \texttt{endtom} \cite{PO07b} .
 \medskip
 We can define the following:
 \begin{align*}
@@ -323,26 +322,27 @@ The following are some states reachable in time 2.
 \end{lstlisting}
 
 \section{Modelling the European Rail Traffic Management System}
-In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object oriented fashion following the hybrid automata described in Chapter~\ref{chap:hybrid} to define one class for each of the three hybrid automata. Time has been modelled by the use of a function $\mathrm{delta}$ that distributes the transition of time over objects in the system. Rewriting rules are then applied to $\mathrm{delta}$ containing singleton objects to give each individual object its behaviour. We attempt to remove as much non-determinism from the model as possible by forcing the ERTMS system to read all messages by the end of each time step and by preventing trains from making more than one movement authority request to the radio block processor in a given time step.
+In the following we shall give an overview of the specifications used to model the ERTMS system. We have used the Real Time Maude system in an object oriented fashion following the hybrid automata described in Chapter~\ref{chap:hybrid} to define one class for each of the three hybrid automata. Time has been modelled by the use of a function $\mathrm{delta}$ that distributes the transition of time over objects in the system following the approach found in \cite{PO07b}. Rewriting rules are then applied to $\mathrm{delta}$ operations containing singleton objects to give each individual object its behaviour. We attempt to remove as much non-determinism from the model as possible by forcing the ERTMS system to read all messages by the end of each time step and by preventing trains from making more than one movement authority request to the radio block processor in a given time step.
 
 
 \subsubsection*{Modelling the Transition of Time} \label{sec:maudetimemodelling}
-In our previous Real Time Maude specifications we have had rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently.  Since we are modelling a real life system all of the subsystems much be subjected to time in an equal manner. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define an operator $\texttt{delta}$ which describes how a distributed system evolves with time.
+In our previous Real Time Maude specifications we have had rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently.  Since we are modelling a real life system all of the subsystems much be subjected to time in an equal manner. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define an operator $\texttt{delta}$ \cite{PO07b} which describes how a distributed system evolves with time. We define another operation $\texttt{mte}$ which computes the maximum time elapse possible in the systems current configuration.
 
-\begin{lstlisting}[caption = The delta time transition operation, label = code:delta]
-op delta : Configuration -> Configuration [frozen] . 
-op nondelta : Configuration -> Configuration .
+\begin{lstlisting}[caption = The delta and mte operations, label = code:delta]
+op mte : Configuration -> TimeInf [frozen (1)] .
+eq mte(none) = INF .
+eq mte(CON1 CON2) = min(mte(CON1),mte(CON2)) .
+eq mte(M:Msg) = 0 .
 
-var OCREST : ObjectConfiguration .
-
-rl [timetrans] : {OCREST} => {delta(OCREST)} in time 1 .
-rl [delta1] : delta(CON1 CON2) => delta(CON1)delta(CON2) .
+op delta : Configuration -> Configuration [frozen]  . 
+crl [delta0] : {CURRENT} => {delta(CURRENT)} in time 1 if mte(CURRENT) >= 1 .
+eq [delta1] : delta(CON1 CON2) = delta(CON1)delta(CON2) .
 \end{lstlisting}
 
-The operation \texttt{delta} is frozen meaning that the configuration contained within will not be evaluated by the Real Time Maude system until the $\texttt{delta}$ operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the delta operation over the constituent objects of a configuration until there are many deltas applied to configurations containing singleton objects. Each of these singleton objects has its own separately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by  \cite{PO07} where a delta operation is used to distribute time over a distributed sensor network. The \texttt{nondelta} operation is applied to objects to prevent the lapse of time by causing the object to have the sort \texttt{Configuration} instead of \texttt{ObjectConfiguration}. We use this in our Maude formulation of the RBC to prevent time elapsing until the RBC has responded to a movement authority request.
+The operation \texttt{delta} is frozen meaning that the configuration contained within will not be evaluated by the Real Time Maude system until the $\texttt{delta}$ operation has been evaluated. We only allow for time to be incremented on a global system containing an object configuration which cannot by definition contain any messages. This forces all messages sent in one time interval to be read during that interval. The delta1 rule distributes the \texttt{delta} operation over the constituent objects of a configuration until there are many \texttt{delta} operations applied to configurations containing singleton objects. Each of these singleton objects has its own separately defined behaviour for the delta operation that captures that transition of time for that object. This was inspired by \cite{PO07} where a \texttt{delta} operation is used to distribute time over a distributed sensor network. The $\texttt{mte}$ operation returns 0 when time elapse is not possible in the system preventing the \texttt{delta} operation from being applied. We use this in our Maude formulation of the RBC to prevent time elapsing until the RBC has responded to a movement authority request.
 
 \subsubsection*{Modelling Trains}
-We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automaton can be in one of four possibilities: constant speed, accelerating, stopped and braking. As well as the state it also has six fields of sort Nat representing the distance, speed, acceleration, movement authority,  current track segment and maximum speed.
+We shall now describe the specification of trains. We define the Train class to have a state which like our hybrid automaton can be in one of four possibilities: constant speed, accelerating, stopped and braking. As well as the state it also has six fields of sort \texttt{Nat} representing the distance, speed, acceleration, movement authority,  current track segment and maximum speed.
 
 \begin{lstlisting}
 sort TrainState .
@@ -395,7 +395,7 @@ crl [transn4] : trackseg(< O : Train | dist : DT, tseg : N >) =>
 \subsubsection*{Sets and Maps in Maude}
 In order to have more general data types Maude allows for parametrised functional modules with the  syntax \texttt{fmod M\{$X_1$ :: $T_1$ , $\ldots$ , $X_n$ :: $T_n$\} is $\ldots$ endfm} where $n \geq 1$, $X_1$ is the \emph{parameter name} and $T_1$ is the \emph{theory name} and \texttt{M} is the module name.
 
-In the formalisation of the RBC we make use of the Map data type to store the position and movement authority of a given train and we use a Set to store trains that have made requests in the current time interval. 
+In the formalisation of the RBC we make use of the Map data type \cite{MaudeBook} to store the position and movement authority of a given train and we use a Set \cite{MaudeBook} to store trains that have made requests in the current time interval. 
 
 \begin{lstlisting}[caption = The specification of the Set data type in Maude]
 fmod SET{X :: TRIV} is 
@@ -502,6 +502,9 @@ rl [resreq1g] : {< O : Inter | state : res, t
    1 : false,  reqid : 1 > REST} => 
    {< O : Inter | state : idle > grant(1) REST} .
 \end{lstlisting}
+
+\subsubsection*{The Pentagon Example in Maude}
+The above modelling describes
 
 \section{Extension to a Single Junction}
 The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main difference with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter~\ref{chap:verifyertms} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
