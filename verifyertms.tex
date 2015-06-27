@@ -257,26 +257,25 @@ Safety Condition & Time Steps Checked & Time to Solve  \\ \hline
 Correct1 & 100 & 229.400 s\\
 Correct2 & 100 & 249.784s\\
 Correct3 & 100 & 225.556s\\
-MA1 (Pentagon)& 100 & 91.756s  \\
-MA2 (Pentagon)& 100 &129.335s \\ 
-MA3 (Pentagon)& 100 &148.032s \\
+MA1 (Pentagon)& 100 & 79.280s  \\
+MA2 (Pentagon)& 100 & 81.540s \\ 
+MA3 (Pentagon)& 100 & 83.020s \\
 P1 (Junction)& untimed &7.488s \\
 P2 (Junction)& untimed & 6.636s \\
 \end{tabular}
 \end{center}
 \medskip
-The removal of non-determinism from the pentagon example has made timed model checking more successful. Prior to the \texttt{nondelta} operation (See Chapter~\ref{sec:maudetimemodelling}) being added the safety properties could only be checked for the first 30 time steps of the system.
 
-The no overlapping movement authorities safety property was verified using time bounded model checking over the modified realistic pentagon example with a track segment length of 25000,  segment length of 5000 and train speeds of 70 and 120.  We then applied the LTL model checker and verify this example so that a comparison can be performed between the two pentagon examples in terms of verification difficulty.. The following table shows how the difficulty of the model checking problem increases with search depth:
+The no overlapping movement authorities safety property was verified using time bounded model checking over the modified realistic pentagon example with a track segment length of 25000,  segment length of 5000 and train speeds of 70 and 120.  We then applied the LTL model checker and verify this example so that a comparison can be performed between the two pentagon examples in terms of verification difficulty. The following table shows how the difficulty of the model checking problem increases with search depth:
 \medskip
 \begin{center}
 \begin{tabular}{c | c | c} 
 Safety Condition & Time Steps Checked & Time to Solve  \\ \hline
-MA1 (Realistic Pentagon) & 30 & 25.265s \\
-MA1 (Realistic Pentagon) & 40 & 36.414s \\
-MA1 (Realistic Pentagon) & 50 & 49.201s \\
-MA1 (Realistic Pentagon) & 60 & 62.126s \\
-MA1 (Realistic Pentagon) & 70 & 79.948s \\
+MA1 (Realistic Pentagon) & 60 & 37.648s \\
+MA1 (Realistic Pentagon) & 70 & 48.646s \\
+MA1 (Realistic Pentagon) & 80 & 66.730s \\
+MA1 (Realistic Pentagon) & 90 & 88.424s \\
+MA1 (Realistic Pentagon) & 100 & 110.580s \\
 \end{tabular}
 \end{center}
 \medskip

@@ -661,15 +661,15 @@ All transitions of a timed transition system $S^t_H$ have an associated \emph{du
 In other words automaton is \emph{non-Zeno} if for every possible state of the system reachable from the initial state by some finite trajectory that finite trajectory is the prefix of some infinite trajectory of the system that diverges in time. This means for instance that the system cannot alternate between two modes where the time between transitions infinitely decreases e.g. $\frac{1}{2}$,$\frac{1}{4}$,$\frac{1}{8}$,$\ldots$.
 
 \section{Automaton Validation}
-In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since they do not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in while time cannot progress.
-\medskip
-\subsection{Realistic Assumption}
-For the automaton presented we cannot show that it  is non-Zeno as it is possible for movement authorities of an arbitrary length to be sent to the train automaton, which would allow the system alternate faster and faster between states. In practice this will not be the case as the RBC will extend the movement authority by a positive fixed length. 
+In the following we prove that the train automaton is non-Zeno i.e. that time can progress in every state of the system. We check that the automaton remains inside the regions defined by its invariants and does not become stuck on the edge of a region. This is important for verification purposes as simulations and model checking algorithms require the system to be live so that time can progress. In each of the proofs we perform a case by case argument for each control mode of the automaton. The proofs for the interlocking and radio block processor  automata are trivial since they do not contain any flow conditions or invariants and therefore it is not possible for the automata to enter a state in while time cannot progress. 
 
+\subsection{Realistic Assumption}
+For the automaton presented we cannot show that it  is non-Zeno as it is possible for movement authorities of an arbitrary length to be sent to the train automaton, which would allow the system alternate faster and faster between states. In practice this will not be the case as the RBC will extend the movement authority by a positive fixed length. \\
 \begin{mydef}[Realistic Train Automaton]
 We define a train automaton to be \emph{realistic} if its movement authority extensions form a finite set of positive numbers.
 \end{mydef}
 The smallest movement authority extension shall be used in the following proof. 
+\\
 \begin{mytheorem}[Realistic Train Automaton is Non-Zeno]
 The realistic train hybrid automaton  $H_{T}$ is non-Zeno i.e. every finite initialised trajectory in the $LTS$ defined by the automaton has an infinite trajectory, of which it is a prefix, in the set of divergent initialised trajectories in the automaton.
 \begin{proof}

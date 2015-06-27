@@ -326,7 +326,7 @@ In the following we shall give an overview of the specifications used to model t
 
 
 \subsubsection*{Modelling the Transition of Time} \label{sec:maudetimemodelling}
-In our previous Real Time Maude specifications we have had rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently.  Since we are modelling a real life system all of the subsystems much be subjected to time in an equal manner. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define an operator $\texttt{delta}$ \cite{PO07b} which describes how a distributed system evolves with time. We define another operation $\texttt{mte}$ which computes the maximum time elapse possible in the systems current configuration.
+In our previous Real Time Maude specifications we have had rewrite rules that work on a specific object or state and increment time for the whole system. This presents a problem as we could have two objects that can both increment the time of the global system independently.  Since we are modelling a real life system all of the subsystems much be subjected to time in an equal manner. We need a way of incrementing the time of the whole global system and then distributing this increment of time amongst the objects of the system. To solve this problem we define an operator $\texttt{delta}$ \cite{PO07b} which describes how a distributed system evolves with time. We define another operation\footnote{An earlier version of my thesis used an adhoc non-delta operation to achieve this effect} $\texttt{mte}$ which computes the maximum time elapse possible in the systems current configuration.
 
 \begin{lstlisting}[caption = The delta and mte operations, label = code:delta]
 op mte : Configuration -> TimeInf [frozen (1)] .
@@ -335,7 +335,8 @@ eq mte(CON1 CON2) = min(mte(CON1),mte(CON2)) .
 eq mte(M:Msg) = 0 .
 
 op delta : Configuration -> Configuration [frozen]  . 
-crl [delta0] : {CURRENT} => {delta(CURRENT)} in time 1 if mte(CURRENT) >= 1 .
+crl [delta0] : {CURRENT} => {delta(CURRENT)} 
+    in time 1 if mte(CURRENT) >= 1 .
 eq [delta1] : delta(CON1 CON2) = delta(CON1)delta(CON2) .
 \end{lstlisting}
 
@@ -504,7 +505,7 @@ rl [resreq1g] : {< O : Inter | state : res, t
 \end{lstlisting}
 
 \subsubsection*{The Pentagon Example in Maude}
-The above modelling describes
+The above modelling captures the behaviour of the pentagon example railway without capturing the topology in a stand alone module. The topology of the pentagon is contained within the formalisation of the train which has rules that determine which track segment it is in and its position on the track. Each of the rewriting rules for the train which change the position of the train do so modulo the perimeter length of the pentagon. The logic which determines whether or not a movement authority is granted is directly embedded into the interlocking and RBC.
 
 \section{Extension to a Single Junction}
 The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main difference with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter~\ref{chap:verifyertms} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
@@ -557,4 +558,4 @@ The controller object makes one join request, using a \texttt{reqjoin} message c
 \subsection*{Modified Trains, Interlockings and Radio Block Processors}
 The component classes from the pentagon example have been modified to capture the behaviour of a junction.  The train class has seen the least modification, with only one additional parameter route which stores a natural number corresponding to the train's route. The RBC class has been modified to include a additional mapping from object identifiers to the natural numbers that contains the route of each train. The number of states of an RBC has increased from three to four with an extra state $\mathbf{waitjoin}$ capturing that a join request has been made. When a join request is made the RBC checks to see if the route requested is currently set. If the route requested is set and the initial track segment is clear then the join request is accepted. If the route is not set then the RBC checks with the interlocking that it can set the route. This requires that the first three track segments are clear in order to change the direction of the point. The interlocking class has been modified to capture both the behaviour of the point and the addition of join requests. The point is modelled in the interlocking as two Boolean variables: $\mathbf{p1n}$ which indicates that the point is driven normal and $\mathbf{p1r}$ which indicates that the point is driven in the reverse direction.
 %
-The RBC has been modified to process any requests in one time step using an operation $\mathbf{nondelta}$ which prevents the transition of time in any non-idle state. This removes the possibility for a train to take an arbitrary amount of time to respond to a request, significantly cutting down on the state space.
+
