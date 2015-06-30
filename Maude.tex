@@ -504,7 +504,7 @@ rl [resreq1g] : {< O : Inter | state : res, t
    {< O : Inter | state : idle > grant(1) REST} .
 \end{lstlisting}
 
-\subsubsection*{The Pentagon Example in Maude}
+\subsubsection*{The Pentagon Case Study in Maude}
 The above modelling captures the behaviour of the pentagon example railway without capturing the topology in a stand alone module. The topology of the pentagon is contained within the formalisation of the train which has rules that determine which track segment it is in and its position on the track. Each of the rewriting rules for the train which change the position of the train do so modulo the perimeter length of the pentagon. The logic which determines whether or not a movement authority is granted is directly embedded into the interlocking and RBC.
 
 \section{Extension to a Single Junction}

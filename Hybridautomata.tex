@@ -3,7 +3,7 @@
 \label{chap:hybrid}
 The ERTMS system will be central to many train control systems in the future and ensuring that it is safe is of paramount importance. It poses a particular challenge due to the fact that the system is specified at a high level with each individual country having its own particular implementation. One aspect that is particularly problematic and loosely specified is the interface between the existing interlocking and the RBC as both of these systems have a role to play in ensuring safety. In the following chapter we shall look at formalising the ERTMS system whilst capturing the behaviour of this critical interface between the two systems. 
 %
-\section{Pentagon Example}
+\section{Pentagon Case Study}
 The following is a simple example railway we shall use for the purposes of demonstrating our verification approach.  It contains five track segments connected to form a pentagon with two trains. This captures most of the behaviours found in a larger more complicated railway as the trains and control systems view any piece of track as a set of track segments joined together to form a route. We have modelled  a simple implementation of the ERTMS system controlling  a small example railway in the shape of a pentagon (see Figure \ref{fig:pentagon2}) using three hybrid automata (see section \ref{sec:hybrid}). In this example the value $D$ represents the distance from the start point at time $t$. It contains two trains $A$ and $B$ and five track circuits $l_0, \ldots , l_4$. The track is uni-directional allowing trains to travel from $0 - 249$. 
 \medskip
 %
@@ -24,7 +24,7 @@ The following is a simple example railway we shall use for the purposes of demon
 \end{tikzpicture} 
 \end{center}
 
- \caption{Pentagon Example}
+ \caption{Pentagon Case Study}
  \label{fig:pentagon2}
 \end{figure}
 
@@ -522,7 +522,7 @@ Safety conditions for the combined system can be separated into discrete and con
 \end{figure}
 
 \subsection*{Inter-automaton Communication}
-The message sequence diagram Figure \ref{fig:SeqChart2} shows the communication between the RBC, interlocking and Train 1 from the pentagon example. Train 1 initially sends position updates to the RBC until it reaches its braking point, at which time it will request a movement authority the RBC. The RBC will then request the next track segment for the train, which in this case is immediately granted. The RBC then sends the train its new movement authority.
+The message sequence diagram Figure \ref{fig:SeqChart2} shows the communication between the RBC, interlocking and Train 1 from the pentagon example. The aim of this diagram is to provide the reader with a feel for how events are used to capture messaging and the passing of information between the automata. Train 1 is initially 1 unit of distance from the start of the track.  Train 1 initially sends position updates to the RBC until it reaches its braking point, at which time it will request a movement authority the RBC. The first position update is the event Train.1.Pos.1 where the train ID and the position have both been instantiated with 1.  The RBC will then request the next track segment for the train, which in this case is immediately granted. The RBC then sends the train its new movement authority using an event with train ID 1 and the end of authority instantiated with 99. Some of the position updates have been omitted from the diagram.
 \begin{figure} [h!]
 
 \begin{center}
