@@ -249,7 +249,7 @@ The following is a list of implementation specifics which describe the particula
 
 \item $\exists$ is treated by axioms instead of rules.
 
-\item We also have rules for the so-called nc-quantifiers (quantifiers without computational content) $\exists^{nc}$ and $\forall^{nc}$. They logically behave like the usual quantifiers ($\exists$ and $\forall$), but they behave differently when it comes 
+\item We also have axioms for the so-called nc-quantifiers (quantifiers without computational content) $\exists^{nc}$ and $\forall^{nc}$. They logically behave like the usual quantifiers ($\exists$ and $\forall$), but they behave differently when it comes 
 to program extraction. These nc-quantifiers will be discussed in more detail in the following sections of this chapter.
 
 \item Axioms are represented on the term level by axiom constants.
@@ -258,7 +258,7 @@ to program extraction. These nc-quantifiers will be discussed in more detail in 
 
 \end{myremark}
 
-\section{Type}
+\section{Type of a Formula}
 
 In the following section we shall discuss the type of formulas. We shall begin by defining the type of a formula such that if the formula is proven the type corresponds to the type of the extracted program from the proof. Secondly, we shall define the lambda calculus program that can be extracted from a proof term. These proof terms are generated in Minlog by applying the natural deduction calculus to a formula.  Finally we define what it means for a term to realise a formula.
 
@@ -268,7 +268,7 @@ type of the program to be extracted from a formula. To this end, every formula $
 
 We will now give a formal definition of $\tau (A)$ starting with the type of a
 predicate variable. If the predicate variable has some assignment $\alpha_P$ then the type of that
-formula is the value of the assignment.
+formula is the value of the assignment. In particular, P  is an inductively defined predicate, then $\alpha_P$ is the algebra whose constructors have the same type as the closure axioms of the inductive predicate. 
 
 
 \[
@@ -353,7 +353,7 @@ The formula $\bot$ has no computational content.
 \tau(\bot) := \epsilon
 \]
 
-If P  is an inductively defined predicate, then $\alpha_P$ is the algebra whose constructors have the same type as the closure axioms of the inductive predicate. More details can be found in \cite{HS14}.
+More details can be found in \cite{HS14}.
 
 \section{Program Extraction}
 \label{sec:programextraction}
@@ -418,7 +418,7 @@ There are different induction schemes  that yield different extracted programs h
 \]
 
 
-Induction on the inductively defined predicate corresponds on the program level  to recursion on the corresponding algebra. The closure axioms of an inductively defined predicate are realized by the constructors of the algebra.The extracted program for an application of general induction is general recursion which in Minlog is called guarded recursion and implemented by the operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
+Induction on an inductively defined predicate corresponds on the program level  to recursion on the corresponding algebra. The closure axioms of an inductively defined predicate are realized by the constructors of the algebra. The extracted program for an application of general induction is general recursion which in Minlog is called guarded recursion and implemented by the operation \texttt{GRecGuard}. During our later proof we perform induction on a measure and as a result this same measure also appears in the extracted Minlog term.  This guarded recursion term can be expressed as a function as follows:
 
 \begin{lstlisting}[caption = The Guarded Recursion Operation Used in the Minlog System, mathescape]
 (GRecGuard $\rho$1 $\rho$2 $\rho$3 $\tau$) $\mu$ z1 z2 z3 G t = f z1 z2 z3 t where
