@@ -63,7 +63,8 @@ Blah
 
 \end{comment}
 \section{Natural Deduction}
-In the following sections we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manner designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is suited for program extraction as its constituent proofs are constructive. This is then extended to classical logic in a constructive manner. In the following we present the natural deduction proof system  for first order logic together with the proof terms derived from each rule:  \medskip
+In the following sections we shall discuss in more detail the underlying logical foundations on which the interactive theorem prover Minlog is based. The proof calculus used by Minlog is the natural deduction proof system which was introduced by Gentzen in 1939 \cite{GG69}. He was looking to capture the method by which humans naturally reason in a logical formalism.  The resulting system is very general and allows for new facts to be deduced from what is previously known in an manner designed to be intuitive for mathematicians.  The particular version of natural deduction used is the variant for minimal logic which is suited for program extraction as its constituent proofs are constructive. Minlog's term calculus is based on the simply typed $\lambda$-calculus over free algebras (examples are natural numbers, lists, trees,...), and the logic is extended by strictly positive inductive definitions. Hence Minlog contains, for instance, Heyting Arithmetic in finite types, $\mathrm{HA}^\omega$, and an intuitionistic version of finitely iterated inductive definitions, $\mathrm{ID}^{<\omega}$. However note that type theoretic systems such as Agda or Coq are not captured by Minlog, as Minlog does not have dependent types. In the following, we will call Minlog's underlying formal system $\mathrm{HA}^\mu$ since it can be 
+viewed as $\mathrm{HA}^{\omega}$ extended by inductive definitions. We shall now present the natural deduction proof system  for first order logic together with the proof terms derived from each rule:  \medskip
 %
 \begin{mydef}[Natural Deduction for Minimal Logic] 
 The natural deduction proof system for minimal logic  consists of the following derivation terms for $\wedge$, $\to$ and $\forall$: 
@@ -445,7 +446,7 @@ We need to have a notion of what it means for an extracted program to realise
 a formula. The notion that we define to do this is called realisability which takes shape as a formula $r \textbf{r} A$. This can be read as
 a term $r$ realises a formula $A$. If $\tau(A) \neq \epsilon$ then $r$ is of type $\tau (A)$,
 otherwise $r$ is the symbol $\epsilon$. We also need to define realisability
-for predicates. If we have a predicate P
+for predicates. If we have a predicate $P$
 with an arity $\vec{s}$ then there are two possibilities here. One is that
 $P$ is a predicate variable with an assigned $\alpha_P$ for this we create a new
 predicate variable $P^{\textbf{r}}$ with an arity of $\alpha_P,\vec{\rho}$. In Minlog this corresponds to inductive definitions being realised algebras.
@@ -521,7 +522,7 @@ r_1 \ \textbf{r} \ A \wedge r_2  \ \textbf{r} \ B & \quad \text{otherwise} \\
 \begin{mytheorem}
 \emph{(Soundness Theorem)}
 
-If $M$ is a natural deduction, intuitionistic, first order logic proof of a closed formula $B$, then we can derive  $ \llbracket M \rrbracket \ \textbf{r} \ B$.
+If $M$ is a $\mathrm{HA}^{\mu}$ proof of a closed formula $B$, then we can derive  $ \llbracket M \rrbracket \ \textbf{r} \ B$ in $\mathrm{HA}^{\mu}$.
 
 \begin{proof}
 

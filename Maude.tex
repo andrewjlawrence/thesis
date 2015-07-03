@@ -505,13 +505,13 @@ rl [resreq1g] : {< O : Inter | state : res, t
 \end{lstlisting}
 
 \subsubsection*{The Pentagon Case Study in Maude}
-The above modelling captures the behaviour of the pentagon example railway without capturing the topology in a stand alone module. The topology of the pentagon is contained within the formalisation of the train which has rules that determine which track segment it is in and its position on the track. Each of the rewriting rules for the train which change the position of the train do so modulo the perimeter length of the pentagon. The logic which determines whether or not a movement authority is granted is directly embedded into the interlocking and RBC.
+The above modelling captures the behaviour of the pentagon case study railway without capturing the topology in a stand alone module. The topology of the pentagon is contained within the formalisation of the train which has rules that determine which track segment it is in and its position on the track. Each of the rewriting rules for the train which change the position of the train do so modulo the perimeter length of the pentagon. The logic which determines whether or not a movement authority is granted is directly embedded into the interlocking and RBC.
 
-\section{Extension to a Single Junction}
-The modelling approach used to model the pentagon example (see fig. \ref{fig:pentagon2}) has been extended to model a small junction (see fig.~\ref{fig:junctionexample}). The main difference with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter~\ref{chap:verifyertms} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
+\section{Single Junction Case Study}
+The modelling approach used to model the pentagon case study (See Figure~\ref{fig:pentagon2}) has been extended to model a small junction (See Figure~\ref{fig:junctionexample}). The main difference with the previous approach is that this junction is an open track and therefore the trains have the ability to enter and exit. To capture this we have specified a controller object which contains a schedule of the trains to enter the track. This object negotiates the joining of the trains to the track with the RBC. It also has two routes for the trains to follow and the interlocking and RBC have been modified to capture this behaviour.  In Chapter~\ref{chap:verifyertms} we will use the Maude LTL model checker to verify the safety condition "A point does not move if it is in a movement authority".
  
-\subsection*{Junction Example}
-The junction example consists of one point, two routes, seven track segments, a controller object to schedule trains, an RBC and an interlocking.
+\subsection*{The Junction}
+The junction consists of one point, two routes, seven track segments, a controller object to schedule trains, an RBC and an interlocking.
 
 \begin{figure}[h!]
 \begin{center}
@@ -539,12 +539,12 @@ The junction example consists of one point, two routes, seven track segments, a 
 \node() [below] at (3,-1.2) {Route 2};
 \end{tikzpicture} 
 \end{center} 
-\caption{Junction Example}
+\caption{Junction Case Study}
 \label{fig:junctionexample}
 \end{figure}
 
 \subsection*{The Controller Object}
-The open ended nature of the junction example requires an object to act as a scheduler. This role is fulfilled by the controller class. 
+The open ended nature of the junction case study requires an object to act as a scheduler. This role is fulfilled by the controller class. 
 
 \begin{lstlisting}[caption = "Controller Class"]
 class Controller | 
@@ -556,6 +556,6 @@ The controller class contains three parameters which are used to store a list of
 The controller object makes one join request, using a \texttt{reqjoin} message containing the object identifier of the first train in the \texttt{trainorder} list and its associated route, to the RBC per unit of time. If this request is granted then the first object identifier in the \texttt{trainorder} list is removed and a new train object is created with that object identifier with its maximum speed and route obtained from the mappings in the controller object. The speed and distance of the new train are both set to zero and a message is sent to the interlocking indicating that the initial track segment is now occupied. 
 
 \subsection*{Modified Trains, Interlockings and Radio Block Processors}
-The component classes from the pentagon example have been modified to capture the behaviour of a junction.  The train class has seen the least modification, with only one additional parameter route which stores a natural number corresponding to the train's route. The RBC class has been modified to include a additional mapping from object identifiers to the natural numbers that contains the route of each train. The number of states of an RBC has increased from three to four with an extra state $\mathbf{waitjoin}$ capturing that a join request has been made. When a join request is made the RBC checks to see if the route requested is currently set. If the route requested is set and the initial track segment is clear then the join request is accepted. If the route is not set then the RBC checks with the interlocking that it can set the route. This requires that the first three track segments are clear in order to change the direction of the point. The interlocking class has been modified to capture both the behaviour of the point and the addition of join requests. The point is modelled in the interlocking as two Boolean variables: $\mathbf{p1n}$ which indicates that the point is driven normal and $\mathbf{p1r}$ which indicates that the point is driven in the reverse direction.
+The component classes from the pentagon case study have been modified to capture the behaviour of a junction.  The train class has seen the least modification, with only one additional parameter route which stores a natural number corresponding to the train's route. The RBC class has been modified to include a additional mapping from object identifiers to the natural numbers that contains the route of each train. The number of states of an RBC has increased from three to four with an extra state $\mathbf{waitjoin}$ capturing that a join request has been made. When a join request is made the RBC checks to see if the route requested is currently set. If the route requested is set and the initial track segment is clear then the join request is accepted. If the route is not set then the RBC checks with the interlocking that it can set the route. This requires that the first three track segments are clear in order to change the direction of the point. The interlocking class has been modified to capture both the behaviour of the point and the addition of join requests. The point is modelled in the interlocking as two Boolean variables: $\mathbf{p1n}$ which indicates that the point is driven normal and $\mathbf{p1r}$ which indicates that the point is driven in the reverse direction.
 %
 
