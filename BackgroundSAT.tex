@@ -272,16 +272,13 @@ $\omega \leftarrow \alpha(\kappa)$
 $d \leftarrow \delta(\Gamma)$
 while($\exists l. \eta(\omega,l,\delta(\Gamma))$)
  do $\omega \leftarrow  \omega \circ \alpha(l)$
-$d = max( \{ \delta(l) | l \in \omega \})$
 $\Delta \leftarrow \Delta \cup \{ \omega \}$
-return $d$
+return $max( \{ n| \ n = \delta(l) \wedge l \in \omega \})$
 \end{lstlisting}
-
 
 \subsection*{An Example CDCL Algorithm}
 
 The typical clause learning algorithm functions in a similar way to the DPLL algorithm in that it initially applies unit resolution to the formula. After this it assigns the decision level to zero and then enters a while loop which runs continually until all variables have been assigned. If it manages to assign a value to all of the variables then the current valuation $\Gamma$ can be extended to form a model of the formula $\Delta$. The learned clauses are added to the formula by the $\mathrm{ConflictAnalysis}$ procedure and then cut down on the search space of successive branches of the proof. Even though this algorithm now contains iteration instead of the recursion of the DPLL algorithm (See Code Listing \ref{cl:dpllalg})  it still searches one branch of the search space before backtracking and going down another.
-
 
 \begin{lstlisting}[caption = Example CDCL Algorithm, mathescape]
 CDCL($\Delta$,$\Gamma$)
