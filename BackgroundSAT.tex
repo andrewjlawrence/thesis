@@ -203,9 +203,20 @@ One major improvement to the standard DPLL algorithm is \emph{clause learning} w
 
 The first clause learning algorithm was GRASP \cite{MS99,MS96} which exploited the structure of conflicts and learned new clauses during backtracking search. This was greatly improved on by Chaff \cite{LZ01} which included the two watched literal data structure and a heuristic which received feedback from the clause learning process. MiniSAT \cite{NE04} the minimalistic SAT solver takes the optimisations from Chaff and GRASP and tries to structure them in such a way that the SAT solver is easily extended and that one has access to the internal workings of the solver for customisation.
 
-Similarly to the DPLL algorithms, conflict driven clause learning algorithms take as input a formula $\Delta$ in Conjunctive Normal Form. 
-A valuation in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to Boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value. The depth at which a Boolean variable $x$ is assigned a value $\{0,1\}$ in the search tree is called the decision level, which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search. A mapping $\alpha(x)$ is created associating a Boolean variable x with a clause $C$ if that variable is assigned by the unit rule applied to $C$. If a variable $x$ does not have such an antecedent then $\alpha(x) = NIL$.
+Similarly to the DPLL algorithms, conflict driven clause learning algorithms take as input a formula $\Delta$ in Conjunctive Normal Form. There are however some differences, in the preliminary definitions, between  CDCL and standard DPLL algorithms.
+\medskip
+\begin{mydef}[Clause Learning Preliminaries]
+We define the following preliminaries to use when referring to CDCL SAT algorithms:
+\begin{enumerate}
+\item A \emph{valuation} in a clause learning algorithm is typically a total function $\Gamma : \var{\Delta} \to \{0,1,u\}$ that maps to Boolean variables of the formula $\Delta$ to a value $0,1$ or $u$ the unassigned value.
 
+\item The depth at which a Boolean variable $x$ is assigned a value $\{0,1\}$ in the search tree is called the \emph{decision level}, which is represented as a function $\delta(x) \in \{-1,0,1, \ldots, |\var{\Delta}| \} $. 
+
+\item During the run of the algorithm, a mapping of \emph{antecedents} $\alpha(x) \in \Delta \cup \{NIL\}$ is created associating a Boolean variable $x$ with a clause $C$ if that variable is assigned by the unit rule applied to $C$. If a variable $x$ does not have such an antecedent then $\alpha(x) = NIL$.
+\end{enumerate}
+\end{mydef}
+
+Instead of removing literals from clauses when they are set to $0$ or removing a clause from the formula when it contains a literal set to $1$ all clauses and their corresponding literals remain in the clause during the search. 
 \subsection*{Conflict Analysis}
 The CDCL SAT algorithms cut down on the possible search space for a satisfying assignment by analysing and learning new clauses from conflicts. The causes of the conflict are analysed to see which decision assignments led to the conflict arising. The learned clause contains a negation of these literals such that if it was already in the formula it would have caused the conflict to arise earlier. The decisions and implications that led to the conflict can be seen as forming a graph called a \emph{conflict graph} an example of which can be see in Fig. \ref{fig:conflictgraph}. The literals which are negated to form the learned clause can be seen as forming a bar or cut across the conflict graph. Any of these cuts can be used as learned clauses, however typically the smallest clauses perform better in practice. The majority of modern SAT algorithms try to exploit \emph{unit implication points} (UIP) which are bottlenecks in the conflict graph which form an alternative decision assignment that will cause a conflict in the same clause. Formally a UIP is a dominator in that all paths from the  original decision assignment to the conflict must pass through the UIP node in the graph. 
 \medskip
@@ -249,7 +260,7 @@ The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$
 Possible learned clauses include $( \neg x_4 \vee \neg x_7 )$ and $(x_3 \vee \neg x_6)$.
 \end{myexample}
 
-The clause learning process makes use of a resolution operation $\circ$ which resolves two clauses and removes any complimentary literals contained within the two $C_1 \circ C_2 := \{l | l \in C_1 \vee l \in C_2, \neg l \in C_1 \wedge \mybar{l} \in C_2 \}$. The conflict analysis procedure repeatedly applies resolution clauses that are antecedents of the conflict clause. It also makes use of a predicate that computes whether a clause $\omega$ contains an implied literal $l$ that has been assigned at the decision level $d$.
+The clause learning process makes use of a resolution operation $\circ$ which resolves two clauses and removes any complimentary literals contained within the two $C_1 \circ C_2 := \{l | l \in C_1 \vee l \in C_2, \neg (l \in C_1 \wedge \mybar{l} \in C_2 )\}$. The conflict analysis procedure repeatedly applies resolution clauses that are antecedents of the conflict clause. It also makes use of a predicate that computes whether a clause $\omega$ contains an implied literal $l$ that has been assigned at the decision level $d$.
 
 $$\eta(C,l,d) := l \in C \wedge \delta(l) = d \wedge \alpha(l) \neq NIL$$
 
@@ -257,22 +268,19 @@ The conflict analysis procedure takes as input a formula $\Delta$ and a valuatio
 
 \begin{lstlisting}[caption = Conflict Analysis Procedure, mathescape]
 ConflictAnalysis($\Delta$,$\Gamma$) 
-$i \leftarrow 0$
 $\omega \leftarrow \alpha(\kappa)$
 $d \leftarrow \delta(\Gamma)$
-while($\exists l. \eta(\omega,l,d)$)
+while($\exists l. \eta(\omega,l,\delta(\Gamma))$)
  do $\omega \leftarrow  \omega \circ \alpha(l)$
+$d = max( \{ \delta(l) | l \in \omega \})$
 $\Delta \leftarrow \Delta \cup \{ \omega \}$
-return d
+return $d$
 \end{lstlisting}
-
 
 
 \subsection*{An Example CDCL Algorithm}
 
 The typical clause learning algorithm functions in a similar way to the DPLL algorithm in that it initially applies unit resolution to the formula. After this it assigns the decision level to zero and then enters a while loop which runs continually until all variables have been assigned. If it manages to assign a value to all of the variables then the current valuation $\Gamma$ can be extended to form a model of the formula $\Delta$. The learned clauses are added to the formula by the $\mathrm{ConflictAnalysis}$ procedure and then cut down on the search space of successive branches of the proof. Even though this algorithm now contains iteration instead of the recursion of the DPLL algorithm (See Code Listing \ref{cl:dpllalg})  it still searches one branch of the search space before backtracking and going down another.
-
-
 
 
 \begin{lstlisting}[caption = Example CDCL Algorithm, mathescape]

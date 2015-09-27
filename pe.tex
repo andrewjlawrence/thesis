@@ -1,0 +1,343 @@
+
+\documentclass{article}
+
+\usepackage{amsmath,amssymb, stmaryrd}
+
+\usepackage{graphicx}
+
+\newenvironment{proof}[1][Proof]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+
+\newtheorem{theorem}{Theorem}[section]
+
+\begin{document}
+\title{}
+\author{Andrew Lawrence}
+\date{\today}
+\maketitle
+
+\clearpage
+
+\section{Program Extraction Using a Subset of First Order Logic}
+The goal of this document is to give a brief overview of program extraction
+using a subset of first order logic only containing the implication operator
+as well as the universal and existential quantifers $ \{ \to , \forall,
+\exists \}$
+
+\subsection*{Type}
+Inorder to perform program extraction on a proof we must first deduce the
+type of the program to be extracted from a formula. In \cite{mlcf} the
+type of a formula $A$ is represented by the object $\tau (A)$. If the formula
+$A$ contains some computational content then the $\tau (A)$ represents the type
+of the program extracted from $A$. If $A$ however does not contain any
+computational content then $\tau (A) = \epsilon$.
+We will now give a formal defintion of $\tau (A)$ starting with the type of a
+predicate variable. If the predicate variable has some assignment $\alpha_P$ then the type of that
+formula is the value of the assignment.
+
+
+\[
+\tau(P(\vec{s})) := \left\{ 
+\begin{array}{l l}
+  \alpha_P & \quad \text{if $P$ is a predicate variable with assigned $\alpha_P$}\\
+ \epsilon & \quad \text{otherwise}\\
+\end{array} \right.
+\]
+
+The type of a formula containing an existential quantifier and a subformula
+$A$ is dependent on the type of $A$. If $A$ contains no computational content
+i.e. $\tau(A) = \epsilon$ then the type of the formula is that of the bound
+variable $x$. Otherwise the type is a product of the type of the bound
+variable $\rho$ and the type of the formula $A$ $\tau (A)$.
+
+\[
+\tau(\exists x^{\rho} A) := \left\{ 
+\begin{array}{l l}
+  \rho & \quad \text{if $\tau(A) = \epsilon$}\\
+ \rho \times \tau (A) & \quad \text{otherwise}\\
+\end{array} \right.
+\]
+
+
+The type of a formula containing a universal quantifier and a subformula $A$
+is also dependent on the type of $A$. If $A$ contains no computational content
+i.e. $\tau (A) = \epsilon$ then the type of the whole formula is also
+$\epsilon$. Otherwise if $A$ does have some computational content then the type
+of the formula is a function with $\rho$ as a parameter and returns a result
+of type $\tau (A)$.
+
+
+\[
+\tau(\forall x^{\rho} A) := \left\{ 
+\begin{array}{l l}
+  \epsilon & \quad \text{if $\tau(A) = \epsilon$}\\
+ \rho \to \tau (A) & \quad \text{otherwise}\\
+\end{array} \right.
+\]
+
+
+The type of a formula $A \to B$ containing the implication operator and
+subformulae $A$ and $B$ is dependent on the types of the subformulae.
+If $\tau (A) = \epsilon$ then the type of the formula is $ \tau (B)$. If $\tau
+(B) = \epsilon$ then the type of the formula is $\epsilon$. Otherwise it
+returns a function that has a parameter with a type of $\tau (A)$ and returns a value with
+a type of $\tau (B)$.
+
+\[
+\tau(\forall x^{\rho} A) := \left\{ 
+\begin{array}{l l}
+  \tau (B) & \quad \text{if $\tau (A) = \epsilon$}\\
+  \epsilon & \quad \text{if $\tau (B) = \epsilon$}\\
+  \tau (A) \to \tau (B) & \quad \text{otherwise}\\
+\end{array} \right.
+\]
+
+\subsection*{The Extracted Program}
+I will now give a definition of a extracted program $\llbracket M \rrbracket$
+which has a type $\tau (A)$. Where $M$ is a derivation of the formula $A$ with
+$A$ having a defined type i.e. $ \tau (A) \neq \epsilon $.
+
+\[ \llbracket u^A \rrbracket := x^{\tau (A)}_{u} \text{$x^{\tau (A)}_u$
+  uniquely associated with $u^A$}
+\]
+
+\[
+\llbracket \lambda u^A M \rrbracket := \left\{ 
+\begin{array}{l l}
+\llbracket M \rrbracket  & \quad \text{if $\tau (A) = \epsilon$} \\ 
+\lambda x^{\tau (A)}_{u} \llbracket M \rrbracket & \quad \text{otherwise} \\
+
+\end{array} \right.
+ \]
+
+\[
+\llbracket M^{A \to B} N \rrbracket := \left\{ 
+\begin{array}{l l}
+\llbracket M \rrbracket  & \quad \text{if $\tau (A) = \epsilon$} \\ 
+\llbracket M \rrbracket  \llbracket N \rrbracket & \quad \text{otherwise} \\
+
+\end{array} \right.
+ \]
+
+\[
+\llbracket \langle M^{A_0}_0, M^{A_1}_1 \rangle \rrbracket := \left\{ 
+\begin{array}{l l}
+\llbracket M_i \rrbracket  & \quad \text{if $\tau (A_{1-i}) = \epsilon$} \\ 
+\langle \llbracket M_0 \rrbracket , \llbracket M_1 \rrbracket \rangle & \quad \text{otherwise} \\
+
+\end{array} \right.
+ \]
+
+
+
+
+$$\llbracket ( \lambda x^{\rho} M)^{\forall x A} \rrbracket := \lambda x^{\rho} \llbracket   M \rrbracket$$
+
+
+
+
+
+$$\llbracket M^{\forall x A} t \rrbracket := \llbracket M \rrbracket t$$
+
+
+
+The axioms for dealing with existential quantifiers produce slightly more
+complicated programs upon extraction. 
+
+$$ \exists^+_{x,A} : \forall x^{\rho}.A \to \exists x^{\rho} A    ex-intro$$
+$$ \exists^-_{x,A,B} : \exists x^{\rho} A \to (\forall x^{\rho}. A \to B) \to
+B  ex-elim$$
+
+The following are the extracted programs for the above axioms.
+
+\[ \llbracket \exists^{+}_{x^{\rho}, A} \rrbracket := \left\{ 
+\begin{array}{l l}
+\lambda x^{\rho} x  & \quad \text{if $\tau (A) = \epsilon$} \\ 
+\lambda x^{\rho} \lambda y^{\tau (A)} \langle x,y \rangle & \quad \text{otherwise} \\
+
+\end{array} \right.
+\]
+
+
+
+\[ \llbracket \exists^{-}_{x^{\rho}, A, B} \rrbracket := \left\{ 
+\begin{array}{l l}
+\lambda x^{\rho} \lambda f^{\rho \to \tau (B)}. f x  & \quad \text{if $\tau (A) = \epsilon$} \\ 
+\lambda z^{\rho \times \tau (A)} \lambda f^{\rho \to \tau (A) \to \tau (B)}. f
+(z0) (z1) & \quad \text{otherwise} \\
+
+\end{array} \right.
+\]
+
+
+
+\subsection*{Realizability}
+We need to have a notion of what it means for an extracted program to realize
+a formula. The notion that we define to do this is called realizability. Which takes shape as a formula $r \textbf{r} A$ this can be read as
+a term $r$ realizes a formula $A$. If $\tau(A) \neq \epsilon$ then $r$ is of type $\tau (A)$,
+otherwise $r$ is the symbol $\epsilon$. We also need to define relizability
+for predicates. If we have a predicate P
+with an arity $\vec{\rho}$ then there are two possibilities here. One is that
+$P$ is a Predicate variable with an assigned $\alpha_P$ for this we create a new
+predicate variable $P^{\textbf{r}}$ with an arity of $\alpha_P,\vec{\rho}$. 
+The other case is that $P$ is a predicate constant , if this is the case then
+we use the predicate constant.
+
+
+
+\[ r \ \textbf{r} \ P(\vec{s}) = \left\{ 
+\begin{array}{l l}
+P^r(r,\vec{s}) & \quad \text{if $P$ is a predicate variable with assigned $\alpha_P$} \\ 
+P(\vec{s}) & \quad \text{if P is a predicate constant} \\
+
+\end{array} \right.
+\]
+
+\[ r \ \textbf{r} \ (\exists x A) = \left\{ 
+\begin{array}{l l}
+\epsilon \ \textbf{r} \ A[x:=r] & \quad \text{if $\tau (A) = \epsilon$} \\ 
+r1 \ \textbf{r} \ A[x:= r0] & \quad \text{otherwise} \\
+
+\end{array} \right.
+\]
+
+\[ r \ \textbf{r} \ (\forall x A) = \left\{ 
+\begin{array}{l l}
+\forall x. \epsilon \ \textbf{r} \ A & \quad \text{if $\tau (A) = \epsilon$} \\ 
+\forall x. rx \ \textbf{r} \ A & \quad \text{otherwise} \\
+
+\end{array} \right.
+\]
+
+\[ r \ \textbf{r} \ (A \to B) = \left\{ 
+\begin{array}{l l}
+\epsilon \ \textbf{r} \ A \to r \ \textbf{r} \ B & \quad \text{if $\tau (A) = \epsilon$} \\ 
+\forall x.x \ \textbf{r} \ A \to \epsilon \ \textbf{r} \ B & \quad \text{if
+  $\tau (A) \neq \epsilon \neq \tau (B)$} \\
+\forall x. x \ \textbf{r} \ A \to r x  \ \textbf{r} \ B & \quad \text{otherwise} \\
+
+\end{array} \right.
+\]
+
+
+\subsection*{Soundness Theorem}
+
+
+\begin{theorem}
+\emph{(Soundness Theorem)}
+
+If $M$ is a proof of a formula $B$, then we can derive  $ \llbracket M \rrbracket \ \textbf{r} \ B$.
+\end{theorem}
+
+We begin the proof by performing induction on the proof term M.
+
+\begin{description}
+
+\item[Case] $\lambda u^A M^B$ We must derive $$\llbracket \lambda u^A M^B
+  \rrbracket \textbf{r} B$$
+   \begin{description}
+     \item[Subcase] $\tau(A) = \epsilon$ In this case the empty term realises
+       A, making the $\lambda u $ redundant, which implies that the extracted
+       program from M realises B $$\llbracket \lambda u M \rrbracket
+       \textbf{r} (A \to B) = \epsilon \textbf{r} A \to \llbracket M
+       \rrbracket \textbf{r} B$$
+     \item[Subcase] $\tau(A) \neq \epsilon \eq \tau (B)$ In this case the
+       extracted program is empty $ \llbracket \lambda u M \rrbracket = \epsilon$.
+
+       $$\llbracket \lambda u M \rrbracket \textbf{r} (A \to B) = \forall
+       x. x \textbf{r} A \to \epsilon \textbf{r} B$$
+     \item[Subcase]$\tau (A) \neq \epsilon \neq \tau (B)$ neither the type of $A$ or $B$ is empty. Therefore if we have an $x$ that
+       realises $A$ then this $x$ applied to the extracted program realises B.
+         
+
+   \end{description}
+
+\item[Case] $\exists^+_{x,A}$ We now consider the case that an existential
+  introduction axiom had been applied in the proof. The axiom takes the
+  following form $$\exists^+_{x,A}: \forall^{nc} \vec{\rho} \forall x. A \to
+  \exists x A $$
+  For our proof of the soundness theorem we need to find a derivation
+  of $$\llbracket \exists^+_{x,A} \rrbracket \textbf{r} \forall^{nc}
+  \vec{\rho} \forall x.A \to \exists x A$$
+
+  \begin{description}
+   
+   \item[Subcase] $\tau (A) \eq epsilon$ If the type of A is empty then the
+     extracted program is $\lambda x x$ which realises the formula
+     corresponding to the existential introduction axiom.
+
+     $$(\lamba x x) \textbf{r}  \forall^{nc} \vec{\rho} \forall x. A \to
+  \exists x A  \eq  \forall^{nc} \vec{\rho} \forall x.x \textbf{r} (A \to
+  \exists x A) $$
+
+  Since $\tau (A) \eq \epsilon$ the empty program realises A.
+  $$\forall^{nc} \vec{\rho} \forall x.x \textbf{r} (A \to
+  \exists x A )  \eq \forall^{nc} \vec{\rho} \forall x.\epsilon \textbf{r} A \to
+  x \textbf{r} \exists x A $$
+
+  $$\forall^{nc} \vec{\rho} \forall x.\epsilon \textbf{r} A \to
+  x \textbf{r} \exists x A \eq \forall^{nc} \vec{\rho} \forall x.\epsilon \textbf{r} A \to
+  \epsilon \textbf{r}  A $$
+
+   \item[Subcase] $\tau (A) \neq \epsilon$ If the type of A is non empty then
+     the extracted program is $\lambda x \lambda f \langle x ,f \rangle$ which
+     realises the formula corresponding to the existential introduction axiom.
+
+     $$ \lambda x \lambda f \langle x ,f \rangle \textbf{r}  \forall^{nc} \vec{\rho} \forall x. A \to
+  \exists x A  \eq  \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
+   \langle x ,f \rangle \textbf{r} \exists x A $$
+
+       $$ \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
+   \langle x ,f \rangle \textbf{r} \exists x A  \eq \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
+   f \textbf{r} A  $$
+  \end{description}
+
+  \item[Case] $\exists^-_{x,A,B}$  We now consider the case that an
+    existential elimination axiom had been applied in the proof. The axiom
+    takes the following form $$\exists^-_{x,A,B}: \forall^{nc}
+    \vec{\rho}.\exists x A \to (\forall x. A \to B) \to B $$ for the proof of
+    our theorem we need to find a derivation of $$\llbracket
+    \exists^-_{x,A,B} \rrbracket \textbf{r} \forall^{nc} \vec{\rho}. \exists
+    x A \to (\forall x. A \to B) \to B$$
+    \item[Subcase] $\tau (A) \eq \epsilon \eq \tau (B)$ The extracted program
+      in this case is the empty program that is $ \llbracket \exists^-_{x,A,B}
+      \rrbracket = \epsilon $
+
+      $$\epsilon \textbf{r} \forall^{nc} \vec{\rho}. \exists
+       x A \to (\forall x. A \to B) \to B 
+      \eq \forall^{nc} \vec{\rho} \forall x. x \textbf{r} \exists x A \to \epsilon \textbf{r}((\forall x. A \to B) \to B) 
+      \eq \forall^{nc} \vec{\rho} \forall x. \epsilon \textbf{r} A \to
+      \epsilon \textbf{r}(\forall x. A \to B) \to \epsilon \textbf{r} B  
+      \eq \forall^{nc} \vec{\rho} \forall x. \epsilon \textbf{r} A \to
+      \forall x \epsilon \textbf{r}(A \to B) \to \epsilon \textbf{r} B
+      \eq \forall^{nc} \vec{\rho} \forall x. \epsilon \textbf{r} A \to
+      (\forall x. \epsilon \textbf{r} A \to \epsilon \textbf{r} B) \to
+      \epsilon \textbf{r} B$$
+
+    \item[Subcase] $\tau (A) \neq \epsilon \eq \tau(B)$ Once again the
+      extracted program in this case is the empty program that is $ \llbracket \exists^-_{x,A,B}
+      \rrbracket = \epsilon $
+
+
+
+
+    \item[Subcase] $\tau (A) \eq \epsilon \neq \tau(B)$
+    \item[Subcase] $\tau (A) \neq \epsilon \neq \tau(B)$
+
+
+
+
+
+
+\end{description}
+
+
+\bibliographystyle{plain}
+\bibliography{dis}
+
+
+
+\end{document}
+
+ 
