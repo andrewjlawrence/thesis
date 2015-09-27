@@ -168,7 +168,7 @@ The stability rule is also included in the Minlog system, although I have not us
 \medskip
 \begin{mydef}[The Stability Rule] \hspace*{0pt} \\
 \begin{center}
-\AxiomC{$A \to \bot \to \bot$}
+\AxiomC{$(A \to \bot) \to \bot$}
 \LeftLabel{stab}
 \UnaryInfC{$A$}
 \DisplayProof 
@@ -498,7 +498,7 @@ r1 \ \textbf{r} \ A[x:= r0] & \quad \text{otherwise} \\
 \begin{array}{l l}
 \epsilon \ \textbf{r} \ A \to r \ \textbf{r} \ B & \quad \text{if $\tau (A) = \epsilon$} \\ 
 \forall x.x \ \textbf{r} \ A \to \epsilon \ \textbf{r} \ B & \quad \text{if
-  $\tau (A) \neq \epsilon \neq \tau (B)$} \\
+  $\tau (A) \neq \epsilon = \tau (B)$} \\
 \forall x. x \ \textbf{r} \ A \to r x  \ \textbf{r} \ B & \quad \text{otherwise} \\
 
 \end{array} \right.
@@ -526,104 +526,6 @@ If $M$ is a natural deduction, intuitionistic, first order logic proof of a clos
 \begin{proof}
 
 The proof proceeds by performing induction on the proof term $M$, we omit further details (See \cite{HS14} 4.3.6).
-
-\begin{comment}
-\begin{description}
-
-\item[Case] $\lambda u^A M^B$ We must derive $$\llbracket \lambda u^A M^B
-  \rrbracket \textbf{r} B$$
-   \begin{description}
-     \item[Subcase] $\tau(A) = \epsilon$ In this case the empty term realises
-       A, making the $\lambda u $ redundant, which implies that the extracted
-       program from M realises B $$\llbracket \lambda u M \rrbracket
-       \textbf{r} (A \to B) = \epsilon \textbf{r} A \to \llbracket M
-       \rrbracket \textbf{r} B$$
-     \item[Subcase] $\tau(A) \neq \epsilon = \tau (B)$ In this case the
-       extracted program is empty $ \llbracket \lambda u M \rrbracket = \epsilon$.
-
-       $$\llbracket \lambda u M \rrbracket \textbf{r} (A \to B) = \forall
-       x. x \textbf{r} A \to \epsilon \textbf{r} B$$
-     \item[Subcase]$\tau (A) \neq \epsilon \neq \tau (B)$ neither the type of $A$ or $B$ is empty. Therefore if we have an $x$ that
-       realises $A$ then this $x$ applied to the extracted program realises B.
-         
-
-   \end{description}
-
-\item[Case] $\exists^+_{x,A}$ We now consider the case that an existential
-  introduction axiom had been applied in the proof. The axiom takes the
-  following form $$\exists^+_{x,A}: \forall^{nc} \vec{\rho} \forall x. A \to
-  \exists x A $$
-  For our proof of the soundness theorem we need to find a derivation
-  of $$\llbracket \exists^+_{x,A} \rrbracket \textbf{r} \forall^{nc}
-  \vec{\rho} \forall x.A \to \exists x A$$
-
-  \begin{description}
-   
-   \item[Subcase] $\tau (A) = epsilon$ If the type of A is empty then the
-     extracted program is $\lambda x x$ which realises the formula
-     corresponding to the existential introduction axiom.
-
-     $$(\lambda x x) \textbf{r}  \forall^{nc} \vec{\rho} \forall x. A \to
-  \exists x A  =  \forall^{nc} \vec{\rho} \forall x.x \textbf{r} (A \to
-  \exists x A) $$
-
-  Since $\tau (A) = \epsilon$ the empty program realises A.
-  $$\forall^{nc} \vec{\rho} \forall x.x \textbf{r} (A \to
-  \exists x A )  = \forall^{nc} \vec{\rho} \forall x.\epsilon \textbf{r} A \to
-  x \textbf{r} \exists x A $$
-
-  $$\forall^{nc} \vec{\rho} \forall x.\epsilon \textbf{r} A \to
-  x \textbf{r} \exists x A = \forall^{nc} \vec{\rho} \forall x.\epsilon \textbf{r} A \to
-  \epsilon \textbf{r}  A $$
-
-   \item[Subcase] $\tau (A) \neq \epsilon$ If the type of A is non empty then
-     the extracted program is $\lambda x \lambda f \langle x ,f \rangle$ which
-     realises the formula corresponding to the existential introduction axiom.
-
-     $$ \lambda x \lambda f \langle x ,f \rangle \textbf{r}  \forall^{nc} \vec{\rho} \forall x. A \to
-  \exists x A    \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
-   \langle x ,f \rangle \textbf{r} \exists x A $$
-
-       $$ \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
-   \langle x ,f \rangle \textbf{r} \exists x A  = \forall^{nc} \vec{\rho} \forall x,f. f \textbf{r} A \to
-   f \textbf{r} A  $$
-  \end{description}
-
-  \item[Case] $\exists^-_{x,A,B}$  We now consider the case that an
-    existential elimination axiom had been applied in the proof. The axiom
-    takes the following form $$\exists^-_{x,A,B}: \forall^{nc}
-    \vec{\rho}.\exists x A \to (\forall x. A \to B) \to B $$ for the proof of
-    our theorem we need to find a derivation of $$\llbracket
-    \exists^-_{x,A,B} \rrbracket \textbf{r} \forall^{nc} \vec{\rho}. \exists
-    x A \to (\forall x. A \to B) \to B$$
-    \item[Subcase] $\tau (A) = \epsilon = \tau (B)$ The extracted program
-      in this case is the empty program that is $ \llbracket \exists^-_{x,A,B}
-      \rrbracket = \epsilon $
-
-      $$\epsilon \textbf{r} \forall^{nc} \vec{\rho}. \exists
-       x A \to (\forall x. A \to B) \to B 
-      = \forall^{nc} \vec{\rho} \forall x. x \textbf{r} \exists x A \to \epsilon \textbf{r}((\forall x. A \to B) \to B) 
-      = \forall^{nc} \vec{\rho} \forall x. \epsilon \textbf{r} A \to
-      \epsilon \textbf{r}(\forall x. A \to B) \to \epsilon \textbf{r} B  
-      = \forall^{nc} \vec{\rho} \forall x. \epsilon \textbf{r} A \to
-      \forall x \epsilon \textbf{r}(A \to B) \to \epsilon \textbf{r} B
-      = \forall^{nc} \vec{\rho} \forall x. \epsilon \textbf{r} A \to
-      (\forall x. \epsilon \textbf{r} A \to \epsilon \textbf{r} B) \to
-      \epsilon \textbf{r} B$$
-
-    \item[Subcase] $\tau (A) \neq \epsilon = \tau(B)$ Once again the
-      extracted program in this case is the empty program that is $ \llbracket \exists^-_{x,A,B}
-      \rrbracket = \epsilon $
-
-
-
-
-    \item[Subcase] $\tau (A) = \epsilon \neq \tau(B)$
-    \item[Subcase] $\tau (A) \neq \epsilon \neq \tau(B)$
-
-
-\end{description}
-\end{comment}
 
 \end{proof}
 
