@@ -271,12 +271,12 @@ We define a hybrid automaton $H_{T}$ as follows:
 
 
 \draw [arrow] (B) -- node[right] {$S = MaxSpeed$} (D);
-\draw [arrow] (A) -- node[below = 10pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID\\ \textbf{then} MA := y\end{center} } (B);
+\draw [arrow] (A) -- node[below = 10pt,  text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID\\ \textbf{then} MA := y\end{center} } (B);
 \draw [arrow] (D) --  node[above = 10pt,text width=4cm] {\begin{center}DMA(D, EoA) =\\ BD(S)\\MA.Req.TrainID \end{center}} (C);
 \draw [arrow] (C) -- node [left] {$S = 0$} (A);
-\draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [right,text width=4cm] { \begin{center}DMA(D,EoA) =\\
+\draw [arrow] (B)  .. controls +(-1.5cm,  1.5 cm) and +(1.5cm,  -0.5 cm ) .. node [ above right = -18pt, text width=4cm] { \begin{center}DMA(D,EoA) =\\
     BD(S)\\MA.Req.TrainID \end{center}} (C);
-\draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-2cm, 1.0 cm ) ..   node [left,text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y\end{center} } (B);
+\draw [arrow] (C) .. controls +(1.5cm,  -1.5cm) and +(-2cm, 1.0 cm ) ..   node [left = -20pt, text width = 4cm] {\begin{center}MA.x.y\\ \textbf{if} x = TrainID \\ \textbf{then} MA := y\end{center} } (B);
 \draw [arrow] (C) .. controls +(-2cm,  2cm) and +(-2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center}\textbf{train movement events} \end{center}} (C);
 \draw [arrow] (D) .. controls +(2cm,  2cm) and +(2cm, 0.5 cm ) ..   node [above = 10pt, text width = 4cm] {\begin{center} \textbf{train movement events} \end{center}} (D);
 \draw [arrow] (B) .. controls +(2cm,  -2cm) and +(2cm, -0.5 cm ) ..   node [below = 6pt, text width = 4cm] {\begin{center}\textbf{train movement events} \end{center}} (B);

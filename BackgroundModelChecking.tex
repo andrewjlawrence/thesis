@@ -223,8 +223,10 @@ The model checking algorithm performs a search, using the double depth first sea
 \begin{lstlisting}[caption = The Double Depth First Search Algorithm, mathescape]
 Emptiness(A)
 {
-    $\forall s_0 \in S_0$ do
+    $\forall s_0 \in S_0$
+    {
 	dfs1($s_0$)
+    }
     return false
 }
 
@@ -233,24 +235,24 @@ dfs1($s_0$)
     Stack Stack1 := $\{ s_0 \}$
     Hashtable HT1 := $\emptyset$
     Queue Queue1 := $\emptyset$
-    while ($\mathrm{Stack1} \, \neq \emptyset$)
+    while ($\mathrm{Stack1} \neq \emptyset$)
     {
-        s := top(Stack1) 
-        insert(s,HT1)
+        $s$ := top(Stack1) 
+        insert($s$,HT1)
         if ($\forall s' \in S. T(s,s') \to s' \in \mathrm{HT1}$)
         {
             pop(Stack1)
             if $s \in F$
             {
-                insert(s,Queue1)
+                insert($s$,Queue1)
             }
         }
         else
         {
             if ($\exists s' \in S. T(s,s')  \wedge  s' \notin HT1$) 
             {
-                insert(s', HT1)
-                push(s',Stack1)
+                insert($s'$,HT1)
+                push($s'$,Stack1)
             }
         }
     }
@@ -263,10 +265,10 @@ dfs2(Queue1)
     Hashtable HT2 := $\emptyset$
     while ($\mathrm{Queue1} \neq \emptyset $)
     {
-        s := head(Queue1)
-        remove(s, Queue1)
-        push(s,Stack2)
-        while ($Stack2 \neq \emptyset$)
+        $s$ := head(Queue1)
+        remove($s$,Queue1)
+        push($s$,Stack2)
+        while ($\mathrm{Stack2} \neq \emptyset$)
         {
             $s'$ := top(Stack2)
             if (T($s'$,s))

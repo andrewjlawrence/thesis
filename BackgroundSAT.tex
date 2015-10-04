@@ -130,19 +130,19 @@ The DPLL algorithm can be thought of as a recursive function $\mathrm{DPLL}(\Del
 
 \begin{lstlisting}[caption = Example DPLL Algorithm,mathescape, label = cl:dpllalg]
 DPLL($\Delta, \Gamma$)
-$(\Delta, \Gamma) = \mathrm{UnitResolution}(\Delta, \Gamma)$
-if $\Delta$ = {} then
-	return $\Gamma$
-else if {} $\in \Delta$ then
-	return UNSAT
+$(\Delta, \Gamma) := \mathrm{UnitResolution}(\Delta, \Gamma)$
+if $\Delta = \emptyset$ then
+    return $\Gamma$
+else if $ \emptyset \in \Delta$ then
+    return UNSAT
 else
-	$l = \mathrm{Select}(\Delta, \Gamma)$
-	if $M$ = DPLL($\Delta, \Gamma \cup \{l\}$) $\neq$ UNSAT then
-		return $M \cup \{ l \}$ 
-	else if $M$ = DPLL($\Delta, \Gamma \cup \{\neg l\}$) $\neq$ UNSAT then 
-		return $M \cup \{ \mybar{l} \}$ 
-	else
-		return UNSAT
+    $l := \mathrm{Select}(\Delta, \Gamma)$
+    if $M$ = DPLL($\Delta, \Gamma \cup \{l\}$) $\neq$ UNSAT then
+        return $M \cup \{ l \}$ 
+    else if $M$ = DPLL($\Delta, \Gamma \cup \{\neg l\}$) $\neq$ UNSAT then 
+        return $M \cup \{ \mybar{l} \}$ 
+    else
+        return UNSAT
 \end{lstlisting}
 
 The selection of literals,  as performed by $\mathrm{Select}$, is typically made by some heuristics which are a research topic in their own right and therefore beyond the scope of this thesis. We shall make use of simple heuristics such as  picking the first literal  or choosing the most commonly occurring literal  from a formula as these produce reasonable performance without overly complicating the algorithm or inducing significant overhead.
@@ -268,11 +268,13 @@ The conflict analysis procedure takes as input a formula $\Delta$ and a valuatio
 
 \begin{lstlisting}[caption = Conflict Analysis Procedure, mathescape]
 ConflictAnalysis($\Delta$,$\Gamma$) 
-$\omega \leftarrow \alpha(\kappa)$
-$d \leftarrow \delta(\Gamma)$
+$\omega := \alpha(\kappa)$
+$d := \delta(\Gamma)$
 while($\exists l. \eta(\omega,l,\delta(\Gamma))$)
- do $\omega \leftarrow  \omega \circ \alpha(l)$
-$\Delta \leftarrow \Delta \cup \{ \omega \}$
+{
+    $\omega :=  \omega \circ \alpha(l)$
+}
+$\Delta := \Delta \cup \{ \omega \}$
 return $max( \{ n| \ n = \delta(l) \wedge l \in \omega \})$
 \end{lstlisting}
 
@@ -282,21 +284,26 @@ The typical clause learning algorithm functions in a similar way to the DPLL alg
 
 \begin{lstlisting}[caption = Example CDCL Algorithm, mathescape]
 CDCL($\Delta$,$\Gamma$)
-$(\Delta,\Gamma) = \mathrm{UnitResolution}(\Delta,\Gamma)$
-if $\{ \} \in \Delta$
-	then return UNSAT
-$dl \leftarrow 0$
-while($\neg \mathrm{AllVarAssigned}(\Delta,\Gamma$)) do
-	do $(x,v) = \mathrm{Select}(\Delta,\Gamma)$
- 	     $dl \leftarrow dl + 1$
- 	     $\Gamma \leftarrow  \Gamma \cup \{ (x,v)\}$
-	     $(\Delta,\Gamma) = \mathrm{UnitResolution}(\Delta,\Gamma)$
-	     if $\{ \} \in \Delta$
-              	then $\beta = \mathrm{ConflictAnalysis}(\Delta,\Gamma)$
-		if $(\beta < 0)$
-			then return UNSAT
-			else $\mathrm{Backtrack}(\Delta, \Gamma, \beta)$
-			        $dl \leftarrow \beta$
+$(\Delta,\Gamma) := \mathrm{UnitResolution}(\Delta,\Gamma)$
+if $\emptyset \in \Delta$
+    then return UNSAT
+$dl := 0$
+while($\neg \mathrm{AllVarAssigned}(\Delta,\Gamma$))
+{
+    $(x,v) = \mathrm{Select}(\Delta,\Gamma)$
+        $dl := dl + 1$
+        $\Gamma := \Gamma \cup \{ (x,v)\}$
+        $(\Delta,\Gamma) = \mathrm{UnitResolution}(\Delta,\Gamma)$
+        if $\emptyset \in \Delta$
+            then $\beta = \mathrm{ConflictAnalysis}(\Delta,\Gamma)$
+            if $(\beta < 0)$
+                then return UNSAT
+            else
+            { 
+                $\mathrm{Backtrack}(\Delta, \Gamma, \beta)$
+                $dl := \beta$
+            }
+}
 return (SAT,$\Gamma$)
 \end{lstlisting}
 
