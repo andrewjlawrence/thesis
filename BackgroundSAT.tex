@@ -260,7 +260,7 @@ The conflict graph the formula $\phi$ with decisions $x_1 = 1@1$ and $x_7 = 1@2$
 Possible learned clauses include $( \neg x_4 \vee \neg x_7 )$ and $(x_3 \vee \neg x_6)$.
 \end{myexample}
 
-The clause learning process makes use of a resolution operation $\circ$ which resolves two clauses and removes any complimentary literals contained within the two $C_1 \circ C_2 := \{l | l \in C_1 \vee l \in C_2, \neg (l \in C_1 \wedge \mybar{l} \in C_2 )\}$. The conflict analysis procedure repeatedly applies resolution clauses that are antecedents of the conflict clause. It also makes use of a predicate that computes whether a clause $\omega$ contains an implied literal $l$ that has been assigned at the decision level $d$.
+The clause learning process makes use of a resolution operation $\circ$ which resolves two clauses and removes any complimentary literals contained within the two $C_1 \circ C_2 := \{l | \neg (l \in C_1 \wedge \mybar{l} \in C_2 )\}$. The conflict analysis procedure repeatedly applies resolution clauses that are antecedents of the conflict clause. It also makes use of a predicate that computes whether a clause $\omega$ contains an implied literal $l$ that has been assigned at the decision level $d$.
 
 $$\eta(C,l,d) := l \in C \wedge \delta(l) = d \wedge \alpha(l) \neq NIL$$
 
